@@ -77,6 +77,12 @@ function mousePressed() {
   }
 }
 
+function touchStarted() {
+  if (getAudioContext().state !== 'running') {
+    getAudioContext().resume();
+  }
+}
+
 class NumberWheel {
   constructor(offsetX, offsetY, displaySize, spread, isHeartbeat = false) {
     this.offsetX = offsetX;
