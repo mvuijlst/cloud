@@ -1,44 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>p5.js Animation</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/addons/p5.sound.min.js"></script>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cloud</title>
     <style>
-      @font-face {
+        @font-face {
         font-family: 'IBMPlexMono';
         src: url('IBMPlexMono-Regular.ttf');
       }
       body {
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-        background-color: black; /* Match canvas background */
-      }
-      #attribution {
-        position: absolute;
-        bottom: 10px;
-        left: 10px;
-        font-family: 'IBMPlexMono', monospace;
-        font-size: 12px;
-        color: rgba(255, 255, 255, 0.3);
-        pointer-events: none; /* Let clicks pass through to canvas */
-        user-select: none;
-      }
-      #attribution a {
-        color: inherit;
-        text-decoration: underline;
-        pointer-events: auto; /* Re-enable clicks for the link */
-        cursor: pointer;
-      }
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            color: white;
+            font-family: 'IBMPlexMono', monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        h1 {
+            font-weight: normal;
+            margin-bottom: 40px;
+        }
+
     </style>
-  </head>
-  <body>
-    <div id="attribution">
-      By <a href="https://blog.zog.org" target="_blank">Michel Vuijlsteke</a>. Based on an idea by Leo Mariño.
-    </div>
-    <script src="sketch.js"></script>
-  </body>
+</head>
+
+<body>
+    <h1>cloud.yusupov.cloud</h1>
+    <p><a href="timebeat/">timebeat</a></p>
+</body>
+
 </html>

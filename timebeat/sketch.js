@@ -7,7 +7,7 @@ let lastTickTime = 0;
 
 function preload() {
   myFont = loadFont('Metamorphous-Regular.ttf');
-  monoFont = loadFont('IBMPlexMono-Regular.ttf');
+  monoFont = loadFont('../IBMPlexMono-Regular.ttf');
   heartbeatSound = loadSound('heartbeat-single-383748.mp3');
 }
 
