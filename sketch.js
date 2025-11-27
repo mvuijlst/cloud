@@ -1,8 +1,14 @@
 let wheels = [];
 let myFont;
+let monoFont;
+let heartbeatSound;
+let prevSecond = -1;
+let lastTickTime = 0;
 
 function preload() {
-    myFont = loadFont('Metamorphous-Regular.ttf');
+  myFont = loadFont('Metamorphous-Regular.ttf');
+  monoFont = loadFont('IBMPlexMono-Regular.ttf');
+  heartbeatSound = loadSound('heartbeat-single-383748.mp3');
 }
 
 function setup() {
@@ -17,12 +23,12 @@ function setup() {
   wheels.push(new NumberWheel(10, -80, 110, 200, true));  // H2
   
   // Minutes (Medium, Center-Rightish)
-  wheels.push(new NumberWheel(50, -30, 60, 150));   // M1
-  wheels.push(new NumberWheel(85, -30, 60, 150));  // M2
+  wheels.push(new NumberWheel(40, -10, 60, 150));   // M1
+  wheels.push(new NumberWheel(75, -10, 60, 150));  // M2
   
   // Seconds (Small, Bottom-Rightish)
-  wheels.push(new NumberWheel(10, 20, 30, 100));   // S1
-  wheels.push(new NumberWheel(30, 20, 30, 100));  // S2
+  wheels.push(new NumberWheel(0, 30, 30, 100));   // S1
+  wheels.push(new NumberWheel(20, 30, 30, 100));  // S2
 }
 
 function draw() {
@@ -32,6 +38,15 @@ function draw() {
   let h = hour();
   let m = minute();
   let s = second();
+  
+  // Sync heartbeat to the second
+  if (s !== prevSecond) {
+    prevSecond = s;
+    lastTickTime = millis();
+    if (getAudioContext().state === 'running') {
+      heartbeatSound.play();
+    }
+  }
   
   // Split into digits
   let digits = [
@@ -52,6 +67,11 @@ function windowResized() {
 }
 
 function mousePressed() {
+  // Ensure audio context is running (browsers block autoplay)
+  if (getAudioContext().state !== 'running') {
+    getAudioContext().resume();
+  }
+  
   for (let w of wheels) {
     w.randomize();
   }
@@ -80,6 +100,12 @@ class NumberWheel {
     // Initial generation
     this.destNumbers = this.generateNumbers();
     this.numbers = this.cloneNumbers(this.destNumbers);
+    
+    // Camera offsets
+    this.randCamX = 0;
+    this.randCamY = 0;
+    this.randCamRot = 0;
+    this.randCamZoom = 1;
   }
 
   generateNumbers() {
@@ -97,7 +123,7 @@ class NumberWheel {
             startTime: random(10000),
             duration: random(3200, 3200),
             type: random(['rotate', 'opacity', 'size']),
-            amp: random(0.5, 1.0) * (random() > 0.5 ? 1 : -1)
+            amp: random(0.5, 1.0) * (random() > 0.5 ? 2 : -2)
         }
       });
     }
@@ -112,6 +138,12 @@ class NumberWheel {
     this.sourceNumbers = this.cloneNumbers(this.numbers);
     this.destNumbers = this.generateNumbers();
     this.morphStartTime = millis();
+    
+    // Randomize camera view for the current number
+    this.randCamX = random(-100, 100);
+    this.randCamY = random(-100, 100);
+    this.randCamRot = random(-PI/2, PI/2);
+    this.randCamZoom = random(0.5, 1.5);
   }
 
   update(val) {
@@ -182,13 +214,25 @@ class NumberWheel {
     let currScale = this.displaySize / currentNum.size;
     let camZoom = lerp(prevScale, currScale, smoothAmt);
 
+    // Apply Randomization Offsets to Camera
+    if (morphElapsed < this.morphDuration) {
+        let amt = morphElapsed / this.morphDuration;
+        let smooth = 1 - pow(1 - amt, 3); // 0 -> 1
+        let weight = 1 - smooth; // 1 -> 0
+        
+        camX += this.randCamX * weight;
+        camY += this.randCamY * weight;
+        camRot += this.randCamRot * weight;
+        camZoom *= lerp(1, this.randCamZoom, weight);
+    }
+
     push();
     // Move to the wheel's position on screen
     translate(width / 2 + this.offsetX, height / 2 + this.offsetY);
     
     if (this.isHeartbeat) {
-        // Heartbeat: once a second
-        let t = (millis() % 1000) / 1000;
+        // Heartbeat: synced to second change
+        let t = (millis() - lastTickTime) / 1000;
         let pulse = 1;
         // Sharp pulse in the first 200ms
         if (t < 0.2) {
