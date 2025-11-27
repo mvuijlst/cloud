@@ -13,8 +13,8 @@ function setup() {
   // Format: offsetX, offsetY, displaySize, spread
   
   // Hours (Large, Top-Leftish)
-  wheels.push(new NumberWheel(-50, -80, 110, 200)); // H1
-  wheels.push(new NumberWheel(10, -80, 110, 200));  // H2
+  wheels.push(new NumberWheel(-50, -80, 110, 200, true)); // H1
+  wheels.push(new NumberWheel(10, -80, 110, 200, true));  // H2
   
   // Minutes (Medium, Center-Rightish)
   wheels.push(new NumberWheel(50, -30, 60, 150));   // M1
@@ -58,11 +58,12 @@ function mousePressed() {
 }
 
 class NumberWheel {
-  constructor(offsetX, offsetY, displaySize, spread) {
+  constructor(offsetX, offsetY, displaySize, spread, isHeartbeat = false) {
     this.offsetX = offsetX;
     this.offsetY = offsetY;
     this.displaySize = displaySize;
     this.spread = spread;
+    this.isHeartbeat = isHeartbeat;
     
     this.numbers = [];
     this.sourceNumbers = [];
@@ -88,7 +89,7 @@ class NumberWheel {
         val: i,
         x: random(-this.spread, this.spread),
         y: random(-this.spread, this.spread),
-        size: random(this.displaySize * 0.5, this.displaySize * 1.5),
+        size: random(this.displaySize * 0.3, this.displaySize * 1.0),
         rotation: random(TWO_PI),
         baseOpacity: random(15, 40),
         // Idle animation properties
@@ -185,6 +186,17 @@ class NumberWheel {
     // Move to the wheel's position on screen
     translate(width / 2 + this.offsetX, height / 2 + this.offsetY);
     
+    if (this.isHeartbeat) {
+        // Heartbeat: once a second
+        let t = (millis() % 1000) / 1000;
+        let pulse = 1;
+        // Sharp pulse in the first 200ms
+        if (t < 0.2) {
+            pulse = 1 - 0.02 * sin(t * PI / 0.2);
+        }
+        scale(pulse);
+    }
+    
     // Apply Camera Transforms
     scale(camZoom);
     rotate(-camRot);
@@ -227,8 +239,8 @@ class NumberWheel {
        }
 
        // Draw line to center (0,0 of this wheel's world)
-       strokeWeight(n.size * idleSizeMult * 0.05);
-       stroke(255, 20 * idleOpacityMult); // Faint white line
+       strokeWeight(n.size * idleSizeMult * 0.1);
+       stroke(255, 15 * idleOpacityMult); // Faint white line
        line(0, 0, n.x, n.y);
 
        // Draw number
