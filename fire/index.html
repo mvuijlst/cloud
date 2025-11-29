@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#000000">
+    <title>Fire</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/addons/p5.sound.min.js"></script>
+    <style>
+        @font-face {
+            font-family: 'IBMPlexMono';
+            src: url('../IBMPlexMono-Regular.ttf');
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: black;
+            /* Match canvas background */
+        }
+
+        #attribution {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            font-family: 'IBMPlexMono', monospace;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.3);
+            pointer-events: none;
+            /* Let clicks pass through to canvas */
+            user-select: none;
+        }
+
+        #attribution a {
+            color: inherit;
+            text-decoration: underline;
+            pointer-events: auto;
+            /* Re-enable clicks for the link */
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="sketch.js"></script>
+</body>
+
+</html>
