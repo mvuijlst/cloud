@@ -1,12 +1,23 @@
-let scaleSlider, waterSlider, mountainSlider;
+let simSpeedSlider, growthSlider, fireBurnSlider, fireSpreadSlider, recoverySlider;
+let scaleSlider, waterSlider, mountainSlider, fpsDiv;
 let riverTiles = new Set();
 let treeCounts = new Map(); // Stores count of trees per tile
 let burningTiles = new Set(); // Stores burning tiles
 let recoveringTiles = new Map(); // Stores recovery progress 0.0 to 1.0
+let growableTiles = new Set(); // Tiles that can grow trees
+let heatMap = new Map(); // Reused for fire simulation
+let nextFire = new Set(); // Reused for fire simulation
 let treeHistory = [];
 let isGrowing = false;
 let hexSize = 30;
-let treeGrowthRate = 0.001;
+let simulationParams = {
+  growthRate: 0.05,
+  fireBurnRate: 0.5,
+  fireSpreadChance: 0.3,
+  recoveryRate: 0.005
+};
+let terrainBuffer;
+let gridData = new Map(); // key -> {x, y, h, color, maxTrees, isRiver}
 let palette = [
   "#6E4619", // High
   "#7D5528",
@@ -23,8 +34,9 @@ let palette = [
 ];
 
 function setup() {
+  pixelDensity(1); // Optimization for high-DPI screens
   createCanvas(windowWidth, windowHeight);
-  noLoop(); 
+  // noLoop(); // Always loop for FPS
   noiseDetail(8, 0.5); // Increase octaves for more realistic terrain 
 
   let ui = createDiv('');
@@ -45,6 +57,11 @@ function setup() {
   
   let title = createDiv('Controls').parent(header);
   
+  fpsDiv = createDiv('FPS: --').parent(header);
+  fpsDiv.style('font-size', '12px');
+  fpsDiv.style('margin-right', '10px');
+  fpsDiv.style('color', '#aaa');
+
   let toggleBtn = createButton('X').parent(header);
   toggleBtn.style('width', '30px');
   toggleBtn.style('cursor', 'pointer');
@@ -100,21 +117,26 @@ function setup() {
     burningTiles.clear();
     recoveringTiles.clear();
     isGrowing = false;
+    cacheTerrain();
     redraw();
   });
 
-  createDiv('Tree Speed').parent(controls);
-  let speedSelect = createSelect().parent(controls);
-  speedSelect.option('Very Fast', 3.0);
-  speedSelect.option('Fast', 0.5);
-  speedSelect.option('Normal', 0.05);
-  speedSelect.option('Slow', 0.005);
-  speedSelect.option('Very Slow', 0.0005);
-  speedSelect.selected('Slow');
-  
-  speedSelect.changed(() => {
-    treeGrowthRate = float(speedSelect.value());
-  });
+  function addSlider(label, min, max, val, step) {
+    let row = createDiv().parent(controls).style('display', 'flex').style('justify-content', 'space-between').style('margin-top', '5px');
+    createDiv(label).parent(row);
+    let valDiv = createDiv(String(val)).parent(row);
+    let s = createSlider(min, max, val, step).parent(controls);
+    s.style('width', '100%');
+    s.style('margin-bottom', '5px');
+    s.input(() => valDiv.html(s.value()));
+    return s;
+  }
+
+  simSpeedSlider = addSlider('Sim Speed', 1, 10, 1, 1);
+  growthSlider = addSlider('Growth Chance', 0, 0.001, 0.0001, 0.00001);
+  fireBurnSlider = addSlider('Fire Burn Speed', 0, 1, 0.5, 0.01);
+  fireSpreadSlider = addSlider('Fire Spread Chance', 0, 1, 0.3, 0.01);
+  recoverySlider = addSlider('Recovery Speed', 0, 0.1, 0.005, 0.001);
 
   let btn = createButton('Grow Trees').parent(controls);
   btn.style('margin-top', '10px');
@@ -136,6 +158,122 @@ function setup() {
   mountainSlider = createSlider(0.1, 5, float(savedMount), 0.1).parent(controls);
   mountainSlider.style('width', '200px');
   mountainSlider.input(updateTerrain);
+
+  frameRate(60);
+  cacheTerrain();
+}
+
+// Removed updateSimulationParams function as it is no longer used
+function cacheTerrain() {
+  if (terrainBuffer) terrainBuffer.remove();
+  terrainBuffer = createGraphics(width, height);
+  gridData.clear();
+  growableTiles.clear();
+  
+  terrainBuffer.background(20);
+  terrainBuffer.stroke(50, 50, 50, 15);
+  terrainBuffer.strokeWeight(1);
+
+  let hexWidth = Math.sqrt(3) * hexSize;
+  let hexHeight = 2 * hexSize;
+  let ySpacing = hexHeight * 0.75;
+  let xSpacing = hexWidth;
+  
+  let rows = Math.ceil(height / ySpacing) + 1;
+  let cols = Math.ceil(width / xSpacing) + 1;
+
+  let scale = scaleSlider.value();
+  let water = waterSlider.value();
+  let mount = mountainSlider.value();
+
+  for (let r = -1; r < rows; r++) {
+    for (let c = -1; c < cols; c++) {
+      let x = c * xSpacing;
+      let y = r * ySpacing;
+      
+      if (r % 2 !== 0) {
+        x += xSpacing / 2;
+      }
+      
+      let n = noise(x * scale, y * scale);
+      n = pow(n, mount);
+      n -= water;
+      n = constrain(n, 0, 1);
+      
+      let key = `${r},${c}`;
+      let isRiver = riverTiles.has(key);
+      
+      let tileColor;
+      let maxTrees = 0;
+      
+      /*
+      if (isRiver) {
+        tileColor = color("#C3E6FA");
+        maxTrees = 0;
+      } else {
+      */
+        let colorIndex = floor(map(n, 0, 1, palette.length, 0));
+        colorIndex = constrain(colorIndex, 0, palette.length - 1);
+        tileColor = color(palette[colorIndex]);
+        
+        if (colorIndex >= 7) {
+            maxTrees = 0; // Water
+        } else if (colorIndex === 6) {
+            maxTrees = 10; // Target green
+        } else if (colorIndex < 6) {
+            maxTrees = floor(map(colorIndex, 0, 6, 3, 10));
+        }
+      // }
+      
+      let neighbors = getNeighbors(r, c).map(n => `${n.r},${n.c}`);
+      
+      // Pre-calculate tree positions
+      let treeCache = [];
+      for(let i=0; i<maxTrees; i++) {
+          let offset = getTreePos(r, c, i, hexSize);
+          let tx = x + offset.x;
+          let ty = y + offset.y;
+          
+          let seed = (r * 997 + c * 97 + i * 7) * 123.45;
+          let rand1 = Math.abs((Math.sin(seed + 1) * 10000) % 1);
+          let rand2 = Math.abs((Math.cos(seed + 2) * 10000) % 1);
+          
+          let sizeMult = map(rand2, 0, 1, 0.95, 1.05);
+          let h = hexSize * 0.7 * sizeMult;
+          let w = hexSize * 0.2 * sizeMult;
+          
+          let trunkH = h * 0.2;
+          let trunkW = w * 0.6;
+          
+          let alpha = 150 + map(rand1, 0, 1, -13, 13);
+          
+          treeCache.push({
+              tx, ty, h, w, trunkH, trunkW, alpha
+          });
+      }
+
+      gridData.set(key, {
+          x, y, h: n, color: tileColor, maxTrees, isRiver, 
+          neighbors, treeCache
+      });
+
+      if (maxTrees > 0) {
+          growableTiles.add(key);
+      }
+      
+      // Draw to buffer
+      terrainBuffer.fill(tileColor);
+      
+      terrainBuffer.beginShape();
+      for (let i = 0; i < 6; i++) {
+        let angle = PI / 3 * i + PI / 6; 
+        let xOffset = cos(angle) * hexSize;
+        let yOffset = sin(angle) * hexSize;
+        terrainBuffer.vertex(x + xOffset, y + yOffset);
+      }
+      terrainBuffer.endShape(CLOSE);
+    }
+  }
 }
 
 function updateTerrain() {
@@ -146,128 +284,88 @@ function updateTerrain() {
   treeCounts.clear();
   burningTiles.clear();
   recoveringTiles.clear();
+  growableTiles.clear();
   isGrowing = false;
+  cacheTerrain();
   redraw();
 }
 
 function draw() {
+  if (fpsDiv && frameCount % 10 === 0) fpsDiv.html('FPS: ' + floor(frameRate()));
+
+  let steps = simSpeedSlider.value();
+  
+  // Update params from sliders
+  simulationParams.growthRate = growthSlider.value();
+  simulationParams.fireBurnRate = fireBurnSlider.value();
+  simulationParams.fireSpreadChance = fireSpreadSlider.value();
+  simulationParams.recoveryRate = recoverySlider.value();
+
   if (isGrowing) {
-    growStep();
-    simulateFire();
+    for(let i=0; i<steps; i++) {
+        growStep();
+        simulateFire();
+    }
   }
 
-  background(20);
-  stroke(50, 50, 50, 15);
-  strokeWeight(1);
-
-  let hexWidth = Math.sqrt(3) * hexSize;
-  let hexHeight = 2 * hexSize;
+  image(terrainBuffer, 0, 0);
   
-  // Vertical distance between rows is 3/4 of the height
-  let ySpacing = hexHeight * 0.75;
-  // Horizontal distance is the full width
-  let xSpacing = hexWidth;
-
-  // Calculate how many rows and cols we need to fill the screen
-  // Add a buffer to ensure edges are covered
-  let rows = Math.ceil(height / ySpacing) + 1;
-  let cols = Math.ceil(width / xSpacing) + 1;
-
-  for (let r = -1; r < rows; r++) {
-    for (let c = -1; c < cols; c++) {
-      let x = c * xSpacing;
-      let y = r * ySpacing;
-      
-      // Offset every odd row
-      if (r % 2 !== 0) {
-        x += xSpacing / 2;
-      }
-      
-      // Use Perlin noise for color
-      let scale = scaleSlider.value();
-      let water = waterSlider.value();
-      let mount = mountainSlider.value();
-
-      let n = noise(x * scale, y * scale);
-      n = pow(n, mount);
-      n -= water;
-      n = constrain(n, 0, 1);
-      
-      let key = `${r},${c}`;
-      let isBurning = burningTiles.has(key);
-      let recovery = recoveringTiles.get(key);
-      
-      let tileColor;
-      
-      if (riverTiles.has(key)) {
-        tileColor = color("#C3E6FA");
-      } else {
-        // Map noise to palette index
-        let colorIndex = floor(map(n, 0, 1, palette.length, 0));
-        colorIndex = constrain(colorIndex, 0, palette.length - 1);
-        tileColor = color(palette[colorIndex]);
-      }
-
-      if (isBurning) {
-          fill(255, 100, 0); // Orange
-      } else if (recovery !== undefined) {
+  // Draw recovering tiles
+  for (let [key, progress] of recoveringTiles) {
+      let data = gridData.get(key);
+      if (data) {
           let darkGrey = color(50);
-          fill(lerpColor(darkGrey, tileColor, recovery));
-      } else {
-          fill(tileColor);
+          fill(lerpColor(darkGrey, data.color, progress));
+          stroke(50, 50, 50, 15);
+          strokeWeight(1);
+          drawHex(data.x, data.y, hexSize);
       }
+  }
 
-      // Simple distance check for mouse hover
-      let d = dist(mouseX, mouseY, x, y);
-      if (d < hexSize * 0.8) {
-        fill(255);
-      }
-      
-      drawHex(x, y, hexSize);
-
-      if (treeCounts.has(key)) {
-        let count = treeCounts.get(key);
-        push();
-        noStroke();
+  // Draw trees
+  noStroke();
+  
+  // Pass 1: Trunks
+  fill(101, 67, 33);
+  for (let [key, count] of treeCounts) {
+      let data = gridData.get(key);
+      if (data) {
         for (let i = 0; i < count; i++) {
-            let offset = getTreePos(r, c, i, hexSize);
-            let tx = x + offset.x;
-            let ty = y + offset.y;
-            
-            // Generate stable random values for this specific tree
-            let seed = (r * 997 + c * 97 + i * 7) * 123.45;
-            let rand1 = Math.abs((Math.sin(seed + 1) * 10000) % 1); // 0 to 1
-            let rand2 = Math.abs((Math.cos(seed + 2) * 10000) % 1); // 0 to 1
-            
-            // Size: Base 1.0, +/- 5%
-            let sizeMult = map(rand2, 0, 1, 0.95, 1.05);
-            let h = hexSize * 0.7 * sizeMult;
-            let w = hexSize * 0.2 * sizeMult;
-            
-            let trunkH = h * 0.2;
-            let trunkW = w * 0.6;
-
-            // Trunk
-            fill(101, 67, 33);
-            rect(tx - trunkW/2, ty - trunkH, trunkW, trunkH);
-
-            // Opacity: Base 150, +/- 5% (approx +/- 13)
-            let alpha = 150 + map(rand1, 0, 1, -13, 13);
-            fill(48, 91, 19, alpha);
-            
-            // Upright elongated larger triangle with randomness
-            triangle(tx, ty - h - trunkH, tx - w, ty - trunkH, tx + w, ty - trunkH);
+            let t = data.treeCache[i];
+            if (!t) continue;
+            rect(t.tx - t.trunkW/2, t.ty - t.trunkH, t.trunkW, t.trunkH);
         }
-        pop();
       }
-      
-      // Removed old burning overlay
-    }
+  }
+
+  // Pass 2: Leaves
+  fill(48, 91, 19, 150);
+  for (let [key, count] of treeCounts) {
+      let data = gridData.get(key);
+      if (data) {
+        for (let i = 0; i < count; i++) {
+            let t = data.treeCache[i];
+            if (!t) continue;
+            // fill(48, 91, 19, t.alpha); // Optimization: Use constant alpha
+            triangle(t.tx, t.ty - t.h - t.trunkH, t.tx - t.w, t.ty - t.trunkH, t.tx + t.w, t.ty - t.trunkH);
+        }
+      }
+  }
+
+  // Draw fire
+  for (let key of burningTiles) {
+      let data = gridData.get(key);
+      if (data) {
+        fill(255, 100, 0); // Orange
+        stroke(50, 50, 50, 15);
+        strokeWeight(1);
+        drawHex(data.x, data.y, hexSize);
+      }
   }
   
   // Keep looping if growing OR burning OR recovering
   if (!isGrowing && burningTiles.size === 0 && recoveringTiles.size === 0) {
-      noLoop();
+      // noLoop(); // Keep looping to show FPS
   }
   
   // Update and draw chart
@@ -341,6 +439,8 @@ function drawHex(x, y, size) {
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
+  cacheTerrain();
+  redraw();
 }
 
 function mousePressed() {
@@ -362,8 +462,8 @@ function mousePressed() {
       if (r % 2 !== 0) x += xSpacing / 2;
       
       if (dist(mouseX, mouseY, x, y) < hexSize * 0.8) {
-        generateRiver(r, c);
-        redraw();
+        // generateRiver(r, c);
+        // redraw();
         return;
       }
     }
@@ -456,6 +556,7 @@ function generateRiver(r, c) {
       for (let k of pathList) {
           riverTiles.add(k);
       }
+      cacheTerrain();
   }
 }
 
@@ -517,60 +618,61 @@ function growStep() {
   // Update recovery
   for (let [key, progress] of recoveringTiles) {
     if (progress < 1) {
-        recoveringTiles.set(key, progress + 0.005); 
+        recoveringTiles.set(key, progress + simulationParams.recoveryRate); 
     } else {
         recoveringTiles.delete(key);
+        // Ensure it's marked as growable when recovery ends
+        let data = gridData.get(key);
+        if (data && data.maxTrees > 0) {
+            growableTiles.add(key);
+        }
     }
   }
 
-  let hexWidth = Math.sqrt(3) * hexSize;
-  let hexHeight = 2 * hexSize;
-  let ySpacing = hexHeight * 0.75;
-  let xSpacing = hexWidth;
-  
-  let rows = Math.ceil(height / ySpacing) + 1;
-  let cols = Math.ceil(width / xSpacing) + 1;
-
   let changes = 0;
   let potentialGrowth = false;
+  let fullTiles = [];
 
-  for (let r = -1; r < rows; r++) {
-    for (let c = -1; c < cols; c++) {
-      let key = `${r},${c}`;
-      
+  for (let key of growableTiles) {
       // Don't grow if burning
       if (burningTiles.has(key)) continue;
       
       // Don't grow if recovering and not halfway done
       if (recoveringTiles.has(key) && recoveringTiles.get(key) < 0.5) continue;
 
-      let h = getHeight(r, c);
-      if (h === -1) continue; // River
+      let data = gridData.get(key);
+      if (!data) continue;
 
-      let colorIndex = floor(map(h, 0, 1, palette.length, 0));
-      colorIndex = constrain(colorIndex, 0, palette.length - 1);
-      
-      let maxTrees = 0;
-      if (colorIndex >= 7) {
-        maxTrees = 0; // Water
-      } else if (colorIndex === 6) {
-        maxTrees = 10; // Target green
-      } else if (colorIndex < 6) {
-        // Decline towards high mountains (index 0)
-        maxTrees = floor(map(colorIndex, 0, 6, 3, 10));
-      }
-      
+      let maxTrees = data.maxTrees;
       let current = treeCounts.get(key) || 0;
       
       if (current < maxTrees) {
           potentialGrowth = true;
-          // Growth probability
-          if (random() < treeGrowthRate) {
-              treeCounts.set(key, current + 1);
-              changes++;
+          
+          let amount = 0;
+          if (simulationParams.growthRate >= 1) {
+              amount = floor(simulationParams.growthRate);
+          } else {
+              if (random() < simulationParams.growthRate) amount = 1;
           }
+
+          if (amount > 0) {
+              let next = min(current + amount, maxTrees);
+              if (next > current) {
+                  treeCounts.set(key, next);
+                  changes++;
+                  if (next >= maxTrees) {
+                      fullTiles.push(key);
+                  }
+              }
+          }
+      } else {
+          fullTiles.push(key);
       }
-    }
+  }
+
+  for (let k of fullTiles) {
+      growableTiles.delete(k);
   }
   
   // Don't stop growing if fire is active or recovering
@@ -606,33 +708,43 @@ function simulateFire() {
   }
 
   // Fire Logic
-  let nextFire = new Set(burningTiles);
-  let heatMap = new Map(); // Counts burning neighbors for non-burning tiles
+  nextFire.clear();
+  for (let k of burningTiles) nextFire.add(k);
+  
+  heatMap.clear();
   
   for (let key of burningTiles) {
       let count = treeCounts.get(key) || 0;
       
       if (count > 0) {
           // Fire consumes trees
-          if (frameCount % 2 === 0) {
-              treeCounts.set(key, count - 1);
+          let burnAmount = 0;
+          if (simulationParams.fireBurnRate >= 1) {
+              burnAmount = floor(simulationParams.fireBurnRate);
+          } else {
+              if (random() < simulationParams.fireBurnRate) burnAmount = 1;
+          }
+          
+          if (burnAmount > 0) {
+              treeCounts.set(key, max(0, count - burnAmount));
+              growableTiles.add(key); // Space opened up
           }
           
           // Spread
-          let [r, c] = key.split(',').map(Number);
-          let neighbors = getNeighbors(r, c);
-          for (let n of neighbors) {
-              let nKey = `${n.r},${n.c}`;
-              if (!burningTiles.has(nKey)) {
-                  // Track heat from neighbors
-                  heatMap.set(nKey, (heatMap.get(nKey) || 0) + 1);
-
-                  let nCount = treeCounts.get(nKey) || 0;
-                  if (nCount > 4) {
-                      // Spread chance
-                      if (random() < 0.3) {
-                          nextFire.add(nKey);
-                          recoveringTiles.delete(nKey); // Stop recovery
+          let data = gridData.get(key);
+          if (data && data.neighbors) {
+              for (let nKey of data.neighbors) {
+                  if (!burningTiles.has(nKey)) {
+                      // Track heat from neighbors
+                      heatMap.set(nKey, (heatMap.get(nKey) || 0) + 1);
+    
+                      let nCount = treeCounts.get(nKey) || 0;
+                      if (nCount > 4) {
+                          // Spread chance
+                          if (random() < simulationParams.fireSpreadChance) {
+                              nextFire.add(nKey);
+                              recoveringTiles.delete(nKey); // Stop recovery
+                          }
                       }
                   }
               }
@@ -655,7 +767,9 @@ function simulateFire() {
       }
   }
 
+  let temp = burningTiles;
   burningTiles = nextFire;
+  nextFire = temp;
 }
 
 function getTreePos(r, c, i, size) {
