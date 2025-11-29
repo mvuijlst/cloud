@@ -184,6 +184,11 @@ function mousePressed() {
   }
 }
 
+function touchStarted() {
+  mousePressed();
+  return false;
+}
+
 function isPathSafe(path, startSnake) {
   let virtualSnake = [...startSnake];
   
