@@ -37,6 +37,33 @@ let food = null;
 let dummyTarget = null;
 let lastDummyChange = 0;
 let eatSounds = [];
+let explosionSound;
+let isGameOver = false;
+let gameOverTime = 0;
+let gameStartTime = 0;
+
+let autoFoodEnabled = false;
+let nextFoodTime = 0;
+const buttonPatterns = {
+  off: [
+    1,1,0,0,0,1,1,
+    1,0,0,1,0,0,1,
+    1,0,1,1,1,0,1,
+    1,0,0,1,0,0,1,
+    1,1,0,0,0,1,1
+  ],
+  on: [
+    1,1,0,0,0,1,1,
+    1,0,0,0,0,0,1,
+    1,0,1,1,1,0,1,
+    1,0,0,0,0,0,1,
+    1,1,0,0,0,1,1
+  ]
+};
+const buttonX = 76;
+const buttonY = 0;
+const buttonW = 7;
+const buttonH = 5;
 
 const snakePatterns = {
   bodyH: [0,0,0,0, 1,1,1,1, 1,1,1,1, 0,0,0,0],
@@ -72,6 +99,7 @@ function preload() {
   eatSounds.push(loadSound('sound/106392__j1987__carrotnom.wav'));
   eatSounds.push(loadSound('sound/348112__lilmati__crunch.wav'));
   eatSounds.push(loadSound('sound/682095__henkonen__bite-2.wav'));
+  explosionSound = loadSound('sound/explosion.wav');
 }
 
 function setup() {
@@ -94,10 +122,19 @@ function initGame() {
   food = null;
   dummyTarget = null;
   lastDummyChange = millis();
+  isGameOver = false;
+  gameStartTime = millis();
+  nextFoodTime = millis() + random(5000, 20000);
 }
 
 function draw() {
-  updateGame();
+  if (isGameOver) {
+    if (millis() - gameOverTime > 2000) {
+      initGame();
+    }
+  } else {
+    updateGame();
+  }
   
   clearGrid();
   drawScore();
@@ -111,6 +148,14 @@ function mousePressed() {
   let vx = floor(mouseX / pixelWidth);
   let vy = floor(mouseY / pixelHeight);
   
+  if (vx >= buttonX && vx < buttonX + buttonW && vy >= buttonY && vy < buttonY + buttonH) {
+    autoFoodEnabled = !autoFoodEnabled;
+    if (autoFoodEnabled) {
+      nextFoodTime = millis() + random(5000, 20000);
+    }
+    return;
+  }
+  
   let gx = floor((vx - gameOffsetX) / tileWidth);
   let gy = floor((vy - gameOffsetY) / tileHeight);
   
@@ -123,8 +168,11 @@ function mousePressed() {
         break;
       }
     }
+    
     if (!onSnake) {
       food = {x: gx, y: gy};
+      dummyTarget = null;
+      nextFoodTime = millis() + random(5000, 20000);
     }
   }
 }
@@ -132,6 +180,16 @@ function mousePressed() {
 function updateGame() {
   let head = snake[0];
   let nextMove = null;
+  
+  if (autoFoodEnabled && !food && millis() > nextFoodTime) {
+    let newFood = getRandomReachableTile();
+    if (newFood) {
+      food = newFood;
+      dummyTarget = null;
+      nextFoodTime = millis() + random(5000, 20000);
+    }
+  }
+
   let target = food;
 
   if (!target) {
@@ -142,17 +200,17 @@ function updateGame() {
     target = dummyTarget;
   }
   
-  if (!target) return;
-
   // 1. Try to find path to target
-  let pathToTarget = findPath(head, target, snake);
-  
-  if (pathToTarget && pathToTarget.length > 0) {
-    // Check if the first move towards target is safe
-    // (i.e., we can reach our tail after taking it)
-    let testMove = pathToTarget[0];
-    if (isSafe(testMove)) {
-      nextMove = testMove;
+  if (target) {
+    let pathToTarget = findPath(head, target, snake);
+    
+    if (pathToTarget && pathToTarget.length > 0) {
+      // Check if the first move towards target is safe
+      // (i.e., we can reach our tail after taking it)
+      let testMove = pathToTarget[0];
+      if (isSafe(testMove)) {
+        nextMove = testMove;
+      }
     }
   }
 
@@ -168,15 +226,21 @@ function updateGame() {
   // 3. If still no move, pick the valid neighbor with the most free space
   if (!nextMove) {
     let neighbors = getNeighbors(head);
+    let validNeighbors = neighbors.filter(n => isValidMove(n, snake));
+    
+    // Prioritize safe moves (moves that allow reaching the tail)
+    let safeMoves = validNeighbors.filter(n => isSafe(n));
+    
+    // If we have safe moves, only consider those. Otherwise, consider all valid moves (desperation).
+    let candidates = safeMoves.length > 0 ? safeMoves : validNeighbors;
+    
     let maxSpace = -1;
     
-    for (let n of neighbors) {
-      if (isValidMove(n, snake)) {
-        let space = countReachable(n, snake);
-        if (space > maxSpace) {
-          maxSpace = space;
-          nextMove = n;
-        }
+    for (let n of candidates) {
+      let space = countReachable(n, snake);
+      if (space > maxSpace) {
+        maxSpace = space;
+        nextMove = n;
       }
     }
   }
@@ -198,6 +262,11 @@ function updateGame() {
           dummyTarget = null;
       }
     }
+  } else {
+    // No valid moves - Game Over
+    isGameOver = true;
+    gameOverTime = millis();
+    explosionSound.play();
   }
 }
 
@@ -435,6 +504,16 @@ function drawUI() {
     setPixel(0, y, true);
     setPixel(cols - 1, y, true);
   }
+
+  // Draw button
+  let pattern = autoFoodEnabled ? buttonPatterns.on : buttonPatterns.off;
+  for (let i = 0; i < 35; i++) {
+    if (pattern[i] === 1) {
+      let px = i % 7;
+      let py = floor(i / 7);
+      setPixel(buttonX + px, buttonY + py, true);
+    }
+  }
 }
 
 function drawScore() {
@@ -448,21 +527,41 @@ function drawScore() {
 }
 
 function drawTime() {
-  let h = nf(hour(), 2);
-  let m = nf(minute(), 2);
-  let s = nf(second(), 2);
+  let currentTime = isGameOver ? gameOverTime : millis();
+  let elapsed = currentTime - gameStartTime;
+  let totalSeconds = floor(elapsed / 1000);
+  let h = floor(totalSeconds / 3600);
+  let m = floor((totalSeconds % 3600) / 60);
+  let s = totalSeconds % 60;
+
+  let hStr = nf(h, 2);
+  let mStr = nf(m, 2);
+  let sStr = nf(s, 2);
   
-  // HH:MM:SS is 8 chars. 8 * 4 - 1 = 31px width.
-  let startX = cols - 32; // 31px width + 1px padding
-  
-  drawDigit(startX, 0, parseInt(h.charAt(0)));
-  drawDigit(startX + 4, 0, parseInt(h.charAt(1)));
-  drawDigit(startX + 8, 0, 10); // Colon
-  drawDigit(startX + 12, 0, parseInt(m.charAt(0)));
-  drawDigit(startX + 16, 0, parseInt(m.charAt(1)));
-  drawDigit(startX + 20, 0, 10); // Colon
-  drawDigit(startX + 24, 0, parseInt(s.charAt(0)));
-  drawDigit(startX + 28, 0, parseInt(s.charAt(1)));
+  let timeOffset = 10;
+
+  if (h > 0) {
+    let startX = cols - 32 - timeOffset;
+    drawDigit(startX, 0, parseInt(hStr.charAt(0)));
+    drawDigit(startX + 4, 0, parseInt(hStr.charAt(1)));
+    drawDigit(startX + 8, 0, 10); // Colon
+    drawDigit(startX + 12, 0, parseInt(mStr.charAt(0)));
+    drawDigit(startX + 16, 0, parseInt(mStr.charAt(1)));
+    drawDigit(startX + 20, 0, 10); // Colon
+    drawDigit(startX + 24, 0, parseInt(sStr.charAt(0)));
+    drawDigit(startX + 28, 0, parseInt(sStr.charAt(1)));
+  } else if (m > 0) {
+    let startX = cols - 20 - timeOffset;
+    drawDigit(startX, 0, parseInt(mStr.charAt(0)));
+    drawDigit(startX + 4, 0, parseInt(mStr.charAt(1)));
+    drawDigit(startX + 8, 0, 10); // Colon
+    drawDigit(startX + 12, 0, parseInt(sStr.charAt(0)));
+    drawDigit(startX + 16, 0, parseInt(sStr.charAt(1)));
+  } else {
+    let startX = cols - 8 - timeOffset;
+    drawDigit(startX, 0, parseInt(sStr.charAt(0)));
+    drawDigit(startX + 4, 0, parseInt(sStr.charAt(1)));
+  }
 }
 
 function drawDigit(x, y, d) {
