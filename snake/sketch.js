@@ -49,11 +49,25 @@ const buttonPatterns = {
   off: [
     1,1,0,0,0,1,1,
     1,0,0,1,0,0,1,
-    1,0,1,1,1,0,1,
+    1,0,1,0,1,0,1,
     1,0,0,1,0,0,1,
     1,1,0,0,0,1,1
   ],
   on: [
+    1,1,0,0,0,1,1,
+    1,0,0,0,0,0,1,
+    1,0,0,1,0,0,1,
+    1,0,0,0,0,0,1,
+    1,1,0,0,0,1,1
+  ],
+  small: [
+    1,1,0,0,0,1,1,
+    1,0,0,1,0,0,1,
+    1,0,1,1,1,0,1,
+    1,0,0,1,0,0,1,
+    1,1,0,0,0,1,1
+  ],
+  large: [
     1,1,0,0,0,1,1,
     1,0,0,0,0,0,1,
     1,0,1,1,1,0,1,
@@ -104,7 +118,8 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(cols * pixelWidth, rows * pixelHeight);
+  let cnv = createCanvas(cols * pixelWidth, rows * pixelHeight);
+  cnv.parent('game-container');
   noStroke();
   frameRate(10);
 
