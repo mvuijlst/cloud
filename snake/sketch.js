@@ -121,25 +121,33 @@ function preload() {
 }
 
 function calculateLayout() {
+  // Calculate available space inside the container
+  // Container is max 90vw/90vh with padding 30px 20px 20px 20px
+  // Horizontal padding: 20+20 = 40px
+  // Vertical padding: 30+20 = 50px
+  
+  let availableWidth = (window.innerWidth * 0.9) - 40;
+  let availableHeight = (window.innerHeight * 0.9) - 50;
+  
+  // Safety clamp
+  if (availableWidth < 100) availableWidth = 100;
+  if (availableHeight < 100) availableHeight = 100;
+
   if (isLargeMode) {
-    // Calculate max tilesY that fits in window
-    // Available height for canvas in pixels
-    // We have 50px vertical padding from CSS (30 top + 20 bottom)
-    let availableHeight = window.innerHeight - 60; // Safety margin
-    let availableWidth = window.innerWidth - 40; // Side padding
-    
+    const nativeWidth = cols * pixelWidth;
     let scale = 1;
-    let canvasWidth = cols * pixelWidth; // 588
     
-    if (availableWidth < canvasWidth) {
-      scale = availableWidth / canvasWidth;
+    // If the game is wider than the screen, it will be scaled down by CSS.
+    // We need to account for this scale when calculating how many rows fit vertically.
+    if (availableWidth < nativeWidth) {
+      scale = availableWidth / nativeWidth;
     }
 
-    // If scaled down, we can fit more rows in the same screen height
-    // visualHeight = rows * pixelHeight * scale
-    // visualHeight <= availableHeight
-    // rows <= availableHeight / (pixelHeight * scale)
-    let maxGridRows = floor(availableHeight / (pixelHeight * scale));
+    // Calculate max native pixels that fit in the available height
+    // If scale is 0.5, we can fit twice as many native pixels
+    let maxNativeHeight = availableHeight / scale;
+    
+    let maxGridRows = floor(maxNativeHeight / pixelHeight);
     
     // Calculate max game tiles
     // rows = gameOffsetY + (tilesY * tileHeight) + 2
@@ -781,6 +789,23 @@ function drawScreen() {
         fill(inactiveColor);
         rect(x, y, w, h);
       }
+    }
+  }
+}
+
+function windowResized() {
+  calculateLayout();
+  resizeCanvas(cols * pixelWidth, rows * pixelHeight);
+  if (isLargeMode) {
+    // In large mode, resizing might change the grid size significantly.
+    // To prevent the snake from being out of bounds, we should probably reset if the grid shrinks.
+    // But for a smooth experience, we'll try to keep it running.
+    // If the snake is out of bounds, the game loop will handle it (or it might crash).
+    // Let's check if the snake is out of bounds and reset if so.
+    let maxY = tilesY;
+    let outOfBounds = snake.some(s => s.y >= maxY);
+    if (outOfBounds) {
+      initGame();
     }
   }
 }
