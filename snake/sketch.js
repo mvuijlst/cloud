@@ -1,5 +1,5 @@
 const cols = 84;
-const rows = 48;
+let rows = 48;
 const pixelWidth = 7;
 const pixelHeight = 9;
 const spacing = 1;
@@ -8,6 +8,9 @@ let grid = [];
 let activeColor;
 let inactiveColor;
 let shadowColor;
+
+let isLargeMode = false;
+const sizeButtonX = 66;
 
 let score = 0;
 const digitPatterns = [
@@ -30,7 +33,7 @@ const gameOffsetY = 10;
 const tileWidth = 4;
 const tileHeight = 4;
 const tilesX = 20;
-const tilesY = 9;
+let tilesY = 9;
 
 let snake = [];
 let food = null;
@@ -117,7 +120,53 @@ function preload() {
   explosionSound = loadSound('sound/explosion.wav');
 }
 
+function calculateLayout() {
+  if (isLargeMode) {
+    // Calculate max tilesY that fits in window
+    // Available height for canvas in pixels
+    // We have 50px vertical padding from CSS (30 top + 20 bottom)
+    let availableHeight = window.innerHeight - 60; // Safety margin
+    let availableWidth = window.innerWidth - 40; // Side padding
+    
+    let scale = 1;
+    let canvasWidth = cols * pixelWidth; // 588
+    
+    if (availableWidth < canvasWidth) {
+      scale = availableWidth / canvasWidth;
+    }
+
+    // If scaled down, we can fit more rows in the same screen height
+    // visualHeight = rows * pixelHeight * scale
+    // visualHeight <= availableHeight
+    // rows <= availableHeight / (pixelHeight * scale)
+    let maxGridRows = floor(availableHeight / (pixelHeight * scale));
+    
+    // Calculate max game tiles
+    // rows = gameOffsetY + (tilesY * tileHeight) + 2
+    // tilesY = (rows - gameOffsetY - 2) / tileHeight
+    let possibleTilesY = floor((maxGridRows - gameOffsetY - 2) / tileHeight);
+    tilesY = max(9, possibleTilesY); // At least 9
+  } else {
+    tilesY = 9;
+  }
+  
+  rows = gameOffsetY + (tilesY * tileHeight) + 2;
+}
+
+function toggleSize() {
+  isLargeMode = !isLargeMode;
+  localStorage.setItem('snake_isLargeMode', isLargeMode);
+  calculateLayout();
+  resizeCanvas(cols * pixelWidth, rows * pixelHeight);
+  clearGrid();
+  initGame();
+}
+
 function setup() {
+  if (localStorage.getItem('snake_isLargeMode') === 'true') {
+    isLargeMode = true;
+  }
+  calculateLayout();
   let cnv = createCanvas(cols * pixelWidth, rows * pixelHeight);
   cnv.parent('game-container');
   noStroke();
@@ -174,6 +223,11 @@ function mousePressed() {
     if (autoFoodEnabled) {
       setNextFoodTime();
     }
+    return;
+  }
+
+  if (vx >= sizeButtonX && vx < sizeButtonX + buttonW && vy >= buttonY && vy < buttonY + buttonH) {
+    toggleSize();
     return;
   }
   
@@ -617,6 +671,16 @@ function drawUI() {
       setPixel(buttonX + px, buttonY + py, true);
     }
   }
+
+  // Draw size button
+  let sizePattern = isLargeMode ? buttonPatterns.large : buttonPatterns.small;
+  for (let i = 0; i < 35; i++) {
+    if (sizePattern[i] === 1) {
+      let px = i % 7;
+      let py = floor(i / 7);
+      setPixel(sizeButtonX + px, buttonY + py, true);
+    }
+  }
 }
 
 function drawScore() {
@@ -641,10 +705,11 @@ function drawTime() {
   let mStr = nf(m, 2);
   let sStr = nf(s, 2);
   
-  let timeOffset = 10;
+  // Align to the left of the size button with 2px padding
+  let endX = sizeButtonX - 2;
 
   if (h > 0) {
-    let startX = cols - 32 - timeOffset;
+    let startX = endX - 32;
     drawDigit(startX, 0, parseInt(hStr.charAt(0)));
     drawDigit(startX + 4, 0, parseInt(hStr.charAt(1)));
     drawDigit(startX + 8, 0, 10); // Colon
@@ -654,14 +719,14 @@ function drawTime() {
     drawDigit(startX + 24, 0, parseInt(sStr.charAt(0)));
     drawDigit(startX + 28, 0, parseInt(sStr.charAt(1)));
   } else if (m > 0) {
-    let startX = cols - 20 - timeOffset;
+    let startX = endX - 20;
     drawDigit(startX, 0, parseInt(mStr.charAt(0)));
     drawDigit(startX + 4, 0, parseInt(mStr.charAt(1)));
     drawDigit(startX + 8, 0, 10); // Colon
     drawDigit(startX + 12, 0, parseInt(sStr.charAt(0)));
     drawDigit(startX + 16, 0, parseInt(sStr.charAt(1)));
   } else {
-    let startX = cols - 8 - timeOffset;
+    let startX = endX - 8;
     drawDigit(startX, 0, parseInt(sStr.charAt(0)));
     drawDigit(startX + 4, 0, parseInt(sStr.charAt(1)));
   }
