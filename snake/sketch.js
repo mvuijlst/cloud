@@ -41,6 +41,7 @@ let explosionSound;
 let isGameOver = false;
 let gameOverTime = 0;
 let gameStartTime = 0;
+let foodSpawnTime = 0;
 
 let autoFoodEnabled = false;
 let nextFoodTime = 0;
@@ -124,12 +125,17 @@ function initGame() {
   lastDummyChange = millis();
   isGameOver = false;
   gameStartTime = millis();
-  nextFoodTime = millis() + random(5000, 20000);
+  foodSpawnTime = 0;
+  setNextFoodTime();
+}
+
+function setNextFoodTime() {
+  nextFoodTime = millis() + random(1000, 1100);
 }
 
 function draw() {
   if (isGameOver) {
-    if (millis() - gameOverTime > 2000) {
+    if (millis() - gameOverTime > 36000) {
       initGame();
     }
   } else {
@@ -151,7 +157,7 @@ function mousePressed() {
   if (vx >= buttonX && vx < buttonX + buttonW && vy >= buttonY && vy < buttonY + buttonH) {
     autoFoodEnabled = !autoFoodEnabled;
     if (autoFoodEnabled) {
-      nextFoodTime = millis() + random(5000, 20000);
+      setNextFoodTime();
     }
     return;
   }
@@ -171,23 +177,101 @@ function mousePressed() {
     
     if (!onSnake) {
       food = {x: gx, y: gy};
+      foodSpawnTime = millis();
       dummyTarget = null;
-      nextFoodTime = millis() + random(5000, 20000);
+      setNextFoodTime();
     }
   }
 }
 
+function isPathSafe(path, startSnake) {
+  let virtualSnake = [...startSnake];
+  
+  for (let i = 0; i < path.length; i++) {
+    let nextPos = path[i];
+    virtualSnake.unshift(nextPos);
+    
+    if (food && nextPos.x === food.x && nextPos.y === food.y) {
+       // Grow
+    } else {
+       virtualSnake.pop();
+    }
+  }
+  
+  let vHead = virtualSnake[0];
+  let vTail = virtualSnake[virtualSnake.length - 1];
+  
+  return findPath(vHead, vTail, virtualSnake) !== null;
+}
+
+function evaluateMove(move, currentSnake, target) {
+  // Simulate one step
+  let virtualSnake = [...currentSnake];
+  virtualSnake.unshift(move);
+  
+  if (food && move.x === food.x && move.y === food.y) {
+    // Ate food, so we don't pop (grow)
+  } else {
+    virtualSnake.pop();
+  }
+
+  let newHead = virtualSnake[0];
+  let newTail = virtualSnake[virtualSnake.length - 1];
+
+  // 1. Connectivity to tail
+  // Check if path exists from newHead to newTail
+  let pathToTail = findPath(newHead, newTail, virtualSnake);
+  let isSafeToTail = (pathToTail !== null);
+
+  // 2. Reachability and distance to food
+  let foodReachable = false;
+  let distToFood = Infinity;
+  if (target) {
+      let pathToFood = findPath(newHead, target, virtualSnake);
+      if (pathToFood !== null) {
+          if (isPathSafe(pathToFood, virtualSnake)) {
+            foodReachable = true;
+            distToFood = pathToFood.length;
+          }
+      }
+  }
+
+  // 3. Free-space heuristic
+  let reachableArea = countReachable(newHead, virtualSnake);
+
+  return {
+    move: move,
+    isSafeToTail: isSafeToTail,
+    foodReachable: foodReachable,
+    distToFood: distToFood,
+    reachableArea: reachableArea
+  };
+}
+
 function updateGame() {
   let head = snake[0];
-  let nextMove = null;
+  
+  // Determine current direction
+  let currentDir = null;
+  if (snake.length > 1) {
+    currentDir = { x: head.x - snake[1].x, y: head.y - snake[1].y };
+  }
   
   if (autoFoodEnabled && !food && millis() > nextFoodTime) {
     let newFood = getRandomReachableTile();
     if (newFood) {
       food = newFood;
+      foodSpawnTime = millis();
       dummyTarget = null;
-      nextFoodTime = millis() + random(5000, 20000);
+      setNextFoodTime();
     }
+  }
+
+  if (food && millis() - foodSpawnTime > 20000) {
+    isGameOver = true;
+    gameOverTime = millis();
+    explosionSound.play();
+    return;
   }
 
   let target = food;
@@ -200,65 +284,86 @@ function updateGame() {
     target = dummyTarget;
   }
   
-  // 1. Try to find path to target
-  if (target) {
-    let pathToTarget = findPath(head, target, snake);
-    
-    if (pathToTarget && pathToTarget.length > 0) {
-      // Check if the first move towards target is safe
-      // (i.e., we can reach our tail after taking it)
-      let testMove = pathToTarget[0];
-      if (isSafe(testMove)) {
-        nextMove = testMove;
+  let neighbors = getNeighbors(head);
+  let candidates = [];
+
+  for (let move of neighbors) {
+    if (isValidMove(move, snake)) {
+      let evaluation = evaluateMove(move, snake, target);
+      candidates.push(evaluation);
+    }
+  }
+
+  let bestMove = null;
+
+  // Sort function helper
+  const sortMoves = (moves, criteria) => {
+    moves.sort((a, b) => {
+      // Primary criteria
+      if (criteria === 'p1') {
+        // Minimize distToFood
+        if (a.distToFood !== b.distToFood) return a.distToFood - b.distToFood;
+      } else if (criteria === 'p2') {
+        // Maximize reachableArea
+        if (a.reachableArea !== b.reachableArea) return b.reachableArea - a.reachableArea;
+        // Secondary: minimize distToFood
+        if (a.distToFood !== b.distToFood) return a.distToFood - b.distToFood;
+      } else if (criteria === 'p3') {
+        // Maximize reachableArea
+        if (a.reachableArea !== b.reachableArea) return b.reachableArea - a.reachableArea;
       }
-    }
-  }
 
-  // 2. If no safe path to target, try to follow tail to survive
-  if (!nextMove) {
-    let tail = snake[snake.length - 1];
-    let pathToTail = findPath(head, tail, snake);
-    if (pathToTail && pathToTail.length > 0) {
-      nextMove = pathToTail[0];
-    }
-  }
-
-  // 3. If still no move, pick the valid neighbor with the most free space
-  if (!nextMove) {
-    let neighbors = getNeighbors(head);
-    let validNeighbors = neighbors.filter(n => isValidMove(n, snake));
-    
-    // Prioritize safe moves (moves that allow reaching the tail)
-    let safeMoves = validNeighbors.filter(n => isSafe(n));
-    
-    // If we have safe moves, only consider those. Otherwise, consider all valid moves (desperation).
-    let candidates = safeMoves.length > 0 ? safeMoves : validNeighbors;
-    
-    let maxSpace = -1;
-    
-    for (let n of candidates) {
-      let space = countReachable(n, snake);
-      if (space > maxSpace) {
-        maxSpace = space;
-        nextMove = n;
+      // Tie-breaking: Prefer current direction
+      if (currentDir) {
+        let dirA = { x: a.move.x - head.x, y: a.move.y - head.y };
+        let dirB = { x: b.move.x - head.x, y: b.move.y - head.y };
+        let sameDirA = (dirA.x === currentDir.x && dirA.y === currentDir.y);
+        let sameDirB = (dirB.x === currentDir.x && dirB.y === currentDir.y);
+        if (sameDirA && !sameDirB) return -1;
+        if (!sameDirA && sameDirB) return 1;
       }
+      
+      return 0;
+    });
+  };
+
+  // Priority 1: Safe to tail && Food reachable. Minimize dist to food.
+  let p1Moves = candidates.filter(c => c.isSafeToTail && c.foodReachable);
+  if (p1Moves.length > 0) {
+    sortMoves(p1Moves, 'p1');
+    bestMove = p1Moves[0].move;
+  }
+
+  // Priority 2: Safe to tail. Maximize reachable area.
+  if (!bestMove) {
+    let p2Moves = candidates.filter(c => c.isSafeToTail);
+    if (p2Moves.length > 0) {
+      sortMoves(p2Moves, 'p2');
+      bestMove = p2Moves[0].move;
     }
   }
 
-  if (nextMove) {
+  // Priority 3: Maximize reachable area.
+  if (!bestMove && candidates.length > 0) {
+    sortMoves(candidates, 'p3');
+    bestMove = candidates[0].move;
+  }
+
+  if (bestMove) {
     // Move snake
-    snake.unshift(nextMove);
+    snake.unshift(bestMove);
     
     // Check if ate food
-    if (food && nextMove.x === food.x && nextMove.y === food.y) {
+    if (food && bestMove.x === food.x && bestMove.y === food.y) {
       score++;
       food = null;
       dummyTarget = null;
       random(eatSounds).play();
+      setNextFoodTime();
     } else {
       snake.pop();
       // Check if reached dummy target
-      if (dummyTarget && nextMove.x === dummyTarget.x && nextMove.y === dummyTarget.y) {
+      if (dummyTarget && bestMove.x === dummyTarget.x && bestMove.y === dummyTarget.y) {
           dummyTarget = null;
       }
     }
@@ -268,28 +373,6 @@ function updateGame() {
     gameOverTime = millis();
     explosionSound.play();
   }
-}
-
-function isSafe(nextPos) {
-  // Simulate the move
-  let virtualSnake = [...snake];
-  virtualSnake.unshift(nextPos);
-  
-  // If we eat food, we don't pop (grow)
-  // If we don't eat, we pop (move)
-  if (food && nextPos.x === food.x && nextPos.y === food.y) {
-    // Grow: tail stays same
-  } else {
-    // Move: tail moves
-    virtualSnake.pop();
-  }
-  
-  let virtualHead = virtualSnake[0];
-  let virtualTail = virtualSnake[virtualSnake.length - 1];
-  
-  // Check if path to tail exists
-  let path = findPath(virtualHead, virtualTail, virtualSnake);
-  return (path !== null);
 }
 
 function getRandomReachableTile() {
