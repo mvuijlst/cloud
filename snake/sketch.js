@@ -120,9 +120,9 @@ function preload() {
   explosionSound = loadSound('sound/explosion.wav');
 }
 
-function calculateLayout() {
+function calculateGrid() {
   // Calculate available space inside the container
-  // Container is max 90vw/90vh with padding 30px 20px 20px 20px
+  // We want to target 90% of the viewport, minus padding
   // Horizontal padding: 20+20 = 40px
   // Vertical padding: 30+20 = 50px
   
@@ -134,24 +134,23 @@ function calculateLayout() {
   if (availableHeight < 100) availableHeight = 100;
 
   if (isLargeMode) {
-    const nativeWidth = cols * pixelWidth;
-    let scale = 1;
+    // In Large Mode, we want to fill the available height with as many tiles as possible
+    // while maintaining the width constraint.
     
-    // If the game is wider than the screen, it will be scaled down by CSS.
-    // We need to account for this scale when calculating how many rows fit vertically.
-    if (availableWidth < nativeWidth) {
-      scale = availableWidth / nativeWidth;
-    }
-
-    // Calculate max native pixels that fit in the available height
-    // If scale is 0.5, we can fit twice as many native pixels
+    // 1. Calculate the scale if we were to fit the width exactly
+    // nativeWidth = cols * pixelWidth
+    // scale = availableWidth / nativeWidth
+    let scale = availableWidth / (cols * pixelWidth);
+    
+    // 2. Calculate how many native pixels height fits in availableHeight at this scale
+    // availableHeight = nativeHeight * scale
+    // nativeHeight = availableHeight / scale
     let maxNativeHeight = availableHeight / scale;
     
+    // 3. Convert to rows
     let maxGridRows = floor(maxNativeHeight / pixelHeight);
     
-    // Calculate max game tiles
-    // rows = gameOffsetY + (tilesY * tileHeight) + 2
-    // tilesY = (rows - gameOffsetY - 2) / tileHeight
+    // 4. Calculate tilesY
     let possibleTilesY = floor((maxGridRows - gameOffsetY - 2) / tileHeight);
     tilesY = max(9, possibleTilesY); // At least 9
   } else {
@@ -161,11 +160,36 @@ function calculateLayout() {
   rows = gameOffsetY + (tilesY * tileHeight) + 2;
 }
 
+function styleCanvas() {
+  let availableWidth = (window.innerWidth * 0.9) - 40;
+  let availableHeight = (window.innerHeight * 0.9) - 50;
+  
+  if (availableWidth < 100) availableWidth = 100;
+  if (availableHeight < 100) availableHeight = 100;
+
+  let nativeW = cols * pixelWidth;
+  let nativeH = rows * pixelHeight;
+  
+  // Fit nativeW/nativeH into availableWidth/availableHeight (Contain)
+  let scale = Math.min(availableWidth / nativeW, availableHeight / nativeH);
+  
+  let cssW = floor(nativeW * scale);
+  let cssH = floor(nativeH * scale);
+  
+  // Apply to canvas element
+  let cnv = select('canvas');
+  if (cnv) {
+    cnv.style('width', cssW + 'px');
+    cnv.style('height', cssH + 'px');
+  }
+}
+
 function toggleSize() {
   isLargeMode = !isLargeMode;
   localStorage.setItem('snake_isLargeMode', isLargeMode);
-  calculateLayout();
+  calculateGrid();
   resizeCanvas(cols * pixelWidth, rows * pixelHeight);
+  styleCanvas();
   clearGrid();
   initGame();
 }
@@ -174,9 +198,10 @@ function setup() {
   if (localStorage.getItem('snake_isLargeMode') === 'true') {
     isLargeMode = true;
   }
-  calculateLayout();
+  calculateGrid();
   let cnv = createCanvas(cols * pixelWidth, rows * pixelHeight);
   cnv.parent('game-container');
+  styleCanvas();
   noStroke();
   frameRate(10);
 
@@ -794,8 +819,9 @@ function drawScreen() {
 }
 
 function windowResized() {
-  calculateLayout();
+  calculateGrid();
   resizeCanvas(cols * pixelWidth, rows * pixelHeight);
+  styleCanvas();
   if (isLargeMode) {
     // In large mode, resizing might change the grid size significantly.
     // To prevent the snake from being out of bounds, we should probably reset if the grid shrinks.

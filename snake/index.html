@@ -32,9 +32,7 @@
         canvas {
             filter: blur(0.8px);
             display: block;
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
+            /* Size will be set by JS */
         }
 
         #game-container {
@@ -46,12 +44,10 @@
             border-bottom-right-radius: 20px;
             border-bottom-left-radius: 20px;
             box-sizing: border-box;
-            max-width: 90vw;
-            max-height: 90vh;
+            /* We let JS handle the sizing constraints to ensure aspect ratio matches */
             display: flex;
             justify-content: center;
             align-items: center;
-            /* Ensure the container doesn't force a size larger than viewport */
             overflow: hidden; 
         }
     </style>
