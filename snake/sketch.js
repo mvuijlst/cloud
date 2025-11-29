@@ -232,7 +232,7 @@ function setNextFoodTime() {
 
 function draw() {
   if (isGameOver) {
-    if (millis() - gameOverTime > 36000) {
+    if (millis() - gameOverTime > 3000) {
       initGame();
     }
   } else {
@@ -456,29 +456,53 @@ function updateGame() {
     bestMove = candidates[0].move;
   }
 
-  if (bestMove) {
-    // Move snake
-    snake.unshift(bestMove);
-    
-    // Check if ate food
-    if (food && bestMove.x === food.x && bestMove.y === food.y) {
-      score++;
-      food = null;
-      dummyTarget = null;
-      random(eatSounds).play();
-      setNextFoodTime();
+  if (!bestMove) {
+    // Force a move to simulate crash
+    if (currentDir) {
+      bestMove = {x: head.x + currentDir.x, y: head.y + currentDir.y};
     } else {
-      snake.pop();
-      // Check if reached dummy target
-      if (dummyTarget && bestMove.x === dummyTarget.x && bestMove.y === dummyTarget.y) {
-          dummyTarget = null;
+      bestMove = neighbors[0];
+    }
+  }
+
+  // Move snake
+  snake.unshift(bestMove);
+  
+  // Check for crash
+  let crashed = false;
+  if (bestMove.x < 0 || bestMove.x >= tilesX || bestMove.y < 0 || bestMove.y >= tilesY) {
+    crashed = true;
+  } else {
+    // Check collision with body (excluding tail, as it would move away if we didn't crash)
+    // But since we are here because no valid moves existed, we know we aren't moving into the tail.
+    for (let i = 1; i < snake.length - 1; i++) {
+      if (bestMove.x === snake[i].x && bestMove.y === snake[i].y) {
+        crashed = true;
+        break;
       }
     }
-  } else {
-    // No valid moves - Game Over
+  }
+
+  if (crashed) {
     isGameOver = true;
     gameOverTime = millis();
     explosionSound.play();
+    return;
+  }
+    
+  // Check if ate food
+  if (food && bestMove.x === food.x && bestMove.y === food.y) {
+    score++;
+    food = null;
+    dummyTarget = null;
+    random(eatSounds).play();
+    setNextFoodTime();
+  } else {
+    snake.pop();
+    // Check if reached dummy target
+    if (dummyTarget && bestMove.x === dummyTarget.x && bestMove.y === dummyTarget.y) {
+        dummyTarget = null;
+    }
   }
 }
 
