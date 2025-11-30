@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#000000">
+    <link rel="manifest" href="../manifest.json">
+    <title>CS3</title>
+    <style>
+      @font-face {
+        font-family: 'IBMPlexMono';
+        src: url('../IBMPlexMono-Regular.ttf');
+      }
+      @font-face {
+        font-family: 'UbuntuMedium';
+        src: url('./Ubuntu-Medium.ttf') format('truetype');
+        font-weight: 500;
+        font-style: normal;
+        font-display: swap;
+      }
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #111;
+        color: #f5f5f5;
+        font-family: 'IBMPlexMono', 'Segoe UI', system-ui, -apple-system, sans-serif;
+      }
+
+      .app {
+        min-height: 100vh;
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 2rem 1.5rem 4rem;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+      }
+
+      header h1 {
+        margin-bottom: 0.25rem;
+      }
+
+      header p {
+        margin: 0;
+        color: #b5b5b5;
+      }
+
+      .controls {
+        background: #1b1b1b;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+      }
+
+      form {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        align-items: flex-end;
+      }
+
+      label {
+        display: flex;
+        flex-direction: column;
+        font-size: 0.9rem;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        gap: 0.5rem;
+      }
+
+      input[type="text"] {
+        padding: 0.75rem 1rem;
+        font-size: 1.5rem;
+        border-radius: 8px;
+        border: 1px solid #333;
+        background: #0e0e0e;
+        color: #f5f5f5;
+        width: 8rem;
+        text-transform: uppercase;
+      }
+
+      input[type="color"] {
+        width: 4rem;
+        height: 3rem;
+        border-radius: 8px;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+      }
+
+      button {
+        padding: 0.85rem 1.5rem;
+        background: #2d6cdf;
+        color: white;
+        border: none;
+        border-radius: 999px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: transform 0.1s ease;
+      }
+
+      button:hover {
+        transform: translateY(-1px);
+      }
+
+      button:active {
+        transform: translateY(1px);
+      }
+
+      .hint {
+        margin-top: 0.5rem;
+        font-size: 0.85rem;
+        color: #8d8d8d;
+      }
+
+      .status {
+        min-height: 1.25rem;
+        margin-top: 0.35rem;
+        color: #ffd86b;
+      }
+
+      .preview {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+      }
+
+      .preview canvas {
+        border-radius: 2px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        background: #000;
+      }
+
+      .downloads {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .download-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 0.75rem;
+      }
+
+      .download-link {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0.6rem 0.75rem;
+        background: #1f1f1f;
+        border-radius: 8px;
+        text-decoration: none;
+        color: #f5f5f5;
+        border: 1px solid #2f2f2f;
+        font-size: 0.95rem;
+      }
+
+      .download-link:hover {
+        background: #2d6cdf;
+        border-color: #2d6cdf;
+      }
+
+      @media (max-width: 600px) {
+        form {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        input[type="text"] {
+          width: 100%;
+        }
+
+        input[type="color"] {
+          width: 100%;
+          height: 3.5rem;
+        }
+      }
+    </style>
+  </head>
+     <radialGradient id="${gradientId}" cx="${centerX}" cy="${centerY}" r="${svgSize * gradientRadiusFactor}" gradientUnits="userSpaceOnUse" gradientTransform="${gradientTransform}">
+    <main class="app">
+      <header>
+        <h1>It's 2008 all over again</h1>
+        <p>I really liked those CS3 icons. </p>
+      </header>
+
+      <section class="controls">
+        <form id="icon-form">
+          <label>
+            Two letters
+            <input
+              type="text"
+              id="letters"
+              name="letters"
+              minlength="1"
+              maxlength="2"
+              value="PS"
+              placeholder="AB"
+              required
+            />
+          </label>
+
+          <label>
+            Icon colour
+            <input type="color" id="color" name="color" value="#2d6cdf" />
+          </label>
+
+          <button type="submit">Generate icons</button>
+        </form>
+        <p class="hint">First letter uppercased, second lowercased automatically.</p>
+        <p class="status" id="status"></p>
+      </section>
+
+      <section class="preview">
+        <h2>Preview</h2>
+        <canvas id="preview" width="256" height="256" aria-label="Icon preview"></canvas>
+      </section>
+
+      <section class="downloads">
+        <div>
+          <h2>PNG files</h2>
+          <div id="png-downloads" class="download-grid"></div>
+        </div>
+
+        <div>
+          <h2>SVG file</h2>
+          <div id="svg-download"></div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      // All script is inline to keep the tool self-contained.
+      (function () {
+        const sizes = [1024, 512, 256, 192, 128, 64, 48, 32];
+        const form = document.getElementById('icon-form');
+        const lettersInput = document.getElementById('letters');
+        const colorInput = document.getElementById('color');
+        const previewCanvas = document.getElementById('preview');
+        const statusEl = document.getElementById('status');
+        const pngDownloadsEl = document.getElementById('png-downloads');
+        const svgDownloadEl = document.getElementById('svg-download');
+        let currentSvgUrl = null;
+
+        const gradientAngleRad = (-8 * Math.PI) / 180;
+        const gradientScaleX = 2;
+        const gradientCenter = { x: 0.2, y: 0.08 };
+        const gradientRadiusFactor = 1.3;
+        const fontStack = "'UbuntuMedium','Ubuntu','Segoe UI',sans-serif";
+        const letterSizeRatio = 0.6;
+        const secondLetterScale = 0.9;
+
+        const measurementCanvas = document.createElement('canvas');
+        const measurementCtx = measurementCanvas.getContext('2d');
+        measurementCtx.textAlign = 'left';
+        measurementCtx.textBaseline = 'alphabetic';
+        if (document.fonts && document.fonts.load) {
+          document.fonts.load(`500 64px "UbuntuMedium"`);
+        }
+
+        const previewCtx = previewCanvas.getContext('2d');
+
+        const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+
+        const normalizeLetters = (value) => {
+          const trimmed = value.trim().slice(0, 2);
+          if (!trimmed) return '';
+          const first = trimmed.charAt(0).toUpperCase();
+          const second = trimmed.charAt(1) ? trimmed.charAt(1).toLowerCase() : '';
+          return `${first}${second}`;
+        };
+
+        const getLetters = () => {
+          const normalized = normalizeLetters(lettersInput.value);
+          if (lettersInput.value !== normalized) {
+            lettersInput.value = normalized;
+          }
+          return normalized;
+        };
+
+        const hexToRgb = (hex) => {
+          const stripped = hex.replace('#', '');
+          const normalized = stripped.length === 3
+            ? stripped.split('').map((ch) => ch + ch).join('')
+            : stripped.padStart(6, '0');
+          const intVal = parseInt(normalized, 16);
+          return {
+            r: (intVal >> 16) & 255,
+            g: (intVal >> 8) & 255,
+            b: intVal & 255,
+          };
+        };
+
+        const rgbToHsl = ({ r, g, b }) => {
+          const rNorm = r / 255;
+          const gNorm = g / 255;
+          const bNorm = b / 255;
+          const max = Math.max(rNorm, gNorm, bNorm);
+          const min = Math.min(rNorm, gNorm, bNorm);
+          const delta = max - min;
+          let h = 0;
+          if (delta !== 0) {
+            if (max === rNorm) {
+              h = ((gNorm - bNorm) / delta) % 6;
+            } else if (max === gNorm) {
+              h = (bNorm - rNorm) / delta + 2;
+            } else {
+              h = (rNorm - gNorm) / delta + 4;
+            }
+          }
+          h = Math.round((h * 60 + 360) % 360);
+          const l = (max + min) / 2;
+          const s = delta === 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
+          return {
+            h,
+            s: Math.round(s * 100),
+            l: Math.round(l * 100),
+          };
+        };
+
+        const hslToHex = (h, s, l) => {
+          const sNorm = s / 100;
+          const lNorm = l / 100;
+          const c = (1 - Math.abs(2 * lNorm - 1)) * sNorm;
+          const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+          const m = lNorm - c / 2;
+          let r1 = 0;
+          let g1 = 0;
+          let b1 = 0;
+          if (h >= 0 && h < 60) {
+            [r1, g1, b1] = [c, x, 0];
+          } else if (h >= 60 && h < 120) {
+            [r1, g1, b1] = [x, c, 0];
+          } else if (h >= 120 && h < 180) {
+            [r1, g1, b1] = [0, c, x];
+          } else if (h >= 180 && h < 240) {
+            [r1, g1, b1] = [0, x, c];
+          } else if (h >= 240 && h < 300) {
+            [r1, g1, b1] = [x, 0, c];
+          } else {
+            [r1, g1, b1] = [c, 0, x];
+          }
+          const r = Math.round((r1 + m) * 255);
+          const g = Math.round((g1 + m) * 255);
+          const b = Math.round((b1 + m) * 255);
+          const toHex = (val) => val.toString(16).padStart(2, '0');
+          return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+        };
+
+        const computeGradientColors = (hexColor) => {
+          const { h, s, l } = rgbToHsl(hexToRgb(hexColor));
+          const light = {
+            h,
+            s: clamp(s - 5, 0, 100),
+            l: clamp(l + 6, 0, 100),
+          };
+          const dark = {
+            h,
+            s: clamp(s - 6, 0, 100),
+            l: clamp(l - 20, 0, 100),
+          };
+          return {
+            base: hslToHex(h, clamp(s, 0, 100), clamp(l, 0, 100)),
+            light: hslToHex(light.h, light.s, light.l),
+            dark: hslToHex(dark.h, dark.s, dark.l),
+          };
+        };
+
+        const getContrastColor = (hex) => {
+          const stripped = hex.replace('#', '');
+          const bigint = parseInt(stripped, 16);
+          const r = (bigint >> 16) & 255;
+          const g = (bigint >> 8) & 255;
+          const b = bigint & 255;
+          const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+          return luminance > 0.55 ? '#000000' : '#ffffff';
+        };
+
+        const drawGradientBackground = (ctx, size, colors) => {
+          const centerX = size * gradientCenter.x;
+          const centerY = size * gradientCenter.y;
+          ctx.save();
+          ctx.translate(centerX, centerY);
+          ctx.rotate(gradientAngleRad);
+          ctx.scale(gradientScaleX, 1);
+          const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, size * gradientRadiusFactor);
+          gradient.addColorStop(0, colors.light);
+          gradient.addColorStop(0.35, colors.base);
+          gradient.addColorStop(1, colors.dark);
+          ctx.fillStyle = gradient;
+          ctx.fillRect(-size * 4, -size * 4, size * 8, size * 8);
+          ctx.restore();
+        };
+
+        const shouldUseShadow = () => true;
+
+        const getLetterMetrics = (letters, boxSize) => {
+          const firstLetter = letters.charAt(0) || '';
+          const secondLetter = letters.charAt(1) || '';
+          const firstFontSize = boxSize * letterSizeRatio;
+          const secondFontSize = firstFontSize * secondLetterScale;
+          const firstFont = `500 ${firstFontSize}px ${fontStack}`;
+          const secondFont = `500 ${secondFontSize}px ${fontStack}`;
+
+          const measureLetter = (letter, font, fontSize) => {
+            if (!letter) {
+              return { width: 0, ascent: 0, descent: 0 };
+            }
+            measurementCtx.font = font;
+            const metrics = measurementCtx.measureText(letter);
+            const ascent = metrics.actualBoundingBoxAscent ?? fontSize * 0.72;
+            const descent = metrics.actualBoundingBoxDescent ?? fontSize * 0.18;
+            return { width: metrics.width, ascent, descent };
+          };
+
+          const firstMeasures = measureLetter(firstLetter, firstFont, firstFontSize);
+          const secondMeasures = measureLetter(secondLetter, secondFont, secondFontSize);
+          const maxAscent = Math.max(firstMeasures.ascent, secondMeasures.ascent);
+          const maxDescent = Math.max(firstMeasures.descent, secondMeasures.descent);
+          const spacingAdjustment = secondLetter ? firstFontSize * 0.04 : 0;
+          const secondOffset = Math.max(firstMeasures.width - spacingAdjustment, 0);
+          const totalWidth = Math.max(firstMeasures.width + secondMeasures.width - spacingAdjustment, firstMeasures.width || secondMeasures.width);
+
+          return {
+            firstLetter,
+            secondLetter,
+            firstWidth: firstMeasures.width,
+            secondWidth: secondMeasures.width,
+            secondOffset,
+            totalWidth,
+            firstFont,
+            firstFontSize,
+            secondFont,
+            secondFontSize,
+            maxAscent,
+            maxDescent,
+          };
+        };
+
+        const drawLetters = (ctx, letters, textColor, size, background) => {
+          const metrics = getLetterMetrics(letters, size);
+          const startX = size / 2 - metrics.totalWidth / 2;
+          const baselineY =
+            metrics.maxAscent + metrics.maxDescent === 0
+              ? size / 2
+              : size / 2 + (metrics.maxAscent - metrics.maxDescent) / 2;
+          ctx.save();
+          ctx.textAlign = 'left';
+          ctx.textBaseline = 'alphabetic';
+          ctx.fillStyle = textColor;
+          if (shouldUseShadow(background)) {
+            ctx.shadowColor = 'rgba(0, 0, 0, 1)';
+            ctx.shadowBlur = 2;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
+          } else {
+            ctx.shadowColor = 'transparent';
+            ctx.shadowBlur = 0;
+          }
+          if (metrics.firstLetter) {
+            ctx.font = metrics.firstFont;
+            ctx.fillText(metrics.firstLetter, startX, baselineY);
+          }
+          if (metrics.secondLetter) {
+            ctx.font = metrics.secondFont;
+            ctx.fillText(metrics.secondLetter, startX + metrics.secondOffset, baselineY);
+          }
+          ctx.restore();
+        };
+
+        const drawIcon = (canvas, text, background) => {
+          const ctx = canvas.getContext('2d');
+          const size = canvas.width;
+          ctx.clearRect(0, 0, size, size);
+          const gradientColors = computeGradientColors(background);
+          drawGradientBackground(ctx, size, gradientColors);
+          const textColor = getContrastColor(background);
+          drawLetters(ctx, text, textColor, size, background);
+        };
+
+        const buildSvg = (text, background) => {
+          const fill = getContrastColor(background);
+          const { base, light, dark } = computeGradientColors(background);
+          const gradientId = `grad-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+          const svgSize = 1024;
+          const centerX = svgSize * gradientCenter.x;
+          const centerY = svgSize * gradientCenter.y;
+          const gradientTransform = `translate(${centerX} ${centerY}) rotate(-8) scale(2 1) translate(${-centerX} ${-centerY})`;
+          const metrics = getLetterMetrics(text, svgSize);
+          const letterStart = svgSize / 2 - metrics.totalWidth / 2;
+          const baselineY =
+            metrics.maxAscent + metrics.maxDescent === 0
+              ? svgSize / 2
+              : svgSize / 2 + (metrics.maxAscent - metrics.maxDescent) / 2;
+          const applyShadow = shouldUseShadow(background);
+          const shadowId = applyShadow ? `shadow-${Date.now()}-${Math.random().toString(16).slice(2)}` : null;
+          const shadowDef = applyShadow
+            ? `    <filter id="${shadowId}" x="-20%" y="-20%" width="140%" height="140%">\n      <feDropShadow dx="0" dy="0" stdDeviation="2" flood-color="#000000" flood-opacity="0.35"/>\n    </filter>\n`
+            : '';
+          const filterAttr = applyShadow ? ` filter="url(#${shadowId})"` : '';
+          const firstText = metrics.firstLetter
+            ? `<text x="${letterStart}" y="${baselineY}" dominant-baseline="alphabetic" font-family="Ubuntu,'Ubuntu Medium','Segoe UI',sans-serif" font-weight="500" font-size="${metrics.firstFontSize}"${filterAttr}>${metrics.firstLetter}</text>`
+            : '';
+          const secondText = metrics.secondLetter
+            ? `<text x="${letterStart + metrics.secondOffset}" y="${baselineY}" dominant-baseline="alphabetic" font-family="Ubuntu,'Ubuntu Medium','Segoe UI',sans-serif" font-weight="500" font-size="${metrics.secondFontSize}"${filterAttr}>${metrics.secondLetter}</text>`
+            : '';
+          return `<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" width="${svgSize}" height="${svgSize}" viewBox="0 0 ${svgSize} ${svgSize}">\n  <defs>\n    <radialGradient id="${gradientId}" cx="${centerX}" cy="${centerY}" r="${svgSize / 2}" gradientUnits="userSpaceOnUse" gradientTransform="${gradientTransform}">\n      <stop offset="0%" stop-color="${light}"/>\n      <stop offset="40%" stop-color="${base}"/>\n      <stop offset="100%" stop-color="${dark}"/>\n    </radialGradient>\n${shadowDef}  </defs>\n  <rect width="${svgSize}" height="${svgSize}" fill="url(#${gradientId})"/>\n  <g fill="${fill}">\n    ${firstText}\n    ${secondText}\n  </g>\n</svg>`;
+        };
+
+        const updatePreview = () => {
+          const letters = getLetters();
+          const color = colorInput.value;
+          if (!letters) {
+            previewCtx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+            statusEl.textContent = 'Enter one or two letters to preview.';
+            return;
+          }
+          statusEl.textContent = '';
+          drawIcon(previewCanvas, letters, color);
+        };
+
+        const createDownloadLink = (label, dataUrl, filename) => {
+          const link = document.createElement('a');
+          link.href = dataUrl;
+          link.download = filename;
+          link.textContent = label;
+          link.className = 'download-link';
+          return link;
+        };
+
+        const generateIcons = (event) => {
+          event.preventDefault();
+          const letters = getLetters();
+          if (!letters) {
+            statusEl.textContent = 'Please enter at least one letter.';
+            return;
+          }
+          const color = colorInput.value;
+
+          pngDownloadsEl.innerHTML = '';
+          sizes.forEach((size) => {
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            drawIcon(canvas, letters, color);
+            const dataUrl = canvas.toDataURL('image/png');
+            const filename = `${letters || 'icon'}-${size}.png`;
+            const link = createDownloadLink(`${size}×${size}`, dataUrl, filename);
+            pngDownloadsEl.appendChild(link);
+          });
+
+          const svgContent = buildSvg(letters, color);
+          const blob = new Blob([svgContent], { type: 'image/svg+xml' });
+          if (currentSvgUrl) {
+            URL.revokeObjectURL(currentSvgUrl);
+          }
+          const svgUrl = URL.createObjectURL(blob);
+          currentSvgUrl = svgUrl;
+          svgDownloadEl.innerHTML = '';
+          svgDownloadEl.appendChild(
+            createDownloadLink('Download SVG', svgUrl, `${letters || 'icon'}.svg`)
+          );
+
+          updatePreview();
+          statusEl.textContent = 'Icons generated. Use the links below to download.';
+        };
+
+        form.addEventListener('submit', generateIcons);
+        lettersInput.addEventListener('input', updatePreview);
+        colorInput.addEventListener('input', updatePreview);
+
+        updatePreview();
+        if (document.fonts && document.fonts.ready) {
+          document.fonts.ready.then(updatePreview);
+        }
+      })();
+    </script>
+  </body>
+</html>
+
+<!--
+   B     L      D
+H 215   215    215
+S  64    72     70
+L  41    54     25
+-->
