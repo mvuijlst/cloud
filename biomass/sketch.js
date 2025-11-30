@@ -14,6 +14,9 @@ const DESKTOP_MAX_SPEED = 6;
 const MOBILE_MAX_SPEED = 3;
 const MAX_BLOBS = 50;
 const MAX_FOOD = 3;
+const MAX_BASE_CELL_RADIUS = 120;
+const MIN_BASE_CELL_RADIUS = 25;
+const TOTAL_BIOMASS_BASE = 420000;
 
 const SPECIES_DEFS = [
   {
@@ -73,6 +76,9 @@ let motionScale = DESKTOP_MOTION_SCALE;
 let velocityDamping = DESKTOP_DAMPING;
 let maxSpeed = DESKTOP_MAX_SPEED;
 let lastBalanceFrame = 0;
+let maxCellRadius = MAX_BASE_CELL_RADIUS;
+let minCellRadius = MIN_BASE_CELL_RADIUS;
+let totalBiomassLimit = TOTAL_BIOMASS_BASE;
 
 function preload() {
   metaballShader = loadShader('metaballs.vert', 'metaballs.frag');
@@ -84,6 +90,43 @@ function updateViewFlags() {
   motionScale = mobileView ? MOBILE_MOTION_SCALE : DESKTOP_MOTION_SCALE;
   velocityDamping = mobileView ? MOBILE_DAMPING : DESKTOP_DAMPING;
   maxSpeed = mobileView ? MOBILE_MAX_SPEED : DESKTOP_MAX_SPEED;
+}
+
+function updateBiomassCaps() {
+  maxCellRadius = MAX_BASE_CELL_RADIUS * scaleFactor;
+  minCellRadius = MIN_BASE_CELL_RADIUS * scaleFactor;
+  totalBiomassLimit = TOTAL_BIOMASS_BASE * scaleFactor * scaleFactor;
+}
+
+function clampBlobRadius(blob) {
+  if (!blob) return;
+  if (blob.r > maxCellRadius) blob.r = maxCellRadius;
+  if (blob.r < minCellRadius) blob.r = minCellRadius;
+}
+
+function computeTotalBiomass() {
+  let total = 0;
+  for (let b of blobs) total += b.r * b.r;
+  return total;
+}
+
+function enforceTotalBiomassLimit() {
+  let total = computeTotalBiomass();
+  if (total <= totalBiomassLimit) return;
+  const scaleDown = sqrt(totalBiomassLimit / total);
+  for (let b of blobs) {
+    if (b.r > minCellRadius) {
+      b.r = max(b.r * scaleDown, minCellRadius);
+    }
+  }
+  total = computeTotalBiomass();
+  if (total <= totalBiomassLimit) return;
+  const toCull = [...blobs].sort((a, b) => a.r - b.r);
+  for (let b of toCull) {
+    if (total <= totalBiomassLimit) break;
+    killBlob(b);
+    total = computeTotalBiomass();
+  }
 }
 
 function blobMotionScale(blob) {
@@ -123,6 +166,7 @@ function createBlob(x, y, radius, preferredSpecies) {
   };
   const speciesKey = preferredSpecies || pickSpeciesKey();
   setBlobSpecies(blob, speciesKey);
+  clampBlobRadius(blob);
   return blob;
 }
 
@@ -235,6 +279,7 @@ function setup() {
   
   // Calculate scale factor based on screen size (reference: 1280px)
   scaleFactor = min(width, height) / 1280;
+  updateBiomassCaps();
   
   // Create a WEBGL buffer for the shader to manage GPU load
   shaderLayer = createGraphics(ceil(width * shaderRes), ceil(height * shaderRes), WEBGL);
@@ -317,7 +362,10 @@ function updateGameLogic() {
     if (n <= 1) {
       // Dies of loneliness
       b.r -= 0.02 * scaleFactor;
-      if (b.r < 20 * scaleFactor) killBlob(b);
+      if (b.r < 20 * scaleFactor) {
+        killBlob(b);
+        continue;
+      }
     } else if (n === 2 || n === 3) {
       // Stays alive, stable
     } else if (n === 4) {
@@ -329,8 +377,13 @@ function updateGameLogic() {
     } else if (n >= 5) {
       // Dies of overcrowding
       b.r -= 0.04 * scaleFactor;
-      if (b.r < 20 * scaleFactor) killBlob(b);
+      if (b.r < 20 * scaleFactor) {
+        killBlob(b);
+        continue;
+      }
     }
+
+    clampBlobRadius(b);
   }
 
   checkSplitting(neighbors);
@@ -339,6 +392,8 @@ function updateGameLogic() {
     ensureSpeciesBalance();
     lastBalanceFrame = frameCount;
   }
+
+  enforceTotalBiomassLimit();
 }
 
 function killBlob(blob) {
@@ -797,6 +852,7 @@ function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
   updateViewFlags();
   scaleFactor = min(width, height) / 800;
+  updateBiomassCaps();
   
   // Recreate the shader layer with new dimensions
   shaderLayer = createGraphics(ceil(width * shaderRes), ceil(height * shaderRes), WEBGL);
