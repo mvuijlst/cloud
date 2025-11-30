@@ -7,7 +7,6 @@ const SHADER_RES = 0.1; // Render at 1/10 resolution (1/100th pixel count) for p
 const MAX_BLOBS = 50;
 let lastClickTime = 0;
 let autoPlay = true;
-let autoPlayBtn;
 let food = [];
 const MAX_FOOD = 3;
 let scaleFactor = 1;
@@ -38,18 +37,6 @@ function setup() {
   
   noSmooth();
 
-  autoPlayBtn = createButton('Auto Play: ON');
-  autoPlayBtn.position(20, 50);
-  autoPlayBtn.mousePressed(() => {
-    autoPlay = !autoPlay;
-    autoPlayBtn.html(autoPlay ? 'Auto Play: ON' : 'Auto Play: OFF');
-  });
-  autoPlayBtn.style('font-family', 'IBMPlexMono');
-  autoPlayBtn.style('background', 'transparent');
-  autoPlayBtn.style('color', 'white');
-  autoPlayBtn.style('border', '1px solid white');
-  autoPlayBtn.style('padding', '5px');
-  autoPlayBtn.style('cursor', 'pointer');
 }
 
 function updateGameLogic() {
