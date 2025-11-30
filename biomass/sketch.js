@@ -25,7 +25,9 @@ const SPECIES_DEFS = [
     dominance: 1,
     hostileWith: ['harvester'],
     splitBias: 'cohesive',
-    role: 'anchor'
+    role: 'anchor',
+    conversionResistance: 0.4,
+    minShare: 0.28
   },
   {
     key: 'harvester',
@@ -36,7 +38,9 @@ const SPECIES_DEFS = [
     dominance: 3,
     hostileWith: [],
     splitBias: 'aggressive',
-    role: 'hunter'
+    role: 'hunter',
+    conversionResistance: 0.7,
+    minShare: 0.3
   },
   {
     key: 'weaver',
@@ -48,7 +52,9 @@ const SPECIES_DEFS = [
     hostileWith: [],
     splitBias: 'balanced',
     role: 'support',
-    mediator: true
+    mediator: true,
+    conversionResistance: 0.2,
+    minShare: 0.2
   }
 ];
 
@@ -118,6 +124,109 @@ function createBlob(x, y, radius, preferredSpecies) {
   const speciesKey = preferredSpecies || pickSpeciesKey();
   setBlobSpecies(blob, speciesKey);
   return blob;
+}
+
+function isRole(blob, role) {
+  return blob?.traits?.role === role;
+}
+
+function tryConvertBlob(blob, targetSpecies) {
+  if (!blob || blob.species === targetSpecies) return true;
+  const resistance = blob?.traits?.conversionResistance || 0;
+  if (random() < resistance) return false;
+  setBlobSpecies(blob, targetSpecies);
+  return true;
+}
+
+function findNearestFoodFor(blob) {
+  if (!blob || food.length === 0) return null;
+  let nearest = null;
+  let bestDist = Infinity;
+  for (let f of food) {
+    const d = dist(blob.x, blob.y, f.x, f.y);
+    if (d < bestDist) {
+      bestDist = d;
+      nearest = f;
+    }
+  }
+  return nearest;
+}
+
+function findClosestBlob(source, predicate) {
+  let best = null;
+  let bestDist = Infinity;
+  for (let other of blobs) {
+    if (other === source) continue;
+    if (predicate && !predicate(other)) continue;
+    const d = dist(source.x, source.y, other.x, other.y);
+    if (d < bestDist) {
+      bestDist = d;
+      best = other;
+    }
+  }
+  return best;
+}
+
+function areBlobsConnected(a, b) {
+  if (!a || !b) return false;
+  for (let s of springs) {
+    if ((s.a === a && s.b === b) || (s.a === b && s.b === a)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function applySpeciesBehavior(blob, neighborList) {
+  if (!blob?.traits) return;
+  if (isRole(blob, 'hunter')) {
+    const target = blob.huntingFood || findNearestFoodFor(blob);
+    if (target) {
+      const dx = target.x - blob.x;
+      const dy = target.y - blob.y;
+      const d = sqrt(dx * dx + dy * dy) || 1;
+      const accel = 0.35 * blobMotionScale(blob);
+      blob.vx += (dx / d) * accel;
+      blob.vy += (dy / d) * accel;
+    } else if (neighborList.length === 0) {
+      blob.vx += random(-0.3, 0.3) * blobMotionScale(blob);
+      blob.vy += random(-0.3, 0.3) * blobMotionScale(blob);
+    }
+  } else if (isRole(blob, 'anchor') && neighborList.length > 0) {
+    let avgX = 0;
+    let avgY = 0;
+    for (let nb of neighborList) {
+      avgX += nb.x;
+      avgY += nb.y;
+    }
+    avgX /= neighborList.length;
+    avgY /= neighborList.length;
+    blob.vx += (avgX - blob.x) * 0.002;
+    blob.vy += (avgY - blob.y) * 0.002;
+    blob.vx *= 0.96;
+    blob.vy *= 0.96;
+  } else if (blob.traits.mediator) {
+    if (frameCount % 90 === 0) {
+      const target = findClosestBlob(blob, other => other.species !== blob.species);
+      if (target && !areBlobsConnected(blob, target)) {
+        const bridge = {
+          a: blob,
+          b: target,
+          len: (blob.r + target.r) * 0.7
+        };
+        springs.push(bridge);
+        handleSpeciesMerge(blob, target, bridge);
+      }
+    }
+    const driftTarget = findClosestBlob(blob, other => other.species !== blob.species);
+    if (driftTarget) {
+      const dx = driftTarget.x - blob.x;
+      const dy = driftTarget.y - blob.y;
+      const d = sqrt(dx * dx + dy * dy) || 1;
+      blob.vx += (dx / d) * 0.12;
+      blob.vy += (dy / d) * 0.12;
+    }
+  }
 }
 
 function setup() {
@@ -203,6 +312,8 @@ function updateGameLogic() {
       }
     }
 
+    applySpeciesBehavior(b, myNeighbors);
+
     if (n <= 1) {
       // Dies of loneliness
       b.r -= 0.02 * scaleFactor;
@@ -277,6 +388,29 @@ function birthBlob(parent) {
   
   // Shrink parent back to normal
   parent.r = 60 * scaleFactor;
+}
+
+function spawnExtraHarvester(parent) {
+  if (!parent || blobs.length >= MAX_BLOBS) return;
+  const angle = random(TWO_PI);
+  const distScale = random(0.8, 1.5);
+  const spawnR = 35 * scaleFactor;
+  const newborn = createBlob(
+    constrain(parent.x + cos(angle) * parent.r * distScale, 0, width),
+    constrain(parent.y + sin(angle) * parent.r * distScale, 0, height),
+    spawnR,
+    'harvester'
+  );
+  newborn.vx = parent.vx * 0.3 + random(-0.6, 0.6);
+  newborn.vy = parent.vy * 0.3 + random(-0.6, 0.6);
+  blobs.push(newborn);
+}
+
+function rewardHunterSuccess(hunter) {
+  if (!isRole(hunter, 'hunter')) return;
+  if (random() < 0.6) {
+    spawnExtraHarvester(hunter);
+  }
 }
 
 function spawnFood(x, y) {
@@ -375,6 +509,7 @@ function updateFoodLogic() {
         if (fIndex > -1) {
           food.splice(fIndex, 1);
           birthBlob(b); // Spawn 4th cell
+          rewardHunterSuccess(b);
           
           // Release all hunters for this food
           for (let h of f.hunters) {
@@ -800,10 +935,19 @@ function partitionClusterBySpecies(cluster) {
 }
 
 function enforceHunterDiversity(hunters, pool) {
-  if (hunters.some(h => h?.traits?.role === 'hunter')) return hunters;
-  let candidate = pool.find(b => b?.traits?.role === 'hunter' && !hunters.includes(b));
-  if (candidate) {
-    hunters[hunters.length - 1] = candidate;
+  const hunterCount = hunters.filter(h => isRole(h, 'hunter')).length;
+  if (hunterCount === 0) {
+    let candidate = pool.find(b => isRole(b, 'hunter') && !hunters.includes(b));
+    if (candidate) {
+      hunters[hunters.length - 1] = candidate;
+    }
+  } else if (hunterCount === 1) {
+    let candidate = pool.find(b => isRole(b, 'hunter') && !hunters.includes(b));
+    if (candidate) {
+      let replaceIndex = hunters.findIndex(h => !isRole(h, 'hunter'));
+      if (replaceIndex === -1) replaceIndex = hunters.length - 1;
+      hunters[replaceIndex] = candidate;
+    }
   }
   return hunters;
 }
@@ -846,7 +990,10 @@ function handleSpeciesMerge(a, b, spring) {
     return;
   }
 
-  setBlobSpecies(submissiveBlob, dominantBlob.species);
+  if (!tryConvertBlob(submissiveBlob, dominantBlob.species)) {
+    spring.len *= 1.05;
+    return;
+  }
   dominantBlob.r = min(dominantBlob.r * 1.02, 120 * scaleFactor);
   spring.len *= dominantBlob?.traits?.role === 'anchor' ? 0.9 : 1.0;
 }
@@ -862,21 +1009,23 @@ function resolveMediatorMerge(a, b, spring) {
   convertPartnerChance = constrain(convertPartnerChance, 0.1, 0.45);
 
   if (random() < convertPartnerChance) {
-    setBlobSpecies(partner, mediator.species);
-    spring.len *= 0.92;
-    return;
+    if (tryConvertBlob(partner, mediator.species)) {
+      spring.len *= 0.92;
+      return;
+    }
   }
 
   let convertMediatorChance = 0.25;
   if (partner.traits?.role === 'anchor') convertMediatorChance += 0.15;
   if (random() < convertMediatorChance) {
-    setBlobSpecies(mediator, partner.species);
-    spring.len *= 0.96;
-    return;
+    if (tryConvertBlob(mediator, partner.species)) {
+      spring.len *= 0.96;
+      return;
+    }
   }
 
   if (partner.traits?.role === 'hunter' && random() < 0.25) {
-    setBlobSpecies(partner, 'warden');
+    tryConvertBlob(partner, 'warden');
   }
 
   spring.decayFrame = frameCount + 360 + random(-90, 90);
@@ -886,26 +1035,22 @@ function ensureSpeciesBalance() {
   if (blobs.length < 4) return;
   const counts = getSpeciesCounts();
   const total = blobs.length;
-  const sorted = Object.entries(counts).sort((a, b) => a[1] - b[1]);
-  const minorityList = sorted.slice(0, 2);
-  const majority = sorted[sorted.length - 1];
-  const minority = sorted[0];
+  const deficits = SPECIES_DEFS.filter(spec => (counts[spec.key] || 0) / total < spec.minShare);
+  if (deficits.length === 0) return;
 
-  if (!majority || !minority) return;
+  const surpluses = SPECIES_DEFS
+    .filter(spec => (counts[spec.key] || 0) / total > spec.minShare + 0.12)
+    .sort((a, b) => (counts[b.key] || 0) - (counts[a.key] || 0));
 
-  if (minority[1] === 0) {
-    convertRandomBlobTo(minority[0], b => b.species !== minority[0]);
-    convertRandomBlobTo(minorityList[1]?.[0] || minority[0], b => b.species !== minority[0]);
-    return;
-  }
+  if (surpluses.length === 0) return;
 
-  const majorityRatio = majority[1] / total;
-  const minorityRatio = minority[1] / total;
-  if (majorityRatio > 0.55 && minorityRatio < 0.2) {
-    const conversions = Math.min(3, Math.ceil((majority[1] - minority[1]) / 3));
+  for (let deficit of deficits) {
+    let donor = surpluses.find(spec => (counts[spec.key] || 0) > counts[deficit.key]);
+    if (!donor) donor = surpluses[0];
+    if (!donor) break;
+    const conversions = Math.min(2, Math.ceil((counts[donor.key] - counts[deficit.key]) / 4));
     for (let i = 0; i < conversions; i++) {
-      const targetMinority = minorityList[i % minorityList.length][0];
-      convertRandomBlobTo(targetMinority, b => b.species === majority[0]);
+      convertRandomBlobTo(deficit.key, b => b.species === donor.key);
     }
   }
 }
@@ -920,8 +1065,12 @@ function getSpeciesCounts() {
 function convertRandomBlobTo(targetSpecies, predicate) {
   const candidates = blobs.filter(predicate);
   if (candidates.length === 0) return;
-  const blob = random(candidates);
-  setBlobSpecies(blob, targetSpecies);
-  blob.vx *= 0.45;
-  blob.vy *= 0.45;
+  for (let i = 0; i < 5; i++) {
+    const blob = random(candidates);
+    if (tryConvertBlob(blob, targetSpecies)) {
+      blob.vx *= 0.45;
+      blob.vy *= 0.45;
+      return;
+    }
+  }
 }
