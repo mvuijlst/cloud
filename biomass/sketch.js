@@ -359,6 +359,15 @@ function updateGameLogic() {
 
     applySpeciesBehavior(b, myNeighbors);
 
+    if (isRole(b, 'hunter')) {
+      const hunterSpeed = sqrt(b.vx * b.vx + b.vy * b.vy);
+      const hungerDrain = 0.01 * scaleFactor + hunterSpeed * 0.004;
+      b.r -= hungerDrain;
+      if (b.huntingFood) {
+        b.r -= 0.005 * scaleFactor;
+      }
+    }
+
     if (n <= 1) {
       // Dies of loneliness
       b.r -= 0.02 * scaleFactor;
