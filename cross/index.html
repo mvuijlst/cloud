@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#000000" />
+  <link rel="manifest" href="../manifest.json" />
+  <title>Crossletter</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div>
+        <h1>Cross</h1>
+        <p class="subtitle">A lazy person's crosswords.</p>
+      </div>
+      <div class="round-info">
+        <span id="round-label">Round 1 / 1</span>
+        <button id="reset-round" type="button">Reset round</button>
+        <button id="open-help" type="button" class="help-button">How to play</button>
+        <div class="score-panel" aria-live="polite">
+          <span class="score-label">Score</span>
+          <span id="score-value">—</span>
+          <span id="score-delta" aria-hidden="true"></span>
+        </div>
+      </div>
+    </header>
+    <main>
+      <section class="grid-panel">
+        <div class="meta">
+          <p id="puzzle-title">Loading...</p>
+          <p id="puzzle-author"></p>
+        </div>
+        <div id="grid" class="grid" aria-label="Crossword grid"></div>
+      </section>
+      <section class="alphabet-panel" aria-live="polite">
+        <div class="alphabet-actions">
+          <button id="lock-letter" type="button" class="alphabet-action">Lock selection</button>
+          <button id="buy-letter" type="button" class="alphabet-action">Buy letter (-50)</button>
+        </div>
+        <div id="alphabet" class="alphabet" role="group" aria-label="Alphabet choices"></div>
+        <div id="status" class="status"></div>
+        <button id="next-round" type="button" hidden>Next round</button>
+      </section>
+    </main>
+  </div>
+  <template id="cell-template">
+    <button class="cell" type="button"></button>
+  </template>
+  <div id="help-modal" class="modal" aria-hidden="true" hidden>
+    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="help-title" tabindex="-1">
+      <button id="close-help" type="button" class="modal-close" aria-label="Close instructions">×</button>
+      <h2 id="help-title">How to play</h2>
+      <ol>
+        <li>Click a square to highlight every place that hides the same secret letter.</li>
+        <li>Select a letter from the alphabet. Each guess costs 2 points, and a letter can be used only once.</li>
+        <li>Lock letters when you're confident. Correct locks earn 10 points; wrong locks lose 10.</li>
+        <li>Need help? Buy a random letter for 50 points to reveal and lock it automatically.</li>
+        <li>Fill the entire alphabet to finish the puzzle and move to the next round.</li>
+      </ol>
+    </div>
+  </div>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
