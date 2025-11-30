@@ -3,26 +3,49 @@ let springs = [];
 let draggedBlob = null;
 let shaderLayer;
 let metaballShader;
-const SHADER_RES = 0.1; // Render at 1/10 resolution (1/100th pixel count) for performance
+
+const DESKTOP_SHADER_RES = 0.2; // Render at 1/5 resolution on larger screens for added detail
+const MOBILE_SHADER_RES = 0.25; // Higher fidelity for smaller displays
+const DESKTOP_MOTION_SCALE = 1;
+const MOBILE_MOTION_SCALE = 0.6;
+const DESKTOP_DAMPING = 0.98;
+const MOBILE_DAMPING = 0.94;
+const DESKTOP_MAX_SPEED = 6;
+const MOBILE_MAX_SPEED = 3;
 const MAX_BLOBS = 50;
+const MAX_FOOD = 3;
+
+let shaderRes = DESKTOP_SHADER_RES;
 let lastClickTime = 0;
 let autoPlay = true;
 let food = [];
-const MAX_FOOD = 3;
 let scaleFactor = 1;
+let mobileView = false;
+let motionScale = DESKTOP_MOTION_SCALE;
+let velocityDamping = DESKTOP_DAMPING;
+let maxSpeed = DESKTOP_MAX_SPEED;
 
 function preload() {
   metaballShader = loadShader('metaballs.vert', 'metaballs.frag');
 }
 
+function updateViewFlags() {
+  mobileView = min(windowWidth, windowHeight) <= 900;
+  shaderRes = mobileView ? MOBILE_SHADER_RES : DESKTOP_SHADER_RES;
+  motionScale = mobileView ? MOBILE_MOTION_SCALE : DESKTOP_MOTION_SCALE;
+  velocityDamping = mobileView ? MOBILE_DAMPING : DESKTOP_DAMPING;
+  maxSpeed = mobileView ? MOBILE_MAX_SPEED : DESKTOP_MAX_SPEED;
+}
+
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
+  updateViewFlags();
   
   // Calculate scale factor based on screen size (reference: 1280px)
   scaleFactor = min(width, height) / 1280;
   
-  // Create a smaller WEBGL buffer for the shader to reduce GPU load
-  shaderLayer = createGraphics(ceil(width * SHADER_RES), ceil(height * SHADER_RES), WEBGL);
+  // Create a WEBGL buffer for the shader to manage GPU load
+  shaderLayer = createGraphics(ceil(width * shaderRes), ceil(height * shaderRes), WEBGL);
   
   // Initialize blobs
   for (let i = 0; i < 10; i++) {
@@ -71,8 +94,8 @@ function updateGameLogic() {
            let dy = nearest.y - b.y;
            let d = sqrt(dx*dx + dy*dy);
            if (d > 0) {
-             b.vx += (dx/d) * 0.3;
-             b.vy += (dy/d) * 0.3;
+             b.vx += (dx/d) * 0.3 * motionScale;
+             b.vy += (dy/d) * 0.3 * motionScale;
            }
         }
       } else if (n >= 5) {
@@ -92,11 +115,11 @@ function updateGameLogic() {
         
         // Strong push away from the center
         if (d > 0) {
-          b.vx += (dx / d) * 0.8;
-          b.vy += (dy / d) * 0.8;
+          b.vx += (dx / d) * 0.8 * motionScale;
+          b.vy += (dy / d) * 0.8 * motionScale;
         } else {
-          b.vx += random(-1, 1);
-          b.vy += random(-1, 1);
+          b.vx += random(-1, 1) * motionScale;
+          b.vy += random(-1, 1) * motionScale;
         }
       }
     }
@@ -249,8 +272,8 @@ function updateFoodLogic() {
       
       // Move towards food
       if (d > 0) {
-        b.vx += (dx/d) * 0.5;
-        b.vy += (dy/d) * 0.5;
+        b.vx += (dx/d) * 0.5 * motionScale;
+        b.vy += (dy/d) * 0.5 * motionScale;
       }
       
       // Eat
@@ -357,9 +380,9 @@ function draw() {
 
       let d = dist(a.x, a.y, b.x, b.y);
       // If they are close enough to start merging visually, connect them
-      let threshold = (a.r + b.r); 
+      let mergeThreshold = (a.r + b.r); 
       
-      if (d < threshold) {
+      if (d < mergeThreshold) {
         springs.push({
           a: a,
           b: b,
@@ -373,16 +396,23 @@ function draw() {
   for (let b of blobs) {
     if (b !== draggedBlob) {
       // Add gentle noise to keep them drifting like living things
-      b.vx += random(-0.1, 0.1);
-      b.vy += random(-0.1, 0.1);
+      b.vx += random(-0.1, 0.1) * motionScale;
+      b.vy += random(-0.1, 0.1) * motionScale;
 
       // Apply damping (friction)
-      b.vx *= 0.98;
-      b.vy *= 0.98;
+      b.vx *= velocityDamping;
+      b.vy *= velocityDamping;
+
+      let speed = sqrt(b.vx * b.vx + b.vy * b.vy);
+      if (speed > maxSpeed) {
+        let limit = maxSpeed / speed;
+        b.vx *= limit;
+        b.vy *= limit;
+      }
 
       // Soft boundary repulsion to keep them away from edges
       let margin = 100 * scaleFactor;
-      let nudge = 0.2 * scaleFactor;
+      let nudge = 0.2 * scaleFactor * motionScale;
       if (b.x < margin) b.vx += nudge;
       if (b.x > width - margin) b.vx -= nudge;
       if (b.y < margin) b.vy += nudge;
@@ -505,18 +535,19 @@ function mouseDragged() {
 function mouseReleased() {
   if (draggedBlob) {
     // Give it a little toss, but scaled down for the gentle physics
-    draggedBlob.vx = (mouseX - pmouseX) * 0.2;
-    draggedBlob.vy = (mouseY - pmouseY) * 0.2;
+    draggedBlob.vx = (mouseX - pmouseX) * 0.2 * motionScale;
+    draggedBlob.vy = (mouseY - pmouseY) * 0.2 * motionScale;
     draggedBlob = null;
   }
 }
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
+  updateViewFlags();
   scaleFactor = min(width, height) / 800;
   
   // Recreate the shader layer with new dimensions
-  shaderLayer = createGraphics(ceil(width * SHADER_RES), ceil(height * SHADER_RES), WEBGL);
+  shaderLayer = createGraphics(ceil(width * shaderRes), ceil(height * shaderRes), WEBGL);
 }
 
 // --- Splitting Logic ---
@@ -602,7 +633,7 @@ function splitCluster(cluster) {
     dirY = 1;
   }
 
-  let force = 5.0 * scaleFactor; // Strong push to separate them clearly
+  let force = 5.0 * scaleFactor * motionScale; // Scale push for smoother mobile splits
   for (let b of groupA) {
     b.vx -= dirX * force;
     b.vy -= dirY * force;
