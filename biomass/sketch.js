@@ -15,6 +15,48 @@ const MOBILE_MAX_SPEED = 3;
 const MAX_BLOBS = 50;
 const MAX_FOOD = 3;
 
+const SPECIES_DEFS = [
+  {
+    key: 'warden',
+    color: [0.72, 0.93, 0.78],
+    motionBias: 0.85,
+    dampingBias: 1.2,
+    speedBias: 0.9,
+    dominance: 1,
+    hostileWith: ['harvester'],
+    splitBias: 'cohesive',
+    role: 'anchor'
+  },
+  {
+    key: 'harvester',
+    color: [1.0, 0.64, 0.42],
+    motionBias: 1.25,
+    dampingBias: 0.85,
+    speedBias: 1.2,
+    dominance: 3,
+    hostileWith: [],
+    splitBias: 'aggressive',
+    role: 'hunter'
+  },
+  {
+    key: 'weaver',
+    color: [0.6, 0.82, 1.0],
+    motionBias: 1.0,
+    dampingBias: 1.0,
+    speedBias: 1.0,
+    dominance: 2,
+    hostileWith: [],
+    splitBias: 'balanced',
+    role: 'support',
+    mediator: true
+  }
+];
+
+const SPECIES_BY_KEY = SPECIES_DEFS.reduce((acc, spec) => {
+  acc[spec.key] = spec;
+  return acc;
+}, {});
+
 let shaderRes = DESKTOP_SHADER_RES;
 let lastClickTime = 0;
 let autoPlay = true;
@@ -24,6 +66,7 @@ let mobileView = false;
 let motionScale = DESKTOP_MOTION_SCALE;
 let velocityDamping = DESKTOP_DAMPING;
 let maxSpeed = DESKTOP_MAX_SPEED;
+let lastBalanceFrame = 0;
 
 function preload() {
   metaballShader = loadShader('metaballs.vert', 'metaballs.frag');
@@ -37,6 +80,46 @@ function updateViewFlags() {
   maxSpeed = mobileView ? MOBILE_MAX_SPEED : DESKTOP_MAX_SPEED;
 }
 
+function blobMotionScale(blob) {
+  return motionScale * (blob?.traits?.motionBias || 1);
+}
+
+function blobDampingFactor(blob) {
+  const bias = blob?.traits?.dampingBias || 1;
+  const baseLoss = 1 - velocityDamping;
+  const adjustedLoss = baseLoss * bias;
+  return constrain(1 - adjustedLoss, 0.9, 0.9999);
+}
+
+function blobMaxSpeed(blob) {
+  return maxSpeed * (blob?.traits?.speedBias || 1);
+}
+
+function pickSpeciesKey() {
+  const idx = Math.floor(Math.random() * SPECIES_DEFS.length);
+  return SPECIES_DEFS[idx].key;
+}
+
+function setBlobSpecies(blob, key) {
+  const spec = SPECIES_BY_KEY[key] || SPECIES_DEFS[0];
+  blob.species = spec.key;
+  blob.traits = spec;
+  blob.speciesColor = spec.color;
+}
+
+function createBlob(x, y, radius, preferredSpecies) {
+  const blob = {
+    x,
+    y,
+    r: radius !== undefined ? radius : random(40, 80) * scaleFactor,
+    vx: random(-1, 1),
+    vy: random(-1, 1)
+  };
+  const speciesKey = preferredSpecies || pickSpeciesKey();
+  setBlobSpecies(blob, speciesKey);
+  return blob;
+}
+
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
   updateViewFlags();
@@ -47,15 +130,9 @@ function setup() {
   // Create a WEBGL buffer for the shader to manage GPU load
   shaderLayer = createGraphics(ceil(width * shaderRes), ceil(height * shaderRes), WEBGL);
   
-  // Initialize blobs
+  // Initialize blobs with diverse species
   for (let i = 0; i < 10; i++) {
-    blobs.push({
-      x: random(width),
-      y: random(height),
-      r: random(40, 80) * scaleFactor, // Radius of influence
-      vx: random(-1, 1),
-      vy: random(-1, 1)
-    });
+    blobs.push(createBlob(random(width), random(height)));
   }
   
   noSmooth();
@@ -78,6 +155,8 @@ function updateGameLogic() {
     let myNeighbors = neighbors.get(b);
     let n = myNeighbors.length;
     
+    const moveScale = blobMotionScale(b);
+
     // Auto Play Logic
     if (autoPlay) {
       if (n <= 1) {
@@ -94,8 +173,8 @@ function updateGameLogic() {
            let dy = nearest.y - b.y;
            let d = sqrt(dx*dx + dy*dy);
            if (d > 0) {
-             b.vx += (dx/d) * 0.3 * motionScale;
-             b.vy += (dy/d) * 0.3 * motionScale;
+             b.vx += (dx/d) * 0.3 * moveScale;
+             b.vy += (dy/d) * 0.3 * moveScale;
            }
         }
       } else if (n >= 5) {
@@ -115,11 +194,11 @@ function updateGameLogic() {
         
         // Strong push away from the center
         if (d > 0) {
-          b.vx += (dx / d) * 0.8 * motionScale;
-          b.vy += (dy / d) * 0.8 * motionScale;
+          b.vx += (dx / d) * 0.8 * moveScale;
+          b.vy += (dy / d) * 0.8 * moveScale;
         } else {
-          b.vx += random(-1, 1) * motionScale;
-          b.vy += random(-1, 1) * motionScale;
+          b.vx += random(-1, 1) * moveScale;
+          b.vy += random(-1, 1) * moveScale;
         }
       }
     }
@@ -144,6 +223,11 @@ function updateGameLogic() {
   }
 
   checkSplitting(neighbors);
+
+  if (frameCount - lastBalanceFrame > 300) {
+    ensureSpeciesBalance();
+    lastBalanceFrame = frameCount;
+  }
 }
 
 function killBlob(blob) {
@@ -166,12 +250,15 @@ function birthBlob(parent) {
   let angle = random(TWO_PI);
   let dist = parent.r * 1.2;
   let newR = 40 * scaleFactor;
-  let newBlob = {
-    x: parent.x + cos(angle) * dist,
-    y: parent.y + sin(angle) * dist,
-    r: newR,
-    vx: 0, vy: 0
-  };
+  let inheritKey = random() < 0.35 ? pickSpeciesKey() : parent.species;
+  let newBlob = createBlob(
+    parent.x + cos(angle) * dist,
+    parent.y + sin(angle) * dist,
+    newR,
+    inheritKey
+  );
+  newBlob.vx = 0;
+  newBlob.vy = 0;
   
   // Keep inside bounds
   newBlob.x = constrain(newBlob.x, 0, width);
@@ -180,11 +267,13 @@ function birthBlob(parent) {
   blobs.push(newBlob);
   
   // Connect to parent
-  springs.push({ 
+  const newSpring = { 
     a: parent, 
     b: newBlob, 
     len: (parent.r + newBlob.r) * 0.85 
-  });
+  };
+  springs.push(newSpring);
+  handleSpeciesMerge(parent, newBlob, newSpring);
   
   // Shrink parent back to normal
   parent.r = 60 * scaleFactor;
@@ -210,6 +299,7 @@ function spawnFood(x, y) {
   // Find 3 closest available blobs
   let sortedBlobs = availableBlobs.sort((a, b) => dist(a.x, a.y, f.x, f.y) - dist(b.x, b.y, f.x, f.y));
   let hunters = sortedBlobs.slice(0, 3);
+  hunters = enforceHunterDiversity(hunters, availableBlobs);
   
   f.hunters = hunters;
   food.push(f);
@@ -244,7 +334,9 @@ function spawnFood(x, y) {
         }
       }
       if (!connected) {
-        springs.push({ a: a, b: b, len: (a.r + b.r) * 0.85 });
+        const supportSpring = { a: a, b: b, len: (a.r + b.r) * 0.85 };
+        springs.push(supportSpring);
+        handleSpeciesMerge(a, b, supportSpring);
       }
     }
   }
@@ -272,8 +364,9 @@ function updateFoodLogic() {
       
       // Move towards food
       if (d > 0) {
-        b.vx += (dx/d) * 0.5 * motionScale;
-        b.vy += (dy/d) * 0.5 * motionScale;
+        const chaseScale = blobMotionScale(b);
+        b.vx += (dx/d) * 0.5 * chaseScale;
+        b.vy += (dy/d) * 0.5 * chaseScale;
       }
       
       // Eat
@@ -333,6 +426,12 @@ function draw() {
     let s = springs[i];
     let a = s.a;
     let b = s.b;
+
+    if (s.decayFrame && frameCount > s.decayFrame) {
+      springs.splice(i, 1);
+      continue;
+    }
+    
     let dx = b.x - a.x;
     let dy = b.y - a.y;
     let d = sqrt(dx * dx + dy * dy);
@@ -383,11 +482,13 @@ function draw() {
       let mergeThreshold = (a.r + b.r); 
       
       if (d < mergeThreshold) {
-        springs.push({
+        const mergeSpring = {
           a: a,
           b: b,
           len: (a.r + b.r) * 0.6 // Rest length: pull them into a nice cluster
-        });
+        };
+        springs.push(mergeSpring);
+        handleSpeciesMerge(a, b, mergeSpring);
       }
     }
   }
@@ -396,23 +497,26 @@ function draw() {
   for (let b of blobs) {
     if (b !== draggedBlob) {
       // Add gentle noise to keep them drifting like living things
-      b.vx += random(-0.1, 0.1) * motionScale;
-      b.vy += random(-0.1, 0.1) * motionScale;
+      const driftScale = blobMotionScale(b);
+      b.vx += random(-0.1, 0.1) * driftScale;
+      b.vy += random(-0.1, 0.1) * driftScale;
 
       // Apply damping (friction)
-      b.vx *= velocityDamping;
-      b.vy *= velocityDamping;
+      const damping = blobDampingFactor(b);
+      b.vx *= damping;
+      b.vy *= damping;
 
       let speed = sqrt(b.vx * b.vx + b.vy * b.vy);
-      if (speed > maxSpeed) {
-        let limit = maxSpeed / speed;
+      const speedLimit = blobMaxSpeed(b);
+      if (speed > speedLimit) {
+        let limit = speedLimit / speed;
         b.vx *= limit;
         b.vy *= limit;
       }
 
       // Soft boundary repulsion to keep them away from edges
       let margin = 100 * scaleFactor;
-      let nudge = 0.2 * scaleFactor * motionScale;
+      let nudge = 0.2 * scaleFactor * driftScale;
       if (b.x < margin) b.vx += nudge;
       if (b.x > width - margin) b.vx -= nudge;
       if (b.y < margin) b.vy += nudge;
@@ -435,17 +539,27 @@ function draw() {
   
   // Prepare uniform data
   let blobData = [];
+  let colorData = [];
   for (let i = 0; i < MAX_BLOBS; i++) {
     if (i < blobs.length) {
       let b = blobs[i];
       blobData.push(b.x);
       blobData.push(b.y);
       blobData.push(b.r);
+
+      const col = b.speciesColor || [1, 1, 1];
+      colorData.push(col[0]);
+      colorData.push(col[1]);
+      colorData.push(col[2]);
     } else {
       // Pad with zeros
       blobData.push(0);
       blobData.push(0);
       blobData.push(0);
+
+      colorData.push(0);
+      colorData.push(0);
+      colorData.push(0);
     }
   }
 
@@ -454,6 +568,7 @@ function draw() {
   metaballShader.setUniform('u_resolution', [width, height]);
   metaballShader.setUniform('u_time', millis() / 1000.0);
   metaballShader.setUniform('u_blobs', blobData);
+  metaballShader.setUniform('u_blobColors', colorData);
   
   // Draw a plane covering the whole shader layer
   shaderLayer.noStroke();
@@ -483,10 +598,11 @@ function draw() {
     circle(f.x, f.y, f.r * 2);
   }
 
-  // Draw nuclei
-  fill(0, 200);
+  // Draw nuclei tinted by species
   noStroke();
   for (let b of blobs) {
+    const col = b.speciesColor || [0, 0, 0];
+    fill(col[0] * 255, col[1] * 255, col[2] * 255, 220);
     circle(b.x, b.y, b.r * 0.25);
   }
   
@@ -535,8 +651,9 @@ function mouseDragged() {
 function mouseReleased() {
   if (draggedBlob) {
     // Give it a little toss, but scaled down for the gentle physics
-    draggedBlob.vx = (mouseX - pmouseX) * 0.2 * motionScale;
-    draggedBlob.vy = (mouseY - pmouseY) * 0.2 * motionScale;
+    const releaseScale = blobMotionScale(draggedBlob);
+    draggedBlob.vx = (mouseX - pmouseX) * 0.2 * releaseScale;
+    draggedBlob.vy = (mouseY - pmouseY) * 0.2 * releaseScale;
     draggedBlob = null;
   }
 }
@@ -598,17 +715,22 @@ function splitCluster(cluster) {
 
   let groupA = [];
   let groupB = [];
-  
-  // Sort and split
-  if (varX > varY) {
-    cluster.sort((a, b) => a.x - b.x);
+
+  const speciesPartition = partitionClusterBySpecies(cluster);
+  if (speciesPartition) {
+    groupA = speciesPartition[0];
+    groupB = speciesPartition[1];
   } else {
-    cluster.sort((a, b) => a.y - b.y);
+    // Sort and split by axis if species partition failed
+    if (varX > varY) {
+      cluster.sort((a, b) => a.x - b.x);
+    } else {
+      cluster.sort((a, b) => a.y - b.y);
+    }
+    let mid = Math.floor(cluster.length / 2);
+    groupA = cluster.slice(0, mid);
+    groupB = cluster.slice(mid);
   }
-  
-  let mid = Math.floor(cluster.length / 2);
-  groupA = cluster.slice(0, mid);
-  groupB = cluster.slice(mid);
 
   // Remove springs between groups
   for (let i = springs.length - 1; i >= 0; i--) {
@@ -633,13 +755,173 @@ function splitCluster(cluster) {
     dirY = 1;
   }
 
-  let force = 5.0 * scaleFactor * motionScale; // Scale push for smoother mobile splits
+  let baseForce = 5.0 * scaleFactor;
   for (let b of groupA) {
-    b.vx -= dirX * force;
-    b.vy -= dirY * force;
+    const bias = b?.traits?.splitBias === 'aggressive' ? 1.3 : (b?.traits?.splitBias === 'cohesive' ? 0.8 : 1.0);
+    const impulse = baseForce * blobMotionScale(b) * bias;
+    b.vx -= dirX * impulse;
+    b.vy -= dirY * impulse;
   }
   for (let b of groupB) {
-    b.vx += dirX * force;
-    b.vy += dirY * force;
+    const bias = b?.traits?.splitBias === 'aggressive' ? 1.3 : (b?.traits?.splitBias === 'cohesive' ? 0.8 : 1.0);
+    const impulse = baseForce * blobMotionScale(b) * bias;
+    b.vx += dirX * impulse;
+    b.vy += dirY * impulse;
   }
+}
+
+function partitionClusterBySpecies(cluster) {
+  let buckets = new Map();
+  for (let b of cluster) {
+    if (!buckets.has(b.species)) {
+      buckets.set(b.species, []);
+    }
+    buckets.get(b.species).push(b);
+  }
+  if (buckets.size <= 1) return null;
+
+  let groupA = [];
+  let groupB = [];
+  for (let members of buckets.values()) {
+    let target;
+    let bias = members[0]?.traits?.splitBias || 'balanced';
+    if (bias === 'aggressive') {
+      target = groupA.length <= groupB.length ? groupA : groupB;
+    } else if (bias === 'cohesive') {
+      target = groupA.length >= groupB.length ? groupA : groupB;
+    } else {
+      target = groupA.length <= groupB.length ? groupA : groupB;
+    }
+    for (let m of members) target.push(m);
+  }
+
+  if (groupA.length === 0 || groupB.length === 0) return null;
+  return [groupA, groupB];
+}
+
+function enforceHunterDiversity(hunters, pool) {
+  if (hunters.some(h => h?.traits?.role === 'hunter')) return hunters;
+  let candidate = pool.find(b => b?.traits?.role === 'hunter' && !hunters.includes(b));
+  if (candidate) {
+    hunters[hunters.length - 1] = candidate;
+  }
+  return hunters;
+}
+
+function isHostilePair(a, b) {
+  const hostileA = a?.traits?.hostileWith || [];
+  const hostileB = b?.traits?.hostileWith || [];
+  return hostileA.includes(b?.species) || hostileB.includes(a?.species);
+}
+
+function handleSpeciesMerge(a, b, spring) {
+  if (!spring || !a || !b) return;
+  if (a.species === b.species) return;
+
+  if (isHostilePair(a, b)) {
+    spring.decayFrame = frameCount + 240 + random(-60, 60);
+    return;
+  }
+
+  const specA = a.traits;
+  const specB = b.traits;
+
+  if (!specA || !specB) return;
+
+  if (specA.mediator || specB.mediator) {
+    resolveMediatorMerge(a, b, spring);
+    return;
+  }
+
+  if (specA.dominance === specB.dominance) {
+    spring.len *= 0.98;
+    return;
+  }
+
+  const dominantBlob = specA.dominance > specB.dominance ? a : b;
+  const submissiveBlob = dominantBlob === a ? b : a;
+
+  if (submissiveBlob?.traits?.role === 'anchor') {
+    spring.len *= 1.05;
+    return;
+  }
+
+  setBlobSpecies(submissiveBlob, dominantBlob.species);
+  dominantBlob.r = min(dominantBlob.r * 1.02, 120 * scaleFactor);
+  spring.len *= dominantBlob?.traits?.role === 'anchor' ? 0.9 : 1.0;
+}
+
+function resolveMediatorMerge(a, b, spring) {
+  const mediator = a.traits?.mediator ? a : b;
+  const partner = mediator === a ? b : a;
+  const mediatorDom = mediator.traits?.dominance || 0;
+  const partnerDom = partner.traits?.dominance || 0;
+
+  let convertPartnerChance = mediatorDom >= partnerDom ? 0.35 : 0.2;
+  if (partner.traits?.role === 'hunter') convertPartnerChance += 0.05;
+  convertPartnerChance = constrain(convertPartnerChance, 0.1, 0.45);
+
+  if (random() < convertPartnerChance) {
+    setBlobSpecies(partner, mediator.species);
+    spring.len *= 0.92;
+    return;
+  }
+
+  let convertMediatorChance = 0.25;
+  if (partner.traits?.role === 'anchor') convertMediatorChance += 0.15;
+  if (random() < convertMediatorChance) {
+    setBlobSpecies(mediator, partner.species);
+    spring.len *= 0.96;
+    return;
+  }
+
+  if (partner.traits?.role === 'hunter' && random() < 0.25) {
+    setBlobSpecies(partner, 'warden');
+  }
+
+  spring.decayFrame = frameCount + 360 + random(-90, 90);
+}
+
+function ensureSpeciesBalance() {
+  if (blobs.length < 4) return;
+  const counts = getSpeciesCounts();
+  const total = blobs.length;
+  const sorted = Object.entries(counts).sort((a, b) => a[1] - b[1]);
+  const minorityList = sorted.slice(0, 2);
+  const majority = sorted[sorted.length - 1];
+  const minority = sorted[0];
+
+  if (!majority || !minority) return;
+
+  if (minority[1] === 0) {
+    convertRandomBlobTo(minority[0], b => b.species !== minority[0]);
+    convertRandomBlobTo(minorityList[1]?.[0] || minority[0], b => b.species !== minority[0]);
+    return;
+  }
+
+  const majorityRatio = majority[1] / total;
+  const minorityRatio = minority[1] / total;
+  if (majorityRatio > 0.55 && minorityRatio < 0.2) {
+    const conversions = Math.min(3, Math.ceil((majority[1] - minority[1]) / 3));
+    for (let i = 0; i < conversions; i++) {
+      const targetMinority = minorityList[i % minorityList.length][0];
+      convertRandomBlobTo(targetMinority, b => b.species === majority[0]);
+    }
+  }
+}
+
+function getSpeciesCounts() {
+  const counts = {};
+  for (let spec of SPECIES_DEFS) counts[spec.key] = 0;
+  for (let b of blobs) counts[b.species] = (counts[b.species] || 0) + 1;
+  return counts;
+}
+
+function convertRandomBlobTo(targetSpecies, predicate) {
+  const candidates = blobs.filter(predicate);
+  if (candidates.length === 0) return;
+  const blob = random(candidates);
+  setBlobSpecies(blob, targetSpecies);
+  blob.vx *= 0.45;
+  blob.vy *= 0.45;
 }

@@ -4,6 +4,7 @@ precision mediump float;
 
 uniform vec2 u_resolution;
 uniform vec3 u_blobs[50];
+uniform vec3 u_blobColors[50];
 uniform float u_time;
 
 varying vec2 vTexCoord;
@@ -74,11 +75,14 @@ void main() {
   float sum = 0.0;
   float maxInf = 0.0;
   float secondMaxInf = 0.0;
+  vec3 dominantColor = vec3(1.0);
+  vec3 runnerUpColor = vec3(1.0);
 
   for (int i = 0; i < 50; i++) {
     vec3 b = u_blobs[i];
     // Optimization: if radius is 0, skip (unused slot)
     if (b.z == 0.0) continue;
+    vec3 speciesColor = u_blobColors[i];
     
     vec2 d = pixelPos - b.xy;
     float dSq = dot(d, d);
@@ -89,15 +93,18 @@ void main() {
 
     if (inf > maxInf) {
       secondMaxInf = maxInf;
+      runnerUpColor = dominantColor;
       maxInf = inf;
+      dominantColor = speciesColor;
     } else if (inf > secondMaxInf) {
       secondMaxInf = inf;
+      runnerUpColor = speciesColor;
     }
   }
 
   if (sum > 1.8) {
-    // Cell Interior: White
-    vec3 col = vec3(1.0);
+    // Cell Interior tinted by dominant species
+    vec3 col = mix(vec3(1.0), dominantColor, 0.7);
     
     // Internal boundaries (Voronoi-like)
     // If the two strongest influences are close, we are at a boundary.
@@ -105,14 +112,15 @@ void main() {
       float ratio = secondMaxInf / maxInf;
       // Create a soft line where influences are similar
       float border = smoothstep(0.75, 1.0, ratio);
-      // Darken the color to create the outline
-      col = mix(vec3(1.0), vec3(0.0), border * 0.8);
+      vec3 blendColor = mix(col, runnerUpColor, border * 0.6);
+      col = mix(blendColor, vec3(0.0), border * 0.4);
     }
     
     finalColor = vec4(col, 1.0);
   } else if (sum > 1.5) {
-    // Cell Wall: Black
-    finalColor = vec4(0.0, 0.0, 0.0, 1.0);
+    // Cell Wall inherits muted species color
+    vec3 edgeColor = mix(vec3(0.0), dominantColor, 0.3);
+    finalColor = vec4(edgeColor, 1.0);
   } else if (sum > 1.0) {
     // Shadow: Fading black over background
     float alpha = smoothstep(1.0, 1.5, sum) * 0.8; 
