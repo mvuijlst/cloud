@@ -10,7 +10,7 @@ let autoPlay = true;
 let autoPlayBtn;
 let food = [];
 const MAX_FOOD = 3;
-let statsHistory = [];
+let scaleFactor = 1;
 
 function preload() {
   metaballShader = loadShader('metaballs.vert', 'metaballs.frag');
@@ -18,6 +18,10 @@ function preload() {
 
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
+  
+  // Calculate scale factor based on screen size (reference: 1280px)
+  scaleFactor = min(width, height) / 1280;
+  
   // Create a smaller WEBGL buffer for the shader to reduce GPU load
   shaderLayer = createGraphics(ceil(width * SHADER_RES), ceil(height * SHADER_RES), WEBGL);
   
@@ -26,7 +30,7 @@ function setup() {
     blobs.push({
       x: random(width),
       y: random(height),
-      r: random(40, 80), // Radius of influence
+      r: random(40, 80) * scaleFactor, // Radius of influence
       vx: random(-1, 1),
       vy: random(-1, 1)
     });
@@ -112,20 +116,20 @@ function updateGameLogic() {
 
     if (n <= 1) {
       // Dies of loneliness
-      b.r -= 0.02;
-      if (b.r < 20) killBlob(b);
+      b.r -= 0.02 * scaleFactor;
+      if (b.r < 20 * scaleFactor) killBlob(b);
     } else if (n === 2 || n === 3) {
       // Stays alive, stable
     } else if (n === 4) {
       // Grows
-      b.r += 0.05;
-      if (b.r > 90) {
+      b.r += 0.05 * scaleFactor;
+      if (b.r > 90 * scaleFactor) {
         birthBlob(b);
       }
     } else if (n >= 5) {
       // Dies of overcrowding
-      b.r -= 0.04;
-      if (b.r < 20) killBlob(b);
+      b.r -= 0.04 * scaleFactor;
+      if (b.r < 20 * scaleFactor) killBlob(b);
     }
   }
 
@@ -151,7 +155,7 @@ function birthBlob(parent) {
 
   let angle = random(TWO_PI);
   let dist = parent.r * 1.2;
-  let newR = 40;
+  let newR = 40 * scaleFactor;
   let newBlob = {
     x: parent.x + cos(angle) * dist,
     y: parent.y + sin(angle) * dist,
@@ -173,7 +177,7 @@ function birthBlob(parent) {
   });
   
   // Shrink parent back to normal
-  parent.r = 60;
+  parent.r = 60 * scaleFactor;
 }
 
 function spawnFood(x, y) {
@@ -189,7 +193,7 @@ function spawnFood(x, y) {
   let f = { 
     x: spawnX, 
     y: spawnY, 
-    r: 15, 
+    r: 15 * scaleFactor, 
     hunters: [] 
   };
   
@@ -390,8 +394,8 @@ function draw() {
       b.vy *= 0.98;
 
       // Soft boundary repulsion to keep them away from edges
-      let margin = 100;
-      let nudge = 0.2;
+      let margin = 100 * scaleFactor;
+      let nudge = 0.2 * scaleFactor;
       if (b.x < margin) b.vx += nudge;
       if (b.x > width - margin) b.vx -= nudge;
       if (b.y < margin) b.vy += nudge;
@@ -469,141 +473,7 @@ function draw() {
     circle(b.x, b.y, b.r * 0.25);
   }
   
-  // Draw Biomass UI
-  fill(255);
-  textFont('IBMPlexMono');
-  textSize(16);
-  textAlign(LEFT, TOP);
-  let totalBiomass = 0;
-  for(let b of blobs) totalBiomass += b.r;
-  text("BIOMASS: " + Math.floor(totalBiomass), 20, 20);
-  
-  updateStats();
-  drawStats();
-  
   pop();
-}
-
-function countClusters() {
-  let visited = new Set();
-  let count = 0;
-  
-  // Re-build neighbors map
-  let neighbors = new Map();
-  for (let b of blobs) neighbors.set(b, []);
-  for (let s of springs) {
-    neighbors.get(s.a).push(s.b);
-    neighbors.get(s.b).push(s.a);
-  }
-
-  for (let b of blobs) {
-    if (!visited.has(b)) {
-      count++;
-      let q = [b];
-      visited.add(b);
-      while (q.length > 0) {
-        let curr = q.pop();
-        let myNeighbors = neighbors.get(curr) || [];
-        for (let n of myNeighbors) {
-          if (!visited.has(n)) {
-            visited.add(n);
-            q.push(n);
-          }
-        }
-      }
-    }
-  }
-  return count;
-}
-
-function updateStats() {
-  if (frameCount % 10 !== 0) return; 
-
-  let numCells = blobs.length;
-  let numClusters = countClusters();
-  let totalBiomass = 0;
-  for(let b of blobs) totalBiomass += b.r;
-
-  statsHistory.push({
-    cells: numCells,
-    clusters: numClusters,
-    biomass: totalBiomass
-  });
-
-  if (statsHistory.length > 1200) {
-    statsHistory.shift();
-  }
-}
-
-function drawStats() {
-  let chartW = 300;
-  let chartH = 100;
-  let x = width - chartW - 20;
-  let y = height - chartH - 20;
-
-  // Background
-  noStroke();
-  fill(0, 150);
-  rect(x, y, chartW, chartH);
-
-  if (statsHistory.length < 2) return;
-
-  noFill();
-  strokeWeight(1);
-
-  let maxCells = 50;
-  let maxClusters = 10;
-  let maxBiomass = 2000;
-  
-  for (let s of statsHistory) {
-    maxCells = max(maxCells, s.cells);
-    maxClusters = max(maxClusters, s.clusters);
-    maxBiomass = max(maxBiomass, s.biomass);
-  }
-
-  // Draw Cells (Cyan)
-  stroke(0, 255, 255);
-  beginShape();
-  for (let i = 0; i < statsHistory.length; i++) {
-    let sx = x + (i / (statsHistory.length - 1)) * chartW;
-    let sy = y + chartH - (statsHistory[i].cells / maxCells) * chartH;
-    vertex(sx, sy);
-  }
-  endShape();
-
-  // Draw Clusters (Magenta)
-  stroke(255, 0, 255);
-  beginShape();
-  for (let i = 0; i < statsHistory.length; i++) {
-    let sx = x + (i / (statsHistory.length - 1)) * chartW;
-    let sy = y + chartH - (statsHistory[i].clusters / maxClusters) * chartH;
-    vertex(sx, sy);
-  }
-  endShape();
-
-  // Draw Biomass (Yellow)
-  stroke(255, 255, 0);
-  beginShape();
-  for (let i = 0; i < statsHistory.length; i++) {
-    let sx = x + (i / (statsHistory.length - 1)) * chartW;
-    let sy = y + chartH - (statsHistory[i].biomass / maxBiomass) * chartH;
-    vertex(sx, sy);
-  }
-  endShape();
-  
-  // Legend
-  noStroke();
-  textSize(10);
-  textAlign(LEFT, BOTTOM);
-  
-  fill(0, 255, 255);
-  text(`Cells: ${statsHistory[statsHistory.length-1].cells}`, x, y - 2);
-  
-  fill(255, 0, 255);
-  text(`Metaballs: ${statsHistory[statsHistory.length-1].clusters}`, x + 60, y - 2);
-  
-  fill(255, 255, 0);
-  text(`Biomass: ${Math.floor(statsHistory[statsHistory.length-1].biomass)}`, x + 140, y - 2);
 }
 
 function mousePressed() {
@@ -656,6 +526,8 @@ function mouseReleased() {
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
+  scaleFactor = min(width, height) / 800;
+  
   // Recreate the shader layer with new dimensions
   shaderLayer = createGraphics(ceil(width * SHADER_RES), ceil(height * SHADER_RES), WEBGL);
 }
@@ -743,7 +615,7 @@ function splitCluster(cluster) {
     dirY = 1;
   }
 
-  let force = 5.0; // Strong push to separate them clearly
+  let force = 5.0 * scaleFactor; // Strong push to separate them clearly
   for (let b of groupA) {
     b.vx -= dirX * force;
     b.vy -= dirY * force;
