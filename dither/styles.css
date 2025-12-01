@@ -33,8 +33,15 @@ body {
 .app-grid {
   display: grid;
   gap: 2rem;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+  align-items: start;
   padding-bottom: 3rem;
+}
+
+@media (max-width: 900px) {
+  .app-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .panel {
