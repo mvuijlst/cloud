@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dither</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+
+    <main class="container app-grid">
+      <section class="panel">
+        <h2>Dither</h2>
+        <div class="control-group">
+          <label for="fileInput">Image</label>
+          <input id="fileInput" type="file" accept="image/*" />
+          <div id="dropZone" class="drop-zone" tabindex="0">
+            <p>Drop an image here or click to choose a file.</p>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label for="methodSelect">Dither method</label>
+          <select id="methodSelect"></select>
+        </div>
+
+        <div class="control-group">
+          <label for="resizeSelect">Resize width</label>
+          <select id="resizeSelect">
+            <option value="original">Original size</option>
+            <option value="128">128 px</option>
+            <option value="256" selected>256 px</option>
+            <option value="512">512 px</option>
+          </select>
+        </div>
+
+        <div id="thresholdGroup" class="control-group hidden">
+          <label for="thresholdRange">Threshold: <span id="thresholdValue">128</span></label>
+          <input id="thresholdRange" type="range" min="0" max="255" value="128" step="1" />
+        </div>
+
+        <div class="control-group">
+          <label for="paletteSelect">Palette preset</label>
+          <div class="palette-row">
+            <select id="paletteSelect"></select>
+            <select id="variantSelect" class="hidden"></select>
+          </div>
+        </div>
+
+        <div class="control-group status" id="statusText">
+          Load an image to get started.
+        </div>
+      </section>
+
+      <section class="panel preview-panel">
+        <div class="canvas-pair">
+          <div>
+            <h3>Original</h3>
+            <canvas id="originalCanvas" width="0" height="0"></canvas>
+          </div>
+          <div>
+            <h3>Dithered</h3>
+            <canvas id="ditheredCanvas" width="0" height="0"></canvas>
+          </div>
+        </div>
+        <div class="preview-actions">
+          <a id="downloadButton" class="button secondary" download="dithered-image.png" disabled>
+            Download PNG
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>
