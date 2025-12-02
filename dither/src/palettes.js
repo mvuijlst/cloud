@@ -8,8 +8,8 @@ const hexToRgb = (hex) => {
   return [r, g, b];
 };
 
-const createGrayscalePalette = (steps) => {
-  const safeSteps = Math.max(2, Math.min(steps, 16));
+export const createGrayscalePalette = (steps) => {
+  const safeSteps = Math.max(2, Math.min(steps, 32));
   return Array.from({ length: safeSteps }, (_, index) => {
     const value = Math.round((index / (safeSteps - 1)) * 255);
     return [value, value, value];
@@ -33,9 +33,6 @@ const MONO = [
   [255, 255, 255],
 ];
 
-const GRAYSCALE_4 = createGrayscalePalette(4);
-const GRAYSCALE_8 = createGrayscalePalette(8);
-const GRAYSCALE_16 = createGrayscalePalette(16);
 
 const PICO_8 = [
   "#000000",
@@ -132,6 +129,118 @@ const COMMODORE_64 = [
   "#9F9F9F",
 ].map(hexToRgb);
 
+const AMIGA_DELUXE = [
+  "#0A1A3C",
+  "#154A8A",
+  "#1FA7C9",
+  "#28D8DA",
+  "#F7F3CC",
+  "#F0A35E",
+  "#D95B27",
+  "#7A1E24",
+  "#40121A",
+  "#7D4E9B",
+  "#C78ADC",
+  "#F4C2D7",
+].map(hexToRgb);
+
+const NES_PALETTE = [
+  "#000000",
+  "#7C7C7C",
+  "#FCFCFC",
+  "#A4E4FC",
+  "#3CBCFC",
+  "#0078F8",
+  "#0000FC",
+  "#B8B8F8",
+  "#6844FC",
+  "#4428BC",
+  "#940084",
+  "#D800CC",
+  "#F878F8",
+  "#F8B8F8",
+  "#F8D8F8",
+  "#F8F8F8",
+  "#58F898",
+  "#00A800",
+  "#005800",
+  "#00FC00",
+  "#94F858",
+  "#F8B858",
+  "#F87858",
+  "#A80000",
+  "#F8A4A4",
+  "#F4D8A4",
+  "#F8F878",
+].map(hexToRgb);
+
+const APPLE_II_HIRES = [
+  "#000000",
+  "#FFFFFF",
+  "#00FF00",
+  "#FF00FF",
+  "#0000FF",
+  "#FF8000",
+].map(hexToRgb);
+
+const GAME_BOY_SUNSET = [
+  "#1D0F2F",
+  "#734675",
+  "#F18F01",
+  "#F7D488",
+  "#F45B69",
+  "#9B5DE5",
+].map(hexToRgb);
+
+const CPC_MODE0 = [
+  "#000000",
+  "#0000FF",
+  "#FF0000",
+  "#FF00FF",
+  "#00FF00",
+  "#00FFFF",
+  "#FFFF00",
+  "#FFFFFF",
+  "#7F7F7F",
+  "#7F00FF",
+  "#FF007F",
+  "#7FFF00",
+  "#00FF7F",
+  "#FF7F00",
+  "#007FFF",
+  "#7FFFFF",
+].map(hexToRgb);
+
+const SOLARIZED = [
+  "#002B36",
+  "#073642",
+  "#586E75",
+  "#657B83",
+  "#839496",
+  "#93A1A1",
+  "#EEE8D5",
+  "#FDF6E3",
+  "#B58900",
+  "#CB4B16",
+  "#DC322F",
+  "#D33682",
+  "#6C71C4",
+  "#268BD2",
+  "#2AA198",
+  "#859900",
+].map(hexToRgb);
+
+const VAPORWAVE = [
+  "#2B244D",
+  "#5D32A1",
+  "#FF52A2",
+  "#FFC7C7",
+  "#69EBD0",
+  "#00AFC1",
+  "#FDE74C",
+  "#FCCA46",
+].map(hexToRgb);
+
 export const ZX_SPECTRUM_NORMAL_SET = [
   "#000000",
   "#0100CE",
@@ -170,10 +279,45 @@ const RGB_3BIT = [
   "#FFFFFF",
 ].map(hexToRgb);
 
+const buildWeb216Palette = () => {
+  const steps = [0, 51, 102, 153, 204, 255];
+  const colors = [];
+  for (const r of steps) {
+    for (const g of steps) {
+      for (const b of steps) {
+        colors.push([r, g, b]);
+      }
+    }
+  }
+  return colors;
+};
+
+const WEB_216 = buildWeb216Palette();
+
+const CMYK_DUOTONE = [
+  "#050505",
+  "#1F1C18",
+  "#3A3629",
+  "#5E5234",
+  "#8F733C",
+  "#B58E44",
+  "#D8B154",
+  "#F8DB7B",
+  "#F7F1C2",
+].map(hexToRgb);
+
+export const MULTITONE_DEFAULTS = {
+  duotone: ["#050505", "#F8DB7B"],
+  tritone: ["#050505", "#8F733C", "#F8DB7B"],
+  quadtone: ["#050505", "#5E5234", "#B58E44", "#F8DB7B"],
+};
+
 export const PALETTE_GROUP_LABELS = {
   core: "Core palettes",
   retro: "Retro hardware",
   tiny: "Tiny / bit-depth",
+  multitone: "Multitone ramps",
+  custom: "Custom sets",
 };
 
 export const PALETTE_PRESETS = [
@@ -187,50 +331,24 @@ export const PALETTE_PRESETS = [
     description: "Pure black and white for maximum contrast.",
   },
   {
-    id: "grayscale-4",
-    label: "Grayscale (4)",
+    id: "grayscale-variable",
+    label: "Grayscale ramp",
     group: "core",
-    kind: "fixed",
-    size: 4,
-    colors: GRAYSCALE_4,
-  },
-  {
-    id: "tiny-grayscale",
-    label: "2-bit grayscale (4)",
-    group: "tiny",
-    kind: "fixed",
-    size: 4,
-    colors: GRAYSCALE_4,
-  },
-  {
-    id: "grayscale-8",
-    label: "Grayscale (8)",
-    group: "core",
-    kind: "fixed",
+    kind: "grayscale",
     size: 8,
-    colors: GRAYSCALE_8,
+    min: 2,
+    max: 32,
+    description: "Adjustable neutral grayscale ramp.",
   },
   {
-    id: "grayscale-16",
-    label: "Grayscale (16)",
-    group: "core",
-    kind: "fixed",
-    size: 16,
-    colors: GRAYSCALE_16,
-  },
-  {
-    id: "adaptive-8",
-    label: "Adaptive (8)",
+    id: "adaptive-auto",
+    label: "Adaptive palette",
     group: "core",
     kind: "adaptive",
-    size: 8,
-  },
-  {
-    id: "adaptive-16",
-    label: "Adaptive (16)",
-    group: "core",
-    kind: "adaptive",
-    size: 16,
+    size: 12,
+    min: 2,
+    max: 32,
+    description: "Image-driven palette using adaptive clustering.",
   },
   {
     id: "pico-8",
@@ -305,6 +423,82 @@ export const PALETTE_PRESETS = [
     size: 8,
     colors: RGB_3BIT,
   },
+  {
+    id: "web-216",
+    label: "Web-safe 216",
+    group: "tiny",
+    kind: "fixed",
+    size: WEB_216.length,
+    colors: WEB_216,
+    description: "Classic 6x6x6 web-safe cube.",
+  },
+  {
+    id: "amiga-deluxe",
+    label: "Amiga Deluxe (12)",
+    group: "retro",
+    kind: "fixed",
+    size: AMIGA_DELUXE.length,
+    colors: AMIGA_DELUXE,
+    description: "Copper-bar inspired Deluxe Paint hues.",
+  },
+  {
+    id: "nes-classic",
+    label: "NES Classic (27)",
+    group: "retro",
+    kind: "fixed",
+    size: NES_PALETTE.length,
+    colors: NES_PALETTE,
+    description: "Representative subset of the Nintendo Entertainment System palette.",
+  },
+  {
+    id: "apple2-hires",
+    label: "Apple II Hi-Res (6)",
+    group: "retro",
+    kind: "fixed",
+    size: APPLE_II_HIRES.length,
+    colors: APPLE_II_HIRES,
+  },
+  {
+    id: "gbc-sunset",
+    label: "Game Boy Color Sunset (6)",
+    group: "retro",
+    kind: "fixed",
+    size: GAME_BOY_SUNSET.length,
+    colors: GAME_BOY_SUNSET,
+    description: "Warm late-90s handheld tones.",
+  },
+  {
+    id: "cpc-mode0",
+    label: "Amstrad CPC Mode 0 (16)",
+    group: "retro",
+    kind: "fixed",
+    size: CPC_MODE0.length,
+    colors: CPC_MODE0,
+  },
+  {
+    id: "multitone",
+    label: "Multitone",
+    group: "multitone",
+    kind: "multitone",
+    description: "Blend 2–4 inks with adjustable ramp steps.",
+  },
+  {
+    id: "solarized",
+    label: "Solarized (16)",
+    group: "custom",
+    kind: "fixed",
+    size: SOLARIZED.length,
+    colors: SOLARIZED,
+  },
+  {
+    id: "vaporwave",
+    label: "Vaporwave (8)",
+    group: "custom",
+    kind: "fixed",
+    size: VAPORWAVE.length,
+    colors: VAPORWAVE,
+    description: "Jazz-cup pastels for retro-futurism.",
+  },
 ];
 
 export const PALETTE_LOOKUP = PALETTE_PRESETS.reduce((acc, preset) => {
@@ -313,7 +507,8 @@ export const PALETTE_LOOKUP = PALETTE_PRESETS.reduce((acc, preset) => {
 }, {});
 
 const MAX_SAMPLES = 2000;
-const MAX_ITERATIONS = 10;
+const MAX_ITERATIONS = 12;
+const MIN_CENTROID_DISTANCE_SQ = 35 * 35;
 
 const samplePixels = (data, stride) => {
   const samples = [];
@@ -323,18 +518,44 @@ const samplePixels = (data, stride) => {
   return samples;
 };
 
+const computeSaturation = (rgb) => {
+  const max = Math.max(rgb[0], rgb[1], rgb[2]);
+  const min = Math.min(rgb[0], rgb[1], rgb[2]);
+  if (!max) return 0;
+  return (max - min) / max;
+};
+
 const pickInitialCentroids = (samples, k) => {
   if (samples.length === 0) return [];
-  const step = Math.max(1, Math.floor(samples.length / k));
   const centroids = [];
-  for (let i = 0; i < k; i++) {
-    const sample = samples[Math.min(samples.length - 1, i * step)];
-    centroids.push([...sample]);
-  }
+  const first = samples[Math.floor(Math.random() * samples.length)];
+  centroids.push([...first]);
+
   while (centroids.length < k) {
-    const fallback = samples[Math.floor(Math.random() * samples.length)];
-    centroids.push([...fallback]);
+    const distances = samples.map((sample) => {
+      let minDist = Infinity;
+      for (const centroid of centroids) {
+        const dist = distanceSq(sample, centroid);
+        if (dist < minDist) {
+          minDist = dist;
+        }
+      }
+      const saturationBias = 0.5 + 0.5 * computeSaturation(sample);
+      return Math.max(minDist, 1) * saturationBias;
+    });
+    const total = distances.reduce((sum, value) => sum + value, 0);
+    let pick = Math.random() * total;
+    let chosenIndex = 0;
+    for (let i = 0; i < distances.length; i++) {
+      pick -= distances[i];
+      if (pick <= 0) {
+        chosenIndex = i;
+        break;
+      }
+    }
+    centroids.push([...samples[chosenIndex]]);
   }
+
   return centroids;
 };
 
@@ -352,7 +573,7 @@ export function generateAdaptivePalette(imageData, colorCount) {
     return createGrayscalePalette(colorCount);
   }
 
-  const targetColors = Math.max(2, Math.min(16, colorCount));
+  const targetColors = Math.max(2, Math.min(32, colorCount));
   const stride = Math.max(4, Math.floor((totalPixels * 4) / MAX_SAMPLES) * 4);
   const samples = samplePixels(data, stride || 4);
 
@@ -411,6 +632,16 @@ export function generateAdaptivePalette(imageData, colorCount) {
 
     if (!updated) {
       break;
+    }
+  }
+
+  // enforce diversity by nudging very similar centroids apart
+  for (let i = 0; i < centroids.length; i++) {
+    for (let j = i + 1; j < centroids.length; j++) {
+      if (distanceSq(centroids[i], centroids[j]) < MIN_CENTROID_DISTANCE_SQ) {
+        const fallback = samples[Math.floor(Math.random() * samples.length)];
+        centroids[j] = [...fallback];
+      }
     }
   }
 

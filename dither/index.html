@@ -40,11 +40,26 @@
         </div>
 
         <div class="control-group">
-          <label for="paletteSelect">Palette preset</label>
-          <div class="palette-row">
-            <select id="paletteSelect"></select>
-            <select id="variantSelect" class="hidden"></select>
+          <label for="paletteGroupSelect">Palette preset</label>
+          <div class="palette-grid">
+            <select id="paletteGroupSelect" aria-label="Palette group"></select>
+            <select id="palettePresetSelect" aria-label="Palette preset"></select>
           </div>
+          <select id="variantSelect" class="hidden"></select>
+          <div id="adaptiveGroup" class="adaptive-control hidden">
+              <label for="adaptiveRange"><span id="adaptiveLabel">Palette size</span>: <span id="adaptiveValue">8</span></label>
+            <input id="adaptiveRange" type="range" min="2" max="32" value="8" step="1" />
+          </div>
+            <div id="multitoneGroup" class="multitone-control hidden">
+              <div class="multitone-options">
+                <label for="multitoneColorCount">Number of colours: <span id="multitoneColorCountValue">2</span></label>
+                <input id="multitoneColorCount" type="range" min="2" max="4" step="1" value="2" />
+                <label for="multitoneSteps">Steps between colours: <span id="multitoneStepsValue">1</span></label>
+                <input id="multitoneSteps" type="range" min="1" max="4" step="1" value="1" />
+              </div>
+              <label>Ink colours</label>
+              <div id="multitonePickers" class="multitone-pickers"></div>
+            </div>
         </div>
 
         <div class="control-group status" id="statusText">
