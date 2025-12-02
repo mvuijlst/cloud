@@ -24,10 +24,17 @@ const DEFAULT_PAPER_COLOR = [255, 255, 255];
 
 const defaultPaletteId = "grayscale-variable";
 
+const SAMPLE_IMAGES = [
+  "./images/20250309_182228.jpg",
+  "./images/20250406_135239.jpg",
+  "./images/20251108_160623.jpg",
+  "./images/familie.png",
+  "./images/mroelandt.jpg",
+];
+
 const fileInput = document.getElementById("fileInput");
-const dropZone = document.getElementById("dropZone");
 const methodSelect = document.getElementById("methodSelect");
-const resizeSelect = document.getElementById("resizeSelect");
+const resizeOptions = Array.from(document.querySelectorAll("input[name='resizeOption']"));
 const paletteGroupSelect = document.getElementById("paletteGroupSelect");
 const palettePresetSelect = document.getElementById("palettePresetSelect");
 const variantSelect = document.getElementById("variantSelect");
@@ -48,6 +55,16 @@ const statusText = document.getElementById("statusText");
 const downloadButton = document.getElementById("downloadButton");
 const originalCanvas = document.getElementById("originalCanvas");
 const ditheredCanvas = document.getElementById("ditheredCanvas");
+const originalCanvasPanel = document.getElementById("originalCanvasPanel");
+const multitoneRampList = document.getElementById("multitoneRampList");
+const multitonePresetContainer = document.getElementById("multitonePresetContainer");
+const multitonePresetTextarea = document.getElementById("multitonePresetJson");
+const levelBlackRange = document.getElementById("levelBlack");
+const levelWhiteRange = document.getElementById("levelWhite");
+const levelGrayRange = document.getElementById("levelGray");
+const levelBlackValue = document.getElementById("levelBlackValue");
+const levelWhiteValue = document.getElementById("levelWhiteValue");
+const levelGrayValue = document.getElementById("levelGrayValue");
 
 const originalCtx = originalCanvas.getContext("2d");
 const ditheredCtx = ditheredCanvas.getContext("2d");
@@ -59,10 +76,17 @@ const paletteSelections = {};
 const paletteSizeSelections = {};
 const multitoneColorSelections = {};
 const multitoneSettings = {};
+let multitoneRampPresets = [];
+let multitoneRampLoadState = "idle";
+let selectedMultitonePresetId = null;
+let pendingAutoSelectColorCount = null;
 const MULTITONE_COLOR_LIMITS = { min: 2, max: 4 };
 const MULTITONE_STEP_LIMITS = { min: 1, max: 4 };
+const MULTITONE_PRESET_ID = "multitone";
 const DEFAULT_MULTITONE_COLORS = MULTITONE_DEFAULTS?.quadtone ?? ["#050505", "#5E5234", "#B58E44", "#F8DB7B"];
 const defaultPaletteGroup = PALETTE_LOOKUP[defaultPaletteId]?.group ?? "core";
+const LEVEL_DEFAULTS = { black: 0, white: 255, gray: 1 };
+const levelsSettings = { ...LEVEL_DEFAULTS };
 
 const worker = new Worker(new URL("./worker.js", import.meta.url), { type: "module" });
 worker.addEventListener("message", (event) => {
@@ -116,6 +140,31 @@ const clampToBounds = (value, bounds) => {
   return Math.max(bounds.min, Math.min(bounds.max, Math.round(fallback)));
 };
 
+const clampLevelsState = () => {
+  levelsSettings.black = Math.max(0, Math.min(levelsSettings.black, 254));
+  levelsSettings.white = Math.max(levelsSettings.black + 1, Math.min(255, levelsSettings.white));
+  levelsSettings.gray = Math.max(0.1, Math.min(3, levelsSettings.gray));
+};
+
+const updateLevelsDisplay = () => {
+  if (!levelBlackValue || !levelWhiteValue || !levelGrayValue) return;
+  levelBlackValue.textContent = levelsSettings.black;
+  levelWhiteValue.textContent = levelsSettings.white;
+  levelGrayValue.textContent = levelsSettings.gray.toFixed(2);
+};
+
+const syncLevelInputs = () => {
+  if (levelBlackRange) levelBlackRange.value = String(levelsSettings.black);
+  if (levelWhiteRange) levelWhiteRange.value = String(levelsSettings.white);
+  if (levelGrayRange) levelGrayRange.value = String(levelsSettings.gray);
+  updateLevelsDisplay();
+};
+
+const getResizeSelection = () => {
+  const selected = resizeOptions.find((input) => input.checked);
+  return selected?.value ?? "original";
+};
+
 const getMultitoneSettings = (preset) => {
   if (!preset) return null;
   if (!multitoneSettings[preset.id]) {
@@ -139,6 +188,181 @@ const ensureMultitoneSelection = (presetId) => {
     selection.push("#FFFFFF");
   }
   return selection;
+};
+
+const markCustomMultitoneSelection = () => {
+  selectedMultitonePresetId = null;
+  renderMultitoneRampList();
+};
+
+const loadMultitoneRampPresets = async () => {
+  if (multitoneRampPresets.length || multitoneRampLoadState === "loading") {
+    return multitoneRampPresets;
+  }
+  multitoneRampLoadState = "loading";
+  try {
+    const response = await fetch(new URL("../ramps.json", import.meta.url));
+    if (!response.ok) {
+      throw new Error(`Failed to load ramps (${response.status})`);
+    }
+    const data = await response.json();
+    multitoneRampPresets = (Array.isArray(data) ? data : []).map((entry, index) => ({
+      id: entry.id ?? `ramp-${index + 1}`,
+      colors: clampToBounds(entry.colors ?? entry.inks?.length ?? 2, MULTITONE_COLOR_LIMITS),
+      steps: clampToBounds(entry.steps ?? 1, MULTITONE_STEP_LIMITS),
+      inks: (entry.inks ?? []).map((hex) => hex.toUpperCase()),
+      label: entry.name ?? `Ramp ${String(index + 1).padStart(2, "0")}`,
+    }));
+    multitoneRampLoadState = "ready";
+  } catch (error) {
+    console.error(error);
+    multitoneRampLoadState = "error";
+  }
+  renderMultitoneRampList();
+  if (pendingAutoSelectColorCount !== null) {
+    tryAutoSelectPresetForColorCount(pendingAutoSelectColorCount);
+  }
+  return multitoneRampPresets;
+};
+
+const renderMultitoneRampList = () => {
+  if (!multitoneRampList) return;
+  multitoneRampList.innerHTML = "";
+  if (multitoneRampLoadState === "loading") {
+    const status = document.createElement("p");
+    status.className = "ramp-status";
+    status.textContent = "Loading ramps...";
+    multitoneRampList.append(status);
+    return;
+  }
+  if (multitoneRampLoadState === "error") {
+    const status = document.createElement("p");
+    status.className = "ramp-status";
+    status.textContent = "Failed to load ramps.json";
+    multitoneRampList.append(status);
+    return;
+  }
+  if (!multitoneRampPresets.length) {
+    const status = document.createElement("p");
+    status.className = "ramp-status";
+    status.textContent = "No ramps found.";
+    multitoneRampList.append(status);
+    return;
+  }
+  const targetColors = clampToBounds(multitoneColorCountRange?.value ?? MULTITONE_COLOR_LIMITS.min, MULTITONE_COLOR_LIMITS);
+  const filteredPresets = multitoneRampPresets.filter((preset) => preset.colors === targetColors);
+  if (!filteredPresets.length) {
+    const status = document.createElement("p");
+    status.className = "ramp-status";
+    status.textContent = `No ${targetColors}-colour ramps found.`;
+    multitoneRampList.append(status);
+    return;
+  }
+  filteredPresets.forEach((preset) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = `ramp-option${preset.id === selectedMultitonePresetId ? " selected" : ""}`;
+    button.setAttribute("aria-label", `${preset.label} (${preset.colors} colors, ${preset.steps} steps)`);
+
+    const swatches = document.createElement("div");
+    swatches.className = "ramp-swatches";
+    swatches.setAttribute("aria-hidden", "true");
+    preset.inks.slice(0, MULTITONE_COLOR_LIMITS.max).forEach((hex) => {
+      const swatch = document.createElement("span");
+      swatch.className = "ramp-color";
+      swatch.style.background = hex;
+      swatches.append(swatch);
+    });
+
+    button.title = preset.label;
+    button.addEventListener("click", () => applyMultitoneRampPreset(preset));
+    button.append(swatches);
+    multitoneRampList.append(button);
+  });
+};
+
+const tryAutoSelectPresetForColorCount = (colorCount) => {
+  const target = clampToBounds(colorCount, MULTITONE_COLOR_LIMITS);
+  if (!multitoneRampPresets.length) {
+    pendingAutoSelectColorCount = target;
+    return true;
+  }
+  const preset = multitoneRampPresets.find((entry) => entry.colors === target);
+  if (!preset) {
+    return false;
+  }
+  pendingAutoSelectColorCount = null;
+  applyMultitoneRampPreset(preset);
+  return true;
+};
+
+const ensureMultitoneRampsAvailable = async () => {
+  if (!multitoneRampList) return;
+  if (!multitoneRampPresets.length && multitoneRampLoadState !== "loading") {
+    await loadMultitoneRampPresets();
+  } else {
+    renderMultitoneRampList();
+  }
+};
+
+const applyMultitoneRampPreset = (preset) => {
+  const basePreset = PALETTE_LOOKUP[MULTITONE_PRESET_ID];
+  if (!basePreset) return;
+  const settings = getMultitoneSettings(basePreset);
+  settings.colors = clampToBounds(preset.colors, MULTITONE_COLOR_LIMITS);
+  settings.steps = clampToBounds(preset.steps, MULTITONE_STEP_LIMITS);
+  multitoneColorSelections[basePreset.id] = [...preset.inks].slice(0, MULTITONE_COLOR_LIMITS.max);
+  ensureMultitoneSelection(basePreset.id);
+  selectedMultitonePresetId = preset.id;
+  renderMultitoneRampList();
+  updateMultitoneControls(basePreset);
+  applyDithering();
+};
+
+const applyLevelsAdjustment = (imageData) => {
+  if (!imageData || !imageData.data) return imageData;
+  clampLevelsState();
+  const black = levelsSettings.black;
+  const white = levelsSettings.white;
+  const gamma = levelsSettings.gray;
+  const invGamma = 1 / gamma;
+  const range = Math.max(1, white - black);
+  const lookup = new Uint8ClampedArray(256);
+  for (let i = 0; i < 256; i += 1) {
+    let normalized = (i - black) / range;
+    normalized = Math.max(0, Math.min(1, normalized));
+    normalized = Math.pow(normalized, invGamma);
+    lookup[i] = Math.round(normalized * 255);
+  }
+  const { data } = imageData;
+  for (let index = 0; index < data.length; index += 4) {
+    data[index] = lookup[data[index]];
+    data[index + 1] = lookup[data[index + 1]];
+    data[index + 2] = lookup[data[index + 2]];
+  }
+  return imageData;
+};
+
+const updateMultitonePresetPreview = (preset) => {
+  if (!multitonePresetContainer || !multitonePresetTextarea) return;
+  if (!preset || preset.kind !== "multitone") {
+    multitonePresetTextarea.value = "Select the Multitone preset to copy its settings.";
+    multitonePresetContainer.classList.add("hidden");
+    return;
+  }
+  const settings = getMultitoneSettings(preset);
+  if (!settings) {
+    multitonePresetContainer.classList.add("hidden");
+    return;
+  }
+  const inks = ensureMultitoneSelection(preset.id).slice(0, settings.colors);
+  const payload = {
+    colors: settings.colors,
+    steps: settings.steps,
+    inks,
+  };
+  multitonePresetTextarea.value = JSON.stringify(payload, null, 2);
+  multitonePresetContainer.classList.remove("hidden");
 };
 
 const getCurrentPaletteLabel = () => {
@@ -239,6 +463,7 @@ const updateMultitoneControls = (preset) => {
   if (!preset || preset.kind !== "multitone") {
     multitoneGroup.classList.add("hidden");
     multitonePickers.innerHTML = "";
+    updateMultitonePresetPreview(null);
     return;
   }
 
@@ -246,6 +471,7 @@ const updateMultitoneControls = (preset) => {
   if (!settings) {
     multitoneGroup.classList.add("hidden");
     multitonePickers.innerHTML = "";
+    updateMultitonePresetPreview(null);
     return;
   }
 
@@ -269,6 +495,8 @@ const updateMultitoneControls = (preset) => {
     input.addEventListener("input", () => {
       const selection = ensureMultitoneSelection(preset.id);
       selection[index] = input.value;
+      markCustomMultitoneSelection();
+      updateMultitonePresetPreview(preset);
       applyDithering();
     });
 
@@ -277,6 +505,7 @@ const updateMultitoneControls = (preset) => {
   });
 
   multitoneGroup.classList.remove("hidden");
+  updateMultitonePresetPreview(preset);
 };
 
 const updateVariantOptions = () => {
@@ -286,6 +515,7 @@ const updateVariantOptions = () => {
     variantSelect.innerHTML = "";
     updateSizeControls(null);
     updateMultitoneControls(null);
+    toggleMultitoneRampList(null);
     return;
   }
   const variants = preset?.variants ?? [];
@@ -310,6 +540,24 @@ const updateVariantOptions = () => {
 
   updateSizeControls(preset);
   updateMultitoneControls(preset);
+  toggleMultitoneRampList(preset);
+};
+
+const toggleMultitoneRampList = (preset) => {
+  if (!multitoneRampList) return;
+  const isMultitonePreset = preset?.id === MULTITONE_PRESET_ID;
+  if (isMultitonePreset) {
+    palettePresetSelect.classList.add("hidden");
+    const defaultCount = MULTITONE_COLOR_LIMITS.min;
+    multitoneColorCountRange.value = defaultCount;
+    multitoneColorCountValue.textContent = defaultCount;
+    ensureMultitoneRampsAvailable();
+    tryAutoSelectPresetForColorCount(defaultCount);
+    multitoneRampList.classList.remove("hidden");
+  } else {
+    palettePresetSelect.classList.remove("hidden");
+    multitoneRampList.classList.add("hidden");
+  }
 };
 
 const buildMultitonePalette = (preset) => {
@@ -324,10 +572,25 @@ const handleMultitoneColorCountInput = () => {
   const preset = getCurrentPalettePreset();
   if (!preset || preset.kind !== "multitone") return;
   const nextValue = clampToBounds(multitoneColorCountRange.value, MULTITONE_COLOR_LIMITS);
-  const settings = getMultitoneSettings(preset);
-  settings.colors = nextValue;
+  multitoneColorCountRange.value = nextValue;
   multitoneColorCountValue.textContent = nextValue;
+  renderMultitoneRampList();
+};
+
+const handleMultitoneColorCountChange = () => {
+  const preset = getCurrentPalettePreset();
+  if (!preset || preset.kind !== "multitone") return;
+  const desired = clampToBounds(multitoneColorCountRange.value, MULTITONE_COLOR_LIMITS);
+  if (tryAutoSelectPresetForColorCount(desired)) {
+    return;
+  }
+  const settings = getMultitoneSettings(preset);
+  settings.colors = desired;
+  multitoneColorCountValue.textContent = desired;
+  markCustomMultitoneSelection();
   updateMultitoneControls(preset);
+  renderMultitoneRampList();
+  applyDithering();
 };
 
 const handleMultitoneStepsInput = () => {
@@ -337,6 +600,30 @@ const handleMultitoneStepsInput = () => {
   const settings = getMultitoneSettings(preset);
   settings.steps = nextValue;
   multitoneStepsValue.textContent = nextValue;
+  markCustomMultitoneSelection();
+  updateMultitonePresetPreview(preset);
+};
+
+const handleLevelChange = (type, rawValue) => {
+  if (type === "black") {
+    const candidate = Number(rawValue);
+    const safeValue = Number.isNaN(candidate) ? levelsSettings.black : candidate;
+    const next = Math.min(safeValue, levelsSettings.white - 1);
+    levelsSettings.black = Math.max(0, next);
+  } else if (type === "white") {
+    const candidate = Number(rawValue);
+    const safeValue = Number.isNaN(candidate) ? levelsSettings.white : candidate;
+    const next = Math.max(safeValue, levelsSettings.black + 1);
+    levelsSettings.white = Math.min(255, next);
+  } else if (type === "gray") {
+    const candidate = Number(rawValue);
+    const safeValue = Number.isNaN(candidate) ? levelsSettings.gray : candidate;
+    levelsSettings.gray = Math.max(0.1, Math.min(3, safeValue));
+  }
+  syncLevelInputs();
+  if (hasImage) {
+    applyDithering();
+  }
 };
 
 const readFile = (file) => {
@@ -359,6 +646,13 @@ const loadImage = (src) => {
   };
   img.onerror = () => setStatus("Failed to load that image. Try another?");
   img.src = src;
+};
+
+const loadRandomSampleImage = () => {
+  if (!SAMPLE_IMAGES.length) return;
+  const choice = SAMPLE_IMAGES[Math.floor(Math.random() * SAMPLE_IMAGES.length)];
+  setStatus("Loading sample image...");
+  loadImage(choice);
 };
 
 const resolvePalette = (preset, imageData) => {
@@ -397,7 +691,7 @@ const createFallbackPalette = () => {
 };
 
 const computeResizeDimensions = (width, height) => {
-  const value = resizeSelect.value;
+  const value = getResizeSelection();
   if (value === "original") {
     return { width, height };
   }
@@ -424,6 +718,7 @@ const applyDithering = () => {
   tempCtx.drawImage(originalCanvas, 0, 0, width, height);
 
   let imageData = tempCtx.getImageData(0, 0, width, height);
+  applyLevelsAdjustment(imageData);
   const palette = resolvePalette(preset, imageData);
   if (!palette || !palette.length) {
     setStatus("Palette could not be generated.");
@@ -460,25 +755,35 @@ const applyDithering = () => {
   );
 };
 
-const handleDropZoneClick = () => fileInput.click();
 const preventDefaults = (event) => {
   event.preventDefault();
   event.stopPropagation();
 };
 
-const handleDragOver = (event) => {
-  preventDefaults(event);
-  dropZone.classList.add("dragging");
+const handleCanvasClick = () => fileInput.click();
+
+const handleCanvasKey = (event) => {
+  if (event.code === "Space" || event.code === "Enter") {
+    event.preventDefault();
+    fileInput.click();
+  }
 };
 
-const handleDragLeave = (event) => {
+const handleCanvasDragOver = (event) => {
   preventDefaults(event);
-  dropZone.classList.remove("dragging");
+  originalCanvasPanel.classList.add("dragging");
 };
 
-const handleDrop = (event) => {
+const handleCanvasDragLeave = (event) => {
   preventDefaults(event);
-  dropZone.classList.remove("dragging");
+  if (event.type === "dragend" || !originalCanvasPanel.contains(event.relatedTarget)) {
+    originalCanvasPanel.classList.remove("dragging");
+  }
+};
+
+const handleCanvasDrop = (event) => {
+  preventDefaults(event);
+  originalCanvasPanel.classList.remove("dragging");
   const file = event.dataTransfer?.files?.[0];
   if (file && file.type.startsWith("image/")) {
     readFile(file);
@@ -492,24 +797,20 @@ fileInput.addEventListener("change", (event) => {
   readFile(file);
 });
 
-dropZone.addEventListener("click", handleDropZoneClick);
-["dragenter", "dragover"].forEach((type) => dropZone.addEventListener(type, handleDragOver));
-["dragleave", "dragend"].forEach((type) => dropZone.addEventListener(type, handleDragLeave));
-dropZone.addEventListener("drop", handleDrop);
-
-dropZone.addEventListener("keydown", (event) => {
-  if (event.code === "Space" || event.code === "Enter") {
-    event.preventDefault();
-    handleDropZoneClick();
-  }
-});
+originalCanvasPanel.addEventListener("click", handleCanvasClick);
+originalCanvasPanel.addEventListener("keydown", handleCanvasKey);
+["dragenter", "dragover"].forEach((type) => originalCanvasPanel.addEventListener(type, handleCanvasDragOver));
+["dragleave", "dragend"].forEach((type) => originalCanvasPanel.addEventListener(type, handleCanvasDragLeave));
+originalCanvasPanel.addEventListener("drop", handleCanvasDrop);
 
 methodSelect.addEventListener("change", () => {
   toggleThresholdGroup();
   applyDithering();
 });
 
-resizeSelect.addEventListener("change", () => applyDithering());
+resizeOptions.forEach((input) => {
+  input.addEventListener("change", () => applyDithering());
+});
 thresholdRange.addEventListener("input", () => {
   thresholdValue.textContent = thresholdRange.value;
 });
@@ -553,11 +854,7 @@ adaptiveRange.addEventListener("change", () => {
 });
 
 multitoneColorCountRange.addEventListener("input", handleMultitoneColorCountInput);
-multitoneColorCountRange.addEventListener("change", () => {
-  if (getCurrentPalettePreset()?.kind === "multitone") {
-    applyDithering();
-  }
-});
+multitoneColorCountRange.addEventListener("change", handleMultitoneColorCountChange);
 
 multitoneStepsRange.addEventListener("input", () => {
   handleMultitoneStepsInput();
@@ -568,6 +865,16 @@ multitoneStepsRange.addEventListener("change", () => {
   }
 });
 
+if (levelBlackRange) {
+  levelBlackRange.addEventListener("input", (event) => handleLevelChange("black", event.target.value));
+}
+if (levelWhiteRange) {
+  levelWhiteRange.addEventListener("input", (event) => handleLevelChange("white", event.target.value));
+}
+if (levelGrayRange) {
+  levelGrayRange.addEventListener("input", (event) => handleLevelChange("gray", event.target.value));
+}
+
 populateMethodSelect();
 populatePaletteGroupSelect();
 populatePalettePresetSelect();
@@ -575,4 +882,6 @@ updateVariantOptions();
 toggleThresholdGroup();
 thresholdValue.textContent = thresholdRange.value;
 adaptiveValue.textContent = adaptiveRange.value;
+syncLevelInputs();
 setStatus("Load an image to begin.");
+loadRandomSampleImage();

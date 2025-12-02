@@ -1,0 +1,151 @@
+[{
+  "colors": 2,
+  "steps": 4,
+  "inks": [
+    "#230b0b",
+    "#ffbe1a"
+  ]
+},{
+  "colors": 3,
+  "steps": 2,
+  "inks": [
+    "#4e0909",
+    "#547449",
+    "#ffd129"
+  ]
+},{
+    "colors": 3,
+    "steps": 2,
+    "inks": [
+        "#380000",
+        "#3f38a3",
+        "#1fd63d"
+    ]
+},{
+    "colors": 3,
+    "steps": 2,
+    "inks": [
+        "#240038",
+        "#38a391",
+        "#edc97e"
+    ]
+},{
+    "colors": 2,
+    "steps": 4,
+    "inks": [
+        "#152542",
+        "#b86162"
+    ]
+},{
+    "colors": 2,
+    "steps": 2,
+    "inks": [
+        "#157ec9",
+        "#f7ebbb"
+    ]
+},{
+    "colors": 3,
+    "steps": 1,
+    "inks": [
+        "#080042",
+        "#7b513e",
+        "#de9538"
+    ]
+},{
+    "colors": 2,
+    "steps": 2,
+    "inks": [
+        "#30086d",
+        "#f15847"
+    ]
+},{
+    "colors": 2,
+    "steps": 3,
+    "inks": [
+        "#352a36",
+        "#1b949a"
+    ]
+},{
+    "colors": 4,
+    "steps": 1,
+    "inks": [
+        "#5c0516",
+        "#992139",
+        "#8e7a76",
+        "#88b09a"
+    ]
+},{
+    "colors": 4,
+    "steps": 4,
+    "inks": [
+        "#5e0318",
+        "#315696",
+        "#eeb177",
+        "#d9c9b5"
+    ]
+},{
+    "colors": 2,
+    "steps": 3,
+    "inks": [
+        "#4e3283",
+        "#3c93a3"
+    ]
+},{
+    "colors": 2,
+    "steps": 3,
+    "inks": [
+        "#591a3e",
+        "#e9002e"
+    ]
+},{
+    "colors": 2,
+    "steps": 3,
+    "inks": [
+        "#27184f",
+        "#f56468"
+    ]
+},{
+    "colors": 2,
+    "steps": 4,
+    "inks": [
+        "#005eac",
+        "#f6cde1"
+    ]
+},{
+    "colors": 2,
+    "steps": 3,
+    "inks": [
+        "#307ba7",
+        "#e5e43e"
+    ]
+},{
+    "colors": 2,
+    "steps": 3,
+    "inks": [
+        "#124644",
+        "#60f6be"
+    ]
+},{
+    "colors": 2,
+    "steps": 3,
+    "inks": [
+        "#cb20c2",
+        "#ffff6b"
+    ]
+},{
+  "colors": 4,
+  "steps": 2,
+  "inks": [
+    "#0c0c5e",
+    "#b71559",
+    "#f198f1",
+    "#9cd8f2"
+  ]
+},{
+    "colors": 2,
+    "steps": 4,
+    "inks": [
+        "#012752",
+        "#f66f03"
+    ]
+}]

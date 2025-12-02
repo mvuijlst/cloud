@@ -11,27 +11,11 @@
     <main class="container app-grid">
       <section class="panel">
         <h2>Dither</h2>
-        <div class="control-group">
-          <label for="fileInput">Image</label>
-          <input id="fileInput" type="file" accept="image/*" />
-          <div id="dropZone" class="drop-zone" tabindex="0">
-            <p>Drop an image here or click to choose a file.</p>
-          </div>
-        </div>
+        <input id="fileInput" type="file" accept="image/*" class="visually-hidden" />
 
         <div class="control-group">
           <label for="methodSelect">Dither method</label>
           <select id="methodSelect"></select>
-        </div>
-
-        <div class="control-group">
-          <label for="resizeSelect">Resize width</label>
-          <select id="resizeSelect">
-            <option value="original">Original size</option>
-            <option value="128">128 px</option>
-            <option value="256" selected>256 px</option>
-            <option value="512">512 px</option>
-          </select>
         </div>
 
         <div id="thresholdGroup" class="control-group hidden">
@@ -54,6 +38,9 @@
               <div class="multitone-options">
                 <label for="multitoneColorCount">Number of colours: <span id="multitoneColorCountValue">2</span></label>
                 <input id="multitoneColorCount" type="range" min="2" max="4" step="1" value="2" />
+              </div>
+              <div id="multitoneRampList" class="multitone-ramp-list hidden" aria-label="Multitone ramp presets"></div>
+              <div class="multitone-options">
                 <label for="multitoneSteps">Steps between colours: <span id="multitoneStepsValue">1</span></label>
                 <input id="multitoneSteps" type="range" min="1" max="4" step="1" value="1" />
               </div>
@@ -69,19 +56,60 @@
 
       <section class="panel preview-panel">
         <div class="canvas-pair">
-          <div>
+          <div id="originalCanvasPanel" class="canvas-panel" tabindex="0">
             <h3>Original</h3>
             <canvas id="originalCanvas" width="0" height="0"></canvas>
+            <p class="canvas-hint">Click or drop a new image to replace this preview.</p>
           </div>
           <div>
             <h3>Dithered</h3>
             <canvas id="ditheredCanvas" width="0" height="0"></canvas>
+            <div class="levels-controls" aria-label="Levels adjustments">
+                <label class="levels-slider" for="levelBlack">
+                    <span class="levels-label">Black point <span id="levelBlackValue">0</span></span>
+                    <input id="levelBlack" type="range" min="0" max="250" value="0" step="1" />
+                </label>
+                <label class="levels-slider" for="levelGray">
+                    <span class="levels-label">Gray point <span id="levelGrayValue">1.00</span></span>
+                    <input id="levelGray" type="range" min="0.1" max="3" value="1" step="0.01" />
+                </label>
+                <label class="levels-slider" for="levelWhite">
+                    <span class="levels-label">White point <span id="levelWhiteValue">255</span></span>
+                    <input id="levelWhite" type="range" min="5" max="255" value="255" step="1" />
+                </label>
+            </div>
+          </div>
+        </div>
+        
+        <div class="resize-control" role="radiogroup" aria-label="Resize width">
+          <span class="resize-label">Resize width</span>
+          <div class="resize-options">
+            <label class="resize-option">
+              <input type="radio" name="resizeOption" value="original" />
+              Original
+            </label>
+            <label class="resize-option">
+              <input type="radio" name="resizeOption" value="128" />
+              128 px
+            </label>
+            <label class="resize-option">
+              <input type="radio" name="resizeOption" value="256" checked />
+              256 px
+            </label>
+            <label class="resize-option">
+              <input type="radio" name="resizeOption" value="512" />
+              512 px
+            </label>
           </div>
         </div>
         <div class="preview-actions">
           <a id="downloadButton" class="button secondary" download="dithered-image.png" disabled>
             Download PNG
           </a>
+        </div>
+        <div id="multitonePresetContainer" class="preset-export hidden">
+          <label for="multitonePresetJson">Multitone preset JSON</label>
+          <textarea id="multitonePresetJson" readonly rows="4"></textarea>
         </div>
       </section>
     </main>
