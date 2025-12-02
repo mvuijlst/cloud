@@ -35,7 +35,7 @@ body {
   gap: 2rem;
   grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
   align-items: start;
-  padding-bottom: 3rem;
+  padding: 1rem 0;
 }
 
 @media (max-width: 900px) {
@@ -188,6 +188,31 @@ select {
 
 .levels-toggle {
   align-self: flex-start;
+}
+
+.levels-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0;
+  border: none;
+  background: none;
+  text-decoration: underline;
+  font-size: 0.8rem;
+  color: #f5f5f5;
+}
+
+.levels-controls:not(.hidden) .levels-link {
+  padding-top: 1rem;
+}
+
+.levels-toggle {
+  padding-top: 0;
+}
+
+.levels-link:hover,
+.levels-link:focus-visible {
+  color: #a5e4ff;
 }
 
 .levels-slider {

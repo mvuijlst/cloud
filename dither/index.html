@@ -65,7 +65,7 @@
             <h3>Dithered</h3>
             <canvas id="ditheredCanvas" width="0" height="0"></canvas>
             <div class="levels-wrapper">
-              <div id="levelsControls" class="levels-controls" aria-label="Levels adjustments">
+              <div id="levelsControls" class="levels-controls hidden" aria-label="Levels adjustments">
                 <label class="levels-slider" for="levelBlack">
                   <span class="levels-label"><span id="levelBlackValue">0</span></span>
                   <input id="levelBlack" type="range" min="0" max="250" value="0" step="1" />
@@ -78,9 +78,9 @@
                   <span class="levels-label"><span id="levelWhiteValue">255</span></span>
                   <input id="levelWhite" type="range" min="5" max="255" value="255" step="1" />
                 </label>
-                <a id="resetLevelsButton" class="small tertiary button" href="#">Reset</a>
+                <a id="resetLevelsButton" class="levels-link" href="#">Reset</a>
               </div>
-              <a id="showLevelsButton" class="small tertiary button levels-toggle hidden" href="#">Levels</a>
+              <a id="showLevelsButton" class="levels-link levels-toggle" href="#">Levels</a>
             </div>
           </div>
         </div>
@@ -111,10 +111,10 @@
             Download PNG
           </a>
         </div>
-        <div id="multitonePresetContainer" class="preset-export hidden">
+        <!--<div id="multitonePresetContainer" class="preset-export hidden">
           <label for="multitonePresetJson">Multitone preset JSON</label>
           <textarea id="multitonePresetJson" readonly rows="4"></textarea>
-        </div>
+        </div>-->
       </section>
     </main>
 

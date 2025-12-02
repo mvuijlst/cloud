@@ -22,7 +22,34 @@ const methodOptions = [
 
 const DEFAULT_PAPER_COLOR = [255, 255, 255];
 
-const defaultPaletteId = "grayscale-variable";
+const defaultPaletteId = "rgb-3bit";
+const DEFAULT_METHOD = "gradient";
+const STORAGE_KEY = "dither.preferences";
+const FALLBACK_RESIZE_OPTION = "256";
+
+const loadPreferences = () => {
+  if (typeof window === "undefined" || !window.localStorage) {
+    return null;
+  }
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch (error) {
+    console.warn("Failed to load stored preferences", error);
+    return null;
+  }
+};
+
+const cloneDeep = (value) => {
+  if (!value || typeof value !== "object") {
+    return value;
+  }
+  try {
+    return JSON.parse(JSON.stringify(value));
+  } catch (error) {
+    return value;
+  }
+};
 
 const SAMPLE_IMAGES = [
   "./images/20250309_182228.jpg",
@@ -32,9 +59,26 @@ const SAMPLE_IMAGES = [
   "./images/mroelandt.jpg",
 ];
 
+let initialPaletteGroup = null;
+let initialPalettePreset = null;
+let initialMethodValue = DEFAULT_METHOD;
+let initialResizeOption = FALLBACK_RESIZE_OPTION;
+let initialThresholdValue = null;
+let initialLevelsVisible = false;
+let storedPreferences = null;
+
 const fileInput = document.getElementById("fileInput");
 const methodSelect = document.getElementById("methodSelect");
 const resizeOptions = Array.from(document.querySelectorAll("input[name='resizeOption']"));
+const initialResizeRadio = resizeOptions.find((input) => input.value === initialResizeOption);
+if (initialResizeRadio) {
+  initialResizeRadio.checked = true;
+} else {
+  const fallbackResizeRadio = resizeOptions.find((input) => input.value === FALLBACK_RESIZE_OPTION);
+  if (fallbackResizeRadio) {
+    fallbackResizeRadio.checked = true;
+  }
+}
 const paletteGroupSelect = document.getElementById("paletteGroupSelect");
 const palettePresetSelect = document.getElementById("palettePresetSelect");
 const variantSelect = document.getElementById("variantSelect");
@@ -51,6 +95,9 @@ const multitoneStepsValue = document.getElementById("multitoneStepsValue");
 const thresholdGroup = document.getElementById("thresholdGroup");
 const thresholdRange = document.getElementById("thresholdRange");
 const thresholdValue = document.getElementById("thresholdValue");
+if (initialThresholdValue !== null && thresholdRange) {
+  thresholdRange.value = String(initialThresholdValue);
+}
 const statusText = document.getElementById("statusText");
 const downloadButton = document.getElementById("downloadButton");
 const originalCanvas = document.getElementById("originalCanvas");
@@ -68,6 +115,32 @@ const levelGrayValue = document.getElementById("levelGrayValue");
 const resetLevelsButton = document.getElementById("resetLevelsButton");
 const showLevelsButton = document.getElementById("showLevelsButton");
 const levelsControls = document.getElementById("levelsControls");
+
+const savePreferences = () => {
+  if (typeof window === "undefined" || !window.localStorage) {
+    return;
+  }
+  try {
+    const payload = {
+      method: methodSelect.value,
+      paletteGroup: paletteGroupSelect.value,
+      palettePreset: palettePresetSelect.value,
+      paletteSelections: { ...paletteSelections },
+      variantSelections: { ...variantSelections },
+      paletteSizeSelections: { ...paletteSizeSelections },
+      multitoneColorSelections: cloneDeep(multitoneColorSelections) || {},
+      multitoneSettings: cloneDeep(multitoneSettings) || {},
+      selectedMultitonePresetId,
+      resizeOption: getResizeSelection(),
+      threshold: Number(thresholdRange.value),
+      levels: { ...levelsSettings },
+      levelsVisible: Boolean(levelsControls && !levelsControls.classList.contains("hidden")),
+    };
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+  } catch (error) {
+    console.warn("Failed to save preferences", error);
+  }
+};
 
 const originalCtx = originalCanvas.getContext("2d");
 const ditheredCtx = ditheredCanvas.getContext("2d");
@@ -90,6 +163,64 @@ const DEFAULT_MULTITONE_COLORS = MULTITONE_DEFAULTS?.quadtone ?? ["#050505", "#5
 const defaultPaletteGroup = PALETTE_LOOKUP[defaultPaletteId]?.group ?? "core";
 const LEVEL_DEFAULTS = { black: 0, white: 255, gray: 1 };
 const levelsSettings = { ...LEVEL_DEFAULTS };
+storedPreferences = loadPreferences();
+
+if (storedPreferences?.paletteSelections) {
+  Object.assign(paletteSelections, storedPreferences.paletteSelections);
+}
+if (storedPreferences?.variantSelections) {
+  Object.assign(variantSelections, storedPreferences.variantSelections);
+}
+if (storedPreferences?.paletteSizeSelections) {
+  Object.assign(paletteSizeSelections, storedPreferences.paletteSizeSelections);
+}
+if (storedPreferences?.multitoneColorSelections) {
+  Object.assign(multitoneColorSelections, storedPreferences.multitoneColorSelections);
+}
+if (storedPreferences?.multitoneSettings) {
+  Object.assign(multitoneSettings, storedPreferences.multitoneSettings);
+}
+if (storedPreferences?.levels) {
+  Object.assign(levelsSettings, storedPreferences.levels);
+}
+if (typeof storedPreferences?.selectedMultitonePresetId !== "undefined") {
+  selectedMultitonePresetId = storedPreferences.selectedMultitonePresetId;
+}
+
+const clampLevelsState = () => {
+  levelsSettings.black = Math.max(0, Math.min(levelsSettings.black, 254));
+  levelsSettings.white = Math.max(levelsSettings.black + 1, Math.min(255, levelsSettings.white));
+  levelsSettings.gray = Math.max(0.1, Math.min(3, levelsSettings.gray));
+};
+
+clampLevelsState();
+
+initialPaletteGroup = storedPreferences?.paletteGroup;
+initialPalettePreset = storedPreferences?.palettePreset;
+
+if (initialPalettePreset && PALETTE_LOOKUP[initialPalettePreset]) {
+  initialPaletteGroup = PALETTE_LOOKUP[initialPalettePreset].group;
+}
+
+if (!initialPaletteGroup || !PALETTE_GROUP_LABELS[initialPaletteGroup]) {
+  initialPaletteGroup = defaultPaletteGroup;
+}
+
+if (!initialPalettePreset || PALETTE_LOOKUP[initialPalettePreset]?.group !== initialPaletteGroup) {
+  if (initialPaletteGroup === defaultPaletteGroup) {
+    initialPalettePreset = defaultPaletteId;
+  } else {
+    const fallbackPreset = PALETTE_PRESETS.find((preset) => preset.group === initialPaletteGroup);
+    initialPalettePreset = fallbackPreset?.id ?? defaultPaletteId;
+  }
+}
+
+paletteSelections[initialPaletteGroup] = initialPalettePreset;
+
+initialMethodValue = storedPreferences?.method ?? DEFAULT_METHOD;
+initialResizeOption = storedPreferences?.resizeOption ?? FALLBACK_RESIZE_OPTION;
+initialThresholdValue = typeof storedPreferences?.threshold === "number" ? storedPreferences.threshold : null;
+initialLevelsVisible = Boolean(storedPreferences?.levelsVisible);
 
 const worker = new Worker(new URL("./worker.js", import.meta.url), { type: "module" });
 worker.addEventListener("message", (event) => {
@@ -143,12 +274,6 @@ const clampToBounds = (value, bounds) => {
   return Math.max(bounds.min, Math.min(bounds.max, Math.round(fallback)));
 };
 
-const clampLevelsState = () => {
-  levelsSettings.black = Math.max(0, Math.min(levelsSettings.black, 254));
-  levelsSettings.white = Math.max(levelsSettings.black + 1, Math.min(255, levelsSettings.white));
-  levelsSettings.gray = Math.max(0.1, Math.min(3, levelsSettings.gray));
-};
-
 const updateLevelsDisplay = () => {
   if (!levelBlackValue || !levelWhiteValue || !levelGrayValue) return;
   levelBlackValue.textContent = levelsSettings.black;
@@ -163,12 +288,15 @@ const syncLevelInputs = () => {
   updateLevelsDisplay();
 };
 
-const resetLevelsToDefaults = () => {
+const resetLevelsToDefaults = ({ silent = false } = {}) => {
   Object.assign(levelsSettings, LEVEL_DEFAULTS);
   syncLevelInputs();
+  if (!silent) {
+    savePreferences();
+  }
 };
 
-const setLevelsVisibility = (isVisible) => {
+const setLevelsVisibility = (isVisible, { silent = false } = {}) => {
   if (!levelsControls || !showLevelsButton) {
     return;
   }
@@ -179,10 +307,13 @@ const setLevelsVisibility = (isVisible) => {
     levelsControls.classList.add("hidden");
     showLevelsButton.classList.remove("hidden");
   }
+  if (!silent) {
+    savePreferences();
+  }
 };
 
-const hideLevelsControls = () => setLevelsVisibility(false);
-const showLevelsControls = () => setLevelsVisibility(true);
+const hideLevelsControls = (options) => setLevelsVisibility(false, options);
+const showLevelsControls = (options) => setLevelsVisibility(true, options);
 
 const getResizeSelection = () => {
   const selected = resizeOptions.find((input) => input.checked);
@@ -341,6 +472,7 @@ const applyMultitoneRampPreset = (preset) => {
   renderMultitoneRampList();
   updateMultitoneControls(basePreset);
   applyDithering();
+  savePreferences();
 };
 
 const applyLevelsAdjustment = (imageData) => {
@@ -423,7 +555,11 @@ const populateMethodSelect = () => {
     opt.textContent = option.label;
     methodSelect.append(opt);
   });
-  methodSelect.value = methodOptions[0].value;
+  const fallbackMethod = methodOptions[0]?.value;
+  const resolvedMethod = methodOptions.some((option) => option.value === initialMethodValue)
+    ? initialMethodValue
+    : fallbackMethod;
+  methodSelect.value = resolvedMethod || fallbackMethod;
 };
 
 const populatePaletteGroupSelect = () => {
@@ -434,7 +570,7 @@ const populatePaletteGroupSelect = () => {
     opt.textContent = label;
     paletteGroupSelect.append(opt);
   });
-  paletteGroupSelect.value = defaultPaletteGroup;
+  paletteGroupSelect.value = initialPaletteGroup || defaultPaletteGroup;
 };
 
 const populatePalettePresetSelect = () => {
@@ -522,6 +658,7 @@ const updateMultitoneControls = (preset) => {
       markCustomMultitoneSelection();
       updateMultitonePresetPreview(preset);
       applyDithering();
+      savePreferences();
     });
 
     wrapper.append(input);
@@ -615,6 +752,7 @@ const handleMultitoneColorCountChange = () => {
   updateMultitoneControls(preset);
   renderMultitoneRampList();
   applyDithering();
+  savePreferences();
 };
 
 const handleMultitoneStepsInput = () => {
@@ -626,6 +764,7 @@ const handleMultitoneStepsInput = () => {
   multitoneStepsValue.textContent = nextValue;
   markCustomMultitoneSelection();
   updateMultitonePresetPreview(preset);
+  savePreferences();
 };
 
 const handleLevelChange = (type, rawValue) => {
@@ -648,6 +787,7 @@ const handleLevelChange = (type, rawValue) => {
   if (hasImage) {
     applyDithering();
   }
+  savePreferences();
 };
 
 const readFile = (file) => {
@@ -830,26 +970,35 @@ originalCanvasPanel.addEventListener("drop", handleCanvasDrop);
 methodSelect.addEventListener("change", () => {
   toggleThresholdGroup();
   applyDithering();
+  savePreferences();
 });
 
 resizeOptions.forEach((input) => {
-  input.addEventListener("change", () => applyDithering());
+  input.addEventListener("change", () => {
+    applyDithering();
+    savePreferences();
+  });
 });
 thresholdRange.addEventListener("input", () => {
   thresholdValue.textContent = thresholdRange.value;
 });
-thresholdRange.addEventListener("change", () => applyDithering());
+thresholdRange.addEventListener("change", () => {
+  applyDithering();
+  savePreferences();
+});
 
 paletteGroupSelect.addEventListener("change", () => {
   populatePalettePresetSelect();
   updateVariantOptions();
   applyDithering();
+  savePreferences();
 });
 
 palettePresetSelect.addEventListener("change", () => {
   paletteSelections[paletteGroupSelect.value] = palettePresetSelect.value;
   updateVariantOptions();
   applyDithering();
+  savePreferences();
 });
 
 variantSelect.addEventListener("change", (event) => {
@@ -858,6 +1007,7 @@ variantSelect.addEventListener("change", (event) => {
   variantSelections[preset.id] = event.target.value;
   updateMultitoneControls(preset);
   applyDithering();
+  savePreferences();
 });
 
 adaptiveRange.addEventListener("input", () => {
@@ -874,6 +1024,7 @@ adaptiveRange.addEventListener("input", () => {
 adaptiveRange.addEventListener("change", () => {
   if (supportsSizeSlider(getCurrentPalettePreset())) {
     applyDithering();
+    savePreferences();
   }
 });
 
@@ -886,6 +1037,7 @@ multitoneStepsRange.addEventListener("input", () => {
 multitoneStepsRange.addEventListener("change", () => {
   if (getCurrentPalettePreset()?.kind === "multitone") {
     applyDithering();
+    savePreferences();
   }
 });
 
@@ -925,7 +1077,16 @@ updateVariantOptions();
 toggleThresholdGroup();
 thresholdValue.textContent = thresholdRange.value;
 adaptiveValue.textContent = adaptiveRange.value;
-resetLevelsToDefaults();
-showLevelsControls();
+if (storedPreferences?.levels) {
+  syncLevelInputs();
+} else {
+  resetLevelsToDefaults({ silent: true });
+}
+if (initialLevelsVisible) {
+  showLevelsControls({ silent: true });
+} else {
+  hideLevelsControls({ silent: true });
+}
 setStatus("Load an image to begin.");
 loadRandomSampleImage();
+savePreferences();
