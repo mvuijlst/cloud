@@ -65,6 +65,9 @@ const levelGrayRange = document.getElementById("levelGray");
 const levelBlackValue = document.getElementById("levelBlackValue");
 const levelWhiteValue = document.getElementById("levelWhiteValue");
 const levelGrayValue = document.getElementById("levelGrayValue");
+const resetLevelsButton = document.getElementById("resetLevelsButton");
+const showLevelsButton = document.getElementById("showLevelsButton");
+const levelsControls = document.getElementById("levelsControls");
 
 const originalCtx = originalCanvas.getContext("2d");
 const ditheredCtx = ditheredCanvas.getContext("2d");
@@ -159,6 +162,27 @@ const syncLevelInputs = () => {
   if (levelGrayRange) levelGrayRange.value = String(levelsSettings.gray);
   updateLevelsDisplay();
 };
+
+const resetLevelsToDefaults = () => {
+  Object.assign(levelsSettings, LEVEL_DEFAULTS);
+  syncLevelInputs();
+};
+
+const setLevelsVisibility = (isVisible) => {
+  if (!levelsControls || !showLevelsButton) {
+    return;
+  }
+  if (isVisible) {
+    levelsControls.classList.remove("hidden");
+    showLevelsButton.classList.add("hidden");
+  } else {
+    levelsControls.classList.add("hidden");
+    showLevelsButton.classList.remove("hidden");
+  }
+};
+
+const hideLevelsControls = () => setLevelsVisibility(false);
+const showLevelsControls = () => setLevelsVisibility(true);
 
 const getResizeSelection = () => {
   const selected = resizeOptions.find((input) => input.checked);
@@ -875,6 +899,25 @@ if (levelGrayRange) {
   levelGrayRange.addEventListener("input", (event) => handleLevelChange("gray", event.target.value));
 }
 
+if (resetLevelsButton) {
+  resetLevelsButton.addEventListener("click", (event) => {
+    event.preventDefault();
+    resetLevelsToDefaults();
+    if (hasImage) {
+      applyDithering();
+    }
+    hideLevelsControls();
+  });
+}
+
+if (showLevelsButton) {
+  showLevelsButton.addEventListener("click", (event) => {
+    event.preventDefault();
+    showLevelsControls();
+    resetLevelsButton?.focus();
+  });
+}
+
 populateMethodSelect();
 populatePaletteGroupSelect();
 populatePalettePresetSelect();
@@ -882,6 +925,7 @@ updateVariantOptions();
 toggleThresholdGroup();
 thresholdValue.textContent = thresholdRange.value;
 adaptiveValue.textContent = adaptiveRange.value;
-syncLevelInputs();
+resetLevelsToDefaults();
+showLevelsControls();
 setStatus("Load an image to begin.");
 loadRandomSampleImage();

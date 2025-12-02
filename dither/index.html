@@ -64,19 +64,23 @@
           <div>
             <h3>Dithered</h3>
             <canvas id="ditheredCanvas" width="0" height="0"></canvas>
-            <div class="levels-controls" aria-label="Levels adjustments">
+            <div class="levels-wrapper">
+              <div id="levelsControls" class="levels-controls" aria-label="Levels adjustments">
                 <label class="levels-slider" for="levelBlack">
-                    <span class="levels-label">Black point <span id="levelBlackValue">0</span></span>
-                    <input id="levelBlack" type="range" min="0" max="250" value="0" step="1" />
+                  <span class="levels-label"><span id="levelBlackValue">0</span></span>
+                  <input id="levelBlack" type="range" min="0" max="250" value="0" step="1" />
                 </label>
                 <label class="levels-slider" for="levelGray">
-                    <span class="levels-label">Gray point <span id="levelGrayValue">1.00</span></span>
-                    <input id="levelGray" type="range" min="0.1" max="3" value="1" step="0.01" />
+                  <span class="levels-label"><span id="levelGrayValue">1.00</span></span>
+                  <input id="levelGray" type="range" min="0.1" max="3" value="1" step="0.01" />
                 </label>
                 <label class="levels-slider" for="levelWhite">
-                    <span class="levels-label">White point <span id="levelWhiteValue">255</span></span>
-                    <input id="levelWhite" type="range" min="5" max="255" value="255" step="1" />
+                  <span class="levels-label"><span id="levelWhiteValue">255</span></span>
+                  <input id="levelWhite" type="range" min="5" max="255" value="255" step="1" />
                 </label>
+                <a id="resetLevelsButton" class="small tertiary button" href="#">Reset</a>
+              </div>
+              <a id="showLevelsButton" class="small tertiary button levels-toggle hidden" href="#">Levels</a>
             </div>
           </div>
         </div>

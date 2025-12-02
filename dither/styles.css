@@ -173,10 +173,21 @@ select {
 .levels-controls {
   margin-top: 0.4rem;
   display: grid;
-  grid-template-columns: repeat(3, minmax(100px, 1fr));
+  grid-template-columns: repeat(4, minmax(50px, 1fr));
   gap: 1rem;
   padding: 0.2rem 0;
   width: min(100%, 420px);
+}
+
+.levels-wrapper {
+  margin-top: 0.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.levels-toggle {
+  align-self: flex-start;
 }
 
 .levels-slider {
