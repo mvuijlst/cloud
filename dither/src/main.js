@@ -8,13 +8,16 @@ import {
 } from "./palettes.js";
 
 const methodOptions = [
-  { value: "floyd-steinberg", label: "Floyd–Steinberg" },
   { value: "bayer", label: "Bayer (ordered)" },
+  { value: "blue-noise", label: "Blue-noise mask" },
   { value: "atkinson", label: "Atkinson" },
+  { value: "knoll", label: "Knoll" },
+  { value: "floyd-steinberg", label: "Floyd–Steinberg" },
+  { value: "riemersma", label: "Riemersma" },
+  { value: "dot-diffusion", label: "SOT / dot diffusion" },
+  { value: "sierra", label: "Sierra" },
   { value: "stucki", label: "Stucki" },
   { value: "jjn", label: "Jarvis–Judice–Ninke" },
-  { value: "knoll", label: "Knoll" },
-  { value: "sierra", label: "Sierra" },
   { value: "stevenson-arce", label: "Stevenson–Arce" },
   { value: "gradient", label: "Gradient-based" },
   { value: "lattice", label: "Lattice-Boltzmann" },

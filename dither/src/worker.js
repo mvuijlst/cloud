@@ -9,6 +9,9 @@ import {
   stevensonArceDithering,
   gradientBasedDithering,
   latticeBoltzmannDithering,
+  riemersmaDithering,
+  blueNoiseMaskDithering,
+  dotDiffusionDithering,
   multitoneHalftone,
   applyZxSpectrumAttributes,
 } from "./dither.js";
@@ -24,6 +27,9 @@ const methodMap = {
   "stevenson-arce": stevensonArceDithering,
   gradient: gradientBasedDithering,
   lattice: latticeBoltzmannDithering,
+  riemersma: riemersmaDithering,
+  "blue-noise": blueNoiseMaskDithering,
+  "dot-diffusion": dotDiffusionDithering,
 };
 
 self.addEventListener("message", (event) => {

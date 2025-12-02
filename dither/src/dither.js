@@ -1,4 +1,9 @@
 import { ZX_SPECTRUM_BRIGHT_SET, ZX_SPECTRUM_NORMAL_SET } from "./palettes.js";
+import {
+  BLUE_NOISE_MASK_64,
+  BLUE_NOISE_MASK_64_HEIGHT,
+  BLUE_NOISE_MASK_64_WIDTH,
+} from "./blueNoiseMask64.js";
 
 const clampByte = (value) => Math.max(0, Math.min(255, value));
 const clampUnit = (value) => Math.max(0, Math.min(1, value));
@@ -58,6 +63,191 @@ const linearToSrgb = (value) => {
   return clampByte((1.055 * Math.pow(clamped, 1 / 2.4) - 0.055) * 255);
 };
 const toLinearRgb = (rgb) => rgb.map((channel) => srgbToLinear(channel / 255));
+
+const RIEMERSMA_QUEUE_SIZE = 16;
+const RIEMERSMA_MAX_WEIGHT = 16;
+const RIEMERSMA_DIRECTIONS = {
+  NONE: 0,
+  LEFT: 1,
+  RIGHT: 2,
+  UP: 3,
+  DOWN: 4,
+};
+
+const createRiemersmaWeights = (size, maxWeight) => {
+  if (size <= 1) {
+    return [maxWeight];
+  }
+  const multiplier = Math.exp(Math.log(maxWeight) / (size - 1));
+  const weights = [];
+  let value = 1;
+  for (let index = 0; index < size; index += 1) {
+    weights.push(Math.round(value));
+    value *= multiplier;
+  }
+  return weights;
+};
+
+const computeHilbertLevel = (value) => {
+  let level = 0;
+  let size = 1;
+  while (size < value) {
+    size <<= 1;
+    level += 1;
+  }
+  return level;
+};
+
+export function riemersmaDithering(imageData, palette) {
+  const { data, width, height } = imageData;
+  if (!width || !height || !palette?.length) {
+    return imageData;
+  }
+
+  const queueSize = RIEMERSMA_QUEUE_SIZE;
+  const weights = createRiemersmaWeights(queueSize, RIEMERSMA_MAX_WEIGHT);
+  const errorQueue = Array.from({ length: queueSize }, () => ({ r: 0, g: 0, b: 0 }));
+  const maxDimension = Math.max(width, height);
+  const level = computeHilbertLevel(maxDimension);
+
+  let curX = 0;
+  let curY = 0;
+
+  const applyCurrentPixel = () => {
+    if (curX < 0 || curX >= width || curY < 0 || curY >= height) {
+      return;
+    }
+    const index = (curY * width + curX) * 4;
+    const oldColor = [data[index], data[index + 1], data[index + 2]];
+    let accR = 0;
+    let accG = 0;
+    let accB = 0;
+    for (let i = 0; i < errorQueue.length; i += 1) {
+      const weight = weights[i];
+      const entry = errorQueue[i];
+      accR += entry.r * weight;
+      accG += entry.g * weight;
+      accB += entry.b * weight;
+    }
+    const adjustedColor = [
+      clampByte(oldColor[0] + accR / RIEMERSMA_MAX_WEIGHT),
+      clampByte(oldColor[1] + accG / RIEMERSMA_MAX_WEIGHT),
+      clampByte(oldColor[2] + accB / RIEMERSMA_MAX_WEIGHT),
+    ];
+    const newColor = findClosestColor(adjustedColor, palette);
+    data[index] = newColor[0];
+    data[index + 1] = newColor[1];
+    data[index + 2] = newColor[2];
+    const newError = {
+      r: oldColor[0] - newColor[0],
+      g: oldColor[1] - newColor[1],
+      b: oldColor[2] - newColor[2],
+    };
+    errorQueue.shift();
+    errorQueue.push(newError);
+  };
+
+  const move = (direction) => {
+    applyCurrentPixel();
+    switch (direction) {
+      case RIEMERSMA_DIRECTIONS.LEFT:
+        curX -= 1;
+        break;
+      case RIEMERSMA_DIRECTIONS.RIGHT:
+        curX += 1;
+        break;
+      case RIEMERSMA_DIRECTIONS.UP:
+        curY -= 1;
+        break;
+      case RIEMERSMA_DIRECTIONS.DOWN:
+        curY += 1;
+        break;
+      default:
+        break;
+    }
+  };
+
+  const hilbertLevel = (currentLevel, direction) => {
+    if (currentLevel <= 0) {
+      return;
+    }
+    if (currentLevel === 1) {
+      switch (direction) {
+        case RIEMERSMA_DIRECTIONS.LEFT:
+          move(RIEMERSMA_DIRECTIONS.RIGHT);
+          move(RIEMERSMA_DIRECTIONS.DOWN);
+          move(RIEMERSMA_DIRECTIONS.LEFT);
+          break;
+        case RIEMERSMA_DIRECTIONS.RIGHT:
+          move(RIEMERSMA_DIRECTIONS.LEFT);
+          move(RIEMERSMA_DIRECTIONS.UP);
+          move(RIEMERSMA_DIRECTIONS.RIGHT);
+          break;
+        case RIEMERSMA_DIRECTIONS.UP:
+          move(RIEMERSMA_DIRECTIONS.DOWN);
+          move(RIEMERSMA_DIRECTIONS.RIGHT);
+          move(RIEMERSMA_DIRECTIONS.UP);
+          break;
+        case RIEMERSMA_DIRECTIONS.DOWN:
+          move(RIEMERSMA_DIRECTIONS.UP);
+          move(RIEMERSMA_DIRECTIONS.LEFT);
+          move(RIEMERSMA_DIRECTIONS.DOWN);
+          break;
+        default:
+          break;
+      }
+      return;
+    }
+
+    switch (direction) {
+      case RIEMERSMA_DIRECTIONS.LEFT:
+        hilbertLevel(currentLevel - 1, RIEMERSMA_DIRECTIONS.UP);
+        move(RIEMERSMA_DIRECTIONS.RIGHT);
+        hilbertLevel(currentLevel - 1, RIEMERSMA_DIRECTIONS.LEFT);
+        move(RIEMERSMA_DIRECTIONS.DOWN);
+        hilbertLevel(currentLevel - 1, RIEMERSMA_DIRECTIONS.LEFT);
+        move(RIEMERSMA_DIRECTIONS.LEFT);
+        hilbertLevel(currentLevel - 1, RIEMERSMA_DIRECTIONS.DOWN);
+        break;
+      case RIEMERSMA_DIRECTIONS.RIGHT:
+        hilbertLevel(currentLevel - 1, RIEMERSMA_DIRECTIONS.DOWN);
+        move(RIEMERSMA_DIRECTIONS.LEFT);
+        hilbertLevel(currentLevel - 1, RIEMERSMA_DIRECTIONS.RIGHT);
+        move(RIEMERSMA_DIRECTIONS.UP);
+        hilbertLevel(currentLevel - 1, RIEMERSMA_DIRECTIONS.RIGHT);
+        move(RIEMERSMA_DIRECTIONS.RIGHT);
+        hilbertLevel(currentLevel - 1, RIEMERSMA_DIRECTIONS.UP);
+        break;
+      case RIEMERSMA_DIRECTIONS.UP:
+        hilbertLevel(currentLevel - 1, RIEMERSMA_DIRECTIONS.LEFT);
+        move(RIEMERSMA_DIRECTIONS.DOWN);
+        hilbertLevel(currentLevel - 1, RIEMERSMA_DIRECTIONS.UP);
+        move(RIEMERSMA_DIRECTIONS.RIGHT);
+        hilbertLevel(currentLevel - 1, RIEMERSMA_DIRECTIONS.UP);
+        move(RIEMERSMA_DIRECTIONS.UP);
+        hilbertLevel(currentLevel - 1, RIEMERSMA_DIRECTIONS.RIGHT);
+        break;
+      case RIEMERSMA_DIRECTIONS.DOWN:
+        hilbertLevel(currentLevel - 1, RIEMERSMA_DIRECTIONS.RIGHT);
+        move(RIEMERSMA_DIRECTIONS.UP);
+        hilbertLevel(currentLevel - 1, RIEMERSMA_DIRECTIONS.DOWN);
+        move(RIEMERSMA_DIRECTIONS.LEFT);
+        hilbertLevel(currentLevel - 1, RIEMERSMA_DIRECTIONS.DOWN);
+        move(RIEMERSMA_DIRECTIONS.DOWN);
+        hilbertLevel(currentLevel - 1, RIEMERSMA_DIRECTIONS.LEFT);
+        break;
+      default:
+        break;
+    }
+  };
+
+  if (level > 0) {
+    hilbertLevel(level, RIEMERSMA_DIRECTIONS.UP);
+  }
+  move(RIEMERSMA_DIRECTIONS.NONE);
+
+  return imageData;
+}
 
 
 export function floydSteinberg(imageData, palette) {
@@ -581,4 +771,150 @@ export function applyZxSpectrumAttributes(imageData) {
     }
   }
   return imageData;
+}
+
+export function blueNoiseMaskDithering(imageData, palette) {
+  const { width, height, data } = imageData;
+  if (!palette?.length) {
+    return imageData;
+  }
+  const output = new Uint8ClampedArray(data.length);
+  const mask = BLUE_NOISE_MASK_64;
+  const maskWidth = BLUE_NOISE_MASK_64_WIDTH;
+  const maskHeight = BLUE_NOISE_MASK_64_HEIGHT;
+
+  for (let y = 0; y < height; y++) {
+    const maskY = y % maskHeight;
+    for (let x = 0; x < width; x++) {
+      const maskX = x % maskWidth;
+      const maskValue = mask[maskY * maskWidth + maskX];
+      const i = (y * width + x) * 4;
+      const r = data[i];
+      const g = data[i + 1];
+      const b = data[i + 2];
+      const bias = ((maskValue + 0.5) / 256 - 0.5) * 255;
+      const candidate = [clampByte(r + bias), clampByte(g + bias), clampByte(b + bias)];
+      const chosen = findClosestColor(candidate, palette);
+      output[i] = chosen[0];
+      output[i + 1] = chosen[1];
+      output[i + 2] = chosen[2];
+      output[i + 3] = 255;
+    }
+  }
+
+  return new ImageData(output, width, height);
+}
+
+const DOT_DIFFUSION_CLASS_MATRIX_8 = [
+  [0, 48, 12, 60, 3, 51, 15, 63],
+  [32, 16, 44, 28, 35, 19, 47, 31],
+  [8, 56, 4, 52, 11, 59, 7, 55],
+  [40, 24, 36, 20, 43, 27, 39, 23],
+  [2, 50, 14, 62, 1, 49, 13, 61],
+  [34, 18, 46, 30, 33, 17, 45, 29],
+  [10, 58, 6, 54, 9, 57, 5, 53],
+  [42, 26, 38, 22, 41, 25, 37, 21],
+];
+
+const DOT_DIFFUSION_CLASS_MATRIX_16 = [
+  [26, 237, 153, 90, 204, 223, 250, 95, 9, 49, 158, 134, 176, 118, 251, 83],
+  [163, 50, 112, 185, 25, 127, 76, 136, 212, 117, 73, 18, 103, 220, 164, 148],
+  [78, 225, 141, 11, 170, 107, 38, 161, 22, 228, 241, 41, 201, 57, 14, 66],
+  [42, 192, 252, 63, 218, 196, 235, 56, 186, 104, 150, 181, 91, 232, 129, 213],
+  [13, 124, 31, 100, 84, 146, 5, 70, 206, 125, 65, 4, 140, 34, 109, 171],
+  [105, 210, 180, 156, 43, 119, 174, 254, 93, 30, 222, 172, 247, 189, 71, 152],
+  [238, 58, 74, 242, 203, 229, 17, 135, 155, 44, 197, 81, 120, 47, 219, 21],
+  [19, 149, 2, 130, 27, 89, 64, 193, 110, 244, 15, 101, 160, 8, 205, 88],
+  [114, 190, 217, 165, 108, 183, 39, 211, 75, 168, 142, 216, 59, 133, 239, 144],
+  [79, 40, 96, 52, 248, 143, 224, 123, 0, 53, 230, 28, 184, 111, 37, 169],
+  [177, 137, 234, 198, 67, 10, 154, 98, 236, 187, 126, 92, 200, 245, 77, 54],
+  [208, 29, 121, 16, 86, 175, 48, 202, 80, 36, 151, 68, 12, 159, 102, 3],
+  [227, 99, 157, 188, 215, 113, 243, 23, 162, 106, 253, 214, 45, 139, 226, 209],
+  [72, 46, 255, 60, 147, 33, 128, 221, 138, 61, 173, 20, 191, 115, 178, 62],
+  [116, 179, 131, 1, 233, 94, 69, 182, 6, 199, 122, 97, 231, 82, 35, 167],
+  [195, 24, 85, 207, 166, 194, 55, 246, 87, 32, 240, 51, 132, 7, 249, 145],
+];
+
+const ACTIVE_DOT_DIFFUSION_CLASS_MATRIX = DOT_DIFFUSION_CLASS_MATRIX_16;
+
+const DOT_DIFFUSION_NEIGHBORS = [
+  { dx: 1, dy: 0 },
+  { dx: -1, dy: 0 },
+  { dx: 0, dy: 1 },
+  { dx: 0, dy: -1 },
+  { dx: 1, dy: 1 },
+  { dx: -1, dy: 1 },
+  { dx: 1, dy: -1 },
+  { dx: -1, dy: -1 },
+];
+
+export function dotDiffusionDithering(imageData, palette) {
+  const { width, height, data } = imageData;
+  if (!palette?.length) {
+    return imageData;
+  }
+  const totalPixels = width * height;
+  const working = new Float32Array(totalPixels * 3);
+  for (let idx = 0; idx < totalPixels; idx += 1) {
+    const base = idx * 4;
+    working[idx * 3] = data[base];
+    working[idx * 3 + 1] = data[base + 1];
+    working[idx * 3 + 2] = data[base + 2];
+  }
+
+  const output = new Uint8ClampedArray(data.length);
+  const classMatrix = ACTIVE_DOT_DIFFUSION_CLASS_MATRIX;
+  const cmHeight = classMatrix.length;
+  const cmWidth = classMatrix[0].length;
+  const maxClass = cmWidth * cmHeight - 1;
+
+  for (let cls = 0; cls <= maxClass; cls += 1) {
+    for (let y = 0; y < height; y += 1) {
+      const row = classMatrix[y % cmHeight];
+      for (let x = 0; x < width; x += 1) {
+        if (row[x % cmWidth] !== cls) {
+          continue;
+        }
+        const index = y * width + x;
+        const base3 = index * 3;
+        const current = [working[base3], working[base3 + 1], working[base3 + 2]];
+        const chosen = findClosestColor(current, palette);
+        const err = [current[0] - chosen[0], current[1] - chosen[1], current[2] - chosen[2]];
+        const outBase = index * 4;
+        output[outBase] = chosen[0];
+        output[outBase + 1] = chosen[1];
+        output[outBase + 2] = chosen[2];
+        output[outBase + 3] = 255;
+
+        const recipients = [];
+        for (const neighbor of DOT_DIFFUSION_NEIGHBORS) {
+          const nx = x + neighbor.dx;
+          const ny = y + neighbor.dy;
+          if (nx < 0 || nx >= width || ny < 0 || ny >= height) {
+            continue;
+          }
+          const nClass = classMatrix[ny % cmHeight][nx % cmWidth];
+          if (nClass <= cls) {
+            continue;
+          }
+          recipients.push({ nx, ny });
+        }
+
+        if (!recipients.length) {
+          continue;
+        }
+
+        const weight = 1 / recipients.length;
+        for (const recipient of recipients) {
+          const neighborIndex = recipient.ny * width + recipient.nx;
+          const neighborBase3 = neighborIndex * 3;
+          working[neighborBase3] += err[0] * weight;
+          working[neighborBase3 + 1] += err[1] * weight;
+          working[neighborBase3 + 2] += err[2] * weight;
+        }
+      }
+    }
+  }
+
+  return new ImageData(output, width, height);
 }
