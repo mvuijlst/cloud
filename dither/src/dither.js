@@ -618,6 +618,11 @@ export function atkinsonDithering(imageData, palette) {
 
 const GRAYSCALE_WEIGHTS = [0.2126, 0.7152, 0.0722];
 
+const colorLuminance = (color) =>
+  color[0] * GRAYSCALE_WEIGHTS[0] +
+  color[1] * GRAYSCALE_WEIGHTS[1] +
+  color[2] * GRAYSCALE_WEIGHTS[2];
+
 const colorDistanceSq = (a, b) => {
   const dr = a[0] - b[0];
   const dg = a[1] - b[1];
@@ -918,3 +923,4 @@ export function dotDiffusionDithering(imageData, palette) {
 
   return new ImageData(output, width, height);
 }
+
