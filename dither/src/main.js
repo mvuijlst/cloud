@@ -234,11 +234,11 @@ worker.addEventListener("message", (event) => {
   const dataUrl = ditheredCanvas.toDataURL("image/png");
   downloadButton.href = dataUrl;
   downloadButton.removeAttribute("disabled");
-  statusText.textContent = `Done: ${ditheredImageData.width}×${ditheredImageData.height} (${getCurrentPaletteLabel()})`;
+  //statusText.textContent = `Done: ${ditheredImageData.width}×${ditheredImageData.height} (${getCurrentPaletteLabel()})`;
 });
 
 const setStatus = (message) => {
-  statusText.textContent = message;
+  // statusText.textContent = message;
 };
 
 const supportsSizeSlider = (preset) => preset && (preset.kind === "adaptive" || preset.kind === "grayscale");
