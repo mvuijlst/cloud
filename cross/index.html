@@ -20,7 +20,6 @@
       </div>
       <div class="round-info">
         <span id="round-label">Round 1 / 1</span>
-        <button id="reset-round" type="button">Reset round</button>
         <button id="open-help" type="button" class="help-button">How to play</button>
         <div class="score-panel" aria-live="polite">
           <span class="score-label">Score</span>
@@ -58,10 +57,21 @@
       <ol>
         <li>Click a square to highlight every place that hides the same secret letter.</li>
         <li>Select a letter from the alphabet. Each guess costs 2 points, and a letter can be used only once.</li>
-        <li>Lock letters when you're confident. Correct locks earn 10 points; wrong locks lose 10.</li>
+        <li>Lock letters when you need some confidence. Each guess and lock costs you points. At the end, you get 5 points for every letter you never locked, with a nice extra bonus if you used very few or no locks.</li>
         <li>Need help? Buy a random letter for 50 points to reveal and lock it automatically.</li>
         <li>Fill the entire alphabet to finish the puzzle and move to the next round.</li>
       </ol>
+    </div>
+  </div>
+  <div id="round-summary-modal" class="modal" aria-hidden="true" hidden>
+    <div class="modal-content summary-modal" role="dialog" aria-modal="true" aria-labelledby="round-summary-title" tabindex="-1">
+      <button id="close-round-summary" type="button" class="modal-close" aria-label="Close round summary">×</button>
+      <p id="round-summary-title" class="summary-heading">Puzzle complete!</p>
+      <p id="round-summary-round" class="summary-round">Round 1</p>
+      <p class="summary-score" id="round-summary-score">0</p>
+      <div class="summary-stats" id="round-summary-stats"></div>
+      <ul class="summary-breakdown" id="round-summary-breakdown"></ul>
+      <button id="round-summary-close-btn" type="button" class="alphabet-action summary-dismiss">Play next puzzle</button>
     </div>
   </div>
   <script type="module" src="app.js"></script>

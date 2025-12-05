@@ -3,7 +3,6 @@ const gridEl = document.getElementById("grid");
 const alphabetEl = document.getElementById("alphabet");
 const statusEl = document.getElementById("status");
 const roundLabelEl = document.getElementById("round-label");
-const resetBtn = document.getElementById("reset-round");
 const nextRoundBtn = document.getElementById("next-round");
 const titleEl = document.getElementById("puzzle-title");
 const authorEl = document.getElementById("puzzle-author");
@@ -15,14 +14,41 @@ const helpCloseBtn = document.getElementById("close-help");
 const helpModal = document.getElementById("help-modal");
 const scoreValueEl = document.getElementById("score-value");
 const scoreDeltaEl = document.getElementById("score-delta");
+const roundSummaryModal = document.getElementById("round-summary-modal");
+const roundSummaryCloseBtn = document.getElementById("close-round-summary");
+const roundSummaryDismissBtn = document.getElementById("round-summary-close-btn");
+const roundSummaryTitleEl = document.getElementById("round-summary-title");
+const roundSummaryScoreEl = document.getElementById("round-summary-score");
+const roundSummaryRoundEl = document.getElementById("round-summary-round");
+const roundSummaryStatsEl = document.getElementById("round-summary-stats");
+const roundSummaryBreakdownEl = document.getElementById("round-summary-breakdown");
+const cellLetterMap = new WeakMap();
+const letterCellMap = new Map();
+const SOUND_PATHS = {
+  letter: "sound/letter.wav",
+  delete: "sound/delete.wav",
+  buyletter: "sound/buyletter.mp3",
+  lock: "sound/lock.wav",
+  wronglock: "sound/wronglock.wav",
+  win: "sound/win.mp3",
+};
+const audioBuffers = new Map();
+const audioBufferPromises = new Map();
+let audioCtx = null;
 const desktopInput = window.matchMedia && window.matchMedia("(pointer: fine)").matches;
 const MANIFEST_URL = "data/manifest.json";
 const SCORE_RULES = {
   START: 200,
   GUESS_COST: 2,
-  LOCK_REWARD: 10,
-  LOCK_PENALTY: 10,
+  LOCK_CORRECT_COST: 10,
+  LOCK_INCORRECT_COST: 20,
   HINT_COST: 50,
+  UNLOCKED_LETTER_BONUS: 5,
+  NO_LOCKS_BONUS: 50,
+  LOW_LOCKS_BONUS: 30,
+  LOW_LOCKS_THRESHOLD: 3,
+  NEXT_PUZZLE_BASE: 200,
+  NEXT_PUZZLE_DECAY: 20,
 };
 
 let manifest = [];
@@ -41,9 +67,15 @@ let score = SCORE_RULES.START;
 let scoreDeltaTimer = null;
 let helpModalOpen = false;
 let clearButtonRef = null;
+let playerLockAttempts = 0;
+let roundSolved = false;
+let roundStartingScore = SCORE_RULES.START;
+let roundSummaryModalOpen = false;
+let roundStats = createRoundStats(SCORE_RULES.START);
+let pendingRunReset = false;
 
-resetBtn.addEventListener("click", resetCurrentRound);
 nextRoundBtn.addEventListener("click", () => {
+  applyNextPuzzleBonus();
   nextRoundBtn.disabled = true;
   loadNextRound().finally(() => {
     nextRoundBtn.disabled = false;
@@ -68,15 +100,31 @@ if (helpModal) {
     }
   });
 }
+if (roundSummaryCloseBtn) {
+  roundSummaryCloseBtn.addEventListener("click", handleRoundSummaryContinue);
+}
+if (roundSummaryDismissBtn) {
+  roundSummaryDismissBtn.addEventListener("click", handleRoundSummaryContinue);
+}
+if (roundSummaryModal) {
+  roundSummaryModal.addEventListener("click", (event) => {
+    if (event.target === roundSummaryModal) {
+      handleRoundSummaryContinue();
+    }
+  });
+}
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape" && helpModalOpen) {
     toggleHelpModal(false);
+  } else if (event.key === "Escape" && roundSummaryModalOpen) {
+    handleRoundSummaryContinue();
   }
 });
 
 updateBuyButtonState();
 
 init();
+scheduleAudioPrimeListeners();
 if (desktopInput) {
   window.addEventListener("keydown", handleKeydown);
 }
@@ -88,6 +136,7 @@ async function loadNextRound() {
     const freebies = deriveGivenLetters(gridLines);
     currentRound = { puzzle, gridLines, freebies };
     roundCounter += 1;
+    roundStartingScore = score;
     applyRoundState();
   } catch (error) {
     console.error(error);
@@ -95,22 +144,20 @@ async function loadNextRound() {
   }
 }
 
-function resetCurrentRound() {
-  if (!currentRound) {
-    return;
-  }
-  applyRoundState();
-}
-
 function applyRoundState() {
   if (!currentRound) {
     return;
   }
+  pendingRunReset = false;
   highlightedLetter = null;
-  highlightedCell = null;
+  setHighlightedCell(null);
   lettersInPlay = new Set();
   givenLetters = new Set(currentRound.freebies);
   usedLetters = new Set(currentRound.freebies);
+  playerLockAttempts = 0;
+  roundSolved = false;
+  roundStats = createRoundStats(roundStartingScore);
+  toggleRoundSummaryModal(false);
   resetScore();
   statusEl.textContent = "";
   nextRoundBtn.hidden = true;
@@ -260,6 +307,7 @@ function renderMeta(puzzle) {
 
 function renderGrid(gridLines) {
   gridEl.innerHTML = "";
+  letterCellMap.clear();
   if (!gridLines.length) {
     return;
   }
@@ -274,12 +322,12 @@ function renderGrid(gridLines) {
       const cell = cellTemplate.content.firstElementChild.cloneNode(true);
       cell.dataset.row = rowIndex;
       cell.dataset.col = colIndex;
-      cell.dataset.letter = char;
       if (char === "#") {
         cell.classList.add("block");
         cell.tabIndex = -1;
       } else {
         lettersInPlay.add(char);
+        registerLetterCell(cell, char);
         const isGiven = givenLetters.has(char);
         cell.dataset.locked = isGiven ? "true" : "false";
         cell.dataset.lockType = isGiven ? "given" : "";
@@ -349,19 +397,23 @@ function handleCellClick(cell) {
   if (!cell || cell.classList.contains("block")) {
     return;
   }
-  highlightedCell = cell;
-  highlightedLetter = cell.dataset.letter;
+  setHighlightedCell(cell);
+  highlightedLetter = getActualLetter(cell);
+  if (!highlightedLetter) {
+    return;
+  }
   cell.focus();
   updateHighlights();
   updateLockButtonState();
-  const count = [...gridEl.querySelectorAll(`[data-letter="${highlightedLetter}"]`)].length;
+  const count = getCellsForLetter(highlightedLetter).length;
   statusEl.textContent = `Selected group has ${count} square${count === 1 ? "" : "s"}.`;
 }
 
 function updateHighlights() {
   gridEl.querySelectorAll(".cell").forEach((cell) => {
     if (cell.classList.contains("block")) return;
-    if (cell.dataset.letter === highlightedLetter) {
+    const actualLetter = getActualLetter(cell);
+    if (actualLetter && actualLetter === highlightedLetter) {
       cell.classList.add("highlight");
     } else {
       cell.classList.remove("highlight");
@@ -417,14 +469,22 @@ function handleLockClick() {
     const result = lockGroup(highlightedLetter, "player");
     if (!result || !result.success) {
       statusEl.textContent = "Unable to lock selection.";
-    } else if (result.isCorrect) {
-      adjustScore(SCORE_RULES.LOCK_REWARD);
-      statusEl.textContent = `Locked correctly! +${SCORE_RULES.LOCK_REWARD} points.`;
     } else {
-      adjustScore(-SCORE_RULES.LOCK_PENALTY);
-      markGuessWrong(highlightedLetter);
-      unlockGroup(highlightedLetter);
-      statusEl.textContent = `Locked wrong. -${SCORE_RULES.LOCK_PENALTY} points. Try again.`;
+      playerLockAttempts += 1;
+      const lockCost = result.isCorrect
+        ? SCORE_RULES.LOCK_CORRECT_COST
+        : SCORE_RULES.LOCK_INCORRECT_COST;
+      recordLockAttempt(result.isCorrect);
+      adjustScore(-lockCost);
+      if (result.isCorrect) {
+        statusEl.textContent = `Locked correctly. -${lockCost} points.`;
+        playSound("lock");
+      } else {
+        markGuessWrong(highlightedLetter);
+        unlockGroup(highlightedLetter);
+        statusEl.textContent = `Locked wrong. -${lockCost} points. Try again.`;
+        playSound("wronglock");
+      }
     }
   }
   updateLockButtonState();
@@ -509,13 +569,26 @@ function moveSelection(deltaRow, deltaCol) {
   }
 }
 
+function setHighlightedCell(cell) {
+  if (highlightedCell === cell) {
+    return;
+  }
+  if (highlightedCell) {
+    highlightedCell.classList.remove("current-cell");
+  }
+  highlightedCell = cell;
+  if (highlightedCell) {
+    highlightedCell.classList.add("current-cell");
+  }
+}
+
 function fillLetter(actualLetter, guessLetter) {
-  gridEl.querySelectorAll(`[data-letter="${actualLetter}"]`).forEach((cell) => {
+  getCellsForLetter(actualLetter).forEach((cell) => {
     if (cell.dataset.locked === "true") return;
     cell.textContent = guessLetter;
     cell.dataset.guess = guessLetter;
     cell.classList.remove("guess-wrong");
-    if (guessLetter && guessLetter === cell.dataset.letter) {
+    if (guessLetter && guessLetter === getActualLetter(cell)) {
       cell.classList.add("solved");
       cell.dataset.state = "solved";
     } else {
@@ -548,6 +621,8 @@ function applyLetter(letter) {
   fillLetter(highlightedLetter, letter);
   usedLetters.add(letter);
   disableAlphabetLetter(letter);
+  playSound("letter");
+  recordGuessPenalty(SCORE_RULES.GUESS_COST);
   adjustScore(-SCORE_RULES.GUESS_COST);
   updateHighlights();
   updateLockButtonState();
@@ -556,7 +631,7 @@ function applyLetter(letter) {
 }
 
 function clearGroup(actualLetter) {
-  const cells = [...gridEl.querySelectorAll(`[data-letter="${actualLetter}"]`)];
+  const cells = getCellsForLetter(actualLetter);
   if (!cells.length) {
     return null;
   }
@@ -579,7 +654,7 @@ function clearGroup(actualLetter) {
 }
 
 function getGroupGuess(actualLetter) {
-  const cell = gridEl.querySelector(`[data-letter="${actualLetter}"]`);
+  const cell = getSampleCell(actualLetter);
   if (!cell || cell.dataset.locked === "true") {
     return "";
   }
@@ -587,29 +662,45 @@ function getGroupGuess(actualLetter) {
 }
 
 function checkRoundCompletion() {
-  if (!isRoundSolved()) {
+  if (roundSolved || !isRoundSolved()) {
     return;
   }
-  const completionMessage = "Round complete!";
+  roundSolved = true;
+  playSound("win");
+  const bonusInfo = applyCompletionBonuses();
+  const isGameOver = score < 0;
+  pendingRunReset = isGameOver;
+  let completionMessage = buildCompletionMessage(bonusInfo);
+  if (isGameOver) {
+    completionMessage = `${completionMessage} Score fell below zero -- game over.`;
+  }
   const existing = (statusEl.textContent || "").trim();
-  statusEl.textContent = existing && !existing.endsWith(completionMessage)
-    ? `${existing} ${completionMessage}`
-    : completionMessage;
-  nextRoundBtn.hidden = false;
-  nextRoundBtn.textContent = "Next puzzle";
+  statusEl.textContent = existing ? `${existing} ${completionMessage}` : completionMessage;
+  renderRoundSummary(bonusInfo, isGameOver);
+  if (nextRoundBtn) {
+    nextRoundBtn.hidden = isGameOver;
+    nextRoundBtn.disabled = isGameOver;
+    nextRoundBtn.textContent = "Next puzzle";
+  }
 }
 
 function isRoundSolved() {
-  return ![...gridEl.querySelectorAll(".cell")].some((cell) => {
-    if (cell.classList.contains("block")) return false;
-    if (cell.dataset.locked === "true") {
-      if (cell.dataset.lockType === "player") {
-        return cell.dataset.guess !== cell.dataset.letter;
+  for (const cells of letterCellMap.values()) {
+    const needsWork = cells.some((cell) => {
+      const actual = getActualLetter(cell);
+      if (cell.dataset.locked === "true") {
+        if (cell.dataset.lockType === "player") {
+          return cell.dataset.guess !== actual;
+        }
+        return false;
       }
+      return cell.dataset.guess !== actual;
+    });
+    if (needsWork) {
       return false;
     }
-    return cell.dataset.guess !== cell.dataset.letter;
-  });
+  }
+  return true;
 }
 
 function clearHighlightedGroup(buttonRef = null) {
@@ -640,6 +731,7 @@ function clearHighlightedGroup(buttonRef = null) {
   if (!removedLetter) {
     return null;
   }
+  playSound("delete");
   usedLetters.delete(removedLetter);
   enableAlphabetLetter(removedLetter);
   if (!isRoundSolved()) {
@@ -694,8 +786,10 @@ function handleBuyLetterClick() {
     return;
   }
   const choice = options[Math.floor(Math.random() * options.length)];
+  recordHintPurchase(SCORE_RULES.HINT_COST);
   adjustScore(-SCORE_RULES.HINT_COST);
   revealLetter(choice);
+  playSound("buyletter");
   statusEl.textContent = `Bought letter ${choice}. -${SCORE_RULES.HINT_COST} points.`;
   updateHighlights();
   updateLockButtonState();
@@ -719,23 +813,20 @@ function revealLetter(actualLetter) {
 }
 
 function getBuyableLetters() {
-  const letters = new Set();
-  if (!gridEl.children.length) {
-    return [];
-  }
-  gridEl.querySelectorAll(".cell").forEach((cell) => {
-    if (cell.classList.contains("block")) {
-      return;
+  const letters = [];
+  letterCellMap.forEach((cells, letter) => {
+    const eligible = cells.some((cell) => {
+      if (cell.dataset.lockType === "given" || cell.dataset.lockType === "hint") {
+        return false;
+      }
+      const actual = getActualLetter(cell);
+      return !(cell.dataset.guess && cell.dataset.guess === actual);
+    });
+    if (eligible) {
+      letters.push(letter);
     }
-    if (cell.dataset.lockType === "given" || cell.dataset.lockType === "hint") {
-      return;
-    }
-    if (cell.dataset.guess === cell.dataset.letter && cell.dataset.guess) {
-      return;
-    }
-    letters.add(cell.dataset.letter);
   });
-  return [...letters];
+  return letters;
 }
 
 function updateBuyButtonState() {
@@ -758,7 +849,11 @@ function toggleHelpModal(shouldOpen) {
   helpModal.setAttribute("aria-hidden", shouldOpen ? "false" : "true");
   helpModal.classList.toggle("is-visible", shouldOpen);
   helpModal.hidden = !shouldOpen;
-  document.body.classList.toggle("modal-open", shouldOpen);
+  if (shouldOpen) {
+    document.body.classList.add("modal-open");
+  } else if (!roundSummaryModalOpen) {
+    document.body.classList.remove("modal-open");
+  }
   if (shouldOpen) {
     const target = helpModal.querySelector(".modal-content");
     if (target) {
@@ -769,8 +864,120 @@ function toggleHelpModal(shouldOpen) {
   }
 }
 
-function resetScore() {
+function createRoundStats(startScore = SCORE_RULES.START) {
+  return {
+    startScore,
+    guessCount: 0,
+    guessPenalty: 0,
+    lockCount: 0,
+    correctLockCount: 0,
+    wrongLockCount: 0,
+    lockCostTotal: 0,
+    wrongLockPenaltyTotal: 0,
+    hintCount: 0,
+    hintCostTotal: 0,
+  };
+}
+
+function recordGuessPenalty(cost) {
+  if (!roundStats) {
+    return;
+  }
+  roundStats.guessCount += 1;
+  roundStats.guessPenalty += cost;
+}
+
+function recordLockAttempt(isCorrect) {
+  if (!roundStats) {
+    return;
+  }
+  roundStats.lockCount += 1;
+  roundStats.lockCostTotal += SCORE_RULES.LOCK_CORRECT_COST;
+  if (isCorrect) {
+    roundStats.correctLockCount += 1;
+    return;
+  }
+  roundStats.wrongLockCount += 1;
+  const extraPenalty = Math.max(0, SCORE_RULES.LOCK_INCORRECT_COST - SCORE_RULES.LOCK_CORRECT_COST);
+  if (extraPenalty > 0) {
+    roundStats.wrongLockPenaltyTotal += extraPenalty;
+  }
+}
+
+function recordHintPurchase(cost) {
+  if (!roundStats || typeof cost !== "number") {
+    return;
+  }
+  roundStats.hintCount += 1;
+  roundStats.hintCostTotal += cost;
+}
+
+function toggleRoundSummaryModal(shouldOpen) {
+  if (!roundSummaryModal) {
+    return;
+  }
+  roundSummaryModalOpen = shouldOpen;
+  roundSummaryModal.setAttribute("aria-hidden", shouldOpen ? "false" : "true");
+  roundSummaryModal.classList.toggle("is-visible", shouldOpen);
+  roundSummaryModal.hidden = !shouldOpen;
+  if (shouldOpen) {
+    document.body.classList.add("modal-open");
+  } else if (!helpModalOpen) {
+    document.body.classList.remove("modal-open");
+  }
+  if (shouldOpen) {
+    const target = roundSummaryModal.querySelector(".modal-content");
+    if (target) {
+      target.focus();
+    }
+  } else if (nextRoundBtn) {
+    nextRoundBtn.focus();
+  }
+}
+
+function handleRoundSummaryContinue() {
+  if (!roundSummaryModalOpen && !pendingRunReset) {
+    return;
+  }
+  if (roundSummaryModalOpen) {
+    toggleRoundSummaryModal(false);
+  }
+  if (pendingRunReset) {
+    startNewRun();
+    return;
+  }
+  if (nextRoundBtn && !nextRoundBtn.disabled) {
+    nextRoundBtn.click();
+  }
+}
+
+function startNewRun() {
+  pendingRunReset = false;
+  if (!manifest.length) {
+    statusEl.textContent = "Unable to restart -- no puzzles available.";
+    return;
+  }
+  roundCounter = 0;
+  roundStartingScore = SCORE_RULES.START;
   score = SCORE_RULES.START;
+  roundStats = createRoundStats(score);
+  renderScore(0);
+  statusEl.textContent = "Score fell below zero. Restarting at round 1.";
+  if (nextRoundBtn) {
+    nextRoundBtn.hidden = true;
+    nextRoundBtn.disabled = true;
+  }
+  puzzleQueue = [];
+  shardQueue = shuffle([...manifest]);
+  loadNextRound().finally(() => {
+    if (nextRoundBtn) {
+      nextRoundBtn.disabled = false;
+    }
+  });
+}
+
+function resetScore() {
+  score = roundStartingScore;
   renderScore(0);
 }
 
@@ -813,11 +1020,28 @@ function updateScoreDelta(delta) {
   }, 2000);
 }
 
+function registerLetterCell(cell, actualLetter) {
+  cellLetterMap.set(cell, actualLetter);
+  if (!letterCellMap.has(actualLetter)) {
+    letterCellMap.set(actualLetter, []);
+  }
+  letterCellMap.get(actualLetter).push(cell);
+}
+
+function getActualLetter(cell) {
+  return cellLetterMap.get(cell) || "";
+}
+
 function getCellsForLetter(actualLetter) {
-  if (!actualLetter) {
+  if (!actualLetter || !letterCellMap.has(actualLetter)) {
     return [];
   }
-  return [...gridEl.querySelectorAll(`[data-letter="${actualLetter}"]`)].filter((cell) => !cell.classList.contains("block"));
+  return letterCellMap.get(actualLetter);
+}
+
+function getSampleCell(actualLetter) {
+  const cells = getCellsForLetter(actualLetter);
+  return cells.length ? cells[0] : null;
 }
 
 function lockGroup(actualLetter, lockType = "player") {
@@ -831,7 +1055,7 @@ function lockGroup(actualLetter, lockType = "player") {
     if (!guess) {
       return { success: false, isCorrect: false };
     }
-    isCorrect = cells.every((cell) => cell.dataset.guess === cell.dataset.letter);
+    isCorrect = cells.every((cell) => cell.dataset.guess === getActualLetter(cell));
   }
   cells.forEach((cell) => {
     cell.dataset.locked = "true";
@@ -895,5 +1119,248 @@ function updateLockButtonState() {
   lockBtn.disabled = !hasGuess;
   lockBtn.textContent = "Lock selection";
   lockBtn.dataset.mode = "lock";
+}
+
+function applyNextPuzzleBonus() {
+  if (!roundSolved || !roundCounter) {
+    return;
+  }
+  const bonus = SCORE_RULES.NEXT_PUZZLE_BASE - (SCORE_RULES.NEXT_PUZZLE_DECAY * roundCounter);
+  if (!Number.isFinite(bonus)) {
+    return;
+  }
+  adjustScore(bonus);
+  const message = `Next puzzle bonus ${bonus >= 0 ? "+" : ""}${bonus} points.`;
+  const existing = (statusEl.textContent || "").trim();
+  statusEl.textContent = existing ? `${existing} ${message}` : message;
+}
+
+function applyCompletionBonuses() {
+  const unlockedLetterCount = countUnlockedLetters();
+  const summary = {
+    totalBonus: 0,
+    unlockedLetterCount,
+    unlockedBonus: 0,
+    noLockBonus: 0,
+    lowLockBonus: 0,
+    lockCount: playerLockAttempts,
+  };
+  if (unlockedLetterCount > 0) {
+    summary.unlockedBonus = unlockedLetterCount * SCORE_RULES.UNLOCKED_LETTER_BONUS;
+    summary.totalBonus += summary.unlockedBonus;
+  }
+  if (playerLockAttempts === 0) {
+    summary.noLockBonus = SCORE_RULES.NO_LOCKS_BONUS;
+    summary.totalBonus += summary.noLockBonus;
+  }
+  if (playerLockAttempts <= SCORE_RULES.LOW_LOCKS_THRESHOLD) {
+    summary.lowLockBonus = SCORE_RULES.LOW_LOCKS_BONUS;
+    summary.totalBonus += summary.lowLockBonus;
+  }
+  if (summary.totalBonus) {
+    adjustScore(summary.totalBonus);
+  }
+  return summary;
+}
+
+function countUnlockedLetters() {
+  let unlocked = 0;
+  letterCellMap.forEach((cells) => {
+    const sample = cells[0];
+    if (sample && !sample.dataset.lockType) {
+      unlocked += 1;
+    }
+  });
+  return unlocked;
+}
+
+function buildCompletionMessage(bonusInfo) {
+  const base = "Round complete!";
+  if (!bonusInfo || !bonusInfo.totalBonus) {
+    return base;
+  }
+  const details = [];
+  if (bonusInfo.unlockedBonus) {
+    details.push(`+${bonusInfo.unlockedBonus} for ${bonusInfo.unlockedLetterCount} unlocked letters`);
+  }
+  if (bonusInfo.noLockBonus) {
+    details.push(`+${bonusInfo.noLockBonus} no-lock bonus`);
+  }
+  if (bonusInfo.lowLockBonus) {
+    details.push(`+${bonusInfo.lowLockBonus} low-lock bonus`);
+  }
+  const detailText = details.length ? ` Bonus ${details.join(", ")}.` : "";
+  return `${base}${detailText}`;
+}
+
+function renderRoundSummary(bonusInfo = {}, gameOver = false) {
+  if (!roundSummaryModal || !roundSummaryScoreEl || !roundSummaryStatsEl || !roundSummaryBreakdownEl) {
+    return;
+  }
+  const unlockedLetters = bonusInfo.unlockedLetterCount || 0;
+  const stats = [
+    { label: "Unlocked letters", value: unlockedLetters },
+    { label: "Locks used", value: roundStats.lockCount },
+    { label: "Correct locks", value: `${roundStats.correctLockCount}/${roundStats.lockCount || 0}` },
+    { label: "Hints bought", value: roundStats.hintCount },
+  ];
+  if (roundSummaryTitleEl) {
+    roundSummaryTitleEl.textContent = gameOver ? "Game over" : "Round complete";
+  }
+  if (roundSummaryDismissBtn) {
+    roundSummaryDismissBtn.textContent = gameOver ? "Start new run" : "Play next puzzle";
+  }
+  if (roundSummaryRoundEl) {
+    roundSummaryRoundEl.textContent = `Round ${roundCounter}`;
+  }
+  roundSummaryStatsEl.innerHTML = stats
+    .map((stat) => `<div class="summary-stat"><span>${stat.label}</span><strong>${stat.value}</strong></div>`)
+    .join("");
+  roundSummaryScoreEl.textContent = score;
+  roundSummaryBreakdownEl.innerHTML = buildRoundSummaryBreakdown(bonusInfo, unlockedLetters);
+  toggleRoundSummaryModal(true);
+}
+
+function buildRoundSummaryBreakdown(bonusInfo, unlockedLetters) {
+  const entries = [];
+  entries.push({ label: "Start", value: roundStats.startScore, signed: false, highlight: false });
+  if (roundStats.guessCount > 0) {
+    entries.push({ label: "Letter guesses", value: -roundStats.guessPenalty, signed: true, highlight: false });
+  }
+  if (roundStats.hintCount > 0) {
+    entries.push({ label: `Hints (${roundStats.hintCount})`, value: -roundStats.hintCostTotal, signed: true, highlight: false });
+  }
+  if (roundStats.lockCount > 0) {
+    entries.push({ label: "Locks", value: -roundStats.lockCostTotal, signed: true, highlight: false });
+  }
+  if (roundStats.wrongLockCount > 0 && roundStats.wrongLockPenaltyTotal > 0) {
+    entries.push({ label: "Wrong locks", value: -roundStats.wrongLockPenaltyTotal, signed: true, highlight: false });
+  }
+  if (bonusInfo.unlockedBonus) {
+    entries.push({
+      label: `Bravery bonus (${unlockedLetters} unlocked)`,
+      value: bonusInfo.unlockedBonus,
+      signed: true,
+      highlight: false,
+    });
+  }
+  if (bonusInfo.noLockBonus) {
+    entries.push({ label: "No-lock bonus", value: bonusInfo.noLockBonus, signed: true, highlight: false });
+  }
+  if (bonusInfo.lowLockBonus) {
+    entries.push({ label: "Low-lock bonus", value: bonusInfo.lowLockBonus, signed: true, highlight: false });
+  }
+  entries.push({ label: "Final", value: score, signed: false, highlight: true });
+  return entries
+    .map((entry) => {
+      const valueClass = ["value"];
+      if (entry.highlight) {
+        valueClass.push("final");
+      } else if (entry.signed && entry.value > 0) {
+        valueClass.push("positive");
+      } else if (entry.signed && entry.value < 0) {
+        valueClass.push("negative");
+      }
+      const text = entry.signed ? formatSignedValue(entry.value) : `${entry.value}`;
+      return `<li><span class="label">${entry.label}</span><span class="${valueClass.join(" ")}">${text}</span></li>`;
+    })
+    .join("");
+}
+
+function formatSignedValue(value) {
+  if (value > 0) {
+    return `+${value}`;
+  }
+  if (value < 0) {
+    return `${value}`;
+  }
+  return "0";
+}
+
+function playSound(name) {
+  const ctx = ensureAudioContext();
+  if (!ctx) {
+    return;
+  }
+  resumeAudioContext();
+  const bufferPromise = getAudioBuffer(name, ctx);
+  if (!bufferPromise) {
+    return;
+  }
+  bufferPromise
+    .then((buffer) => {
+      if (!buffer || !ctx) {
+        return;
+      }
+      const source = ctx.createBufferSource();
+      source.buffer = buffer;
+      source.connect(ctx.destination);
+      source.start();
+    })
+    .catch(() => {});
+}
+
+function ensureAudioContext() {
+  if (audioCtx) {
+    return audioCtx;
+  }
+  const AudioContextCtor = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContextCtor) {
+    return null;
+  }
+  audioCtx = new AudioContextCtor();
+  return audioCtx;
+}
+
+function resumeAudioContext() {
+  if (!audioCtx) {
+    return;
+  }
+  if (audioCtx.state === "suspended") {
+    audioCtx.resume().catch(() => {});
+  }
+}
+
+function getAudioBuffer(name, ctx) {
+  if (!SOUND_PATHS[name]) {
+    return null;
+  }
+  if (audioBuffers.has(name)) {
+    return Promise.resolve(audioBuffers.get(name));
+  }
+  if (audioBufferPromises.has(name)) {
+    return audioBufferPromises.get(name);
+  }
+  const promise = fetch(SOUND_PATHS[name])
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`Failed to load ${SOUND_PATHS[name]}`);
+      }
+      return response.arrayBuffer();
+    })
+    .then((data) => ctx.decodeAudioData(data))
+    .then((decoded) => {
+      audioBuffers.set(name, decoded);
+      return decoded;
+    })
+    .catch((error) => {
+      console.error(error);
+      throw error;
+    })
+    .finally(() => {
+      audioBufferPromises.delete(name);
+    });
+  audioBufferPromises.set(name, promise);
+  return promise;
+}
+
+function scheduleAudioPrimeListeners() {
+  const unlock = () => {
+    resumeAudioContext();
+    document.removeEventListener("pointerdown", unlock, true);
+    document.removeEventListener("keydown", unlock, true);
+  };
+  document.addEventListener("pointerdown", unlock, true);
+  document.addEventListener("keydown", unlock, true);
 }
 
