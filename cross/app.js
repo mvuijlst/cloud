@@ -31,6 +31,7 @@ const SOUND_PATHS = {
   lock: "sound/lock.wav",
   wronglock: "sound/wronglock.wav",
   win: "sound/win.mp3",
+  lose: "sound/lose.wav",
 };
 const audioBuffers = new Map();
 const audioBufferPromises = new Map();
@@ -50,6 +51,8 @@ const SCORE_RULES = {
   NEXT_PUZZLE_BASE: 200,
   NEXT_PUZZLE_DECAY: 20,
 };
+const SAVE_STATE_KEY = "cross-game-state-v1";
+const SAVE_STATE_DEBOUNCE_MS = 100;
 
 let manifest = [];
 let shardQueue = [];
@@ -73,6 +76,9 @@ let roundStartingScore = SCORE_RULES.START;
 let roundSummaryModalOpen = false;
 let roundStats = createRoundStats(SCORE_RULES.START);
 let pendingRunReset = false;
+let saveGameStateTimer = null;
+let restoringState = false;
+let lastRoundSummaryContext = { bonusInfo: null, gameOver: false };
 
 nextRoundBtn.addEventListener("click", () => {
   applyNextPuzzleBonus();
@@ -167,6 +173,7 @@ function applyRoundState() {
   roundLabelEl.textContent = `Round ${roundCounter}`;
   updateLockButtonState();
   updateBuyButtonState();
+  scheduleSaveGameState();
 }
 
 async function getNextPuzzle() {
@@ -275,7 +282,10 @@ async function init() {
     }
     manifest = data;
     shardQueue = shuffle([...manifest]);
-    await loadNextRound();
+    const restored = tryRestoreSavedState();
+    if (!restored) {
+      await loadNextRound();
+    }
   } catch (error) {
     console.error(error);
     statusEl.textContent = "Unable to load puzzles.";
@@ -435,6 +445,7 @@ function handleClearClick() {
 }
 
 function handleLockClick() {
+  let stateChanged = false;
   if (!highlightedLetter) {
     statusEl.textContent = "Select a square before locking.";
     if (lockBtn) {
@@ -457,6 +468,7 @@ function handleLockClick() {
   if (isLocked) {
     const unlocked = unlockGroup(highlightedLetter);
     statusEl.textContent = unlocked ? "Selection unlocked. You can edit it again." : "Unable to unlock selection.";
+    stateChanged = stateChanged || unlocked;
   } else {
     const guess = cells[0].dataset.guess;
     if (!guess) {
@@ -485,11 +497,15 @@ function handleLockClick() {
         statusEl.textContent = `Locked wrong. -${lockCost} points. Try again.`;
         playSound("wronglock");
       }
+      stateChanged = true;
     }
   }
   updateLockButtonState();
   updateBuyButtonState();
   checkRoundCompletion();
+  if (stateChanged) {
+    scheduleSaveGameState();
+  }
 }
 
 function handleKeydown(event) {
@@ -580,6 +596,7 @@ function setHighlightedCell(cell) {
   if (highlightedCell) {
     highlightedCell.classList.add("current-cell");
   }
+  scheduleSaveGameState();
 }
 
 function fillLetter(actualLetter, guessLetter) {
@@ -628,6 +645,7 @@ function applyLetter(letter) {
   updateLockButtonState();
   updateBuyButtonState();
   checkRoundCompletion();
+  scheduleSaveGameState();
 }
 
 function clearGroup(actualLetter) {
@@ -666,9 +684,9 @@ function checkRoundCompletion() {
     return;
   }
   roundSolved = true;
-  playSound("win");
   const bonusInfo = applyCompletionBonuses();
   const isGameOver = score < 0;
+  playSound(isGameOver ? "lose" : "win");
   pendingRunReset = isGameOver;
   let completionMessage = buildCompletionMessage(bonusInfo);
   if (isGameOver) {
@@ -682,6 +700,7 @@ function checkRoundCompletion() {
     nextRoundBtn.disabled = isGameOver;
     nextRoundBtn.textContent = "Next puzzle";
   }
+  scheduleSaveGameState();
 }
 
 function isRoundSolved() {
@@ -740,6 +759,7 @@ function clearHighlightedGroup(buttonRef = null) {
     nextRoundBtn.textContent = "Next round";
     statusEl.textContent = "";
   }
+  scheduleSaveGameState();
   return removedLetter;
 }
 
@@ -795,6 +815,7 @@ function handleBuyLetterClick() {
   updateLockButtonState();
   updateBuyButtonState();
   checkRoundCompletion();
+  scheduleSaveGameState();
 }
 
 function revealLetter(actualLetter) {
@@ -933,6 +954,7 @@ function toggleRoundSummaryModal(shouldOpen) {
   } else if (nextRoundBtn) {
     nextRoundBtn.focus();
   }
+  scheduleSaveGameState();
 }
 
 function handleRoundSummaryContinue() {
@@ -957,6 +979,7 @@ function startNewRun() {
     statusEl.textContent = "Unable to restart -- no puzzles available.";
     return;
   }
+  clearSavedGameState();
   roundCounter = 0;
   roundStartingScore = SCORE_RULES.START;
   score = SCORE_RULES.START;
@@ -1133,6 +1156,7 @@ function applyNextPuzzleBonus() {
   const message = `Next puzzle bonus ${bonus >= 0 ? "+" : ""}${bonus} points.`;
   const existing = (statusEl.textContent || "").trim();
   statusEl.textContent = existing ? `${existing} ${message}` : message;
+  scheduleSaveGameState();
 }
 
 function applyCompletionBonuses() {
@@ -1208,7 +1232,7 @@ function renderRoundSummary(bonusInfo = {}, gameOver = false) {
     roundSummaryTitleEl.textContent = gameOver ? "Game over" : "Round complete";
   }
   if (roundSummaryDismissBtn) {
-    roundSummaryDismissBtn.textContent = gameOver ? "Start new run" : "Play next puzzle";
+    roundSummaryDismissBtn.textContent = gameOver ? "Start over" : "Play next puzzle";
   }
   if (roundSummaryRoundEl) {
     roundSummaryRoundEl.textContent = `Round ${roundCounter}`;
@@ -1217,8 +1241,14 @@ function renderRoundSummary(bonusInfo = {}, gameOver = false) {
     .map((stat) => `<div class="summary-stat"><span>${stat.label}</span><strong>${stat.value}</strong></div>`)
     .join("");
   roundSummaryScoreEl.textContent = score;
+  roundSummaryScoreEl.classList.toggle("negative", score < 0);
   roundSummaryBreakdownEl.innerHTML = buildRoundSummaryBreakdown(bonusInfo, unlockedLetters);
+  lastRoundSummaryContext = {
+    bonusInfo: bonusInfo ? JSON.parse(JSON.stringify(bonusInfo)) : {},
+    gameOver,
+  };
   toggleRoundSummaryModal(true);
+  scheduleSaveGameState();
 }
 
 function buildRoundSummaryBreakdown(bonusInfo, unlockedLetters) {
@@ -1250,12 +1280,12 @@ function buildRoundSummaryBreakdown(bonusInfo, unlockedLetters) {
   if (bonusInfo.lowLockBonus) {
     entries.push({ label: "Low-lock bonus", value: bonusInfo.lowLockBonus, signed: true, highlight: false });
   }
-  entries.push({ label: "Final", value: score, signed: false, highlight: true });
+  entries.push({ label: "Final", value: score, signed: false, highlight: true, isNegative: score < 0 });
   return entries
     .map((entry) => {
       const valueClass = ["value"];
       if (entry.highlight) {
-        valueClass.push("final");
+        valueClass.push(entry.isNegative ? "final-negative" : "final");
       } else if (entry.signed && entry.value > 0) {
         valueClass.push("positive");
       } else if (entry.signed && entry.value < 0) {
@@ -1275,6 +1305,293 @@ function formatSignedValue(value) {
     return `${value}`;
   }
   return "0";
+}
+
+function scheduleSaveGameState() {
+  if (restoringState) {
+    return;
+  }
+  if (saveGameStateTimer) {
+    clearTimeout(saveGameStateTimer);
+  }
+  saveGameStateTimer = setTimeout(() => {
+    saveGameStateTimer = null;
+    saveGameState();
+  }, SAVE_STATE_DEBOUNCE_MS);
+}
+
+function saveGameState() {
+  if (restoringState || typeof window === "undefined" || !window.localStorage) {
+    return;
+  }
+  const snapshot = buildGameStateSnapshot();
+  if (!snapshot) {
+    clearSavedGameState();
+    return;
+  }
+  try {
+    window.localStorage.setItem(SAVE_STATE_KEY, JSON.stringify(snapshot));
+  } catch (error) {
+    console.warn("Unable to save game state", error);
+  }
+}
+
+function buildGameStateSnapshot() {
+  if (!currentRound || !currentRound.puzzle) {
+    return null;
+  }
+  const letterStates = collectLetterStates();
+  const highlighted = highlightedCell
+    ? {
+        row: Number(highlightedCell.dataset.row),
+        col: Number(highlightedCell.dataset.col),
+      }
+    : null;
+  const roundSummarySnapshot = {
+    open: roundSummaryModalOpen,
+    bonusInfo: lastRoundSummaryContext.bonusInfo || {},
+    gameOver: lastRoundSummaryContext.gameOver || false,
+  };
+  return {
+    version: 1,
+    timestamp: Date.now(),
+    roundCounter,
+    roundStartingScore,
+    roundSolved,
+    score,
+    playerLockAttempts,
+    statusMessage: statusEl ? statusEl.textContent : "",
+    highlightedCell: highlighted,
+    highlightedLetter,
+    roundStats: roundStats ? JSON.parse(JSON.stringify(roundStats)) : createRoundStats(roundStartingScore),
+    currentRound: {
+      puzzle: currentRound.puzzle,
+      gridLines: currentRound.gridLines,
+      freebies: currentRound.freebies,
+    },
+    givenLetters: Array.from(givenLetters),
+    usedLetters: Array.from(usedLetters),
+    roundSummary: roundSummarySnapshot,
+    pendingRunReset,
+    nextRoundBtn: nextRoundBtn
+      ? {
+          hidden: nextRoundBtn.hidden,
+          disabled: nextRoundBtn.disabled,
+          text: nextRoundBtn.textContent,
+        }
+      : null,
+    letterStates,
+    puzzleQueue,
+    shardQueue,
+  };
+}
+
+function collectLetterStates() {
+  const states = [];
+  letterCellMap.forEach((cells, letter) => {
+    if (!cells || !cells.length) {
+      return;
+    }
+    const sample = cells[0];
+    states.push({
+      letter,
+      guess: sample.dataset.guess || "",
+      locked: sample.dataset.locked === "true",
+      lockType: sample.dataset.lockType || "",
+      state: sample.dataset.state || "",
+    });
+  });
+  return states;
+}
+
+function tryRestoreSavedState() {
+  if (typeof window === "undefined" || !window.localStorage) {
+    return false;
+  }
+  let raw;
+  try {
+    raw = window.localStorage.getItem(SAVE_STATE_KEY);
+  } catch (error) {
+    console.warn("Unable to access saved game state", error);
+    return false;
+  }
+  if (!raw) {
+    return false;
+  }
+  let snapshot;
+  try {
+    snapshot = JSON.parse(raw);
+  } catch (error) {
+    console.error("Failed to parse saved game state", error);
+    clearSavedGameState();
+    return false;
+  }
+  if (!snapshot || snapshot.version !== 1) {
+    clearSavedGameState();
+    return false;
+  }
+  restoringState = true;
+  let success = false;
+  try {
+    restoreFromSnapshot(snapshot);
+    success = true;
+  } catch (error) {
+    console.error("Failed to restore saved game state", error);
+    clearSavedGameState();
+  } finally {
+    restoringState = false;
+  }
+  if (success) {
+    scheduleSaveGameState();
+  }
+  return success;
+}
+
+function restoreFromSnapshot(snapshot) {
+  if (!snapshot.currentRound || !snapshot.currentRound.puzzle || !snapshot.currentRound.gridLines) {
+    throw new Error("Saved puzzle data is missing");
+  }
+  currentRound = {
+    puzzle: snapshot.currentRound.puzzle,
+    gridLines: snapshot.currentRound.gridLines,
+    freebies: snapshot.currentRound.freebies || [],
+  };
+  roundCounter = snapshot.roundCounter || 0;
+  roundStartingScore = typeof snapshot.roundStartingScore === "number" ? snapshot.roundStartingScore : SCORE_RULES.START;
+  score = typeof snapshot.score === "number" ? snapshot.score : SCORE_RULES.START;
+  roundSolved = Boolean(snapshot.roundSolved);
+  pendingRunReset = Boolean(snapshot.pendingRunReset);
+  playerLockAttempts = snapshot.playerLockAttempts || 0;
+  roundStats = normalizeRoundStats(snapshot.roundStats, roundStartingScore);
+  if (Array.isArray(snapshot.puzzleQueue)) {
+    puzzleQueue = snapshot.puzzleQueue;
+  }
+  if (Array.isArray(snapshot.shardQueue)) {
+    shardQueue = snapshot.shardQueue;
+  }
+  const letterStates = snapshot.letterStates || [];
+  givenLetters = new Set(snapshot.givenLetters || currentRound.freebies || []);
+  const derivedUsedLetters = deriveUsedLettersFromStates(letterStates, currentRound.freebies);
+  usedLetters = derivedUsedLetters.size ? derivedUsedLetters : new Set(snapshot.usedLetters || currentRound.freebies || []);
+  renderMeta(currentRound.puzzle);
+  renderGrid(currentRound.gridLines);
+  applySavedLetterStates(letterStates);
+  renderAlphabet();
+  roundLabelEl.textContent = `Round ${roundCounter}`;
+  statusEl.textContent = snapshot.statusMessage || "";
+  renderScore(0);
+  if (nextRoundBtn && snapshot.nextRoundBtn) {
+    nextRoundBtn.hidden = Boolean(snapshot.nextRoundBtn.hidden);
+    nextRoundBtn.disabled = Boolean(snapshot.nextRoundBtn.disabled);
+    if (typeof snapshot.nextRoundBtn.text === "string" && snapshot.nextRoundBtn.text.length) {
+      nextRoundBtn.textContent = snapshot.nextRoundBtn.text;
+    }
+  }
+  highlightedLetter = snapshot.highlightedLetter || null;
+  if (snapshot.highlightedCell) {
+    const selector = `[data-row="${snapshot.highlightedCell.row}"][data-col="${snapshot.highlightedCell.col}"]`;
+    const cell = gridEl.querySelector(selector);
+    if (cell) {
+      setHighlightedCell(cell);
+      highlightedLetter = highlightedLetter || getActualLetter(cell);
+    } else {
+      setHighlightedCell(null);
+    }
+  } else {
+    setHighlightedCell(null);
+  }
+  const summaryInfo = snapshot.roundSummary || {};
+  lastRoundSummaryContext = {
+    bonusInfo: summaryInfo.bonusInfo || {},
+    gameOver: Boolean(summaryInfo.gameOver),
+  };
+  if (summaryInfo.open && summaryInfo.bonusInfo) {
+    renderRoundSummary(summaryInfo.bonusInfo, Boolean(summaryInfo.gameOver));
+  } else {
+    toggleRoundSummaryModal(false);
+  }
+  updateHighlights();
+  updateLockButtonState();
+  updateBuyButtonState();
+}
+
+function applySavedLetterStates(letterStates = []) {
+  letterStates.forEach((entry) => {
+    if (!entry || entry.lockType === "given") {
+      return;
+    }
+    const cells = getCellsForLetter(entry.letter);
+    if (!cells.length) {
+      return;
+    }
+    if (entry.guess) {
+      fillLetter(entry.letter, entry.guess);
+    } else {
+      cells.forEach((cell) => {
+        if (cell.dataset.lockType === "given") {
+          return;
+        }
+        cell.textContent = "";
+        cell.dataset.guess = "";
+        cell.dataset.state = "hidden";
+        cell.classList.remove("solved", "guess-wrong");
+      });
+    }
+    cells.forEach((cell) => {
+      if (entry.locked) {
+        cell.dataset.locked = "true";
+        cell.dataset.lockType = entry.lockType || "";
+        cell.classList.add("locked");
+        const actual = getActualLetter(cell);
+        const isPlayerLock = entry.lockType === "player";
+        const showWrong = isPlayerLock && entry.guess && entry.guess !== actual;
+        const showCorrect = !isPlayerLock || !showWrong;
+        cell.classList.toggle("locked-wrong", showWrong);
+        cell.classList.toggle("locked-correct", showCorrect);
+      } else if (cell.dataset.lockType !== "given") {
+        cell.dataset.locked = "false";
+        cell.dataset.lockType = "";
+        cell.classList.remove("locked", "locked-wrong", "locked-correct");
+      }
+    });
+  });
+}
+
+function deriveUsedLettersFromStates(letterStates = [], fallback = []) {
+  const derived = new Set(Array.isArray(fallback) ? fallback : []);
+  letterStates.forEach((entry) => {
+    if (entry && entry.guess) {
+      derived.add(entry.guess);
+    }
+  });
+  return derived;
+}
+
+function normalizeRoundStats(savedStats, startScore) {
+  const base = createRoundStats(startScore);
+  if (!savedStats) {
+    return base;
+  }
+  return {
+    ...base,
+    ...savedStats,
+    startScore: savedStats.startScore != null ? savedStats.startScore : startScore,
+  };
+}
+
+function clearSavedGameState() {
+  if (saveGameStateTimer) {
+    clearTimeout(saveGameStateTimer);
+    saveGameStateTimer = null;
+  }
+  if (typeof window === "undefined" || !window.localStorage) {
+    return;
+  }
+  try {
+    window.localStorage.removeItem(SAVE_STATE_KEY);
+  } catch (error) {
+    console.warn("Unable to clear saved game state", error);
+  }
 }
 
 function playSound(name) {

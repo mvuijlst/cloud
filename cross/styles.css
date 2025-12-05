@@ -195,6 +195,10 @@ body.modal-open {
   color: var(--accent);
 }
 
+.summary-score.negative {
+  color: var(--score-down);
+}
+
 .summary-stats {
   display: flex;
   gap: 1rem;
@@ -262,6 +266,10 @@ body.modal-open {
 
 .summary-breakdown .value.final {
   color: var(--accent);
+}
+
+.summary-breakdown .value.final-negative {
+  color: var(--score-down);
 }
 
 .summary-dismiss {
