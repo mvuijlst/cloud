@@ -15,7 +15,7 @@
         src: url('../IBMPlexMono-Regular.ttf');
       }
       :root {
-        --bg: #f7f3ea;
+        --bg: #000000;
         --panel: #e8e1d4;
         --text: #1f1a16;
         --muted: #645a50;
@@ -34,7 +34,7 @@
             transparent 6px,
             transparent 32px
           ),
-          linear-gradient(0deg, #e8d6b5 0%, #e8d6b5 36%, #f7f3ea 36%, #f7f3ea 100%);
+          linear-gradient(0deg, #000000 0%, #222222 22%, #000000 22%, #000000 100%);
         color: var(--text);
         font-family: 'IBMPlexMono', monospace;
         display: flex;
@@ -94,7 +94,7 @@
         height: 28px;
         border: 1px solid #2f2634;
         background: #241c2b;
-        color: #f7f3ea;
+        color: #000000;
         border-radius: 4px;
         cursor: pointer;
       }
@@ -114,7 +114,7 @@
         border-radius: 6px;
         border: 1px solid #2f2634;
         background: #241c2b;
-        color: #f7f3ea;
+        color: #000000;
         cursor: pointer;
         font-weight: 700;
         letter-spacing: 0.02em;
@@ -128,7 +128,7 @@
         width: 100%;
         height: 100%;
         overflow: hidden;
-        background: linear-gradient(0deg, #e8d6b5 0%, #e8d6b5 36%, #f7f3ea 36%, #f7f3ea 100%);
+        background: linear-gradient(0deg, #000000 0%, #222222 22%, #000000 22%, #000000 100%);
       }
       #canvas-wrapper::after {
         content: '';
@@ -154,7 +154,7 @@
       body.live #canvas-wrapper {
         width: 100vw;
         height: 100vh;
-        background: linear-gradient(0deg, #e8d6b5 0%, #e8d6b5 38%, #f7f3ea 38%, #f7f3ea 100%);
+        background: linear-gradient(0deg, #000000 0%, #222222 22%, #000000 22%, #000000 100%);
         position: relative;
       }
       body.live #canvas-wrapper::after {
@@ -169,7 +169,7 @@
         height: 100%;
         z-index: 2;
         /* Paint the same wall/floor gradient on the canvas itself so alpha:false doesn't show black */
-        background: linear-gradient(0deg, #e8d6b5 0%, #e8d6b5 38%, #f7f3ea 38%, #f7f3ea 100%);
+        background: linear-gradient(0deg, #000000 0%, #222222 22%, #000000 22%, #000000 100%);
       }
       canvas.dragging {
         cursor: grabbing;
@@ -190,15 +190,15 @@
       }
       #video-holder {
         position: absolute;
-        left: 50%;
-        bottom: 8%;
+        left: 75%;
+        top: 20%;
         transform: translateX(-50%);
         width: min(60vw, 900px);
         aspect-ratio: 16 / 9;
         display: flex;
         align-items: center;
         justify-content: center;
-        z-index: 0;
+        z-index: 999;
         pointer-events: none;
         opacity: 0.8;
       }
@@ -246,9 +246,9 @@
         <div id="video-holder">
           <iframe
             id="video-frame"
-            src="https://www.youtube.com/embed/sF80I-TQiW0?autoplay=1&mute=1&loop=1&playlist=sF80I-TQiW0"
+            src="https://www.youtube.com/embed/sF80I-TQiW0?autoplay=1&mute=0&loop=1&playlist=sF80I-TQiW0"
             title="Ambient video"
-            frameborder="0"
+            frameborder="1"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowfullscreen
           ></iframe>

@@ -14,19 +14,20 @@ const fillLabel = document.getElementById('fill-label');
 const goBtn = document.getElementById('go-btn');
 const startOverBtn = document.getElementById('start-over');
 
-const ctx = canvas.getContext('2d', { alpha: false });
+const ctx = canvas.getContext('2d', { alpha: true });
 
 let bookcases = [];
 let books = [];
 let draggedBook = null;
 let dragOffsetX = 0;
+let dragOffsetY = 0;
 let needsRedraw = true;
 
 const SHELF_HEIGHT = 100;
 const SHELF_THICKNESS = 4;
 const BOOKCASE_WIDTH = 240;
 const BOOKCASE_PADDING = 10;
-const STORAGE_KEY = 'books-state-v7';
+const STORAGE_KEY = 'books-state-v9';
 
 // User-adjustable settings
 const DEFAULT_SETTINGS = {
@@ -137,6 +138,29 @@ function clamp(val, min, max) {
   return Math.min(Math.max(val, min), max);
 }
 
+function getOrientedSize(book) {
+  return book.isHorizontal ? { width: book.height, height: book.width } : { width: book.width, height: book.height };
+}
+
+function setBookOrientation(book, isHorizontal) {
+  const before = getOrientedSize(book);
+  const cx = book.x + before.width * 0.5;
+  const cy = book.y + before.height * 0.5;
+  book.isHorizontal = isHorizontal;
+  const after = getOrientedSize(book);
+  book.x = cx - after.width * 0.5;
+  book.y = cy - after.height * 0.5;
+}
+
+function getBookRect(book) {
+  const size = getOrientedSize(book);
+  return { x: book.x, y: book.y, width: size.width, height: size.height };
+}
+
+function rectsOverlap(a, b) {
+  return a.x < b.x + b.width && a.x + a.width > b.x && a.y < b.y + b.height && a.y + a.height > b.y;
+}
+
 function hslToRgb(h, s, l) {
   s /= 100;
   l /= 100;
@@ -146,10 +170,58 @@ function hslToRgb(h, s, l) {
   return [Math.round(255 * f(0)), Math.round(255 * f(8)), Math.round(255 * f(4))];
 }
 
+function getFloorArea() {
+  if (!bookcases.length) return null;
+  const last = bookcases[bookcases.length - 1];
+  const rightEdge = last.x + last.width;
+  const x = rightEdge + BOOKCASE_PADDING;
+  const availableWidth = canvas.width - x - BOOKCASE_PADDING;
+  const baseline = last.y + last.height; // align to bookcase bottom
+  const floorTop = Math.max(baseline - 12 * currentScale, baseline - 1); // shallow band just above baseline
+  const height = Math.max(canvas.height - baseline - BOOKCASE_PADDING, 24 * currentScale);
+  if (availableWidth <= 10 || height <= 10) return null;
+  return { x, y: floorTop, width: availableWidth, height, baseline };
+}
+
+function placeBookOnFloor(book, pos = null) {
+  const area = getFloorArea();
+  if (!area) return;
+
+  setBookOrientation(book, true);
+  book.isOnFloor = true;
+  book.bookcaseIndex = null;
+  book.shelfIndex = null;
+
+  const size = getOrientedSize(book);
+  const maxX = Math.max(area.x, area.x + area.width - size.width);
+  const xRange = Math.max(area.width - size.width, 1);
+  let targetX = clamp(area.x + random(0, xRange), area.x, maxX);
+  if (pos) {
+    targetX = clamp(pos.x - size.width * 0.5, area.x, maxX);
+  }
+
+  const stackHeight = books
+    .filter(b => b.isOnFloor && b !== book)
+    .reduce((h, b) => {
+      const r = getBookRect(b);
+      const overlap = !(targetX + size.width <= r.x || targetX >= r.x + r.width);
+      return overlap ? h + r.height : h;
+    }, 0);
+
+  book.x = targetX;
+  book.y = area.baseline - stackHeight - size.height;
+}
+
+function dropOverflowOnFloor(list) {
+  for (const book of list) {
+    placeBookOnFloor(book);
+  }
+}
+
 function saveState() {
   try {
     const state = {
-      version: 2,
+      version: 3,
       settings: { ...settings },
       previewMode,
       scale: currentScale,
@@ -166,6 +238,8 @@ function saveState() {
         isVerticalTitle: b.isVerticalTitle,
         isTwoTone: b.isTwoTone,
         toneSplit: b.toneSplit,
+        isHorizontal: b.isHorizontal,
+        isOnFloor: b.isOnFloor,
         secondaryColor: b.secondaryColor,
         color: b.color
       }))
@@ -181,7 +255,7 @@ function loadState() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw);
-    if (parsed.version !== 2) return null;
+    if (parsed.version !== 3) return null;
     return parsed;
   } catch (err) {
     console.warn('Could not load state', err);
@@ -211,6 +285,8 @@ class Book {
     this.isVerticalTitle = Math.random() < 0.28; // Some books have vertical titles
     this.isTwoTone = Math.random() < 0.12; // Small portion get two-color spines
     this.toneSplit = this.isTwoTone ? clamp(random(0.25, 0.75), 0.2, 0.8) : 0;
+    this.isHorizontal = false;
+    this.isOnFloor = false;
     
     // Pre-calculate colors
     this.color = hslToRgb(hue, saturation, brightness);
@@ -231,47 +307,68 @@ class Book {
   }
 
   draw(ctx) {
+    const orientedSize = getOrientedSize(this);
+    const cx = this.x + orientedSize.width * 0.5;
+    const cy = this.y + orientedSize.height * 0.5;
+
+    let drawX = this.x;
+    let drawY = this.y;
+
+    if (this.isHorizontal) {
+      drawX = cx - this.width * 0.5;
+      drawY = cy - this.height * 0.5;
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(-Math.PI / 2);
+      ctx.translate(-cx, -cy);
+    } else {
+      ctx.save();
+    }
+
     // Book spine
     ctx.fillStyle = `rgb(${this.color[0]},${this.color[1]},${this.color[2]})`;
-    ctx.fillRect(this.x, this.y, this.width, this.height);
+    ctx.fillRect(drawX, drawY, this.width, this.height);
     if (this.isTwoTone) {
       const split = this.height * this.toneSplit;
       ctx.fillStyle = `rgb(${this.secondaryColor[0]},${this.secondaryColor[1]},${this.secondaryColor[2]})`;
-      ctx.fillRect(this.x, this.y, this.width, split);
+      ctx.fillRect(drawX, drawY, this.width, split);
     }
     
     // Highlight
     ctx.strokeStyle = `rgb(${this.highlightColor[0]},${this.highlightColor[1]},${this.highlightColor[2]})`;
     ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.moveTo(this.x + 2, this.y);
-    ctx.lineTo(this.x + 2, this.y + this.height);
+    ctx.moveTo(drawX + 2, drawY);
+    ctx.lineTo(drawX + 2, drawY + this.height);
     ctx.stroke();
     
     // Shadow
     ctx.strokeStyle = `rgb(${this.shadowColor[0]},${this.shadowColor[1]},${this.shadowColor[2]})`;
     ctx.beginPath();
-    ctx.moveTo(this.x + this.width - 2, this.y);
-    ctx.lineTo(this.x + this.width - 2, this.y + this.height);
+    ctx.moveTo(drawX + this.width - 2, drawY);
+    ctx.lineTo(drawX + this.width - 2, drawY + this.height);
     ctx.stroke();
     
     // Title lines
     ctx.fillStyle = `rgb(${this.titleColor[0]},${this.titleColor[1]},${this.titleColor[2]})`;
     if (this.isVerticalTitle) {
-      const cx = this.x + this.width * 0.5;
-      const top = this.y + this.height * 0.15;
+      const cxn = drawX + this.width * 0.5;
+      const top = drawY + this.height * 0.15;
       const h1 = this.height * 0.7;
-      ctx.fillRect(cx - 1, top, 2, h1);
+      ctx.fillRect(cxn - 1, top, 2, h1);
     } else {
-      const lineY = this.y + this.height * 0.3;
-      ctx.fillRect(this.x + this.width * 0.2, lineY, this.width * 0.6, 2);
-      ctx.fillRect(this.x + this.width * 0.15, lineY + 8, this.width * 0.7, 2);
+      const lineY = drawY + this.height * 0.3;
+      ctx.fillRect(drawX + this.width * 0.2, lineY, this.width * 0.6, 2);
+      ctx.fillRect(drawX + this.width * 0.15, lineY + 8, this.width * 0.7, 2);
     }
+
+    ctx.restore();
   }
 
   contains(px, py) {
-    return px >= this.x && px <= this.x + this.width &&
-           py >= this.y && py <= this.y + this.height;
+    const rect = getBookRect(this);
+    return px >= rect.x && px <= rect.x + rect.width &&
+           py >= rect.y && py <= rect.y + rect.height;
   }
 }
 
@@ -376,6 +473,8 @@ function initCanvas(restoredState = null) {
       book.isVerticalTitle = !!b.isVerticalTitle;
       book.isTwoTone = !!b.isTwoTone;
       book.toneSplit = b.toneSplit ?? 0;
+      book.isHorizontal = !!b.isHorizontal;
+      book.isOnFloor = !!b.isOnFloor;
       if (b.secondaryColor) book.secondaryColor = b.secondaryColor;
       if (b.color) book.color = b.color;
       return book;
@@ -610,58 +709,46 @@ startOverBtn.addEventListener('click', () => {
 });
 
 // Reflow all shelves in a bookcase starting from startShelf, keeping gaps and only pushing right to resolve overlap.
-// Overflow cascades to following shelves.
+// Overflow now goes straight to the floor (no cascading to other shelves).
 function cascadeReflow(bcIndex, startShelf) {
   const bc = bookcases[bcIndex];
-  let carry = [];
   const padding = bc.padding;
   const shelfMaxX = bc.x + bc.width - padding;
 
   const gap = 2 * currentScale;
 
   for (let shelf = startShelf; shelf < bc.shelves; shelf++) {
-    // Gather books on this shelf plus any carry-over, keep their current x as ordering hint
+    // Gather books on this shelf, keep their current x as ordering hint
     const shelfBooks = books.filter(b => 
       b.bookcaseIndex === bcIndex && 
-      b.shelfIndex === shelf &&
-      !carry.includes(b)
+      b.shelfIndex === shelf
     );
 
-    const combined = [...shelfBooks, ...carry];
-    combined.sort((a, b) => a.x - b.x);
+    shelfBooks.sort((a, b) => a.x - b.x);
 
     let cursor = bc.x + padding;
-    let newCarry = [];
+    const overflow = [];
 
-    for (const book of combined) {
+    for (const book of shelfBooks) {
       // Do not pull books left; only push right if overlapping
+      setBookOrientation(book, false);
+      book.isOnFloor = false;
+
+      const size = getOrientedSize(book);
       const startX = Math.max(book.x, cursor);
-      if (startX + book.width <= bc.x + bc.width - padding) {
+      if (startX + size.width <= bc.x + bc.width - padding) {
         book.x = startX;
-        book.y = bc.getShelfY(shelf) - book.height;
+        book.y = bc.getShelfY(shelf) - size.height;
         book.shelfIndex = shelf;
         book.bookcaseIndex = bcIndex;
-        cursor = startX + book.width + gap;
+        cursor = startX + size.width + gap;
       } else {
-        newCarry.push(book);
+        overflow.push(book);
       }
     }
 
-    carry = newCarry;
-    if (carry.length === 0) break;
-  }
-
-  // If still overflow after last shelf, place as many as fit on last shelf (clamped)
-  if (carry.length > 0) {
-    const shelf = bc.shelves - 1;
-    let cursor = bc.x + padding;
-    for (const book of carry) {
-      if (cursor + book.width > bc.x + bc.width - padding) break;
-      book.x = cursor;
-      book.y = bc.getShelfY(shelf) - book.height;
-      book.shelfIndex = shelf;
-      book.bookcaseIndex = bcIndex;
-      cursor = cursor + book.width + gap;
+    if (overflow.length > 0) {
+      dropOverflowOnFloor(overflow);
     }
   }
 }
@@ -673,7 +760,14 @@ canvas.addEventListener('mousedown', (e) => {
   for (let i = books.length - 1; i >= 0; i--) {
     if (books[i].contains(pos.x, pos.y)) {
       draggedBook = books[i];
-      dragOffsetX = pos.x - draggedBook.x;
+      if (draggedBook.isOnFloor) {
+        setBookOrientation(draggedBook, false);
+        draggedBook.isOnFloor = false;
+      }
+
+      const rect = getBookRect(draggedBook);
+      dragOffsetX = pos.x - rect.x;
+      dragOffsetY = pos.y - rect.y;
       
       books.splice(i, 1);
       books.push(draggedBook);
@@ -690,7 +784,7 @@ canvas.addEventListener('mousemove', (e) => {
   if (draggedBook) {
     const pos = getMousePos(e);
     draggedBook.x = pos.x - dragOffsetX;
-    draggedBook.y = pos.y - draggedBook.height / 2;
+    draggedBook.y = pos.y - dragOffsetY;
     needsRedraw = true;
   }
 });
@@ -708,13 +802,14 @@ canvas.addEventListener('mouseup', (e) => {
         
         const shelfIndex = bc.getShelfAtY(pos.y);
         if (shelfIndex >= 0 && shelfIndex < bc.shelves) {
-          // Set provisional position based on drop for ordering
+          setBookOrientation(draggedBook, false);
+          draggedBook.isOnFloor = false;
           draggedBook.x = pos.x - dragOffsetX;
-          draggedBook.y = bc.getShelfY(shelfIndex) - draggedBook.height;
+          const size = getOrientedSize(draggedBook);
+          draggedBook.y = bc.getShelfY(shelfIndex) - size.height;
           draggedBook.shelfIndex = shelfIndex;
           draggedBook.bookcaseIndex = bcIndex;
 
-          // Cascade reflow from this shelf downward to avoid overlap
           cascadeReflow(bcIndex, shelfIndex);
           placed = true;
           break;
@@ -722,26 +817,8 @@ canvas.addEventListener('mouseup', (e) => {
       }
     }
     
-    if (!placed && draggedBook.bookcaseIndex !== null) {
-      const bc = bookcases[draggedBook.bookcaseIndex];
-      if (draggedBook.shelfIndex !== null) {
-        const shelfBooks = books.filter(b => 
-          b !== draggedBook && 
-          b.bookcaseIndex === draggedBook.bookcaseIndex && 
-          b.shelfIndex === draggedBook.shelfIndex
-        ).sort((a, b) => a.x - b.x);
-        
-        let returnX = bc.x + bc.padding;
-        for (const b of shelfBooks) {
-          returnX += b.width + 2 * currentScale;
-        }
-        
-        draggedBook.x = returnX;
-        draggedBook.y = bc.getShelfY(draggedBook.shelfIndex) - draggedBook.height;
-
-        // Reflow to guarantee no overlaps after returning
-        cascadeReflow(draggedBook.bookcaseIndex, draggedBook.shelfIndex);
-      }
+    if (!placed) {
+      placeBookOnFloor(draggedBook, pos);
     }
     
     canvas.classList.remove('dragging');
