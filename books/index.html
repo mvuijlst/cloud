@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#000000">
+    <link rel="manifest" href="../manifest.json">
+    <title>Books</title>
+    <style>
+      @font-face {
+        font-family: 'IBMPlexMono';
+        src: url('../IBMPlexMono-Regular.ttf');
+      }
+      :root {
+        --bg: #f7f3ea;
+        --panel: #e8e1d4;
+        --text: #1f1a16;
+        --muted: #645a50;
+        --accent: #d3a25f;
+        --frame: #8c6a3f;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        padding: 0;
+        background:
+          repeating-linear-gradient(
+            90deg,
+            rgba(139, 110, 63, 0.18) 0px,
+            rgba(139, 110, 63, 0.18) 6px,
+            transparent 6px,
+            transparent 32px
+          ),
+          linear-gradient(0deg, #e8d6b5 0%, #e8d6b5 36%, #f7f3ea 36%, #f7f3ea 100%);
+        color: var(--text);
+        font-family: 'IBMPlexMono', monospace;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+      }
+      body.preview #app {
+        width: min(1100px, 95vw);
+        height: min(620px, 85vh);
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        background: var(--panel);
+        padding: 24px;
+        border-radius: 12px;
+      }
+      body.live #app {
+        width: 100vw;
+        height: 100vh;
+        display: grid;
+        grid-template-columns: 1fr;
+        background: transparent;
+        padding: 0;
+        border-radius: 0;
+      }
+      #controls {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        justify-content: center;
+      }
+      body.live #controls { display: none; }
+      .question {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .question h2 {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 700;
+      }
+      .row {
+        display: flex;
+        gap: 14px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .number-control {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .number-control button {
+        width: 28px;
+        height: 28px;
+        border: 1px solid #2f2634;
+        background: #241c2b;
+        color: #f7f3ea;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .number-control span {
+        min-width: 32px;
+        text-align: center;
+        font-size: 18px;
+      }
+      #fill-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      #go-btn {
+        align-self: flex-start;
+        padding: 10px 18px;
+        border-radius: 6px;
+        border: 1px solid #2f2634;
+        background: #241c2b;
+        color: #f7f3ea;
+        cursor: pointer;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+      }
+      input[type="range"] {
+        flex: 1;
+        accent-color: var(--accent);
+      }
+      #canvas-wrapper {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: linear-gradient(0deg, #e8d6b5 0%, #e8d6b5 36%, #f7f3ea 36%, #f7f3ea 100%);
+      }
+      #canvas-wrapper::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background:
+          repeating-linear-gradient(
+            90deg,
+            rgba(139, 110, 63, 0.18) 0px,
+            rgba(139, 110, 63, 0.18) 6px,
+            transparent 6px,
+            transparent 32px
+          ),
+          linear-gradient(0deg, rgba(123, 91, 45, 0.14) 0%, rgba(255,255,255,0) 60%);
+        pointer-events: none;
+        z-index: 0;
+      }
+      body.preview #canvas-wrapper {
+        max-width: 420px;
+        height: 340px;
+        margin: auto;
+      }
+      body.live #canvas-wrapper {
+        width: 100vw;
+        height: 100vh;
+        background: linear-gradient(0deg, #e8d6b5 0%, #e8d6b5 38%, #f7f3ea 38%, #f7f3ea 100%);
+        position: relative;
+      }
+      body.live #canvas-wrapper::after {
+        opacity: 1;
+      }
+      canvas {
+        display: block;
+        position: absolute;
+        inset: 0;
+        cursor: default;
+        width: 100%;
+        height: 100%;
+        z-index: 2;
+        /* Paint the same wall/floor gradient on the canvas itself so alpha:false doesn't show black */
+        background: linear-gradient(0deg, #e8d6b5 0%, #e8d6b5 38%, #f7f3ea 38%, #f7f3ea 100%);
+      }
+      canvas.dragging {
+        cursor: grabbing;
+      }
+      #start-over {
+        position: fixed;
+        top: 12px;
+        right: 12px;
+        padding: 8px 14px;
+        border-radius: 6px;
+        border: 1px solid #2f2634;
+        background: #241c2b;
+        color: var(--text);
+        cursor: pointer;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+        z-index: 10;
+      }
+      #video-holder {
+        position: absolute;
+        left: 50%;
+        bottom: 8%;
+        transform: translateX(-50%);
+        width: min(60vw, 900px);
+        aspect-ratio: 16 / 9;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 0;
+        pointer-events: none;
+        opacity: 0.8;
+      }
+      #video-frame {
+        width: 100%;
+        height: 100%;
+        border: 8px solid rgba(0,0,0,0.6);
+        border-radius: 6px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+      }
+      body.preview #video-holder { display: none; }
+    </style>
+  </head>
+  <body>
+    <button id="start-over" aria-label="Start over">Start over</button>
+    <div id="app">
+      <div id="controls">
+        <div class="question">
+          <h2>How much room do you have?</h2>
+          <div class="row">
+            <div class="number-control">
+              <button id="cases-dec">&lt;</button>
+              <span id="cases-value">3</span>
+              <button id="cases-inc">&gt;</button>
+            </div>
+            <span>cases with</span>
+            <div class="number-control">
+              <button id="shelves-dec">&lt;</button>
+              <span id="shelves-value">6</span>
+              <button id="shelves-inc">&gt;</button>
+            </div>
+            <span>shelves each</span>
+          </div>
+        </div>
+        <div class="question">
+          <h2>How full is your library?</h2>
+          <div id="fill-row">
+            <input id="fill-slider" type="range" min="0" max="100" value="60" />
+            <span id="fill-label">60%</span>
+          </div>
+        </div>
+        <button id="go-btn">Go</button>
+      </div>
+      <div id="canvas-wrapper">
+        <div id="video-holder">
+          <iframe
+            id="video-frame"
+            src="https://www.youtube.com/embed/sF80I-TQiW0?autoplay=1&mute=1&loop=1&playlist=sF80I-TQiW0"
+            title="Ambient video"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+          ></iframe>
+        </div>
+        <canvas id="canvas"></canvas>
+      </div>
+    </div>
+    <script src="sketch.js"></script>
+  </body>
+</html>
