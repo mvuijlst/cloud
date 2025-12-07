@@ -1116,7 +1116,8 @@ if (videoFrame) {
   const minStart = 1800;
   const maxStart = 36000;
   const start = Math.floor(Math.random() * (maxStart - minStart) + minStart);
-  videoFrame.src = `https://www.youtube.com/embed/sF80I-TQiW0?autoplay=1&mute=0&loop=1&playlist=sF80I-TQiW0&start=${start}`;
+  // mute=1 and playsinline=1 are required for mobile autoplay
+  videoFrame.src = `https://www.youtube.com/embed/sF80I-TQiW0?autoplay=1&mute=1&playsinline=1&loop=1&playlist=sF80I-TQiW0&start=${start}`;
 }
 
 animate();
