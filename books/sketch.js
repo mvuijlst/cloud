@@ -16,18 +16,50 @@ const startOverBtn = document.getElementById('start-over');
 
 const ctx = canvas.getContext('2d', { alpha: true });
 
+const { Engine, World, Bodies, Body, Runner } = Matter;
+let engine = Engine.create({ gravity: { x: 0, y: 1 } });
+let runner = Runner.create();
+let physicsRunning = false;
+
+function setPhysicsRunning(on) {
+  if (on && !physicsRunning) {
+    Runner.run(runner, engine);
+    physicsRunning = true;
+  } else if (!on && physicsRunning) {
+    Runner.stop(runner);
+    physicsRunning = false;
+  }
+}
+
+function removeBody(book) {
+  if (book.body) {
+    World.remove(engine.world, book.body);
+    book.body = null;
+  }
+}
+
 let bookcases = [];
 let books = [];
 let draggedBook = null;
 let dragOffsetX = 0;
 let dragOffsetY = 0;
 let needsRedraw = true;
+let floorBaseline = 0;
+let floorOrderCounter = 0;
+
+function jitterFromOrder(order) {
+  const base = (order ?? 0) * 9973;
+  const val = (base % 11) - 5; // range [-5,5]
+  return val * 0.9 * currentScale;
+}
 
 const SHELF_HEIGHT = 100;
 const SHELF_THICKNESS = 4;
 const BOOKCASE_WIDTH = 240;
 const BOOKCASE_PADDING = 10;
 const STORAGE_KEY = 'books-state-v9';
+const FLOOR_RIGHT_PADDING = 12;
+const FLOOR_LEFT_GAP = 24;
 
 // User-adjustable settings
 const DEFAULT_SETTINGS = {
@@ -138,6 +170,20 @@ function clamp(val, min, max) {
   return Math.min(Math.max(val, min), max);
 }
 
+function isFinitePositive(n) {
+  return Number.isFinite(n) && n > 0;
+}
+
+function isValidSavedBook(b) {
+  return isFinitePositive(b.width) && isFinitePositive(b.height) && Number.isFinite(b.x) && Number.isFinite(b.y);
+}
+
+function isValidSavedState(state) {
+  if (!state || !Array.isArray(state.books)) return false;
+  if (!isFinitePositive(state.scale)) return false;
+  return state.books.every(isValidSavedBook);
+}
+
 function getOrientedSize(book) {
   return book.isHorizontal ? { width: book.height, height: book.width } : { width: book.width, height: book.height };
 }
@@ -161,6 +207,161 @@ function rectsOverlap(a, b) {
   return a.x < b.x + b.width && a.x + a.width > b.x && a.y < b.y + b.height && a.y + a.height > b.y;
 }
 
+function clearWorld() {
+  World.clear(engine.world, false);
+  engine.world.gravity.x = 0;
+  engine.world.gravity.y = 1;
+}
+
+function getFloorAreaRight() {
+  if (!bookcases.length) return null;
+  const last = bookcases[bookcases.length - 1];
+  const x = last.x + last.width + BOOKCASE_PADDING + FLOOR_LEFT_GAP;
+  const width = Math.max(BOOKCASE_PADDING, canvas.width - x - FLOOR_RIGHT_PADDING);
+  if (width <= 4) return null;
+  return { x, width, baseline: floorBaseline };
+}
+
+function restackFloor(excludeBook = null) {
+  const area = getFloorAreaRight();
+  if (!area) return;
+
+  const floorBooks = books.filter(b => b.isOnFloor && b !== excludeBook);
+
+  // Assign stable order if missing
+  floorBooks.forEach(b => {
+    if (b.floorOrder == null) {
+      floorOrderCounter += 1;
+      b.floorOrder = floorOrderCounter;
+    }
+  });
+
+  floorBooks.sort((a, b) => (a.floorOrder ?? 0) - (b.floorOrder ?? 0));
+
+  const MAX_STACK_HEIGHT = 220 * currentScale;
+  const stackGap = 6 * currentScale;
+  const stacks = []; // { x, width, height }
+
+  for (const book of floorBooks) {
+    setBookOrientation(book, true);
+    removeBody(book);
+    const size = getOrientedSize(book);
+
+    // Clamp desired x to area
+    const desiredX = clamp(book.x, area.x, area.x + Math.max(0, area.width - size.width));
+
+    // Pick a stack that overlaps horizontally and fits height
+    let targetStack = null;
+    let bestOverlap = -1;
+    for (const stack of stacks) {
+      const overlapWidth = Math.min(desiredX + size.width, stack.x + stack.width) - Math.max(desiredX, stack.x);
+      const minWidth = Math.min(size.width, stack.width);
+      const sufficientOverlap = overlapWidth > 0 && overlapWidth >= 0.35 * minWidth;
+      if (!sufficientOverlap) continue;
+      const projectedHeight = stack.height + size.height;
+      if (projectedHeight > MAX_STACK_HEIGHT) continue;
+      if (overlapWidth > bestOverlap) {
+        bestOverlap = overlapWidth;
+        targetStack = stack;
+      }
+    }
+
+    // If none fit, start a new stack to the rightmost available spot
+    if (!targetStack) {
+      const rightmost = stacks.length ? Math.max(...stacks.map(s => s.x + s.width)) : area.x;
+      const newX = clamp(rightmost + stackGap, area.x, area.x + Math.max(0, area.width - size.width));
+      targetStack = { x: newX, width: size.width, height: 0 };
+      stacks.push(targetStack);
+    }
+
+    // Place on top of chosen stack
+    const stackHeight = targetStack.height;
+    const jitter = jitterFromOrder(book.floorOrder);
+    const maxX = area.x + Math.max(0, area.width - size.width);
+    const jitteredX = clamp(targetStack.x + jitter, area.x, maxX);
+    book.x = jitteredX;
+    book.y = area.baseline - stackHeight - size.height;
+    targetStack.height += size.height;
+    targetStack.width = Math.max(targetStack.width, size.width);
+  }
+}
+
+function makeStaticRect(x, y, w, h) {
+  return Bodies.rectangle(x + w * 0.5, y + h * 0.5, w, h, { isStatic: true, friction: 0.9, frictionStatic: 1, restitution: 0 });
+}
+
+function alignRestoredShelves() {
+  for (const book of books) {
+    if (book.isOnFloor) continue;
+    const bc = bookcases[book.bookcaseIndex];
+    if (!bc || book.shelfIndex == null || book.shelfIndex < 0 || book.shelfIndex >= bc.shelves) continue;
+    setBookOrientation(book, false);
+    const size = getOrientedSize(book);
+    const minX = bc.x + bc.padding;
+    const maxX = bc.x + bc.width - bc.padding - size.width;
+    book.x = clamp(book.x, minX, maxX);
+    book.y = bc.getShelfY(book.shelfIndex) - size.height;
+    book.isOnFloor = false;
+  }
+}
+
+function normalizeShelves({ overflowToFloor = true } = {}) {
+  const gap = 2 * currentScale;
+  for (let bcIndex = 0; bcIndex < bookcases.length; bcIndex++) {
+    const bc = bookcases[bcIndex];
+    const maxX = bc.x + bc.width - bc.padding;
+    for (let shelfIndex = 0; shelfIndex < bc.shelves; shelfIndex++) {
+      const shelfBooks = books.filter(b => b.bookcaseIndex === bcIndex && b.shelfIndex === shelfIndex);
+      if (!shelfBooks.length) continue;
+      shelfBooks.sort((a, b) => a.x - b.x);
+      let cursor = bc.x + bc.padding;
+      for (const book of shelfBooks) {
+        setBookOrientation(book, false);
+        book.isOnFloor = false;
+        removeBody(book);
+        const size = getOrientedSize(book);
+        if (cursor + size.width <= maxX) {
+          book.x = cursor;
+          book.y = bc.getShelfY(shelfIndex) - size.height;
+          cursor += size.width + gap;
+        } else if (overflowToFloor) {
+          placeBookOnFloorPhysics(book);
+        } else {
+          const clampedX = Math.max(bc.x + bc.padding, maxX - size.width);
+          book.x = clampedX;
+          book.y = bc.getShelfY(shelfIndex) - size.height;
+          cursor = clampedX + size.width + gap;
+        }
+      }
+    }
+  }
+}
+
+function syncBookFromBody(book) {
+  if (!book.body) return;
+  const size = getOrientedSize(book);
+  const pos = book.body.position;
+  book.x = pos.x - size.width * 0.5;
+  book.y = pos.y - size.height * 0.5;
+}
+
+function rebuildBookBody(book, { isStatic = false } = {}) {
+  removeBody(book);
+  const size = getOrientedSize(book);
+  const center = { x: book.x + size.width * 0.5, y: book.y + size.height * 0.5 };
+  book.body = Bodies.rectangle(center.x, center.y, size.width, size.height, {
+    friction: 0.9,
+    frictionStatic: 1,
+    restitution: 0,
+    inertia: Infinity,
+    isStatic
+  });
+  Body.setAngle(book.body, book.isHorizontal ? -Math.PI / 2 : 0);
+  Body.setVelocity(book.body, { x: 0, y: 0 });
+  Body.setAngularVelocity(book.body, 0);
+  World.add(engine.world, book.body);
+}
+
 function hslToRgb(h, s, l) {
   s /= 100;
   l /= 100;
@@ -170,53 +371,6 @@ function hslToRgb(h, s, l) {
   return [Math.round(255 * f(0)), Math.round(255 * f(8)), Math.round(255 * f(4))];
 }
 
-function getFloorArea() {
-  if (!bookcases.length) return null;
-  const last = bookcases[bookcases.length - 1];
-  const rightEdge = last.x + last.width;
-  const x = rightEdge + BOOKCASE_PADDING;
-  const availableWidth = canvas.width - x - BOOKCASE_PADDING;
-  const baseline = last.y + last.height; // align to bookcase bottom
-  const floorTop = Math.max(baseline - 12 * currentScale, baseline - 1); // shallow band just above baseline
-  const height = Math.max(canvas.height - baseline - BOOKCASE_PADDING, 24 * currentScale);
-  if (availableWidth <= 10 || height <= 10) return null;
-  return { x, y: floorTop, width: availableWidth, height, baseline };
-}
-
-function placeBookOnFloor(book, pos = null) {
-  const area = getFloorArea();
-  if (!area) return;
-
-  setBookOrientation(book, true);
-  book.isOnFloor = true;
-  book.bookcaseIndex = null;
-  book.shelfIndex = null;
-
-  const size = getOrientedSize(book);
-  const maxX = Math.max(area.x, area.x + area.width - size.width);
-  const xRange = Math.max(area.width - size.width, 1);
-  let targetX = clamp(area.x + random(0, xRange), area.x, maxX);
-  if (pos) {
-    targetX = clamp(pos.x - size.width * 0.5, area.x, maxX);
-  }
-
-  const stackHeight = books
-    .filter(b => b.isOnFloor && b !== book)
-    .reduce((h, b) => {
-      const r = getBookRect(b);
-      const overlap = !(targetX + size.width <= r.x || targetX >= r.x + r.width);
-      return overlap ? h + r.height : h;
-    }, 0);
-
-  book.x = targetX;
-  book.y = area.baseline - stackHeight - size.height;
-}
-
-function dropOverflowOnFloor(list) {
-  for (const book of list) {
-    placeBookOnFloor(book);
-  }
-}
 
 function saveState() {
   try {
@@ -240,6 +394,7 @@ function saveState() {
         toneSplit: b.toneSplit,
         isHorizontal: b.isHorizontal,
         isOnFloor: b.isOnFloor,
+        floorOrder: b.floorOrder,
         secondaryColor: b.secondaryColor,
         color: b.color
       }))
@@ -256,6 +411,7 @@ function loadState() {
     if (!raw) return null;
     const parsed = JSON.parse(raw);
     if (parsed.version !== 3) return null;
+    if (!isValidSavedState(parsed)) return null;
     return parsed;
   } catch (err) {
     console.warn('Could not load state', err);
@@ -287,6 +443,7 @@ class Book {
     this.toneSplit = this.isTwoTone ? clamp(random(0.25, 0.75), 0.2, 0.8) : 0;
     this.isHorizontal = false;
     this.isOnFloor = false;
+    this.floorOrder = null;
     
     // Pre-calculate colors
     this.color = hslToRgb(hue, saturation, brightness);
@@ -413,6 +570,11 @@ class Bookcase {
 }
 
 function initCanvas(restoredState = null) {
+  const safeRestored = restoredState && isValidSavedState(restoredState) ? restoredState : null;
+  if (restoredState && !safeRestored) {
+    clearState();
+  }
+
   // Fit canvas to wrapper
   canvas.width = canvasWrapper.clientWidth;
   canvas.height = canvasWrapper.clientHeight;
@@ -420,14 +582,16 @@ function initCanvas(restoredState = null) {
   // Compute scale to fit cases and shelves
   const cases = settings.cases;
   const shelves = settings.shelves;
-  const availableW = canvas.width - (cases + 1) * BOOKCASE_PADDING;
+  const reservedRight = canvas.width * 0.3; // ensure at least 30% width free on right
+  const availableW = Math.max(BOOKCASE_PADDING, canvas.width - reservedRight - (cases + 1) * BOOKCASE_PADDING);
   const targetHeightScale = (canvas.height * 0.9) / (shelves * SHELF_HEIGHT);
   const targetWidthScale = Math.max(availableW / (cases * BOOKCASE_WIDTH), 0.5);
   const baseScale = Math.min(targetHeightScale, targetWidthScale);
   const boost = previewMode ? 1.0 : 0.82;
   const computedScale = clamp(baseScale * boost, 0.2, 3.0);
-  const canUseRestoredScale = previewMode && restoredState && restoredState.scale;
-  currentScale = canUseRestoredScale ? restoredState.scale : computedScale;
+  const restoredScale = safeRestored && isFinitePositive(safeRestored.scale) ? safeRestored.scale : null;
+  const scaleFactor = restoredScale ? clamp(computedScale / restoredScale, 0.25, 4) : 1;
+  currentScale = computedScale;
 
   const caseWidth = BOOKCASE_WIDTH * currentScale;
   const shelfHeight = SHELF_HEIGHT * currentScale;
@@ -438,11 +602,13 @@ function initCanvas(restoredState = null) {
   bookcases = [];
   const totalWidth = cases * caseWidth + (cases + 1) * BOOKCASE_PADDING;
   const minStart = BOOKCASE_PADDING;
-  const maxStart = Math.max(BOOKCASE_PADDING, canvas.width - totalWidth - BOOKCASE_PADDING);
-  const targetStart = canvas.width * 0.1; // bias to the left
+  const maxShelfArea = canvas.width - reservedRight - BOOKCASE_PADDING;
+  const maxStart = Math.max(BOOKCASE_PADDING, maxShelfArea - totalWidth);
+  const targetStart = canvas.width * 0.08; // slight left bias
   const startX = clamp(targetStart, minStart, maxStart);
   const totalHeight = shelves * shelfHeight;
   const startY = Math.max(BOOKCASE_PADDING, (canvas.height - totalHeight) / 2);
+  floorBaseline = startY + totalHeight;
   
   for (let i = 0; i < cases; i++) {
     bookcases.push(new Bookcase(
@@ -455,15 +621,38 @@ function initCanvas(restoredState = null) {
       caseWidth
     ));
   }
+
+  clearWorld();
+
+  // Static boundaries and shelves for physics
+  const statics = [];
+  statics.push(makeStaticRect(0, floorBaseline, canvas.width, thickness * 2)); // floor across canvas
+  statics.push(makeStaticRect(-thickness * 4, 0, thickness * 4, canvas.height)); // left wall
+  statics.push(makeStaticRect(canvas.width, 0, thickness * 4, canvas.height)); // right wall
+
+  for (const bc of bookcases) {
+    // Case side walls
+    statics.push(makeStaticRect(bc.x - bc.thickness * 0.6, bc.y, bc.thickness * 0.6, bc.height + thickness * 2));
+    statics.push(makeStaticRect(bc.x + bc.width, bc.y, bc.thickness * 0.6, bc.height + thickness * 2));
+
+    // Shelves as thin static surfaces
+    for (let si = 0; si < bc.shelves; si++) {
+      const shelfY = bc.getShelfY(si) + bc.thickness * 0.2;
+      statics.push(makeStaticRect(bc.x, shelfY, bc.width, bc.thickness * 0.8));
+    }
+    // Base
+    statics.push(makeStaticRect(bc.x, bc.y + bc.height, bc.width, bc.thickness * 1.2));
+  }
+
+  statics.forEach(body => World.add(engine.world, body));
   
-  const scaleDiffAcceptable = restoredState && restoredState.scale ? Math.abs(restoredState.scale - computedScale) / computedScale < 0.01 : false;
-  if (restoredState && restoredState.books && scaleDiffAcceptable && previewMode) {
-    books = restoredState.books.map(b => {
+  if (safeRestored && safeRestored.books) {
+    books = safeRestored.books.map(b => {
       const book = new Book(
-        b.x,
-        b.y,
-        b.width,
-        b.height,
+        (b.x ?? 0) * scaleFactor,
+        (b.y ?? 0) * scaleFactor,
+        b.width * scaleFactor,
+        b.height * scaleFactor,
         b.hue,
         b.saturation,
         b.brightness
@@ -475,13 +664,28 @@ function initCanvas(restoredState = null) {
       book.toneSplit = b.toneSplit ?? 0;
       book.isHorizontal = !!b.isHorizontal;
       book.isOnFloor = !!b.isOnFloor;
+      if (Number.isFinite(b.floorOrder)) book.floorOrder = b.floorOrder;
       if (b.secondaryColor) book.secondaryColor = b.secondaryColor;
       if (b.color) book.color = b.color;
       return book;
     });
+    // If a book still has shelf metadata, force it back to shelf (never drop on resize)
+    for (const book of books) {
+      if (book.bookcaseIndex != null && book.shelfIndex != null) {
+        book.isOnFloor = false;
+      }
+    }
   } else {
     generateBooks();
   }
+
+  // Reset counter to max existing so new floor books stay ordered on top
+  floorOrderCounter = books.reduce((m, b) => Math.max(m, b.floorOrder || 0), 0);
+
+  // Normalize layout: align shelves and lay them out left-to-right; overflow goes to floor
+  alignRestoredShelves();
+  normalizeShelves({ overflowToFloor: true });
+  restackFloor();
   saveState();
   needsRedraw = true;
 }
@@ -565,23 +769,26 @@ function generateBooks() {
     for (let shelf = 0; shelf < bc.shelves; shelf++) {
       const shelfY = bc.getShelfY(shelf);
       const { startX, shelfMaxX, usable } = shelvesMeta[shelf];
-      const targetWidth = Math.min(targets[shelf] * random(0.97, 1.03), usable);
+      const targetBoost = settings.fill >= 0.9 ? 1.05 : 1.0;
+      const targetWidth = Math.min(targets[shelf] * random(0.99, 1.02) * targetBoost, usable);
       let remaining = targetWidth;
 
-      // Small random leading gap for variety
-      let currentX = startX + random(0, 4 * currentScale);
+      // Small leading gap; tighter when nearly full
+      const leadGapMax = settings.fill >= 0.9 ? 2 * currentScale : 4 * currentScale;
+      let currentX = startX + random(0, leadGapMax);
       const minWidth = CONFIG.width.thin.min * currentScale;
 
       while (remaining > minWidth && currentX < shelfMaxX - minWidth) {
         const bookWidth = getRandomBookWidth() * currentScale;
         const bookHeight = getRandomBookHeight() * currentScale;
-        const gap = random(1 * currentScale, 3.5 * currentScale);
+        const gap = settings.fill >= 0.9 ? random(0.6 * currentScale, 2.2 * currentScale) : random(1 * currentScale, 3.5 * currentScale);
 
         // Stop if this book would overflow the shelf
         if (currentX + bookWidth > shelfMaxX) break;
 
-        // If this book would exceed target by more than 12%, consider stopping
-        if (remaining - bookWidth < -0.12 * targetWidth) break;
+        // If this book would exceed target by more than a small margin, consider stopping (tighter when high fill)
+        const overflowTolerance = settings.fill >= 0.9 ? 0.03 : 0.12;
+        if (remaining - bookWidth < -overflowTolerance * targetWidth) break;
 
         const color = getRandomColor();
         const book = new Book(
@@ -600,8 +807,8 @@ function generateBooks() {
         currentX += bookWidth + gap;
         remaining -= bookWidth;
 
-        // Occasional slight underfill to keep variety
-        if (remaining < minWidth && Math.random() < 0.4) break;
+        // Slight underfill only if truly near end and not in high-fill mode
+        if (remaining < minWidth && settings.fill < 0.9 && Math.random() < 0.4) break;
       }
     }
   }
@@ -612,6 +819,21 @@ function draw() {
   
   // Clear canvas (keep underlying CSS background visible)
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Floor gradient anchored higher up to give depth
+  const shelfHeight = bookcases.length > 0 ? bookcases[0].shelfHeight : 0;
+  const horizonY = floorBaseline - shelfHeight / 2.5;
+
+  const floorGrad = ctx.createLinearGradient(0, horizonY, 0, canvas.height);
+  floorGrad.addColorStop(0, '#222222');
+  floorGrad.addColorStop(1, '#000000');
+  ctx.fillStyle = floorGrad;
+  ctx.fillRect(0, horizonY, canvas.width, canvas.height - horizonY);
+
+  // Sync positions from physics bodies
+  for (const book of books) {
+    if (book.body) syncBookFromBody(book);
+  }
 
   ctx.save();
   ctx.filter = previewMode ? 'grayscale(1)' : 'none';
@@ -656,6 +878,7 @@ function setMode(isPreview) {
   previewMode = isPreview;
   document.body.classList.toggle('preview', isPreview);
   document.body.classList.toggle('live', !isPreview);
+  setPhysicsRunning(!isPreview);
 }
 
 function applySettingsAndRefresh() {
@@ -694,9 +917,9 @@ fillSlider.addEventListener('input', () => {
 
 goBtn.addEventListener('click', () => {
   setMode(false);
-  // On live view, recompute scale fresh and regenerate layout
-  clearState();
-  initCanvas();
+  // Keep existing state when entering live; just recompute layout
+  const restored = loadState();
+  initCanvas(restored);
   saveState();
 });
 
@@ -708,50 +931,6 @@ startOverBtn.addEventListener('click', () => {
   initCanvas();
 });
 
-// Reflow all shelves in a bookcase starting from startShelf, keeping gaps and only pushing right to resolve overlap.
-// Overflow now goes straight to the floor (no cascading to other shelves).
-function cascadeReflow(bcIndex, startShelf) {
-  const bc = bookcases[bcIndex];
-  const padding = bc.padding;
-  const shelfMaxX = bc.x + bc.width - padding;
-
-  const gap = 2 * currentScale;
-
-  for (let shelf = startShelf; shelf < bc.shelves; shelf++) {
-    // Gather books on this shelf, keep their current x as ordering hint
-    const shelfBooks = books.filter(b => 
-      b.bookcaseIndex === bcIndex && 
-      b.shelfIndex === shelf
-    );
-
-    shelfBooks.sort((a, b) => a.x - b.x);
-
-    let cursor = bc.x + padding;
-    const overflow = [];
-
-    for (const book of shelfBooks) {
-      // Do not pull books left; only push right if overlapping
-      setBookOrientation(book, false);
-      book.isOnFloor = false;
-
-      const size = getOrientedSize(book);
-      const startX = Math.max(book.x, cursor);
-      if (startX + size.width <= bc.x + bc.width - padding) {
-        book.x = startX;
-        book.y = bc.getShelfY(shelf) - size.height;
-        book.shelfIndex = shelf;
-        book.bookcaseIndex = bcIndex;
-        cursor = startX + size.width + gap;
-      } else {
-        overflow.push(book);
-      }
-    }
-
-    if (overflow.length > 0) {
-      dropOverflowOnFloor(overflow);
-    }
-  }
-}
 
 canvas.addEventListener('mousedown', (e) => {
   if (previewMode) return;
@@ -760,14 +939,18 @@ canvas.addEventListener('mousedown', (e) => {
   for (let i = books.length - 1; i >= 0; i--) {
     if (books[i].contains(pos.x, pos.y)) {
       draggedBook = books[i];
+      syncBookFromBody(draggedBook);
       if (draggedBook.isOnFloor) {
         setBookOrientation(draggedBook, false);
         draggedBook.isOnFloor = false;
+        removeBody(draggedBook);
+        restackFloor(draggedBook);
       }
-
       const rect = getBookRect(draggedBook);
       dragOffsetX = pos.x - rect.x;
       dragOffsetY = pos.y - rect.y;
+
+      removeBody(draggedBook);
       
       books.splice(i, 1);
       books.push(draggedBook);
@@ -789,43 +972,117 @@ canvas.addEventListener('mousemove', (e) => {
   }
 });
 
-canvas.addEventListener('mouseup', (e) => {
-  if (previewMode) return;
-  if (draggedBook) {
-    const pos = getMousePos(e);
-    let placed = false;
-    
-    for (let bcIndex = 0; bcIndex < bookcases.length; bcIndex++) {
-      const bc = bookcases[bcIndex];
-      if (pos.x >= bc.x && pos.x <= bc.x + bc.width &&
-          pos.y >= bc.y && pos.y <= bc.y + bc.height) {
-        
-        const shelfIndex = bc.getShelfAtY(pos.y);
-        if (shelfIndex >= 0 && shelfIndex < bc.shelves) {
-          setBookOrientation(draggedBook, false);
-          draggedBook.isOnFloor = false;
-          draggedBook.x = pos.x - dragOffsetX;
-          const size = getOrientedSize(draggedBook);
-          draggedBook.y = bc.getShelfY(shelfIndex) - size.height;
-          draggedBook.shelfIndex = shelfIndex;
-          draggedBook.bookcaseIndex = bcIndex;
+function packShelf(bcIndex, shelfIndex, { keepOverflowOnShelf = false } = {}) {
+  const bc = bookcases[bcIndex];
+  const padding = bc.padding;
+  const shelfBooks = books.filter(b => b.bookcaseIndex === bcIndex && b.shelfIndex === shelfIndex);
+  shelfBooks.sort((a, b) => a.x - b.x);
 
-          cascadeReflow(bcIndex, shelfIndex);
-          placed = true;
-          break;
-        }
+  const maxX = bc.x + bc.width - padding;
+  const overflow = [];
+  const gap = 2 * currentScale;
+  let prevEnd = bc.x + padding - gap;
+  const eps = 0.8 * currentScale; // small tolerance to avoid micro nudges
+
+  for (const book of shelfBooks) {
+    setBookOrientation(book, false);
+    book.isOnFloor = false;
+    removeBody(book);
+    const size = getOrientedSize(book);
+    const minX = prevEnd + gap;
+    // Allow minor overlap within eps to avoid shifting existing books
+    const desiredX = book.x >= minX - eps ? book.x : minX;
+    const startX = desiredX;
+    if (startX + size.width <= maxX) {
+      book.x = startX;
+      book.y = bc.getShelfY(shelfIndex) - size.height;
+      prevEnd = startX + size.width;
+    } else {
+      if (keepOverflowOnShelf) {
+        const clampedX = Math.max(bc.x + padding, maxX - size.width);
+        book.x = clampedX;
+        book.y = bc.getShelfY(shelfIndex) - size.height;
+        prevEnd = startX + size.width; // advance to keep ordering
+      } else {
+        overflow.push(book);
       }
     }
-    
-    if (!placed) {
-      placeBookOnFloor(draggedBook, pos);
-    }
-    
-    canvas.classList.remove('dragging');
-    draggedBook = null;
-    saveState();
-    needsRedraw = true;
   }
+
+  if (overflow.length) {
+    overflow.forEach(b => placeBookOnFloorPhysics(b));
+  }
+}
+
+function placeBookOnFloorPhysics(book) {
+  const area = getFloorAreaRight();
+  setBookOrientation(book, true);
+  book.isOnFloor = true;
+  book.bookcaseIndex = null;
+  book.shelfIndex = null;
+  floorOrderCounter += 1;
+  book.floorOrder = floorOrderCounter;
+  removeBody(book);
+
+  if (!area) return;
+
+  const size = getOrientedSize(book);
+  const maxX = area.x + Math.max(0, area.width - size.width);
+  const jitter = random(-6 * currentScale, 6 * currentScale);
+  book.x = clamp(book.x + jitter, area.x, maxX);
+
+  const stackHeight = books
+    .filter(b => b !== book && b.isOnFloor)
+    .reduce((h, b) => {
+      const r = getBookRect(b);
+      const overlapWidth = Math.min(book.x + size.width, r.x + r.width) - Math.max(book.x, r.x);
+      const minWidth = Math.min(size.width, r.width);
+      const sufficientOverlap = overlapWidth > 0 && overlapWidth >= 0.35 * minWidth;
+      if (!sufficientOverlap) return h;
+      const heightHere = area.baseline - r.y;
+      return Math.max(h, heightHere);
+    }, 0);
+
+  book.y = area.baseline - stackHeight - size.height;
+}
+
+canvas.addEventListener('mouseup', (e) => {
+  if (previewMode) return;
+  if (!draggedBook) return;
+
+  const pos = getMousePos(e);
+  let placed = false;
+
+  for (let bcIndex = 0; bcIndex < bookcases.length; bcIndex++) {
+    const bc = bookcases[bcIndex];
+    if (pos.x >= bc.x && pos.x <= bc.x + bc.width && pos.y >= bc.y && pos.y <= bc.y + bc.height) {
+      const shelfIndex = bc.getShelfAtY(pos.y);
+      if (shelfIndex >= 0 && shelfIndex < bc.shelves) {
+        setBookOrientation(draggedBook, false);
+        draggedBook.isOnFloor = false;
+        draggedBook.bookcaseIndex = bcIndex;
+        draggedBook.shelfIndex = shelfIndex;
+        draggedBook.x = pos.x - dragOffsetX;
+        const size = getOrientedSize(draggedBook);
+        draggedBook.y = bc.getShelfY(shelfIndex) - size.height;
+        removeBody(draggedBook);
+        packShelf(bcIndex, shelfIndex);
+        placed = true;
+        break;
+      }
+    }
+  }
+
+  if (!placed) {
+    draggedBook.x = pos.x - dragOffsetX;
+    placeBookOnFloorPhysics(draggedBook);
+  }
+
+  canvas.classList.remove('dragging');
+  draggedBook = null;
+  restackFloor();
+  saveState();
+  needsRedraw = true;
 });
 
 window.addEventListener('resize', () => {
@@ -834,7 +1091,10 @@ window.addEventListener('resize', () => {
 
 // Animation loop - only redraws when needed
 function animate() {
-  draw();
+  if (needsRedraw) {
+    draw();
+    needsRedraw = false;
+  }
   requestAnimationFrame(animate);
 }
 
