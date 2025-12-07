@@ -1108,4 +1108,15 @@ if (restoredState && restoredState.settings) {
 setMode(!(restoredState && restoredState.previewMode === false));
 updateUI();
 initCanvas(restoredState);
+
+// Initialize video with random start
+const videoFrame = document.getElementById('video-frame');
+if (videoFrame) {
+  // Random start between 30 minutes (1800s) and 10 hours (36000s)
+  const minStart = 1800;
+  const maxStart = 36000;
+  const start = Math.floor(Math.random() * (maxStart - minStart) + minStart);
+  videoFrame.src = `https://www.youtube.com/embed/sF80I-TQiW0?autoplay=1&mute=0&loop=1&playlist=sF80I-TQiW0&start=${start}`;
+}
+
 animate();
