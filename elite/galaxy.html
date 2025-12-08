@@ -1,0 +1,566 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Elite Galaxy Explorer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: radial-gradient(circle at 20% 20%, #19324b, #0a0f1a 50%, #06070c 100%);
+      --panel: rgba(12, 18, 30, 0.78);
+      --card: rgba(18, 26, 40, 0.9);
+      --accent: #68d4ff;
+      --accent-2: #ffd06b;
+      --text: #e7edf5;
+      --muted: #a8b0c2;
+      --border: rgba(255, 255, 255, 0.06);
+      --shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Space Grotesk', sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      min-height: 100vh;
+    }
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 32px 18px 48px;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .title {
+      letter-spacing: 0.04em;
+      font-weight: 600;
+      font-size: 26px;
+    }
+    .subtitle {
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: var(--shadow);
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    label {
+      font-size: 13px;
+      color: var(--muted);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .row-inline { display: flex; gap: 12px; flex-wrap: wrap; }
+    input[type="number"], input[type="text"], select {
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 10px;
+      border-radius: 10px;
+      min-width: 120px;
+      font-size: 14px;
+    }
+    button {
+      background: linear-gradient(120deg, var(--accent), var(--accent-2));
+      color: #0a0f1a;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+    }
+    button:active { transform: translateY(1px); }
+    .grid {
+      margin-top: 22px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .card h3 {
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: 0.02em;
+    }
+    .pill-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      font-size: 12px;
+    }
+    .pill {
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+    .coords { color: var(--muted); font-size: 13px; }
+    .desc { color: #f5f7fb; line-height: 1.45; font-size: 14px; }
+    .footer { margin-top: 18px; color: var(--muted); font-size: 12px; text-align: right; }
+    .map-wrap {
+      margin-top: 20px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      box-shadow: var(--shadow);
+      position: relative;
+    }
+    .map-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+    canvas { width: 100%; height: auto; max-height: 640px; border-radius: 12px; }
+    .map-popup {
+      position: absolute;
+      background: #0f1726;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      box-shadow: var(--shadow);
+      min-width: 200px;
+      max-width: 260px;
+      font-size: 13px;
+      pointer-events: auto;
+    }
+    .map-popup h4 { margin: 0 0 6px 0; font-size: 15px; }
+    .map-popup .row { margin: 2px 0; color: var(--muted); }
+    .popup-close {
+      position: absolute;
+      top: 6px;
+      right: 8px;
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      font-size: 14px;
+      cursor: pointer;
+      padding: 2px 6px;
+    }
+    .popup-close:hover { color: var(--text); }
+    @media (max-width: 640px) {
+      header { flex-direction: column; align-items: flex-start; }
+      .panel { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="title">Elite Galaxy Explorer</div>
+      <div class="subtitle">Galaxy seeds, planet stats, and goat-soup descriptions.</div>
+    </header>
+
+    <section class="panel">
+      <div class="row-inline">
+        <label>
+          Galaxy (1-8)
+          <input id="galaxyInput" type="number" min="1" max="8" value="1" />
+        </label>
+        <label>
+          Name filter
+          <input id="filterInput" type="text" placeholder="e.g. Lave" />
+        </label>
+        <label>
+          Tech >=
+          <input id="techInput" type="number" min="1" max="16" value="1" />
+        </label>
+        <label>
+          Species
+          <select id="speciesSelect">
+            <option value="any">Any</option>
+            <option value="human">Human Colonials</option>
+            <option value="aliens">Aliens (non-human)</option>
+            <option value="rodents">Rodents</option>
+            <option value="frogs">Frogs</option>
+            <option value="lizards">Lizards</option>
+            <option value="lobsters">Lobsters</option>
+            <option value="birds">Birds</option>
+            <option value="humanoids">Humanoids</option>
+            <option value="felines">Felines</option>
+            <option value="insects">Insects</option>
+          </select>
+        </label>
+      </div>
+      <div style="flex:1"></div>
+    </section>
+
+    <div class="map-wrap">
+      <div class="map-header">
+        <div>Galaxy map (all 256 systems)</div>
+        <div id="mapStatus">Galaxy 1</div>
+      </div>
+      <canvas id="galaxyMap" width="700" height="700"></canvas>
+    </div>
+    <div id="grid" class="grid"></div>
+    <div class="footer">Based on Ian Bell / David Braben algorithms (txtelite.c 1.5)</div>
+  </div>
+
+  <script src="./galaxy.js"></script>
+  <script>
+    // Avoid clashing with global buildGalaxy defined in galaxy.js
+    const buildGalaxyApi = window.EliteGalaxy.buildGalaxy;
+    const PAD = 28;
+    const grid = document.getElementById('grid');
+    const galaxyInput = document.getElementById('galaxyInput');
+    const filterInput = document.getElementById('filterInput');
+    const techInput = document.getElementById('techInput');
+    const speciesSelect = document.getElementById('speciesSelect');
+    const mapCanvas = document.getElementById('galaxyMap');
+    const mapStatus = document.getElementById('mapStatus');
+    let currentSystems = [];
+    let currentFiltered = [];
+    let focusedSystem = null;
+    let popupTimer = null;
+
+    function formatNumber(n) { return n.toLocaleString('en-US'); }
+
+    function resizeCanvasToDisplaySize() {
+      const rect = mapCanvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      const displayWidth = Math.round(rect.width * dpr);
+      const displayHeight = Math.round(rect.height * dpr);
+      if (mapCanvas.width !== displayWidth || mapCanvas.height !== displayHeight) {
+        mapCanvas.width = displayWidth;
+        mapCanvas.height = displayHeight;
+      }
+    }
+
+    function systemToCanvasCoords(system) {
+      const w = mapCanvas.width;
+      const scale = (w - PAD * 2) / 255;
+      const x = PAD + system.x * scale;
+      const y = PAD + (255 - system.y) * scale;
+      return { x, y };
+    }
+
+    function drawMap(allSystems, highlighted, focus) {
+      resizeCanvasToDisplaySize();
+      const ctx = mapCanvas.getContext('2d');
+      const w = mapCanvas.width;
+      const h = mapCanvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      // background grid
+      ctx.fillStyle = '#0a0f1a';
+      ctx.fillRect(0, 0, w, h);
+      ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+      ctx.lineWidth = 1;
+      const pad = PAD;
+      const step = (w - pad * 2) / 8;
+      for (let i = 0; i <= 8; i += 1) {
+        const p = pad + step * i;
+        ctx.beginPath(); ctx.moveTo(p, pad); ctx.lineTo(p, h - pad); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(pad, p); ctx.lineTo(w - pad, p); ctx.stroke();
+      }
+
+      const scale = (w - pad * 2) / 255;
+      const radii = allSystems.map((s) => s.radius || 0);
+      const minR = Math.min(...radii);
+      const maxR = Math.max(...radii);
+      const radiusToSize = (r) => {
+        const baseMin = 3;
+        const baseMax = 7;
+        if (maxR === minR) return (baseMin + baseMax) / 2;
+        const t = (r - minR) / (maxR - minR);
+        return baseMin + t * (baseMax - baseMin);
+      };
+
+      const colorFor = (s) => {
+        // Blend based on economy and government for subtle variation
+        const econ = s.economy ?? 0; // 0-7
+        const gov = s.govtype ?? 0; // 0-7
+        const t1 = econ / 7;
+        const t2 = gov / 7;
+        const mix = (a, b, t) => Math.round(a + (b - a) * t);
+        const r = mix(70, 140, t1);   // slightly brighter with higher economy
+        const g = mix(160, 220, t2);  // greener with more ordered government
+        const b = mix(200, 255, (t1 + t2) / 2);
+        return `rgba(${r},${g},${b},0.8)`;
+      };
+
+      const plot = (s, color, extraSize = 0) => {
+        const x = pad + s.x * scale;
+        const y = pad + (255 - s.y) * scale; // invert Y so lower values render at bottom
+        const size = radiusToSize(s.radius || 0) + extraSize;
+        ctx.beginPath();
+        ctx.arc(x, y, size, 0, Math.PI * 2);
+        ctx.fillStyle = color;
+        ctx.fill();
+      };
+
+      // all systems (base colors)
+      allSystems.forEach((s) => plot(s, colorFor(s), 0));
+      // highlighted filter results (only if we actually filtered)
+      if (highlighted && highlighted.length && highlighted.length !== allSystems.length) {
+        highlighted.forEach((s) => plot(s, '#68d4ff', 1.5));
+      }
+
+      if (focus) {
+        plot(focus, '#ffd06b', 2.5);
+      }
+    }
+
+    function render() {
+      const gNum = Math.min(8, Math.max(1, parseInt(galaxyInput.value, 10) || 1));
+      galaxyInput.value = gNum;
+      const filter = filterInput.value.trim().toLowerCase();
+      const speciesFilter = speciesSelect.value;
+      const minTech = Math.max(1, parseInt(techInput.value, 10) || 1);
+
+      const systems = buildGalaxyApi(gNum);
+      const filtered = systems.filter((s) => {
+        const matchesName = !filter || s.name.toLowerCase().includes(filter);
+        const matchesSpecies = (() => {
+          if (speciesFilter === 'any') return true;
+          const species = (s.species || '').toLowerCase();
+          if (speciesFilter === 'human') return species === 'human colonials';
+          if (speciesFilter === 'aliens') return species && species !== 'human colonials';
+          return species.endsWith(speciesFilter);
+        })();
+        const meetsTech = (s.techlev + 1) >= minTech;
+        return matchesName && matchesSpecies && meetsTech;
+      });
+
+      hidePopup();
+
+      grid.innerHTML = '';
+      filtered.forEach((s) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="coords">(${s.x}, ${s.y})</div>
+          <h3>${s.name}</h3>
+          <div class="pill-row">
+            <span class="pill">Gov ${s.govtype}</span>
+            <span class="pill">Eco ${s.economy}</span>
+            <span class="pill">Tech ${s.techlev + 1}</span>
+            <span class="pill">Pop ${(s.population >> 3)}B</span>
+            <span class="pill">Radius ${s.radius}</span>
+          </div>
+          <div class="desc">${s.description}</div>
+        `;
+        card.addEventListener('click', () => {
+          focusedSystem = s;
+          hidePopup();
+          if (popupTimer) {
+            clearTimeout(popupTimer);
+            popupTimer = null;
+          }
+          // highlight immediately
+          drawMap(currentSystems, currentFiltered, focusedSystem);
+          // scroll map into view when clicking a card
+          mapCanvas.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          // place popup after scroll settles
+          popupTimer = setTimeout(() => {
+            const coords = systemToCanvasCoords(s);
+            showPopup(s, coords);
+            popupTimer = null;
+          }, 280);
+        });
+        grid.appendChild(card);
+      });
+
+      mapStatus.textContent = `Galaxy ${gNum} — ${filtered.length} shown / 256 total`;
+      drawMap(systems, filtered, focusedSystem);
+
+      currentSystems = systems;
+      currentFiltered = filtered;
+    }
+
+    function pickSystemAt(x, y, systems) {
+      const rect = mapCanvas.getBoundingClientRect();
+      const scaleX = mapCanvas.width / rect.width;
+      const scaleY = mapCanvas.height / rect.height;
+      const relX = (x - rect.left) * scaleX;
+      const relY = (y - rect.top) * scaleY;
+      const w = mapCanvas.width;
+      const h = mapCanvas.height;
+      const pad = PAD;
+      const scale = (w - pad * 2) / 255;
+
+      // translate pixel to galaxy coords
+      const gx = (relX - pad) / scale;
+      const gy = 255 - (relY - pad) / scale; // invert Y to match render orientation
+
+      let best = null;
+      let bestDist2 = 999999;
+      systems.forEach((s) => {
+        const dx = s.x - gx;
+        const dy = s.y - gy;
+        const d2 = dx * dx + dy * dy;
+        if (d2 < bestDist2) {
+          best = s;
+          bestDist2 = d2;
+        }
+      });
+      return best;
+    }
+
+    function hidePopup() {
+      if (popupTimer) {
+        clearTimeout(popupTimer);
+        popupTimer = null;
+      }
+      const existing = document.getElementById('mapPopup');
+      if (existing) existing.remove();
+    }
+
+    function showPopup(system, canvasCoords) {
+      hidePopup();
+      const popup = document.createElement('div');
+      popup.id = 'mapPopup';
+      popup.className = 'map-popup';
+
+      const econNames = ["Rich Industrial", "Average Industrial", "Poor Industrial", "Mainly Industrial", "Mainly Agricultural", "Rich Agricultural", "Average Agricultural", "Poor Agricultural"];
+      const govNames = ["Anarchy", "Feudal", "Multi-gov", "Dictatorship", "Communist", "Confederacy", "Democracy", "Corporate State"];
+
+      const econ = econNames[system.economy] || system.economy;
+      const gov = govNames[system.govtype] || system.govtype;
+      const tech = system.techlev + 1;
+      const pop = (system.population / 8).toFixed(1);
+      const prod = system.productivity.toLocaleString('en-US');
+      const radius = system.radius.toLocaleString('en-US');
+      const description = system.description || "";
+
+      const species = system.species || "Human Colonials";
+
+      popup.innerHTML = `
+        <button class="popup-close" aria-label="Close popup">x</button>
+        <h4>${system.name}</h4>
+        <div class="row">Economy: ${econ}</div>
+        <div class="row">Government: ${gov}</div>
+        <div class="row">Tech. Level: ${tech}</div>
+        <div class="row">Population: ${pop} Billion (${species})</div>
+        <div class="row">Gross Productivity: ${prod} M CR</div>
+        <div class="row">Average Radius: ${radius} km</div>
+        <div class="row" style="margin-top:6px; color: #e7edf5;">${description}</div>
+      `;
+
+      // position near the point, clamped inside the viewport; flip if space is tight
+      const rect = mapCanvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      const x = rect.left + canvasCoords.x / dpr + window.scrollX;
+      const y = rect.top + canvasCoords.y / dpr + window.scrollY;
+      const gap = 18; // keep popup away from the system dot
+      document.body.appendChild(popup);
+
+      const pbInitial = popup.getBoundingClientRect();
+      const viewportLeft = 12;
+      const viewportRight = window.innerWidth - 12;
+      const viewportTop = window.scrollY + 12;
+      const viewportBottom = window.scrollY + window.innerHeight - 12;
+
+      const availRight = viewportRight - (x + gap);
+      const availLeft = (x - gap) - viewportLeft;
+      const availBottom = viewportBottom - (y + gap);
+      const availTop = (y - gap) - viewportTop;
+
+      const horizontalSide = (availRight >= pbInitial.width || availRight >= availLeft) ? 'right' : 'left';
+      const verticalSide = (availBottom >= pbInitial.height || availBottom >= availTop) ? 'bottom' : 'top';
+
+      const place = (hSide, vSide) => {
+        let left = hSide === 'right' ? x + gap : x - pbInitial.width - gap;
+        let top = vSide === 'bottom' ? y + gap : y - pbInitial.height - gap;
+
+        left = Math.max(viewportLeft, Math.min(left, viewportRight - pbInitial.width));
+        top = Math.max(viewportTop, Math.min(top, viewportBottom - pbInitial.height));
+        popup.style.left = `${left}px`;
+        popup.style.top = `${top}px`;
+      };
+
+      // primary placement by quadrant
+      place(horizontalSide, verticalSide);
+
+      let pb = popup.getBoundingClientRect();
+
+      // if still overlapping the dot, try swapping vertical first, then horizontal
+      const overlapsDot = () => (pb.left - gap) < x && (pb.right + gap) > x && (pb.top - gap) < y && (pb.bottom + gap) > y;
+      if (overlapsDot()) {
+        const altV = verticalSide === 'bottom' ? 'top' : 'bottom';
+        place(horizontalSide, altV);
+        pb = popup.getBoundingClientRect();
+      }
+      if (overlapsDot()) {
+        const altH = horizontalSide === 'right' ? 'left' : 'right';
+        place(altH, verticalSide);
+        pb = popup.getBoundingClientRect();
+      }
+      if (overlapsDot()) {
+        // last resort: swap both
+        const altH = horizontalSide === 'right' ? 'left' : 'right';
+        const altV = verticalSide === 'bottom' ? 'top' : 'bottom';
+        place(altH, altV);
+        pb = popup.getBoundingClientRect();
+      }
+
+      // final clamps to keep fully on-screen
+      if (pb.top < viewportTop) popup.style.top = `${viewportTop}px`;
+      if (pb.bottom > viewportBottom) popup.style.top = `${viewportBottom - pb.height}px`;
+
+      const closeBtn = popup.querySelector('.popup-close');
+      closeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        focusedSystem = null;
+        hidePopup();
+        drawMap(currentSystems, currentFiltered, focusedSystem);
+      });
+    }
+
+    mapCanvas.addEventListener('click', (ev) => {
+      const gNum = Math.min(8, Math.max(1, parseInt(galaxyInput.value, 10) || 1));
+      const systems = currentSystems.length ? currentSystems : buildGalaxyApi(gNum);
+      const picked = pickSystemAt(ev.clientX, ev.clientY, systems);
+      if (!picked) return;
+      focusedSystem = picked;
+      const coords = systemToCanvasCoords(picked);
+      showPopup(picked, coords);
+      drawMap(currentSystems, currentFiltered, focusedSystem);
+    });
+
+    function clearFocusAndRender() {
+      focusedSystem = null;
+      render();
+    }
+
+    filterInput.addEventListener('input', clearFocusAndRender);
+    techInput.addEventListener('input', clearFocusAndRender);
+    galaxyInput.addEventListener('input', clearFocusAndRender);
+    speciesSelect.addEventListener('change', clearFocusAndRender);
+
+    window.addEventListener('resize', render);
+    render();
+  </script>
+</body>
+</html>

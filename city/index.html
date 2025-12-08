@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#000000">
+    <link rel="manifest" href="../manifest.json">
+    <title>City</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.js"></script>
+    <style>
+      @font-face {
+        font-family: 'IBMPlexMono';
+        src: url('../IBMPlexMono-Regular.ttf');
+      }
+      body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background-color: black;
+      }
+      #map {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 0;
+      }
+      #defaultCanvas0 {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        pointer-events: none; /* Let clicks pass through to map */
+      }
+      #attribution {
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        font-family: 'IBMPlexMono', monospace;
+        font-size: 12px;
+        color: rgba(0, 0, 0, 0.7);
+        z-index: 2;
+        pointer-events: none;
+        user-select: none;
+        background: rgba(255,255,255,0.5);
+        padding: 2px 5px;
+        border-radius: 3px;
+      }
+      #attribution a {
+        color: inherit;
+        text-decoration: underline;
+        pointer-events: auto;
+        cursor: pointer;
+      }
+      #controls {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 2;
+        background: white;
+        padding: 10px;
+        border-radius: 5px;
+        font-family: 'IBMPlexMono', monospace;
+      }
+      #hud {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        z-index: 2;
+        background: rgba(0, 0, 0, 0.65);
+        color: #f5f2e8;
+        padding: 10px 12px;
+        border-radius: 6px;
+        font-family: 'IBMPlexMono', monospace;
+        font-size: 12px;
+        line-height: 1.4;
+        max-width: 280px;
+        pointer-events: none;
+      }
+      #hud strong {
+        color: #f0d48a;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="hud">
+      <div><strong>Medieval City</strong> — growing a market town with walls, gates, church, inns, shops, and farms.</div>
+      <div style="margin-top:6px">Click to pause/resume · Press <code>R</code> to restart.</div>
+      <div id="status"></div>
+    </div>
+    <script src="sketch.js"></script>
+  </body>
+</html>
