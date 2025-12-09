@@ -416,18 +416,187 @@ function generateTapeAudio(data, ctx) {
     };
 }
 
-// Main Load Function
-loadBtn.addEventListener('click', async () => {
-    if (!fileInput.files[0]) {
-        alert('Please select an image first.');
-        return;
+const crtCanvas = document.getElementById('crt-canvas');
+const gl = crtCanvas.getContext('webgl');
+
+// WebGL Setup
+const vertexShaderSource = `
+    attribute vec2 position;
+    varying vec2 vUv;
+    void main() {
+        vUv = position * 0.5 + 0.5;
+        // Flip Y because WebGL texture coords are bottom-left
+        vUv.y = 1.0 - vUv.y; 
+        gl_Position = vec4(position, 0.0, 1.0);
     }
+`;
+
+const fragmentShaderSource = `
+    precision mediump float;
+    uniform sampler2D uTexture;
+    uniform float uTime;
+    uniform vec2 uResolution;
+    uniform int uBorderType; // 0: Solid/None, 1: Pilot, 2: Data
     
-    // Init Audio
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    if (audioCtx.state === 'suspended') {
-        await audioCtx.resume();
+    varying vec2 vUv;
+
+    // ZX Spectrum Palette for Border
+    // Pilot: Red/Cyan
+    // Data: Blue/Yellow
+    
+    vec3 getBorderColor(float y) {
+        float stripe = floor(y * 20.0 + uTime * 20.0);
+        float phase = mod(stripe, 2.0);
+        
+        if (uBorderType == 1) { // Pilot
+            return phase < 1.0 ? vec3(0.84, 0.0, 0.0) : vec3(0.0, 0.84, 0.84);
+        } else if (uBorderType == 2) { // Data
+            return phase < 1.0 ? vec3(0.0, 0.0, 0.84) : vec3(0.84, 0.84, 0.0);
+        }
+        return vec3(0.8); // Default Grey
     }
+
+    // Barrel Distortion
+    vec2 distort(vec2 uv) {
+        vec2 cc = uv - 0.5;
+        float dist = dot(cc, cc);
+        return uv + cc * (dist * 0.15); // 0.15 distortion factor
+    }
+
+    void main() {
+        vec2 uv = distort(vUv);
+        
+        // Bezel Mask (Smooth edge for anti-aliasing)
+        float bezel = smoothstep(0.0, 0.01, uv.x) * smoothstep(1.0, 0.99, uv.x) *
+                      smoothstep(0.0, 0.01, uv.y) * smoothstep(1.0, 0.99, uv.y);
+
+        // Define Screen Area (256x192 centered in 640x480)
+        vec2 screenMin = vec2(0.1, 0.1);
+        vec2 screenMax = vec2(0.9, 0.9);
+        
+        // Screen Mask (Smooth transition from border to screen)
+        float screen = smoothstep(screenMin.x, screenMin.x + 0.002, uv.x) * 
+                       smoothstep(screenMax.x, screenMax.x - 0.002, uv.x) *
+                       smoothstep(screenMin.y, screenMin.y + 0.002, uv.y) * 
+                       smoothstep(screenMax.y, screenMax.y - 0.002, uv.y);
+
+        vec3 borderColor = getBorderColor(uv.y);
+        
+        // Map UV to Texture UV
+        vec2 texUv = (uv - screenMin) / (screenMax - screenMin);
+        // Clamp to avoid bleeding
+        vec3 texColor = texture2D(uTexture, clamp(texUv, 0.0, 1.0)).rgb;
+        
+        // Mix Border and Screen
+        vec3 color = mix(borderColor, texColor, screen);
+        
+        // Scanlines
+        float scanline = sin(uv.y * 480.0 * 3.14159 * 2.0) * 0.04;
+        color -= scanline;
+        
+        // Vignette (Corner darkening)
+        vec2 d = abs(uv - 0.5) * 2.0;
+        d = pow(d, vec2(2.0));
+        float vig = 1.0 - dot(d, d) * 0.2;
+        color *= vig;
+        
+        // Apply Bezel Mask
+        color *= bezel;
+
+        gl_FragColor = vec4(color, 1.0);
+    }
+`;
+
+// Compile Shader
+function createShader(gl, type, source) {
+    const shader = gl.createShader(type);
+    gl.shaderSource(shader, source);
+    gl.compileShader(shader);
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        console.error(gl.getShaderInfoLog(shader));
+        gl.deleteShader(shader);
+        return null;
+    }
+    return shader;
+}
+
+const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
+const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
+const program = gl.createProgram();
+gl.attachShader(program, vertexShader);
+gl.attachShader(program, fragmentShader);
+gl.linkProgram(program);
+
+if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+    console.error(gl.getProgramInfoLog(program));
+}
+
+// Buffers
+const positionBuffer = gl.createBuffer();
+gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+    -1, -1,
+     1, -1,
+    -1,  1,
+    -1,  1,
+     1, -1,
+     1,  1,
+]), gl.STATIC_DRAW);
+
+// Texture
+const texture = gl.createTexture();
+gl.bindTexture(gl.TEXTURE_2D, texture);
+gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+
+// Uniform Locations
+const uTimeLoc = gl.getUniformLocation(program, 'uTime');
+const uBorderTypeLoc = gl.getUniformLocation(program, 'uBorderType');
+const positionLoc = gl.getAttribLocation(program, 'position');
+
+// Render Function
+function renderCRT(time, borderType) {
+    gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+    gl.useProgram(program);
+    
+    gl.enableVertexAttribArray(positionLoc);
+    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+    gl.vertexAttribPointer(positionLoc, 2, gl.FLOAT, false, 0, 0);
+    
+    gl.uniform1f(uTimeLoc, time);
+    gl.uniform1i(uBorderTypeLoc, borderType);
+    
+    // Update Texture
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, canvas);
+    
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+}
+
+// Interaction Handlers
+function initAudio() {
+    if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+    }
+}
+
+crtCanvas.addEventListener('click', () => {
+    initAudio();
+    fileInput.click();
+});
+
+loadBtn.addEventListener('click', () => {
+    initAudio();
+    fileInput.click();
+});
+
+fileInput.addEventListener('change', () => {
+    if (!fileInput.files[0]) return;
     
     const img = new Image();
     img.src = URL.createObjectURL(fileInput.files[0]);
@@ -461,46 +630,24 @@ loadBtn.addEventListener('click', async () => {
 
         let lastLoaded = 0;
 
-        function updateBorder(type, time) {
-            // type 0: Pilot (Red/Cyan), type 1: Data (Blue/Yellow)
-            const c1 = type === 0 ? '#D70000' : '#0000D7';
-            const c2 = type === 0 ? '#00D7D7' : '#D7D700';
-            
-            // Stripe width
-            // Pilot: ~16 stripes per screen (480px). ~30px cycle.
-            // Data: ~32 stripes per screen. ~15px cycle.
-            const cycle = type === 0 ? 30 : 15;
-            const half = cycle / 2;
-            
-            // Animate phase
-            // Speed: Pilot ~50Hz frame rate, but bars roll.
-            // Let's just scroll it fast.
-            const offset = Math.floor(time * 500) % cycle;
-            
-            screenDiv.style.backgroundImage = `repeating-linear-gradient(to bottom, 
-                ${c1} 0px, ${c1} ${half}px, 
-                ${c2} ${half}px, ${c2} ${cycle}px)`;
-            screenDiv.style.backgroundPositionY = `${offset}px`;
-        }
-
         // Animation Loop
         function animate() {
             const now = audioCtx.currentTime - startTime;
-            
+            let borderType = 0; // 0: None/Grey
+
             if (now > totalDuration) {
                 // Ensure final state is rendered
                 updateScreenBuffer(totalBytes, scrData, data, lastLoaded);
                 ctx.putImageData(imageData, 0, 0);
-                screenDiv.style.backgroundImage = 'none';
-                screenDiv.style.backgroundColor = '#ccc'; // Reset border
+                renderCRT(now, 0); // Reset border
                 return;
             }
             
             // Border Effect
             if (now < pilotDuration) {
-                updateBorder(0, now);
+                borderType = 1; // Pilot
             } else {
-                updateBorder(1, now);
+                borderType = 2; // Data
             }
             
             // Data Loading Progress
@@ -523,6 +670,7 @@ loadBtn.addEventListener('click', async () => {
                 lastLoaded = loaded;
             }
             
+            renderCRT(now, borderType);
             requestAnimationFrame(animate);
         }
         
@@ -635,3 +783,26 @@ function updateScreenBuffer(loaded, scrData, data, lastLoaded) {
         }
     }
 }
+
+function showStaticImage(src) {
+    const img = new Image();
+    img.src = src;
+    img.onload = () => {
+        const scrData = convertToSCR(img);
+        
+        // Render full SCR to canvas
+        const imageData = ctx.createImageData(256, 192);
+        const data = imageData.data;
+        // Initialize alpha
+        for(let i=0; i<data.length; i+=4) data[i+3] = 255;
+        
+        updateScreenBuffer(6912, scrData, data, 0);
+        ctx.putImageData(imageData, 0, 0);
+        
+        // Render CRT
+        renderCRT(0, 0);
+    };
+}
+
+// Load default image on startup
+showStaticImage('load.png');

@@ -15,37 +15,111 @@ body {
 }
 
 #screen {
-    width: 640px; /* 256 * 2 + border */
-    height: 480px; /* 192 * 2 + border */
-    background-color: #ccc; /* Default border color (white/grey) */
+    width: 100%;
+    max-width: 640px;
+    aspect-ratio: 4 / 3;
+    background-color: #000;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 20px solid #333;
-    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    border: 20px solid #111; /* Physical monitor bezel */
+    border-radius: 20px; /* Rounded bezel corners */
+    box-shadow: 
+        0 0 0 2px #333,
+        0 0 20px rgba(0,0,0,0.8);
+    overflow: hidden;
+    box-sizing: border-box;
 }
 
-canvas {
-    width: 512px; /* 2x scale */
-    height: 384px;
-    image-rendering: pixelated;
-    background-color: #000;
+@media (max-width: 600px) {
+    #screen {
+        border-width: 10px;
+        border-radius: 10px;
+    }
+    
+    body {
+        padding: 10px;
+        box-sizing: border-box;
+    }
+}
+
+canvas#crt-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+    cursor: pointer;
+    touch-action: manipulation;
 }
 
 #controls {
-    margin-top: 20px;
+    margin-top: 30px;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
 }
 
-button {
-    padding: 10px 20px;
-    font-size: 16px;
+/* ZX Spectrum Key Style */
+#load-btn {
+    width: 80px;
+    height: 60px;
+    background: #525c65; /* Rubber grey */
+    border: none;
+    border-radius: 8px; /* Soft corners */
+    padding: 6px 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 
+        inset 2px 2px 3px rgba(255,255,255,0.15),
+        inset -2px -2px 3px rgba(0,0,0,0.3),
+        0 5px 10px rgba(0,0,0,0.4);
     cursor: pointer;
-    background: #333;
-    color: #fff;
-    border: 1px solid #555;
+    position: relative;
+    transition: transform 0.1s, box-shadow 0.1s;
+    font-family: Arial, sans-serif; /* Key labels are sans */
+    user-select: none;
 }
 
-button:hover {
-    background: #444;
+#load-btn:hover {
+    background: #5c6770;
+}
+
+#load-btn:active {
+    transform: translateY(3px);
+    box-shadow: 
+        inset 2px 2px 5px rgba(0,0,0,0.4),
+        0 1px 2px rgba(0,0,0,0.4);
+}
+
+.key-top {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.key-letter {
+    color: #fff;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1;
+    text-shadow: 0 1px 1px rgba(0,0,0,0.5);
+}
+
+.key-symbol {
+    color: #cc0000; /* Red symbol */
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 2px;
+    text-shadow: 0 1px 0 rgba(0,0,0,0.2);
+}
+
+.key-word {
+    color: #fff;
+    font-size: 11px;
+    font-weight: bold;
+    text-align: right;
+    width: 100%;
+    text-shadow: 0 1px 1px rgba(0,0,0,0.5);
 }

@@ -3,17 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZX Spectrum Loader</title>
+    <title>Loader</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="container">
         <div id="screen">
-            <canvas id="zx-canvas" width="256" height="192"></canvas>
+            <canvas id="zx-canvas" width="256" height="192" style="display: none;"></canvas>
+            <canvas id="crt-canvas" width="640" height="480"></canvas>
         </div>
         <div id="controls">
-            <input type="file" id="file-input" accept="image/*">
-            <button id="load-btn">LOAD ""</button>
+            <input type="file" id="file-input" accept="image/*" style="display: none;">
+            <button id="load-btn" title='LOAD ""'>
+                <div class="key-top">
+                    <span class="key-letter">J</span>
+                    <span class="key-symbol">-</span>
+                </div>
+                <div class="key-word">LOAD</div>
+            </button>
         </div>
     </div>
     <script src="zx-loader.js"></script>
