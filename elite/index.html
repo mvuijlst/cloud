@@ -428,6 +428,45 @@
       return best;
     }
 
+    function findSystemNearPointer(clientX, clientY, systems) {
+      if (!systems.length) return null;
+      const rect = mapCanvas.getBoundingClientRect();
+      const scaleX = mapCanvas.width / rect.width;
+      const scaleY = mapCanvas.height / rect.height;
+      const relX = (clientX - rect.left) * scaleX;
+      const relY = (clientY - rect.top) * scaleY;
+      const pad = PAD;
+      const scale = (mapCanvas.width - pad * 2) / 255;
+
+      const radii = systems.map((s) => s.radius || 0);
+      const minR = Math.min(...radii);
+      const maxR = Math.max(...radii);
+      const radiusToSize = (r) => {
+        const baseMin = 3;
+        const baseMax = 7;
+        if (maxR === minR) return (baseMin + baseMax) / 2;
+        const t = (r - minR) / (maxR - minR);
+        return baseMin + t * (baseMax - baseMin);
+      };
+
+      let best = null;
+      let bestDist2 = Infinity;
+      const extra = 4; // forgiveness radius for hover
+      systems.forEach((s) => {
+        const sx = pad + s.x * scale;
+        const sy = pad + (255 - s.y) * scale;
+        const size = radiusToSize(s.radius || 0) + extra;
+        const dx = relX - sx;
+        const dy = relY - sy;
+        const d2 = dx * dx + dy * dy;
+        if (d2 <= size * size && d2 < bestDist2) {
+          best = s;
+          bestDist2 = d2;
+        }
+      });
+      return best;
+    }
+
     function hidePopup() {
       if (popupTimer) {
         clearTimeout(popupTimer);
@@ -547,6 +586,17 @@
       const coords = systemToCanvasCoords(picked);
       showPopup(picked, coords);
       drawMap(currentSystems, currentFiltered, focusedSystem);
+    });
+
+    mapCanvas.addEventListener('mousemove', (ev) => {
+      const gNum = Math.min(8, Math.max(1, parseInt(galaxyInput.value, 10) || 1));
+      const systems = currentSystems.length ? currentSystems : buildGalaxyApi(gNum);
+      const hovered = findSystemNearPointer(ev.clientX, ev.clientY, systems);
+      mapCanvas.style.cursor = hovered ? 'pointer' : 'default';
+    });
+
+    mapCanvas.addEventListener('mouseleave', () => {
+      mapCanvas.style.cursor = 'default';
     });
 
     function clearFocusAndRender() {
