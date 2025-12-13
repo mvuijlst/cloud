@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#000000">
+    <link rel="manifest" href="../manifest.json">
+    <title>Carcassonne</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.js"></script>
+    <script src="sketch.js"></script>
+    <style>
+      @font-face {
+        font-family: 'IBMPlexMono';
+        src: url('../IBMPlexMono-Regular.ttf');
+      }
+      body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background-color: black; /* Match canvas background */
+        color: white;
+        font-family: 'IBMPlexMono', monospace;
+      }
+      #attribution {
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        font-family: 'IBMPlexMono', monospace;
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.3);
+        pointer-events: none; /* Let clicks pass through to canvas */
+        user-select: none;
+      }
+      #attribution a {
+        color: inherit;
+        text-decoration: underline;
+        pointer-events: auto; /* Re-enable clicks for the link */
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="controls">
+      <h1>Carcassonne Setup</h1>
+      
+      <div class="control-group">
+        <label>Players:</label>
+        <div id="player-select">
+          <div class="player-option selected" data-id="0"><img src="images/p1.png"></div>
+          <div class="player-option selected" data-id="1"><img src="images/p2.png"></div>
+          <div class="player-option" data-id="2"><img src="images/p3.png"></div>
+          <div class="player-option" data-id="3"><img src="images/p4.png"></div>
+          <div class="player-option" data-id="4"><img src="images/p5.png"></div>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label>Decks: <span id="deck-count-val">1</span></label>
+        <input type="range" id="deck-count" min="1" max="5" value="1">
+      </div>
+
+      <div class="control-group">
+        <label>Speed: <span id="speed-val">Normal</span></label>
+        <input type="range" id="game-speed" min="1" max="60" value="30">
+      </div>
+
+      <div class="control-group">
+        <label>
+          <input type="checkbox" id="map-mode"> Just make a map
+        </label>
+        <div id="map-options" style="display:none; margin-top: 5px; font-size: 0.9em;">
+            <label><input type="checkbox" id="opt-city"> Optimize City Size</label><br>
+            <label><input type="checkbox" id="opt-road"> Optimize Road Length</label>
+        </div>
+      </div>
+
+      <button id="start-btn">Start Game</button>
+    </div>
+
+    <style>
+      #controls {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #1f7a21;
+        padding: 20px;
+        border-radius: 10px;
+        border: 1px solid #444;
+        text-align: center;
+        z-index: 100;
+        max-width: 90vw;
+        width: 300px;
+        box-sizing: border-box;
+        user-select: none;
+        -webkit-user-select: none;
+      }
+      .control-group {
+        margin: 15px 0;
+      }
+      #player-select {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+      }
+      .player-option {
+        width: 40px;
+        height: 40px;
+        border: 2px solid transparent;
+        border-radius: 5px;
+        cursor: pointer;
+        opacity: 0.5;
+        touch-action: manipulation;
+      }
+      .player-option.selected {
+        border-color: white;
+        opacity: 1;
+      }
+      .player-option img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        image-rendering: pixelated;
+      }
+      button {
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        background: #444;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        touch-action: manipulation;
+        width: 100%;
+        margin-top: 10px;
+      }
+      button:hover {
+        background: #666;
+      }
+    </style>
+
+    <script>
+      // UI Logic
+      document.querySelectorAll('.player-option').forEach(opt => {
+        opt.addEventListener('click', () => {
+          opt.classList.toggle('selected');
+          // Ensure at least 2 players?
+          const selected = document.querySelectorAll('.player-option.selected').length;
+          if (selected < 2) opt.classList.add('selected');
+        });
+      });
+
+      document.getElementById('deck-count').addEventListener('input', (e) => {
+        document.getElementById('deck-count-val').innerText = e.target.value;
+      });
+
+      document.getElementById('game-speed').addEventListener('input', (e) => {
+        const val = e.target.value;
+        let label = "Normal";
+        if (val < 10) label = "Slow";
+        if (val > 50) label = "Fast";
+        document.getElementById('speed-val').innerText = label;
+        if (window.setGameSpeed) window.setGameSpeed(parseInt(val));
+      });
+
+      document.getElementById('map-mode').addEventListener('change', (e) => {
+          document.getElementById('map-options').style.display = e.target.checked ? 'block' : 'none';
+      });
+
+      document.getElementById('start-btn').addEventListener('click', () => {
+        const selectedPlayers = [];
+        document.querySelectorAll('.player-option.selected').forEach(opt => {
+          selectedPlayers.push(parseInt(opt.dataset.id));
+        });
+        
+        const numDecks = parseInt(document.getElementById('deck-count').value);
+        const speed = parseInt(document.getElementById('game-speed').value);
+        const isMapMode = document.getElementById('map-mode').checked;
+        const optCity = document.getElementById('opt-city').checked;
+        const optRoad = document.getElementById('opt-road').checked;
+
+        document.getElementById('controls').style.display = 'none';
+        
+        // Call p5.js function
+        if (window.startGame) {
+            window.startGame(selectedPlayers, numDecks, speed, isMapMode, optCity, optRoad);
+        }
+      });
+    </script>
+  </body>
+</html>
