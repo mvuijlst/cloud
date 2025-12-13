@@ -861,9 +861,20 @@ function draw() {
 
 function getMousePos(e) {
   const rect = canvas.getBoundingClientRect();
+  let clientX = e.clientX;
+  let clientY = e.clientY;
+  
+  if (e.touches && e.touches.length > 0) {
+    clientX = e.touches[0].clientX;
+    clientY = e.touches[0].clientY;
+  } else if (e.changedTouches && e.changedTouches.length > 0) {
+    clientX = e.changedTouches[0].clientX;
+    clientY = e.changedTouches[0].clientY;
+  }
+
   return {
-    x: e.clientX - rect.left,
-    y: e.clientY - rect.top
+    x: clientX - rect.left,
+    y: clientY - rect.top
   };
 }
 
@@ -932,8 +943,11 @@ startOverBtn.addEventListener('click', () => {
 });
 
 
-canvas.addEventListener('mousedown', (e) => {
+function handleStart(e) {
   if (previewMode) return;
+  if (e.type === 'touchstart') {
+    e.preventDefault();
+  }
   const pos = getMousePos(e);
   
   for (let i = books.length - 1; i >= 0; i--) {
@@ -960,17 +974,26 @@ canvas.addEventListener('mousedown', (e) => {
       break;
     }
   }
-});
+}
 
-canvas.addEventListener('mousemove', (e) => {
+canvas.addEventListener('mousedown', handleStart);
+canvas.addEventListener('touchstart', handleStart, { passive: false });
+
+function handleMove(e) {
   if (previewMode) return;
+  if (e.type === 'touchmove') {
+    e.preventDefault();
+  }
   if (draggedBook) {
     const pos = getMousePos(e);
     draggedBook.x = pos.x - dragOffsetX;
     draggedBook.y = pos.y - dragOffsetY;
     needsRedraw = true;
   }
-});
+}
+
+canvas.addEventListener('mousemove', handleMove);
+canvas.addEventListener('touchmove', handleMove, { passive: false });
 
 function packShelf(bcIndex, shelfIndex, { keepOverflowOnShelf = false } = {}) {
   const bc = bookcases[bcIndex];
@@ -1046,8 +1069,11 @@ function placeBookOnFloorPhysics(book) {
   book.y = area.baseline - stackHeight - size.height;
 }
 
-canvas.addEventListener('mouseup', (e) => {
+function handleEnd(e) {
   if (previewMode) return;
+  if (e.type === 'touchend') {
+    e.preventDefault();
+  }
   if (!draggedBook) return;
 
   const pos = getMousePos(e);
@@ -1083,7 +1109,10 @@ canvas.addEventListener('mouseup', (e) => {
   restackFloor();
   saveState();
   needsRedraw = true;
-});
+}
+
+canvas.addEventListener('mouseup', handleEnd);
+canvas.addEventListener('touchend', handleEnd, { passive: false });
 
 window.addEventListener('resize', () => {
   initCanvas(loadState());
