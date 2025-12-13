@@ -96,6 +96,8 @@ let isMapMode = false;
 let optimizeCitySize = false;
 let optimizeRoadLength = false;
 let placedTiles = new Map(); // "x,y" -> {x, y, piece, rotation, features: []}
+let totalTiles = 0;
+let tilesPlayed = 0;
 let frontier = new Set(); // "x,y"
 let players = [];
 let currentPlayerIdx = 0;
@@ -106,6 +108,7 @@ let currentTile = null;
 let currentTilePos = null; // {x, y, rotation}
 let lastPlacedTile = null;
 let completedCities = []; // Store completed city components for field scoring
+let showScores = false;
 
 const PLAYER_COLORS = ['#000000', '#ff00ff', '#ffff00', '#00ffff', '#ffffff'];
 const NUM_PLAYERS = 5; // Configurable 2-5
@@ -138,6 +141,18 @@ window.startGame = function(playerIds, numDecks, speed, mapMode, optCity, optRoa
   optimizeCitySize = optCity;
   optimizeRoadLength = optRoad;
   targetSpeed = speed;
+  
+  // Reset Game State
+  placedTiles = new Map();
+  frontier = new Set();
+  completedCities = [];
+  minX = 0; maxX = 0; minY = 0; maxY = 0;
+  lastPlacedTile = null;
+  currentTile = null;
+  currentTilePos = null;
+  currentPlayerIdx = 0;
+  camX = 0; camY = 0; camScale = 1;
+  
   // Init Players
   players = [];
   for(let id of playerIds) {
@@ -145,11 +160,14 @@ window.startGame = function(playerIds, numDecks, speed, mapMode, optCity, optRoa
           id: id,
           color: PLAYER_COLORS[id],
           score: 0,
-          meeples: 7
+          meeples: 7,
+          breakdown: { w: 0, c: 0, m: 0, g: 0 }
       });
   }
   
   deckSequence = [];
+  totalTiles = 0;
+  tilesPlayed = 0;
   
   for(let d=0; d<numDecks; d++) {
       let riverBody = [];
@@ -205,10 +223,12 @@ window.startGame = function(playerIds, numDecks, speed, mapMode, optCity, optRoa
       }
       
       deckSequence.push({ type: 'river', cards: rDeck });
+      totalTiles += rDeck.length;
       
       // Prepare Normal Deck
       shuffle(normal, true);
       deckSequence.push({ type: 'normal', cards: normal });
+      totalTiles += normal.length;
   }
   
   currentDeckIndex = 0;
@@ -240,13 +260,19 @@ function draw() {
   }
   
   drawBoard();
-  drawUI();
+  
+  if (state === "END") {
+      drawEndGame();
+  } else {
+      drawUI();
+  }
 }
 
 function updateGameLogic() {
   if (state === "DRAW") {
       if (deck.length > 0) {
           currentTile = deck.pop();
+          tilesPlayed++;
           state = "PLACE";
       } else {
           // Switch to next deck in sequence
@@ -257,16 +283,15 @@ function updateGameLogic() {
               
               if (deck.length > 0) {
                   currentTile = deck.pop();
+                  tilesPlayed++;
                   state = "PLACE";
               } else {
                   state = "END";
                   scoreEndGame();
-                  noLoop();
               }
           } else {
               state = "END";
               scoreEndGame();
-              noLoop();
           }
       }
   } else if (state === "PLACE") {
@@ -567,6 +592,7 @@ function placeMeeple(player, tile, feature) {
 function scoreFeatures() {
     if (!lastPlacedTile) return;
     
+    // 1. Check features connected to the placed tile (Roads, Cities, Cloister on this tile)
     let typesToCheck = ['w', 'c', 'm'];
     for (let type of typesToCheck) {
         let component = getComponent(lastPlacedTile, type);
@@ -574,11 +600,32 @@ function scoreFeatures() {
         
         if (isComponentComplete(component, type)) {
             let points = calculateScore(component, type, false);
-            distributePoints(component, points);
+            distributePoints(component, points, type);
             removeMeeples(component, type);
             
             if (type === 'c') {
                 completedCities.push(component);
+            }
+        }
+    }
+
+    // 2. Check neighboring Cloisters
+    // Placing a tile might complete a neighbor's cloister
+    for(let dx=-1; dx<=1; dx++) {
+        for(let dy=-1; dy<=1; dy++) {
+            if (dx===0 && dy===0) continue;
+            let nx = lastPlacedTile.x + dx;
+            let ny = lastPlacedTile.y + dy;
+            let neighbor = placedTiles.get(`${nx},${ny}`);
+            
+            if (neighbor && neighbor.piece.key.includes("M")) {
+                // Found a neighbor with a cloister
+                let component = getComponent(neighbor, 'm');
+                if (isComponentComplete(component, 'm')) {
+                    let points = calculateScore(component, 'm', false);
+                    distributePoints(component, points, 'm');
+                    removeMeeples(component, 'm');
+                }
             }
         }
     }
@@ -675,20 +722,26 @@ function calculateScore(component, type, isEndGame) {
     return 0;
 }
 
-function distributePoints(component, points) {
+function distributePoints(component, points, type) {
     if (component.meeples.length === 0) return;
     
     let counts = {};
     let maxCount = 0;
+    let involvedPlayers = new Set();
+
     for(let m of component.meeples) {
         let pid = m.player.id;
         counts[pid] = (counts[pid] || 0) + 1;
         if (counts[pid] > maxCount) maxCount = counts[pid];
+        involvedPlayers.add(m.player);
     }
     
-    for(let pid in counts) {
-        if (counts[pid] === maxCount) {
-            players[pid].score += points;
+    for(let p of involvedPlayers) {
+        if (counts[p.id] === maxCount) {
+            p.score += points;
+            if (type && p.breakdown) {
+                p.breakdown[type] += points;
+            }
         }
     }
 }
@@ -708,6 +761,7 @@ function removeMeeples(component, type) {
 
 function scoreEndGame() {
     console.log("Scoring End Game...");
+    showScores = false;
     
     // 1. Score incomplete features
     // We need to iterate ALL tiles and find components.
@@ -723,7 +777,7 @@ function scoreEndGame() {
                 for(let t of comp.tiles) visited.w.add(`${t.x},${t.y}`);
                 if (comp.meeples.length > 0) {
                     let pts = calculateScore(comp, 'w', true);
-                    distributePoints(comp, pts);
+                    distributePoints(comp, pts, 'w');
                 }
             }
         }
@@ -734,7 +788,7 @@ function scoreEndGame() {
                 for(let t of comp.tiles) visited.c.add(`${t.x},${t.y}`);
                 if (comp.meeples.length > 0) {
                     let pts = calculateScore(comp, 'c', true);
-                    distributePoints(comp, pts);
+                    distributePoints(comp, pts, 'c');
                 }
             }
         }
@@ -743,13 +797,18 @@ function scoreEndGame() {
              let comp = getComponent(tile, 'm');
              if (comp.meeples.length > 0) {
                  let pts = calculateScore(comp, 'm', true);
-                 distributePoints(comp, pts);
+                 distributePoints(comp, pts, 'm');
              }
         }
     }
     
     // 2. Score Fields
     scoreFields();
+    
+    // 3. Show Game Over UI
+    if (window.showGameOver) {
+        window.showGameOver(players);
+    }
 }
 
 function scoreFields() {
@@ -787,7 +846,7 @@ function scoreFields() {
                     }
                     
                     let points = touchedCities.size * 3;
-                    distributePoints(fieldComp, points);
+                    distributePoints(fieldComp, points, 'g');
                 }
             }
         }
@@ -894,9 +953,47 @@ function getBestMove(moves, piece, player) {
             }
             
         } else {
-            // 1. Does it extend a feature I own?
-            // 2. Does it complete a feature?
-            // 3. Does it block an opponent?
+            // Game Mode Heuristics
+            
+            // 1. Feature Extension (Own vs Opponent)
+            let nCoords = [[0,-1], [1,0], [0,1], [-1,0]];
+            for(let i=0; i<4; i++) {
+                let edge = getEdge(piece, move.rotation, i);
+                let nx = move.x + nCoords[i][0];
+                let ny = move.y + nCoords[i][1];
+                let neighbor = placedTiles.get(`${nx},${ny}`);
+                
+                if (neighbor) {
+                    // Check if neighbor has meeple on connecting edge
+                    if (neighbor.meeples) {
+                        for(let m of neighbor.meeples) {
+                            // Simplified check: if meeple is on same feature type
+                            // Ideally we check if it's on the specific connecting edge
+                            if (m.feature.type === edge) {
+                                if (m.player.id === player.id) {
+                                    score += 10; // Extend own feature
+                                } else {
+                                    score -= 5; // Don't help opponent (unless joining, which is hard to detect here)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+            // 2. Feature Completion (Approximation)
+            // If placing this tile completes a feature, big bonus
+            // We can't easily run full graph check here, but we can check simple cases
+            // e.g. Cloister
+            if (piece.key.includes("M")) {
+                // Check neighbors count
+                let neighbors = 0;
+                for(let n of nCoords) {
+                    if (placedTiles.has(`${move.x+n[0]},${move.y+n[1]}`)) neighbors++;
+                }
+                if (neighbors === 8) score += 20; // Instant completion
+                else score += neighbors * 2; // Good placement
+            }
             
             // Random factor to keep it interesting
             score += random(0, 5);
@@ -911,34 +1008,204 @@ function getBestMove(moves, piece, player) {
 }
 
 function getBestFeatureToClaim(tile, features, player) {
-    // Prioritize:
-    // 1. Cities (high points)
-    // 2. Fields (long term)
-    // 3. Roads
+    // Conservation Logic
+    let meepleRatio = player.meeples / 7.0;
+    let gameProgress = tilesPlayed / totalTiles;
+    
+    // Threshold: Higher if early game and low meeples
+    // Early game (0.1): need > 0.8 ratio to be loose
+    // Late game (0.9): need > 0.1 ratio
+    let conservationThreshold = (1.0 - gameProgress) * 0.5; 
+    if (meepleRatio < 0.3) conservationThreshold += 0.5; // Panic mode if low meeples
     
     // Filter out features that are already occupied (handled by getAvailableFeatures)
     
     // Sort features by value
     features.sort((a, b) => {
-        let valA = getFeatureValue(a.type);
-        let valB = getFeatureValue(b.type);
+        let valA = getFeatureValue(a.type, tile);
+        let valB = getFeatureValue(b.type, tile);
         return valB - valA;
     });
     
-    // Don't always place. Conserve meeples if low.
-    if (player.meeples < 3 && random() < 0.5) return null;
+    let best = features[0];
+    let value = getFeatureValue(best.type, tile);
     
-    return features[0];
+    // Always take if it completes immediately (free points)
+    // We need to check if it completes.
+    // Simplified check:
+    if (best.type === 'm') {
+        // Check neighbors
+        let neighbors = 0;
+        for(let dx=-1; dx<=1; dx++) {
+            for(let dy=-1; dy<=1; dy++) {
+                if (dx===0 && dy===0) continue;
+                if (placedTiles.has(`${tile.x+dx},${tile.y+dy}`)) neighbors++;
+            }
+        }
+        if (neighbors === 8) return best;
+    }
+    
+    // Decision based on value and conservation
+    // Normalize value roughly to 0-10 range for comparison
+    // If value is high, we take it even if conservative
+    if (value > 8) return best; // High value feature
+    
+    // Otherwise check conservation
+    if (random() > conservationThreshold) return best;
+    
+    return null;
 }
 
-function getFeatureValue(type) {
-    if (type === 'c') return 10;
-    if (type === 'g') return 8;
-    if (type === 'm') return 6;
-    if (type === 'w') return 4;
+function getFeatureValue(type, tile) {
+    if (type === 'c') {
+        // City value depends on size and pennants
+        // We can't easily traverse here without modifying state, 
+        // but we can give base value
+        let val = 4; 
+        if (tile.piece.pennant) val += 2;
+        return val;
+    }
+    if (type === 'g') return 5; // Fields are long term investment
+    if (type === 'm') return 6; // Cloisters are good
+    if (type === 'w') return 2; // Roads are low value usually
     return 0;
 }
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
+}
+
+function drawEndGame() {
+    // Sort players by score
+    let sortedPlayers = [...players].sort((a, b) => b.score - a.score);
+    let winner = sortedPlayers[0];
+    
+    if (!showScores) {
+        // Winner Announcement (Top Left Box)
+        fill(0, 150);
+        noStroke();
+        rect(0, 0, 250, 180); // Match drawUI size roughly
+        
+        fill(255);
+        textSize(24);
+        textAlign(LEFT, TOP);
+        text("GAME OVER", 10, 10);
+        
+        textSize(16);
+        text(`Winner:`, 10, 50);
+        image(meepleImages[winner.id], 80, 50, 24, 24);
+        text(`${winner.score} pts`, 120, 50);
+        
+        // See Scores Button (Inside the box)
+        let btnX = 10;
+        let btnY = 100;
+        let btnW = 230;
+        let btnH = 40;
+        
+        fill(0, 100, 255);
+        rect(btnX, btnY, btnW, btnH, 5);
+        
+        fill(255);
+        textAlign(CENTER, CENTER);
+        textSize(16);
+        text("SEE SCORES", btnX + btnW/2, btnY + btnH/2);
+        
+    } else {
+        // Full Scoreboard Overlay
+        fill(0, 200);
+        rect(0, 0, width, height);
+        
+        textAlign(CENTER, TOP);
+        fill(255);
+        textSize(32);
+        text("GAME OVER", width/2, 50);
+        
+        let y = 120;
+        textSize(16);
+        
+        // Table Layout
+        let startX = width/2 - 250;
+        let colWidths = [60, 80, 80, 80, 80, 80]; // Icon, Total, Road, City, Cloister, Field
+        let headers = ["", "Total", "Roads", "Cities", "Cloisters", "Fields"];
+        
+        textAlign(LEFT, TOP);
+        let curX = startX;
+        for(let i=0; i<headers.length; i++) {
+            text(headers[i], curX, y);
+            curX += colWidths[i];
+        }
+        
+        y += 30;
+        stroke(255);
+        line(startX, y, startX + 460, y);
+        noStroke();
+        y += 10;
+        
+        for(let p of sortedPlayers) {
+            curX = startX;
+            
+            // Icon
+            image(meepleImages[p.id], curX, y, 24, 24);
+            curX += colWidths[0];
+            
+            // Total
+            text(p.score, curX, y);
+            curX += colWidths[1];
+            
+            // Breakdown
+            if (p.breakdown) {
+                text(p.breakdown.w, curX, y);
+                curX += colWidths[2];
+                text(p.breakdown.c, curX, y);
+                curX += colWidths[3];
+                text(p.breakdown.m, curX, y);
+                curX += colWidths[4];
+                text(p.breakdown.g, curX, y);
+            }
+            
+            y += 40;
+        }
+        
+        // New Game Button
+        let btnW = 200;
+        let btnH = 50;
+        let btnX = width/2 - btnW/2;
+        let btnY = height - 100;
+        
+        fill(0, 100, 255);
+        rect(btnX, btnY, btnW, btnH, 10);
+        
+        fill(255);
+        textAlign(CENTER, CENTER);
+        textSize(20);
+        text("NEW GAME", width/2, btnY + btnH/2);
+    }
+}
+
+function mousePressed() {
+    if (state === "END") {
+        if (!showScores) {
+            // Check "See Scores" button (Top Left)
+            let btnX = 10;
+            let btnY = 100;
+            let btnW = 230;
+            let btnH = 40;
+            
+            if (mouseX >= btnX && mouseX <= btnX + btnW && mouseY >= btnY && mouseY <= btnY + btnH) {
+                showScores = true;
+            }
+        } else {
+            // Check "New Game" button
+            let btnW = 200;
+            let btnH = 50;
+            let btnX = width/2 - btnW/2;
+            let btnY = height - 100;
+            
+            if (mouseX >= btnX && mouseX <= btnX + btnW && mouseY >= btnY && mouseY <= btnY + btnH) {
+                // Reset Game
+                state = "MENU";
+                document.getElementById('controls').style.display = 'block';
+            }
+        }
+    }
 }
