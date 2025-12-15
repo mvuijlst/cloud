@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medieval Demographics Generator</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f1ea;
+        }
+        h1, h2, h3 {
+            color: #5a4a42;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .controls {
+            flex: 1;
+            min-width: 300px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .results {
+            flex: 2;
+            min-width: 300px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #8b4513;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #a0522d;
+        }
+        .stat-box {
+            background: #f9f9f9;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-left: 4px solid #8b4513;
+        }
+        .settlement-list {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #eee;
+        }
+        .settlement-item {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+        .settlement-item:hover {
+            background-color: #f0f0f0;
+        }
+        .settlement-item.selected {
+            background-color: #e0e0e0;
+            font-weight: bold;
+        }
+        .business-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        .business-item {
+            background: #f9f9f9;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Medieval Demographics Generator</h1>
+    <p>Based on "Medieval Demographics Made Easy" by S. John Ross</p>
+
+    <div class="container">
+        <div class="controls">
+            <h2>Kingdom Settings</h2>
+            <div class="form-group">
+                <label for="kingdomName">Kingdom Name</label>
+                <input type="text" id="kingdomName" value="Chamlek">
+            </div>
+            <div class="form-group">
+                <label for="area">Land Area (sq. km)</label>
+                <div style="display: flex; gap: 10px;">
+                    <input type="number" id="area" value="230000" style="flex: 1;">
+                    <select id="areaPreset" style="flex: 1;">
+                        <option value="">Select a comparison...</option>
+                        <option value="30528">Belgium (30,528)</option>
+                        <option value="41285">Switzerland (41,285)</option>
+                        <option value="41543">Netherlands (41,543)</option>
+                        <option value="70273">Ireland (70,273)</option>
+                        <option value="93030">Hungary (93,030)</option>
+                        <option value="131957">Greece (131,957)</option>
+                        <option value="242495">United Kingdom (242,495)</option>
+                        <option value="301340">Italy (301,340)</option>
+                        <option value="312696">Poland (312,696)</option>
+                        <option value="357022">Germany (357,022)</option>
+                        <option value="385207">Norway (385,207)</option>
+                        <option value="450295">Sweden (450,295)</option>
+                        <option value="505992">Spain (505,992)</option>
+                        <option value="551695">France (Metropolitan) (551,695)</option>
+                        <option value="603628">Ukraine (603,628)</option>
+                        <option value="695662">Texas, USA (695,662)</option>
+                        <option value="783562">Turkey (783,562)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="density">Population Density (people/sq. km)</label>
+                <select id="densityMode">
+                    <option value="random">Random (Roll 6d4 x 2)</option>
+                    <option value="custom">Custom</option>
+                </select>
+                <input type="number" id="customDensity" value="29" class="hidden" style="margin-top: 5px;">
+            </div>
+            <div class="form-group">
+                <label for="age">Kingdom Age/Development</label>
+                <select id="age">
+                    <option value="wilderness">Wilderness/Young (Sparse)</option>
+                    <option value="average" selected>Average (Developed)</option>
+                    <option value="ancient">Ancient/Dense (Crowded)</option>
+                </select>
+            </div>
+            <button id="generateBtn">Generate Kingdom</button>
+        </div>
+
+        <div class="results" id="resultsArea" style="display:none;">
+            <h2><span id="resultName"></span> Statistics</h2>
+            <div class="stat-box">
+                <p><strong>Total Population:</strong> <span id="totalPop"></span></p>
+                <p><strong>Population Density:</strong> <span id="resDensity"></span> people/sq. km</p>
+                <p><strong>Total Area:</strong> <span id="resArea"></span> sq. km</p>
+                <p><strong>Arable Land:</strong> <span id="arableLand"></span> sq. km (<span id="arablePercent"></span>%)</p>
+                <p><strong>Wilderness:</strong> <span id="wilderness"></span> sq. km</p>
+                <p><strong>Urban Population:</strong> <span id="urbanPop"></span> (<span id="urbanPercent"></span>%)</p>
+                <p><strong>Rural Population:</strong> <span id="ruralPop"></span></p>
+            </div>
+
+            <h3>Kingdom Map</h3>
+            <div style="margin-bottom: 10px;">
+                <canvas id="mapCanvas" width="800" height="500" style="border: 1px solid #ccc; background: #87CEEB; width: 100%; height: auto;"></canvas>
+                <div id="mapLegend" style="font-size: 0.9em; margin-top: 5px;">
+                    <span style="display:inline-block; width: 12px; height: 12px; background: #90EE90; border: 1px solid #666;"></span> Arable
+                    <span style="display:inline-block; width: 12px; height: 12px; background: #228B22; border: 1px solid #666; margin-left: 10px;"></span> Wilderness
+                    <span style="display:inline-block; width: 10px; height: 10px; background: red; border-radius: 50%; margin-left: 10px;"></span> City
+                    <span style="display:inline-block; width: 6px; height: 6px; background: black; border-radius: 50%; margin-left: 10px;"></span> Town
+                </div>
+                <p id="hexInfo" style="font-size: 0.9em; color: #666;"></p>
+            </div>
+
+            <h3>Settlements</h3>
+            <p>Click on a settlement to see its businesses.</p>
+            <div style="display: flex; gap: 20px;">
+                <div style="flex: 1;">
+                    <h4>Cities & Towns</h4>
+                    <div id="settlementList" class="settlement-list"></div>
+                </div>
+                <div style="flex: 1;">
+                    <h4>Businesses in <span id="selectedSettlementName">...</span></h4>
+                    <div id="businessList" class="business-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
