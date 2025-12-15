@@ -27,8 +27,8 @@ const defaultConfig = {
     noiseHeight: 60,
     visionRadius: 200, // Range at which boids can see food
     fixedCamera: false,
-    fogNear: 200,
-    fogFar: 1000,
+    fogNear: 1000,
+    fogFar: 2000,
     fogColor: 0x000000
 };
 
