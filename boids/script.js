@@ -5,16 +5,16 @@ import { SimplexNoise } from 'three/addons/math/SimplexNoise.js';
 
 // Configuration
 const defaultConfig = {
-    configVersion: 3, // Increment to force update defaults
+    configVersion: 4, // Increment to force update defaults
     boidCount: 200,
     obstacleCount: 20,
-    perceptionRadius: 50,
+    perceptionRadius: 80,
     separationDistance: 20,
     maxSpeed: 6,
     maxForce: 0.2,
-    alignmentWeight: 1.0,
-    cohesionWeight: 1.0,
-    separationWeight: 2.0,
+    alignmentWeight: 2.5,
+    cohesionWeight: 2.5,
+    separationWeight: 3.0,
     obstacleAvoidanceWeight: 5.0,
     goalSeekingWeight: 3.0,
     fieldSize: 800,
@@ -27,8 +27,8 @@ const defaultConfig = {
     noiseHeight: 60,
     visionRadius: 200, // Range at which boids can see food
     fixedCamera: false,
-    fogNear: 1000,
-    fogFar: 2000,
+    fogNear: 720,
+    fogFar: 1600,
     fogColor: 0x000000
 };
 
@@ -48,6 +48,9 @@ if (savedConfig) {
                 maxForce: defaultConfig.maxForce,
                 goalSeekingWeight: defaultConfig.goalSeekingWeight,
                 separationWeight: defaultConfig.separationWeight,
+                alignmentWeight: defaultConfig.alignmentWeight,
+                cohesionWeight: defaultConfig.cohesionWeight,
+                perceptionRadius: defaultConfig.perceptionRadius,
                 configVersion: defaultConfig.configVersion
             };
         } else {
