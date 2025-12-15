@@ -20,7 +20,7 @@ const defaultConfig = {
     fieldSize: 800,
     obstacleRadiusMin: 5,
     obstacleRadiusMax: 15,
-    obstacleWidth: 20, // Average width of obstacles
+    obstacleWidth: 75, // Average width of obstacles
     obstacleHeight: 300, // Higher field
     targetCreationInterval: 5,
     noiseScale: 150,
@@ -563,7 +563,7 @@ function initObstacles() {
         const yMin = terrainH;
         const yMax = terrainH + height;
         
-        const geometry = new THREE.BoxGeometry(size, height, size);
+        const geometry = new THREE.CylinderGeometry(size / 2, size / 2, height, 16);
         
         // Group for hidden line effect
         const group = new THREE.Group();
@@ -597,7 +597,7 @@ function initObstacles() {
         obstacles.push({
             mesh: group,
             position: group.position,
-            radius: size * 0.7, // Approximate radius for collision (diagonal is size * sqrt(2) / 2 ~= size * 0.7)
+            radius: size / 2, 
             height: height,
             yMin: yMin,
             yMax: yMax
