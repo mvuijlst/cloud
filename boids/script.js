@@ -5,18 +5,18 @@ import { SimplexNoise } from 'three/addons/math/SimplexNoise.js';
 
 // Configuration
 const defaultConfig = {
-    configVersion: 4, // Increment to force update defaults
+    configVersion: 5, // Increment to force update defaults
     boidCount: 200,
     obstacleCount: 20,
     perceptionRadius: 80,
     separationDistance: 20,
-    maxSpeed: 6,
-    maxForce: 0.2,
-    alignmentWeight: 2.5,
-    cohesionWeight: 2.5,
+    maxSpeed: 5,
+    maxForce: 0.15,
+    alignmentWeight: 4.0,
+    cohesionWeight: 3.0,
     separationWeight: 3.0,
     obstacleAvoidanceWeight: 5.0,
-    goalSeekingWeight: 3.0,
+    goalSeekingWeight: 2.0,
     fieldSize: 800,
     obstacleRadiusMin: 5,
     obstacleRadiusMax: 15,
@@ -197,24 +197,53 @@ class Boid {
 
     checkBoundaries() {
         const halfSize = config.fieldSize / 2;
-        const margin = 50;
-        let desired = null;
+        const margin = 100;
+        let steer = new THREE.Vector3();
+        let inBoundary = false;
 
-        if (this.position.x < -halfSize + margin) desired = new THREE.Vector3(config.maxSpeed, this.velocity.y, this.velocity.z);
-        else if (this.position.x > halfSize - margin) desired = new THREE.Vector3(-config.maxSpeed, this.velocity.y, this.velocity.z);
+        // X
+        if (this.position.x < -halfSize + margin) {
+            steer.x = config.maxSpeed;
+            inBoundary = true;
+            // Force wander target to point away from wall
+            if (this.wanderTarget.x < 0) this.wanderTarget.x = Math.abs(this.wanderTarget.x);
+        } else if (this.position.x > halfSize - margin) {
+            steer.x = -config.maxSpeed;
+            inBoundary = true;
+            if (this.wanderTarget.x > 0) this.wanderTarget.x = -Math.abs(this.wanderTarget.x);
+        }
 
-        if (this.position.z < -halfSize + margin) desired = new THREE.Vector3(this.velocity.x, this.velocity.y, config.maxSpeed);
-        else if (this.position.z > halfSize - margin) desired = new THREE.Vector3(this.velocity.x, this.velocity.y, -config.maxSpeed);
+        // Z
+        if (this.position.z < -halfSize + margin) {
+            steer.z = config.maxSpeed;
+            inBoundary = true;
+            if (this.wanderTarget.z < 0) this.wanderTarget.z = Math.abs(this.wanderTarget.z);
+        } else if (this.position.z > halfSize - margin) {
+            steer.z = -config.maxSpeed;
+            inBoundary = true;
+            if (this.wanderTarget.z > 0) this.wanderTarget.z = -Math.abs(this.wanderTarget.z);
+        }
 
-        // Check terrain height
+        // Ceiling
+        const ceiling = config.obstacleHeight * 2;
+        if (this.position.y > ceiling - margin) {
+            steer.y = -config.maxSpeed;
+            inBoundary = true;
+            if (this.wanderTarget.y > 0) this.wanderTarget.y = -Math.abs(this.wanderTarget.y);
+        }
+
+        // Floor
         const terrainH = getTerrainHeight(this.position.x, this.position.z);
-        if (this.position.y < terrainH + margin) desired = new THREE.Vector3(this.velocity.x, config.maxSpeed, this.velocity.z);
-        else if (this.position.y > config.obstacleHeight * 2 - margin) desired = new THREE.Vector3(this.velocity.x, -config.maxSpeed, this.velocity.z);
+        if (this.position.y < terrainH + 50) {
+            steer.y = config.maxSpeed;
+            inBoundary = true;
+            if (this.wanderTarget.y < 0) this.wanderTarget.y = Math.abs(this.wanderTarget.y);
+        }
 
-        if (desired) {
-            desired.normalize().multiplyScalar(config.maxSpeed);
-            let steer = new THREE.Vector3().subVectors(desired, this.velocity);
-            steer.clampLength(0, config.maxForce);
+        if (inBoundary) {
+            steer.normalize().multiplyScalar(config.maxSpeed);
+            steer.sub(this.velocity);
+            steer.clampLength(0, config.maxForce * 5); 
             return steer;
         }
         return new THREE.Vector3();
@@ -489,7 +518,7 @@ function createTarget() {
     let attempts = 0;
 
     while (!valid && attempts < 20) {
-        const margin = 60; // Keep targets well away from boundaries
+        const margin = 150; // Keep targets well away from boundaries (must be > boundary margin of 100)
         const maxY = (config.obstacleHeight * 2) - margin;
         
         position.set(
