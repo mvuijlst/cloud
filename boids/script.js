@@ -123,7 +123,7 @@ function updateGround() {
     geometry.computeVertexNormals();
 
     const material = new THREE.MeshBasicMaterial({ 
-        color: 0x444444, 
+        color: 0xcccccc, 
         wireframe: true 
     });
     
@@ -162,7 +162,7 @@ class Boid {
 
         // Wireframe mesh for outlines
         const wireframeGeometry = new THREE.EdgesGeometry(geometry);
-        const wireframeMaterial = new THREE.LineBasicMaterial({ color: 0x444444 });
+        const wireframeMaterial = new THREE.LineBasicMaterial({ color: 0xcccccc });
         const wireframeMesh = new THREE.LineSegments(wireframeGeometry, wireframeMaterial);
         this.mesh.add(wireframeMesh);
 
@@ -437,7 +437,7 @@ function init() {
     controls.maxDistance = 1000;
 
     // Lights
-    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.6);
+    const hemiLight = new THREE.HemisphereLight(0xffffff, 0xcccccc, 0.6);
     scene.add(hemiLight);
 
     const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
@@ -579,7 +579,7 @@ function initObstacles() {
 
         // Wireframe mesh
         const wireframeGeometry = new THREE.EdgesGeometry(geometry);
-        const wireframeMaterial = new THREE.LineBasicMaterial({ color: 0x444444 });
+        const wireframeMaterial = new THREE.LineBasicMaterial({ color: 0xcccccc });
         const wireframeMesh = new THREE.LineSegments(wireframeGeometry, wireframeMaterial);
         group.add(wireframeMesh);
         
