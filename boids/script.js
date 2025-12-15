@@ -291,7 +291,8 @@ class Boid {
         } else {
             // Wander randomly if no food is visible
              goalSeek = this.wander();
-             goalSeek.multiplyScalar(0.5); // Lower weight than food
+             // Increase wander weight to overcome flocking inertia
+             goalSeek.multiplyScalar(1.5); 
         }
 
         alignment.multiplyScalar(config.alignmentWeight);
@@ -310,9 +311,9 @@ class Boid {
     }
 
     wander() {
-        const wanderRadius = 20;
-        const wanderDistance = 80;
-        const wanderJitter = 1.0;
+        const wanderRadius = 50;
+        const wanderDistance = 40;
+        const wanderJitter = 5.0;
 
         this.wanderTarget.add(new THREE.Vector3(
             (Math.random() - 0.5) * wanderJitter,
@@ -610,7 +611,7 @@ function initGUI() {
     gui.onChange(saveConfig); // Save on any change
     
     const simFolder = gui.addFolder('Simulation');
-    simFolder.add(config, 'boidCount', 10, 500, 1).onFinishChange(initBoids);
+    simFolder.add(config, 'boidCount', 10, 1000, 1).onFinishChange(initBoids);
     simFolder.add(config, 'obstacleCount', 0, 50, 1).onFinishChange(() => {
         initObstacles();
         initBoids(); // Reset boids to avoid trapping
