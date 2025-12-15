@@ -27,8 +27,8 @@ const defaultConfig = {
     noiseHeight: 60,
     visionRadius: 200, // Range at which boids can see food
     fixedCamera: false,
-    fogNear: 720,
-    fogFar: 1600,
+    fogNear: 500,
+    fogFar: 1500,
     fogColor: 0x000000
 };
 
@@ -572,7 +572,7 @@ function initObstacles() {
         const solidMaterial = new THREE.MeshBasicMaterial({ 
             color: 0x000000,
             transparent: true,
-            opacity: 0.9,
+            opacity: 0.7,
             polygonOffset: true,
             polygonOffsetFactor: 1,
             polygonOffsetUnits: 1
