@@ -676,18 +676,41 @@ function updateCamera() {
         return;
     }
 
-    // Calculate center of mass
-    let centerOfMass = new THREE.Vector3();
+    // Calculate bounding box of the flock
+    const box = new THREE.Box3();
     for (let b of boids) {
-        centerOfMass.add(b.position);
+        box.expandByPoint(b.position);
     }
-    centerOfMass.divideScalar(boids.length);
+    
+    const center = new THREE.Vector3();
+    box.getCenter(center);
+    
+    const size = box.getSize(new THREE.Vector3()).length();
 
-    // Smoothly follow the flock while preserving user's zoom/rotation
+    // Smoothly follow the flock center
     const oldTarget = controls.target.clone();
-    controls.target.lerp(centerOfMass, 0.1);
-    const delta = new THREE.Vector3().subVectors(controls.target, oldTarget);
-    camera.position.add(delta);
+    controls.target.lerp(center, 0.1);
+    
+    // Calculate desired distance to fit the flock
+    // Fit the bounding sphere (radius ~ size/2) within the FOV
+    const fov = camera.fov * (Math.PI / 180);
+    let desiredDistance = (size * 0.5) / Math.tan(fov / 2);
+    desiredDistance *= 1.5; // Padding factor
+    
+    // Clamp distance
+    desiredDistance = Math.max(desiredDistance, 100);
+    desiredDistance = Math.min(desiredDistance, 1500);
+
+    // Current offset from target
+    const offset = new THREE.Vector3().subVectors(camera.position, oldTarget);
+    const currentDistance = offset.length();
+    
+    // Smoothly interpolate distance
+    const newDistance = THREE.MathUtils.lerp(currentDistance, desiredDistance, 0.05);
+    
+    // Apply new distance while preserving direction
+    offset.normalize().multiplyScalar(newDistance);
+    camera.position.copy(controls.target).add(offset);
     
     // Ensure camera doesn't clip into obstacles (simple check)
     for (let obs of obstacles) {
