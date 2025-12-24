@@ -1,0 +1,85 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hive Simulation</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0b0908;
+      --panel: #15100f;
+      --text: #f2e1b0;
+      --accent: #c68f17;
+      --accent2: #7a5320;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: radial-gradient(circle at 30% 20%, rgba(198,143,23,0.08), transparent 35%),
+                  radial-gradient(circle at 80% 80%, rgba(122,83,32,0.12), transparent 40%),
+                  var(--bg);
+      color: var(--text);
+      font-family: "Segoe UI", sans-serif;
+      overflow: hidden;
+    }
+    #overlay {
+      position: fixed;
+      top: 12px;
+      left: 12px;
+      padding: 12px 14px;
+      background: rgba(21,16,15,0.82);
+      border: 1px solid rgba(198,143,23,0.35);
+      border-radius: 10px;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.35);
+      max-width: 360px;
+      line-height: 1.35;
+      backdrop-filter: blur(4px);
+    }
+    #overlay h1 {
+      margin: 0 0 6px;
+      font-size: 18px;
+      letter-spacing: 0.4px;
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+    #overlay .small {
+      font-size: 12px;
+      opacity: 0.85;
+    }
+    #legend {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 4px 10px;
+      margin-top: 8px;
+      font-size: 12px;
+    }
+    .legend-title {
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      color: var(--accent);
+      margin-top: 4px;
+    }
+    .swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--sw, #fff);
+      border: 1px solid rgba(0,0,0,0.35);
+    }
+    canvas { display: block; }
+  </style>
+</head>
+<body>
+  <div id="overlay">
+    <h1>Beehive</h1>
+    <div class="small" id="stats">Loading...</div>
+    <div class="small" id="legend"></div>
+    <div class="small">Click to toggle fast/slow time. Resize window to reset view.</div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.9.3/lib/p5.min.js"></script>
+  <script src="sketch.js"></script>
+</body>
+</html>

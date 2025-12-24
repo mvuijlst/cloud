@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pipe Game</title>
+        <script>
+            // Debug helper: open `index.html?debugListeners=1` to see where event listeners come from.
+            (function () {
+                try {
+                    const params = new URLSearchParams(location.search);
+                    if (!params.has('debugListeners')) return;
+
+                    const origAdd = EventTarget.prototype.addEventListener;
+                    const origRemove = EventTarget.prototype.removeEventListener;
+
+                    let adds = 0;
+                    const buckets = new Map();
+
+                    function bucketKey(type, stack) {
+                        const top = (stack || '').split('\n').slice(0, 6).join('\n');
+                        return type + '\n' + top;
+                    }
+
+                    EventTarget.prototype.addEventListener = function (type, listener, options) {
+                        adds++;
+                        // Sample stacks to reduce overhead
+                        if ((adds % 25) === 0) {
+                            const stack = (new Error('listener')).stack || '';
+                            const key = bucketKey(type, stack);
+                            buckets.set(key, (buckets.get(key) || 0) + 1);
+                        }
+                        return origAdd.call(this, type, listener, options);
+                    };
+
+                    EventTarget.prototype.removeEventListener = function (type, listener, options) {
+                        return origRemove.call(this, type, listener, options);
+                    };
+
+                    setInterval(() => {
+                        const top = [...buckets.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5);
+                        console.group('[debugListeners] sampled addEventListener stacks (top 5)');
+                        console.log('total addEventListener calls observed:', adds);
+                        for (const [k, v] of top) {
+                            console.log('\ncount=' + v + '\n' + k);
+                        }
+                        console.groupEnd();
+                    }, 5000);
+
+                    console.log('[debugListeners] enabled; sampling addEventListener stacks');
+                } catch (e) {
+                    // no-op
+                }
+            })();
+        </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #222;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        canvas {
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+    </style>
+</head>
+<body>
+    <script src="sketch.js"></script>
+</body>
+</html>
