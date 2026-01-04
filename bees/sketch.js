@@ -3,8 +3,8 @@
 // Zone-based hive simulation following simulation.md spec
 
 // === CONSTANTS ===
-const DAYS_PER_SEC = 0.15;
-const FAST_MULT = 3;
+const DAYS_PER_SEC = 1.0;  // 1 day per real second for faster observation
+const FAST_MULT = 5;       // Fast mode is 5x
 const FIXED_DT = 0.2;
 
 // Hexagonal grid
@@ -40,16 +40,16 @@ const EDGES = [
 // Age buckets: [0-2, 3-11, 12-18, 19-40, 41+]
 const BUCKETS = ['B0', 'B1', 'B2', 'B3', 'B4'];
 const BUCKET_WIDTHS = [3, 9, 7, 22, 999];
-const BUCKET_MORTALITY = [180, 150, 120, 60, 18]; // mean lifetime (days)
+const BUCKET_MORTALITY = [600, 500, 400, 200, 50]; // mean lifetime (days) - much longer lived
 
 // Roles
 const ROLES = ['NURSE', 'BUILDER', 'PROCESSOR', 'GUARD', 'FORAGER'];
 const ROLE_COLORS = {
-  NURSE: '#ffdf7f',
-  BUILDER: '#d4a35c',
-  PROCESSOR: '#e5b25d',
-  GUARD: '#c2812f',
-  FORAGER: '#7ec4c1'
+  NURSE: '#ff6b6b',      // Red/Pink (Brood care)
+  BUILDER: '#51cf66',    // Green (Building)
+  PROCESSOR: '#cc5de8',  // Purple (Processing)
+  GUARD: '#fcc419',      // Orange (Guarding)
+  FORAGER: '#339af0'     // Blue (Foraging)
 };
 
 // Age eligibility weights [B0, B1, B2, B3, B4]
@@ -66,12 +66,19 @@ let bees = {}; // bees[zone][bucket][role] = count (float)
 let brood = { egg: 0, larva: 0, pupa: 0 }; // counts
 let stores = { honey: 0, pollen: 0, nectar: 0 }; // units
 let builtCells = 120;
-let maxCells = 1000;
-let queen = { hunger: 0.4, layRate: 180 }; // eggs/day when fed
+let maxCells = 5000;
+let queen = { hunger: 0.4, layRate: 500 }; // eggs/day when fed - much more productive
 
 let simAccumulator = 0;
 let fastTime = false;
 let simTime = 0; // total days elapsed
+
+// Noise field for cell patterns
+let noiseSeed;
+
+// Optimization caches
+let builtHexesCache = [];
+let zoneHexesCache = {};
 
 // === INIT ===
 function setup() {
@@ -79,6 +86,7 @@ function setup() {
   textAlign(CENTER, CENTER);
   centerX = width / 2;
   centerY = height / 2;
+  noiseSeed = random(1000);
   
   // Initialize hexagonal grid
   initHexGrid();
@@ -117,19 +125,39 @@ function setup() {
 
 function initHexGrid() {
   hexGrid = [];
+  builtHexesCache = [];
+  zoneHexesCache = {};
+  for (const z of Object.keys(ZONES)) zoneHexesCache[z] = [];
   
-  // Create all potential cells
-  for (let ring = 0; ring <= maxRings; ring++) {
-    const hexes = ring === 0 ? [{q: 0, r: 0}] : hexRing(0, 0, ring);
-    for (const hex of hexes) {
-      hexGrid.push({
-        q: hex.q,
-        r: hex.r,
-        built: false,
-        type: 'empty',
-        capped: false,
-        buildProgress: 0.0
-      });
+  // Create a rectangular grid of hexes that covers the screen
+  // Estimate range based on window size and hex size
+  const cols = Math.ceil(width / (hexSize * 1.5)) + 2;
+  const rows = Math.ceil(height / (hexSize * Math.sqrt(3))) + 2;
+  
+  // Center is at (0,0) in axial coords
+  // We need to scan a large enough range of q and r
+  const range = Math.max(cols, rows);
+  
+  for (let q = -range; q <= range; q++) {
+    for (let r = -range; r <= range; r++) {
+      // Check if this hex is within the screen bounds
+      const pos = hexToPixel(q, r);
+      if (pos.x >= -hexSize && pos.x <= width + hexSize && 
+          pos.y >= -hexSize && pos.y <= height + hexSize) {
+        
+        const hex = {
+          q: q,
+          r: r,
+          built: false,
+          type: 'empty',
+          capped: false,
+          buildProgress: 0.0,
+          density: 0,
+          simZone: getHexZone(q, r),
+          roleColor: null
+        };
+        hexGrid.push(hex);
+      }
     }
   }
   
@@ -152,8 +180,35 @@ function initHexGrid() {
       hex.built = true;
       hex.buildProgress = 1.0;
       hex.type = 'brood';
+      builtHexesCache.push(hex);
+      if (zoneHexesCache[hex.simZone]) zoneHexesCache[hex.simZone].push(hex);
     }
   }
+}
+
+function getHexZone(q, r) {
+  const dist = Math.sqrt(q*q + q*r + r*r);
+  // Entrance: roughly below center
+  if (r > 2 && Math.abs(q) < r) return 'ENTRANCE'; 
+  if (dist < 5) return 'BROOD_CORE';
+  if (dist < 8) return 'BROOD_RING';
+  return 'STORES'; 
+}
+
+// Count frontier slots (unbuilt neighbors of any built cell)
+function frontierSlots() {
+  const builtSet = new Set(hexGrid.filter(h => h.built).map(h => `${h.q},${h.r}`));
+  let count = 0;
+  for (const h of hexGrid) {
+    if (h.built) continue;
+    const neighbors = getNeighbors(h.q, h.r);
+    if (neighbors.some(n => builtSet.has(`${n.q},${n.r}`))) count += 1;
+  }
+  return count;
+}
+
+function recalcBuiltCells() {
+  return builtHexesCache.length;
 }
 
 // Hex coordinate helpers
@@ -191,6 +246,7 @@ function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
   centerX = width / 2;
   centerY = height / 2;
+  initHexGrid(); // Re-initialize grid to cover new size
 }
 
 function draw() {
@@ -215,6 +271,9 @@ function mousePressed() {
 
 // === SIMULATION ===
 function updateSimulation(dtDays, dtHours) {
+  // Sync built cell count each tick so demands/build logic stays correct
+  builtCells = recalcBuiltCells();
+
   // 1. Age all bees and handle mortality
   ageBees(dtDays);
   
@@ -235,6 +294,9 @@ function updateSimulation(dtDays, dtHours) {
   
   // 7. Update hexagonal cell building and contents
   updateCellTypes(dtDays);
+
+  // Sync built cells after construction
+  builtCells = recalcBuiltCells();
   
   // 8. Process nectar → honey
   processNectar(dtDays);
@@ -276,22 +338,22 @@ function ageBees(dtDays) {
 }
 
 function updateBrood(dtDays) {
-  // Egg → Larva (3 days)
-  const eggRate = 1 - Math.exp(-dtDays / 3);
+  // Egg → Larva (2 days instead of 3)
+  const eggRate = 1 - Math.exp(-dtDays / 2);
   const hatchedEggs = brood.egg * eggRate;
   brood.egg -= hatchedEggs;
   brood.larva += hatchedEggs;
   
-  // Larva → Pupa (6 days, depends on nursing)
+  // Larva → Pupa (4 days instead of 6, with support)
   const larvaSupport = computeLarvaSupport();
-  const effectiveRate = Math.max(0.25, larvaSupport); // minimum progress
-  const larvaPupateRate = 1 - Math.exp(-dtDays / (6 / effectiveRate));
-  const pupatedLarva = brood.larva * larvaPupateRate * (larvaSupport > 0.5 ? 1 : 0.3);
+  const effectiveDevTime = 4 / Math.max(0.6, larvaSupport); // faster base, higher min support
+  const larvaPupateRate = 1 - Math.exp(-dtDays / effectiveDevTime);
+  const pupatedLarva = brood.larva * larvaPupateRate;
   brood.larva -= pupatedLarva;
   brood.pupa += pupatedLarva;
   
-  // Pupa → Adult (12 days)
-  const pupaRate = 1 - Math.exp(-dtDays / 12);
+  // Pupa → Adult (8 days instead of 12)
+  const pupaRate = 1 - Math.exp(-dtDays / 8);
   const emerged = brood.pupa * pupaRate;
   brood.pupa -= emerged;
   
@@ -301,72 +363,121 @@ function updateBrood(dtDays) {
 
 function computeLarvaSupport() {
   const nurses = countByRole('NURSE');
-  const larvaDemand = brood.larva * 0.3; // units/day
-  const nurseSupply = nurses * 0.4; // units/day per nurse
-  const pollenNeed = larvaDemand * 0.1;
-  const honeyNeed = larvaDemand * 0.1;
+  const larvaCount = Math.max(1, brood.larva);
+  const larvaDemand = larvaCount * 0.5; // reduced demand
+  const nurseSupply = nurses * 5.0; // nurses are more effective
+  const pollenNeed = larvaCount * 0.1; // less pollen needed
+  const honeyNeed = larvaCount * 0.08; // less honey needed
   
   const support = Math.min(
+    1.2, // can be over-supported
     nurseSupply / Math.max(0.1, larvaDemand),
-    stores.pollen / Math.max(0.1, pollenNeed),
-    stores.honey / Math.max(0.1, honeyNeed)
+    stores.pollen / Math.max(0.3, pollenNeed),
+    stores.honey / Math.max(0.3, honeyNeed)
   );
   
-  return Math.min(1, support);
+  return Math.max(0.7, support); // High minimum support
 }
 
 function queenLay(dtDays) {
-  const emptyBroodCells = Math.max(0, builtCells * 0.6 - brood.egg - brood.larva - brood.pupa);
+  // Calculate available brood space (60% of cells for brood)
+  const maxBroodCells = Math.max(20, builtCells * 0.6);
+  const usedBroodCells = brood.egg + brood.larva + brood.pupa;
+  const emptyBroodCells = Math.max(0, maxBroodCells - usedBroodCells);
+  
   if (emptyBroodCells <= 0) return;
+  if (queen.hunger > 2.0) return; // only stop if very hungry
   
-  if (queen.hunger > 1.2) return; // too hungry
-  
+  // Lay eggs proportional to available space and food
   const maxEggs = queen.layRate * dtDays;
   const actualEggs = Math.min(maxEggs, emptyBroodCells);
   brood.egg += actualEggs;
   
-  queen.hunger += dtDays * 0.3;
+  queen.hunger += dtDays * 0.2; // slower hunger increase
 }
 
 function computeDemands() {
   const D = {};
-  D.NURSE = brood.larva * 0.5;
-  D.BUILDER = Math.max(0, (maxCells - builtCells) * 0.01);
-  D.PROCESSOR = stores.nectar * 0.2;
-  D.FORAGER = Math.max(0, 50 - stores.honey) * 0.5;
-  D.GUARD = countByRole('FORAGER') * 0.08;
+  const currentForagers = countByRole('FORAGER');
+  const totalBees = countAllBees();
+  const honeyTarget = 500;
+  const pollenTarget = 200;
+  const frontier = frontierSlots();
+
+  // Foraging: high when stores are low, relaxed when abundant
+  const forageNeed = Math.max(0, honeyTarget - stores.honey) * 1.2;
+  const baselineForagers = totalBees * 0.15; // keep ~15% as foragers even when rich
+  D.FORAGER = Math.max(80, forageNeed, baselineForagers);
+
+  // Nursing: driven by brood
+  D.NURSE = Math.max(30, (brood.larva + brood.egg * 0.4) * 4.0);
+
+  // Processing: driven by nectar backlog and forager throughput
+  D.PROCESSOR = Math.max(15, stores.nectar * 2.0, currentForagers * 0.4);
+
+  // Builders: driven by frontier and missing cells
+  const missingCells = Math.max(0, maxCells - builtCells);
+  D.BUILDER = Math.max(20, frontier * 3.0, missingCells * 0.05);
+
+  // Guards: minimal
+  D.GUARD = Math.max(2, currentForagers * 0.02);
+
   return D;
 }
 
 function allocateRoles(demands, dtDays) {
-  // Compute target role distribution
-  const total = Object.values(demands).reduce((a, b) => a + b, 0.1);
+  // Compute target role distribution from demands
+  const totalDemand = Object.values(demands).reduce((a, b) => a + b, 1);
   const targets = {};
   for (const r of ROLES) {
-    const D = demands[r] || 0;
-    targets[r] = D / total;
+    targets[r] = (demands[r] || 0) / totalDemand;
   }
   
-  // Adjust role assignments gradually (τ = 1 day)
-  const pSwitch = 1 - Math.exp(-dtDays / 1.0);
+  // Role switching rate (slower = more stable)
+  const pSwitch = 1 - Math.exp(-dtDays / 0.5);
   
+  // For each zone and age bucket, redistribute roles toward targets
   for (const z of Object.keys(ZONES)) {
     for (const b of BUCKETS) {
+      const bucketIdx = BUCKETS.indexOf(b);
       const totalInBucket = ROLES.reduce((sum, r) => sum + bees[z][b][r], 0);
       if (totalInBucket < 0.1) continue;
       
+      // Calculate how many bees want to switch
+      const switchingPool = totalInBucket * pSwitch;
+      
+      // Calculate target counts based on eligibility
+      const eligibleTargets = {};
+      let totalEligibility = 0;
       for (const r of ROLES) {
-        const eligibility = ELIGIBILITY[r][BUCKETS.indexOf(b)];
-        const targetFrac = targets[r] * eligibility;
-        const currentFrac = bees[z][b][r] / totalInBucket;
-        const delta = (targetFrac - currentFrac) * totalInBucket * pSwitch * 0.3;
-        
-        bees[z][b][r] = Math.max(0, bees[z][b][r] + delta);
+        const eligibility = ELIGIBILITY[r][bucketIdx];
+        eligibleTargets[r] = targets[r] * eligibility;
+        totalEligibility += eligibleTargets[r];
       }
       
-      // Normalize to preserve total
+      // Normalize
+      if (totalEligibility > 0) {
+        for (const r of ROLES) {
+          eligibleTargets[r] /= totalEligibility;
+        }
+      }
+      
+      // Redistribute switching bees
+      const newCounts = {};
+      for (const r of ROLES) {
+        const keepFraction = 1 - pSwitch;
+        const targetCount = switchingPool * eligibleTargets[r];
+        newCounts[r] = bees[z][b][r] * keepFraction + targetCount;
+      }
+      
+      // Apply new counts
+      for (const r of ROLES) {
+        bees[z][b][r] = Math.max(0, newCounts[r]);
+      }
+
+      // Renormalize to preserve bucket total
       const newTotal = ROLES.reduce((sum, r) => sum + bees[z][b][r], 0);
-      if (newTotal > 0.01) {
+      if (newTotal > 0.0001) {
         for (const r of ROLES) {
           bees[z][b][r] *= totalInBucket / newTotal;
         }
@@ -404,10 +515,10 @@ function foragerCycle(dtHours) {
 
 function processNectar(dtDays) {
   const processors = countByRole('PROCESSOR');
-  const capacity = processors * 0.5 * dtDays;
+  const capacity = processors * 2.0 * dtDays; // increased processing rate
   const processed = Math.min(stores.nectar, capacity);
   stores.nectar -= processed;
-  stores.honey += processed * 0.8;
+  stores.honey += processed * 0.85; // better conversion ratio
 }
 
 function flowBees(dtHours) {
@@ -459,13 +570,13 @@ function getZoneOccupancy(zone) {
 
 function consumeStores(dtDays) {
   const totalBees = countAllBees();
-  const consumption = totalBees * 0.015 * dtDays; // honey units/bee/day
+  const consumption = totalBees * 0.003 * dtDays; // much lower consumption
   stores.honey = Math.max(0, stores.honey - consumption);
   
-  // Feed queen
-  if (stores.honey > 0.5) {
-    queen.hunger = Math.max(0, queen.hunger - dtDays * 0.4);
-    stores.honey -= 0.1 * dtDays;
+  // Feed queen generously
+  if (stores.honey > 0.2) {
+    queen.hunger = Math.max(0, queen.hunger - dtDays * 1.5); // feed queen very well
+    stores.honey -= 0.03 * dtDays; // queen eats less
   }
 }
 
@@ -493,31 +604,32 @@ function countAllBees() {
 }
 
 // === RENDERING ===
+let lastRenderUpdate = 0;
+
 function render() {
   background(25, 20, 15);
   
-  // Count built cells
-  builtCells = hexGrid.filter(h => h.built).length;
-  
-  // Update cell types based on zone populations
-  updateCellTypes();
+  // Throttle expensive updates (run every 5 frames)
+  if (frameCount % 5 === 0) {
+    updateCellRenderTypes();
+    updateBeeDensity();
+  }
   
   // Draw hexagonal cells
-  for (const hex of hexGrid) {
-    if (hex.buildProgress < 0.1) continue;
-    
+  // Optimization: Only iterate built cells cache for the main hive structure
+  // This skips the thousands of empty background cells
+  for (let i = 0; i < builtHexesCache.length; i++) {
+    const hex = builtHexesCache[i];
     const pos = hexToPixel(hex.q, hex.r);
     drawHexCell(pos.x, pos.y, hex);
   }
   
-  // Draw bees on cells
-  drawBeesOnCells();
+  // Draw candidates (construction sites) separately if needed, 
+  // but for "ruthless optimization" let's just stick to the built cache 
+  // plus maybe a quick check for active construction if we really want to see it.
+  // (Skipping unbuilt construction sites for now to save cycles, they appear when built)
   
   // UI overlay
-  fill(0, 0, 0, 200);
-  noStroke();
-  rect(10, 10, 320, 240, 8);
-  
   fill(245, 220, 160);
   textAlign(LEFT, CENTER);
   textSize(12);
@@ -552,52 +664,63 @@ function render() {
 }
 
 function drawHexCell(x, y, hex) {
-  const alpha = Math.min(255, hex.buildProgress * 255);
+  // Optimization: Simple culling
+  if (x < -hexSize || x > width + hexSize || y < -hexSize || y > height + hexSize) return;
+
+  const alpha = 255; // Built cells are always visible
   
   // Cell fill color based on type
   let fillColor;
-  if (!hex.built || hex.buildProgress < 1.0) {
-    // Partially built - show construction
-    fillColor = color(100, 90, 70, alpha * 0.4);
-  } else if (hex.type === 'brood') {
-    fillColor = hex.capped ? color(210, 180, 130, alpha) : color(245, 230, 190, alpha);
+  if (hex.type === 'brood') {
+    fillColor = hex.capped ? color(210, 180, 130) : color(245, 230, 190);
   } else if (hex.type === 'honey') {
-    fillColor = color(230, 180, 50, alpha);
+    fillColor = color(230, 180, 50);
   } else if (hex.type === 'pollen') {
-    fillColor = color(255, 200, 80, alpha);
+    fillColor = color(255, 200, 80);
   } else {
-    fillColor = color(160, 145, 115, alpha * 0.7);
+    fillColor = color(160, 145, 115);
   }
   
   // Draw hexagon
   fill(fillColor);
-  stroke(40, 35, 25, alpha * 0.8);
-  strokeWeight(hex.buildProgress < 1.0 ? 0.5 : 1);
-  
-  const scale = hex.buildProgress < 1.0 ? 0.5 + hex.buildProgress * 0.5 : 1.0;
+  stroke(40, 35, 25);
+  strokeWeight(1);
   
   beginShape();
   for (let i = 0; i < 6; i++) {
     const angle = Math.PI / 3 * i;
-    const vx = x + hexSize * scale * Math.cos(angle);
-    const vy = y + hexSize * scale * Math.sin(angle);
+    const vx = x + hexSize * Math.cos(angle);
+    const vy = y + hexSize * Math.sin(angle);
     vertex(vx, vy);
   }
   endShape();
-  
-  // Draw capping pattern
-  if (hex.capped && hex.buildProgress > 0.9) {
-    stroke(180, 150, 100, alpha * 0.6);
-    strokeWeight(0.5);
-    for (let i = 0; i < 3; i++) {
-      const angle = Math.PI / 3 * i * 2;
-      const x1 = x + hexSize * 0.6 * Math.cos(angle);
-      const y1 = y + hexSize * 0.6 * Math.sin(angle);
-      const x2 = x + hexSize * 0.6 * Math.cos(angle + Math.PI);
-      const y2 = y + hexSize * 0.6 * Math.sin(angle + Math.PI);
-      line(x1, y1, x2, y2);
-    }
+
+  // Draw bee density glow - Optimized to use ellipse instead of shape
+  if (hex.density > 0.1) {
+    const glowAlpha = Math.min(200, hex.density * 40); 
+    noStroke();
+    
+    // Create color object safely
+    let c = hex.roleColor ? color(hex.roleColor) : color(255, 230, 150);
+    c.setAlpha(glowAlpha);
+    fill(c);
+    
+    // Simple circle is much faster than 6-vertex polygon
+    ellipse(x, y, hexSize * 1.5, hexSize * 1.5);
   }
+
+  // Draw entrance marker (Red borders)
+  if (hex.simZone === 'ENTRANCE') {
+    noFill();
+    stroke(255, 50, 50, 200);
+    strokeWeight(2);
+    // Draw a simple circle for entrance instead of hex to save vertices
+    ellipse(x, y, hexSize * 1.5, hexSize * 1.5);
+  }
+  
+  // Draw capping pattern - Simplified to a single dot or line if needed, 
+  // but let's skip detailed pattern for performance if zoomed out.
+  // Keeping it simple for now.
 }
 
 function updateCellTypes(dtDays) {
@@ -606,11 +729,11 @@ function updateCellTypes(dtDays) {
   const buildersCount = countByRole('BUILDER');
   
   // Build capacity per simulation.md: cellsPerBuilderPerDay * builders * dt
-  const cellsPerBuilderPerDay = 0.4;
-  const honeyCostPerCell = 0.8; // honey units consumed per cell built
+  const cellsPerBuilderPerDay = 1.0; // faster building
+  const honeyCostPerCell = 0.3; // cheaper cells
   const buildCapacity = buildersCount * cellsPerBuilderPerDay * dtDays;
   
-  if (buildersCount > 3 && unbuilt.length > 0 && builtCells < maxCells && stores.honey > honeyCostPerCell) {
+  if (buildersCount > 0 && unbuilt.length > 0 && builtCells < maxCells && stores.honey > honeyCostPerCell) {
     // Find cells adjacent to built cells
     const candidates = unbuilt.filter(h => {
       const neighbors = getNeighbors(h.q, h.r);
@@ -619,13 +742,17 @@ function updateCellTypes(dtDays) {
         return neighbor && neighbor.built;
       });
     }).map(h => {
-      // Calculate priority score for natural growth
-      const pos = hexToPixel(h.q, h.r);
-      const centerDist = Math.sqrt(h.q * h.q + h.q * h.r + h.r * h.r);
-      
       // Prefer downward expansion (positive r), slight outward bias
-      const downwardBias = h.r > 0 ? 2.0 : 0.5;
-      const sidewaysBias = Math.abs(h.q) > Math.abs(h.r) ? 1.2 : 1.0;
+      // Use noise to make growth direction organic and patchy
+      const noiseVal = noise(h.q * 0.1 + noiseSeed, h.r * 0.1 + noiseSeed);
+      
+      // Directional bias: Downward (positive y) is roughly positive r and q
+      // Let's just use screen Y coordinate for downward bias
+      const pos = hexToPixel(h.q, h.r);
+      const relY = (pos.y - centerY) / (height/2); // -1 to 1
+      
+      const downwardBias = relY > 0 ? 1.5 : 0.8;
+      const organicFactor = noiseVal * 2.0;
       
       // Count built neighbors (prefer attaching to multiple cells)
       const neighbors = getNeighbors(h.q, h.r);
@@ -635,29 +762,31 @@ function updateCellTypes(dtDays) {
       }).length;
       
       const neighborBonus = builtNeighbors * 1.5;
-      const randomness = Math.random() * 0.8;
+      const randomness = Math.random() * 0.5;
       
       return {
         hex: h,
-        priority: downwardBias * sidewaysBias * neighborBonus + randomness
+        priority: downwardBias * organicFactor * neighborBonus + randomness
       };
     }).sort((a, b) => b.priority - a.priority);
     
     if (candidates.length > 0) {
       // Distribute build capacity across active sites
-      const activeBuildSites = Math.min(5, Math.max(2, Math.floor(buildersCount / 8)));
-      const capacityPerSite = buildCapacity / activeBuildSites;
+      const activeBuildSites = Math.min(8, Math.max(2, Math.floor(buildersCount / 6)));
+      const capacityPerSite = buildCapacity / Math.max(1, activeBuildSites);
       
       let cellsBuiltThisTick = 0;
       for (let i = 0; i < Math.min(activeBuildSites, candidates.length); i++) {
         const hex = candidates[i].hex;
-        const progressGain = capacityPerSite * (1.0 - i * 0.15); // Lower priority builds slower
+        const progressGain = capacityPerSite * (1.0 - i * 0.1); // Lower priority builds slower
         hex.buildProgress += progressGain;
         
         if (hex.buildProgress >= 1.0) {
           hex.built = true;
           hex.buildProgress = 1.0;
           cellsBuiltThisTick++;
+          builtHexesCache.push(hex);
+          if (zoneHexesCache[hex.simZone]) zoneHexesCache[hex.simZone].push(hex);
           
           // Consume honey for wax production
           stores.honey = Math.max(0, stores.honey - honeyCostPerCell);
@@ -666,36 +795,47 @@ function updateCellTypes(dtDays) {
       }
     }
   }
-  
-  // Update cell contents based on stores and brood
-  const builtHexes = hexGrid.filter(h => h.built);
-  const broodCells = Math.floor(brood.egg + brood.larva + brood.pupa);
-  const honeyCells = Math.floor(stores.honey);
-  const pollenCells = Math.floor(stores.pollen);
-  
-  // Assign types to cells (inner = brood, outer = stores)
-  let broodAssigned = 0;
-  let honeyAssigned = 0;
-  let pollenAssigned = 0;
-  
-  for (const hex of builtHexes) {
-    const distFromCenter = Math.sqrt(hex.q * hex.q + hex.q * hex.r + hex.r * hex.r);
-    
-    if (distFromCenter < 5 && broodAssigned < broodCells) {
+}
+
+function updateCellRenderTypes() {
+  if (builtHexesCache.length === 0) return;
+
+  let neededBrood = Math.floor(brood.egg + brood.larva + brood.pupa);
+  let neededHoney = Math.floor(stores.honey);
+  let neededPollen = Math.floor(stores.pollen);
+
+  // Reset all to empty first
+  for (let i = 0; i < builtHexesCache.length; i++) {
+    builtHexesCache[i].type = 'empty';
+    builtHexesCache[i].capped = false;
+  }
+
+  // Assign types based on noise and distance, ensuring needs are met
+  // This is a greedy algorithm and might not be perfect, but it's more organic
+  for (let i = 0; i < builtHexesCache.length; i++) {
+    const hex = builtHexesCache[i];
+    const dist = Math.sqrt(hex.q * hex.q + hex.q * hex.r + hex.r * hex.r);
+    const noiseVal = noise(hex.q * 0.2 + noiseSeed, hex.r * 0.2 + noiseSeed);
+
+    // Strong bias for brood in the center, stores outside
+    const broodScore = (1 - dist / maxRings) * 0.7 + noiseVal * 0.3;
+    const honeyScore = (dist / maxRings) * 0.6 + noiseVal * 0.4;
+    const pollenScore = (dist / maxRings) * 0.5 + (1 - noiseVal) * 0.5;
+
+    if (broodScore > honeyScore && broodScore > pollenScore && neededBrood > 0) {
       hex.type = 'brood';
-      hex.capped = broodAssigned < brood.pupa;
-      broodAssigned++;
-    } else if (distFromCenter >= 4 && honeyAssigned < honeyCells) {
+      // Capping logic needs to be smarter, but for now, we'll cap pupae
+      if (neededBrood <= brood.pupa) {
+        hex.capped = true;
+      }
+      neededBrood--;
+    } else if (honeyScore > pollenScore && neededHoney > 0) {
       hex.type = 'honey';
-      hex.capped = false;
-      honeyAssigned++;
-    } else if (distFromCenter >= 4 && pollenAssigned < pollenCells) {
+      hex.capped = true; // Honey is always capped
+      neededHoney--;
+    } else if (neededPollen > 0) {
       hex.type = 'pollen';
-      hex.capped = false;
-      pollenAssigned++;
-    } else {
-      hex.type = 'empty';
-      hex.capped = false;
+      neededPollen--;
     }
   }
 }
@@ -711,70 +851,51 @@ function getNeighbors(q, r) {
   ];
 }
 
-function drawBeesOnCells() {
-  // Draw bees distributed across zones
-  const totalBees = countAllBees();
-  if (totalBees === 0) return;
-  
-  // Sample bees to draw (don't draw all for performance)
-  const maxBeesToDraw = 150;
-  const drawProbability = Math.min(1, maxBeesToDraw / totalBees);
-  
-  let beesDrawn = 0;
+function updateBeeDensity() {
+  // Reset density for all built hexes
+  for (let i = 0; i < builtHexesCache.length; i++) {
+    builtHexesCache[i].density = 0;
+    builtHexesCache[i].roleColor = null;
+  }
+
+  // Calculate bees per zone and dominant role
   for (const z of Object.keys(ZONES)) {
+    let totalBees = 0;
+    let maxRoleCount = 0;
+    let dominantRole = 'FORAGER';
+
     for (const b of BUCKETS) {
       for (const r of ROLES) {
         const count = bees[z][b][r];
-        for (let i = 0; i < count; i++) {
-          if (Math.random() > drawProbability) continue;
-          if (beesDrawn >= maxBeesToDraw) break;
-          
-          // Place bee on a random cell based on zone
-          const hex = pickHexForZone(z);
-          if (hex) {
-            const pos = hexToPixel(hex.q, hex.r);
-            const jitter = 6;
-            const bx = pos.x + (Math.random() - 0.5) * jitter;
-            const by = pos.y + (Math.random() - 0.5) * jitter;
-            
-            fill(ROLE_COLORS[r]);
-            noStroke();
-            ellipse(bx, by, 3, 3);
-            beesDrawn++;
-          }
+        totalBees += count;
+        if (count > maxRoleCount) {
+          maxRoleCount = count;
+          dominantRole = r;
         }
       }
     }
-  }
-}
 
-function pickHexForZone(zoneName) {
-  const builtHexes = hexGrid.filter(h => h.built);
-  if (builtHexes.length === 0) return null;
-  
-  // Map zones to hex regions
-  if (zoneName === 'BROOD_CORE' || zoneName === 'BROOD_RING') {
-    const broodHexes = builtHexes.filter(h => {
-      const dist = Math.sqrt(h.q * h.q + h.q * h.r + h.r * h.r);
-      return dist < 5;
-    });
-    return broodHexes[Math.floor(Math.random() * broodHexes.length)];
-  } else if (zoneName === 'STORES' || zoneName === 'BUILD_FRONT') {
-    const storeHexes = builtHexes.filter(h => {
-      const dist = Math.sqrt(h.q * h.q + h.q * h.r + h.r * h.r);
-      return dist >= 4 && dist < 8;
-    });
-    return storeHexes.length > 0 ? storeHexes[Math.floor(Math.random() * storeHexes.length)] : builtHexes[Math.floor(Math.random() * builtHexes.length)];
-  } else if (zoneName === 'ENTRANCE' || zoneName === 'VESTIBULE') {
-    // Bottom entrance area
-    const entranceHexes = builtHexes.filter(h => {
-      const dist = Math.sqrt(h.q * h.q + h.q * h.r + h.r * h.r);
-      return dist >= 3 && dist < 6 && h.r > 0;
-    });
-    return entranceHexes.length > 0 ? entranceHexes[Math.floor(Math.random() * entranceHexes.length)] : builtHexes[Math.floor(Math.random() * builtHexes.length)];
-  } else {
-    // OUTSIDE, UNLOAD - outer edge
-    return builtHexes[Math.floor(Math.random() * builtHexes.length)];
+    if (totalBees <= 0) continue;
+
+    // Map Sim Zones to Visual Zones
+    let visualZone = z;
+    if (z === 'VESTIBULE' || z === 'UNLOAD') visualZone = 'ENTRANCE'; // Map these to entrance area
+    if (z === 'BUILD_FRONT') visualZone = 'STORES'; // Map build front to stores area
+
+    const targetHexes = zoneHexesCache[visualZone];
+    if (targetHexes && targetHexes.length > 0) {
+      const densityPerHex = totalBees / targetHexes.length;
+      const roleCol = ROLE_COLORS[dominantRole];
+      
+      for (let i = 0; i < targetHexes.length; i++) {
+        targetHexes[i].density += densityPerHex;
+        // Blend or set color? Simple set for now, last write wins (or maybe average?)
+        // Since we map multiple sim zones to one visual zone, we might overwrite.
+        // Let's just take the color of the zone with the most bees if we wanted to be perfect,
+        // but overwriting is fast and acceptable for "ruthless optimization".
+        targetHexes[i].roleColor = roleCol; 
+      }
+    }
   }
 }
 

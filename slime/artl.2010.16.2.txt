@@ -1,0 +1,1023 @@
+
+
+===== PAGE 1 =====
+
+Jones, J. (2010) Characteristics of pattern formation and evolution
+in approximations of physarum transport networks.Artiﬁcial life , 16
+(2). pp. 127-153. ISSN 1064-5462 Available from: http://eprints.uwe.ac.uk/15260
+We recommend you cite the published version.
+The publisher’s URL is:
+http://dx.doi.org/10.1162/artl.2010.16.2.16202
+Refereed: Yes
+3 month embargo from time of publishing before putting on Ins titutional Repos-
+itory
+Disclaimer
+UWE has obtained warranties from all depositors as to their t itle in the material
+deposited and as to their right to deposit such material.
+UWE makes no representation or warranties of commercial uti lity, title, or ﬁt-
+ness for a particular purpose or any other warranty, express or implied in respect
+of any material deposited.
+UWE makes no representation that the use of the materials wil l not infringe
+any patent, copyright, trademark or other property or propr ietary rights.
+UWE accepts no liability for any infringement of intellectu al property rights
+in any material deposited but will remove such material from public view pend-
+ing investigation in the event of an allegation of any such in fringement.
+PLEASE SCROLL DOWN FOR TEXT.
+
+===== PAGE 2 =====
+
+Characteristics of Pattern
+Formation and Evolution in
+Approximations of Physarum
+Transport Networks
+Jeff Jones*
+University of the West of England
+Keywords
+Pattern formation, transport networks,
+Physarum polycephalum, reaction-diffusion,
+emergent behavior
+Abstract Most studies of pattern formation place particular emphasis
+on its role in the development of complex multicellular body plans.
+In simpler organisms, however, pattern formation is intrinsic to growth
+and behavior. Inspired by one such organism, the true slime mold
+Physarum polycephalum, we present examples of complex emergent
+pattern formation and evolution formed by a population of simple
+particle-like agents. Using simple local behaviors based on chemotaxis,
+the mobile agent population spontaneously forms complex and dynamic
+transport networks. By adjusting simple model parameters, maps of
+characteristic patterning are obtained. Certain areas of the parameter
+mapping yield particularly complex long term behaviors, including
+the circular contraction of network lacunae and bifurcation of
+network paths to maintain network connectivity. We demonstrate the
+formation of irregular spots and labyrinthine and reticulated patterns by
+chemoattraction. Other Turing-like patterning schemes were obtained
+by using chemorepulsion behaviors, including the self-organization
+of regular periodic arrays of spots, and striped patterns. We show
+that complex pattern types can be produced without resorting to the
+hierarchical coupling of reaction-diffusion mechanisms. We also present
+network behaviors arising from simple pre-patterning cues, giving
+simple examples of how the emergent pattern formation processes
+evolve into networks with functional and quasi-physical properties
+including tensionlike effects, network minimization behavior, and repair
+to network damage. The results are interpreted in relation to classical
+theories of biological pattern formation in natural systems, and we suggest
+mechanisms by which emergent pattern formation processes may be
+used as a method for spatially represented unconventional computation.
+1 Introduction —Pattern Formation, Background,
+Mechanisms, and Modeling
+Pattern formation mechanisms play a critical role in organism development and survival, from embryonic
+development to the growth and maintenance of the organism. The central question (still, to a great ex-
+tent, unanswered) posed for all multicellular organisms is: How do the complex multicellular patterning,
+* Centre for Unconventional Computing, University of the West of England, Coldharbour Lane, Bristol, BS16 1QY, UK. E-mail: jeff.
+jones@uwe.ac.uk
+© 2010 Massachusetts Institute of Technology Artificial Life 16: 127 –153 (2010)
+
+===== PAGE 3 =====
+
+differentiation, and functional abilities of a complete organism arise from a single cell? The patterning
+completed at the end of embryonic development is manifold: Limb positioning, formation of organ sys-
+tems, completion of vascular and respiratory systems, and skin or coat patterning are just a few notable
+examples. Many pattern formation mechanisms are under genetic control— their temporal and spatial
+development apparently guided by expression of genes at critical times and locations. Other patterning
+mechanisms are thought to be under epigenetic influences, occurring spontaneously with only simple
+pre-patterning cues, or withoutany prior pre-patterning.
+The question of how spatial patterns may arise from a homogeneous initial state was initially ad-
+dressed by Turing, who considered the interactions of two hypothetical chemicals [51]. The method
+relied on the autocatalytic production of an activator chemical, which enhanced the production of a
+second chemical, which in turn inhibited the formation of the activator chemical. Critically, the inhib-
+itor diffused more quickly than the activator, and a pattern of local activation (reaction) and lateral
+inhibition (diffusion) was produced. Variations in the parameters of the differential equations describ-
+ing the interactions of the chemicals (which Turing calledmorphogens) produced instabilities in the con-
+centration profiles of the reactants. By interpreting the concentrations of the two chemicals as, for
+example, different colors, characteristic patterns of spots or stripes are formed. The reaction-diffusion
+approach has been the dominant theoretical model of pattern formation, and the mechanisms have
+been used for explanations of both gross body plan and specialized organ development [18, 28] and
+coat and skin patterns [29, 35].
+Many variations of Turingʼs original two-morphogen method have been developed in attempts to
+develop more complex patterning. These include the effects of different boundary conditions and extra
+sources and sinks of chemical stimuli [30], and the coupling of different reaction-diffusion (RD) pro-
+cesses. For example, the output of one patterning process P-A may be used as the input pattern (con-
+centration profile) for a separate process P-B. The combination of different simple patterning processes
+generates even more complex patterns [52].
+Although RD approaches are capable of producing complex patterning, there are still a number of
+questions as to whether they are actually responsible for pattern formation in living systems. The search
+for actual morphogen chemicals has yet to reveal definitive results (although there are some notable
+candidates, such as retinoic acid [34]). It is only relatively recently that Turing-like RD patterns have
+been observed in chemical systems [14, 40]. Significantly, the RD systems appear to be sensitive to
+perturbations, which cannot be the case in, for example, embryonic development.
+It is also well known that a number of other mechanisms are able to generate complex patterning.
+Mechanical models have been suggested as pattern formation mechanisms— in these systems the sub-
+strate is deformed in some way (for example by cellular traction forces) so as to provide local autocatalytic
+stimuli to attract local cells and initiate patterning [36]. Alternatively, cellular models exist that utilize
+purely chemotactic stimuli to allow cells to migrate toward concentration gradients and initiate pattern-
+ing [33, 42]. More recently, combinations of these methods have been used: the mechanochemical
+approaches [32, 48].
+Oster suggested that it is possible to classify all of the above mechanisms as lateral inhibition based.
+In his classification [39] all of the previously mentioned methods utilize the phenomena of local attrac-
+tion and long-range inhibition (LALI). Although the local activation mechanisms all utilize some form
+of autocatalytic behavior, the inhibition can take very different forms: There may be direct lateral in-
+hibition (for example, by neural inhibition), direct inhibition by a diffusing inhibitor chemical (as in
+Turing-type RD), or indirect inhibition by substrate depletion or a movement away from a local“zone
+of influence.”
+The above approaches are inspired by fine-grained chemical, substrate, and cellular interactions.
+They are most commonly modeled, however, by continuum-based mathematical models. Bonabeau
+suggested that agent-based (or“individual-based”) modeling may be more suitable for modeling those
+systems where low-level interactions produce emergent global behaviors [12]. Pattern formation mech-
+anisms in nature are usually composed of very large populations of discrete, relatively independent
+entities and can be seen in both living and nonliving systems at very different spatial and temporal scales.
+In nonliving physical systems Turing-like patterning has been observed in vertically oscillated granular
+J. Jones Pattern Formation and Evolution in Approximations of Physarum Transport Networks
+128 Artificial Life V olume 16, Number 2
+
+===== PAGE 4 =====
+
+media [9]. At larger spatial and time scales complex patterning has been observed in sorted stone ground
+in climatic regions where freeze-thaw cycles regularly occur (see [27] for a persuasive model).
+In living systems complex patterning is observed in many instances where large colonies of individ-
+uals exist, including aggregation in the cellular slime moldDictyostelium discoideum[53], growth patterns
+in bacterial colonies [8], social insect movement patterns [15], and nest structures [11]. Complex pat-
+terning continues as the size of the individual increases: Flocking patterns of birds [41], pedestrian
+movement [13], and traffic flow [20] are all well-studied examples. Some of these pattern formation
+mechanisms have certain features in common: The patterning is an emergent phenomenon, qualitatively
+different from, and not specified by, the individual behaviors. The patterns are often composed of the
+“actors”themselves [10] from the“bottom up,”and the patterns formed may be used for transport of
+substances within the organism structure [7, 23]. Finally, the patterns formed are often dynamic, adapt-
+able in response to changing environmental conditions (such as nutrient availability), and resilient to
+external damage. These examples illustrate how patterning in populations of many entities shares fea-
+tures with classical pattern formation during development, albeit on very different spatial and temporal
+scales.
+One particular organism, the true slime moldPhysarum polycephalum, exhibits a very wide repertoire of
+pattern formation behaviors used for growth, movement, food foraging, nutrient transport, hazard
+avoidance, and shape maintenance.Physarum is a unicellular, multinucleate protist organism belonging
+to the phylum Myxomycota (the true, or plasmodial, slime molds, as opposed to the Dictyosteliomycota,
+or cellular slime molds). AlthoughPhysarum has a very complex life cycle, its plasmodium stage of vege-
+tative growth exhibits the most complex and well-studied behaviors.
+The plasmodium ofPhysarum is a membrane-bound syncytium of nuclei within a cytoplasm com-
+posed of a complex gel-sol network. The gel phase is composed of a spongelike matrix of contractile
+actin and myosin fibers through which the protoplasmic sol flows. Local oscillations in the thickness of
+the plasmodium spontaneously appear with approximately 2-min duration [44]. The spatial and tem-
+poral organization of the oscillations has been shown to be extremely complex [45] and affects the
+internal movement of sol through the network by assembly and disassembly of the local actin-myosin
+structures. The protoplasm moves backward and forward within the plasmodium in a characteristic
+manner known as shuttle-streaming.
+The plasmodium is able to sense local concentration gradients, and the presence of nutrient gradients
+appears to alter the structure of external membrane areas. The softening of the outer membrane causes
+a flux of protoplasm in the general direction of the gradient in response to internal pressure changes
+caused by the local thickness oscillations (Figure 1, left). The strong coupling between membrane con-
+traction and streaming movement is caused by the incompressibility of the fluid, requiring a constant
+Figure 1 .Plasmodium growth and protoplasmic vein formation inPhysarum polycephalum. Left: illustration of protoplasmic
+tube network (vertical connections between oat flakes) and active plasmodium growth front forming the horizontal con-
+nection. Right: formation of protoplasmic tube network within the plasmodium connecting nutrient sources (oat flakes).
+(Images courtesy of Andrew Adamatzky.)
+J. Jones Pattern Formation and Evolution in Approximations of Physarum Transport Networks
+Artificial Life V olume 16, Number 2 129
+
+===== PAGE 5 =====
+
+volume— the weakening of the membrane provides an outlet for the pressure. When the plasmodium
+has located and engulfed nearby food sources, protoplasmic veins appear within the plasmodium, con-
+necting the food sources (Figure 1, right). The veins transport protoplasm among the distributed ex-
+tremes of the organism.
+The relative simplicity of the cell and the distributed nature of its control system makePhysarum a
+suitable subject for research into distributed computation substrates. In recent years there has been a
+wealth of research into its computational abilities, prompted by Nakagaki et al., who reported the
+ability ofPhysarum to solve path planning problems [38]. Subsequent research has confirmed this and
+broadened the range of abilities to spatial representations of various graph problems [3, 37, 43] and
+combinatorial optimization problems [6], to construction of logic gates [49] and logical machines [2, 5],
+and to the achievement distributed robotic control [50], robotic manipulation [4], and robotic amoebic
+movement [22].
+From a pattern formation perspective,Physarum can be interpreted as a complex mechanism of
+planar
+1 pattern formation based upon the two requirements of efficiency in foraging behavior (searching
+of a maximal area) and efficiency in nutrient transport (minimal transport distance and fault tolerance).
+The mechanisms used to fulfil these requirements are growth, movement, and area reduction. During
+the growth-and-foraging stage the plasmodium exhibits a default, broadly reticulated outward growth
+pattern— albeit one that is influenced by substrate and gradient quality [46]. Once nutrients have been
+located, the topology of the pattern is influenced by the nutrient distribution— the connectivity patterns
+(the protoplasmic tube network) evolve to achieve a compromise between minimal transport costs and
+fault tolerance. Since the plasmodium obviously cannot have any global knowledge about the initial or
+optimal topology, the network must evolve by physical forces acting on the protoplasmic transport.
+Tero et al. have suggested that protoplasmic flux through the network veins may be the physical
+basis for evolution of the transport network: Given sol flux through two paths, the shorter path will
+receive more. If there is an autocatalytic mechanism to reward veins with greater flux (by thickening/
+widening them) and to apply a cost to veins with less flux (the veins become thinner), shorter veins
+begin to predominate as the network evolves. This approach was used for the mathematical model of
+Physarum network behavior to solve path planning problems [47]. This method also concurs with the
+previously mentioned formulation of Oster for pattern formation by local activation (strengthening of
+shorter tubes) and lateral inhibition (weakening of longer ones). The starting point for the model of
+Tero et al. is a randomly connected protoplasmic tube network, surrounding a number of food sources
+(network nodes), which act as sources and sinks of flux. By beginning with a complete network, this
+method, although successful in generating impressive solutions to network problems, sidesteps the
+issue of initial network formation.
+Gunji et al. introduced a cellular automaton (CA) model that considered both plasmodial growth and
+amoeboid movement [19]. Their model placed importance on the transformation between hardness and
+softness at the membrane and the internal transport of material from the membrane, resulting in move-
+ment and network adaptation. The model was also able to approximate instances of maze path planning
+and coarse approximations of the Steiner tree problem.
+Takamatsu et al.ʼs hexagonal CA [46] is an early-stage model initially concerned with mimicking the
+growth patterns displayed under differing nutrient concentrations and substrate hardnesses. The pat-
+terns reflect experimental results well, but do not (at least at this stage— oscillatory behavior is in devel-
+opment) show morphological adaptation as the plasmodium grows. Hickey and Noriega adapted a
+classical ant colony optimization algorithm to modify a decision tree in their representation ofPhysarum
+behavior in a simple path planning problem [21]. Their algorithm (as with many implementations of ant
+algorithms) transformed the spatial representation into a graph representation and provided broadly
+similar results to path optimization byPhysarum. The growth of a plasmodium from a single node to
+create a spanning tree to nearby isolated food sources appears similar to the behavior of a neural growth
+algorithm suggested by Adamatzky [1].
+1 Approximately planar, since althoughPhysarum can grow over any surface, the plasmodium itself typically is very thin and can be treated
+as a planar sheet.
+J. Jones Pattern Formation and Evolution in Approximations of Physarum Transport Networks
+130 Artificial Life V olume 16, Number 2
+
+===== PAGE 6 =====
+
+This article adopts a synthetic multi-agent, chemotaxis-based approach to generate dynamic emer-
+gent pattern formation, inspired by the adaptive behavior ofPhysarum polycephalum. We demonstrate
+spontaneous pattern formation in which the patterns are composed of the flux of agent movement.
+We present results generated both with and without initial pre-patterning cues and explain the simple
+mechanisms that generate the complex patterns. The approach is based on cell migration and uses a
+single synthetic (in silico) chemical. The approach does not require explicit lateral inhibition, and it is not
+necessary to resort to multiple morphogen chemicals or the hierarchical coupling of different RD pro-
+cesses to achieve the wide range of patterns demonstrated. We show that emergent quasi-physical be-
+haviors are responsible for complex network evolution. The local sensory behaviors and mobility of the
+agent particles in the model described in this article suggest similarities with the ant colony optimization
+(ACO) approaches introduced by Dorigo (see [17] and [16]). It should be noted, however, that actual
+implementations of the ACO tend to abstract the spatial environment into a graph representation (as
+with Hickey and Noriegaʼs approach). Thus, in a typical implementation, there is no actual movement of
+the agents along paths— deposition is computed as a function of path length, and the graph is updated
+as ifa certain number of ants moved along the graph. We would suggest (based on evidence shown in
+Section 4 of this article) that although the graph representation lends itself more to simple algorithmic
+implementation on classical computing devices (especially with respect to memory requirements and
+scheduling), the loss of the spatial domain forfeits some of the richness of possible interactions in sys-
+tems that have actual propagation of information in the spatial domain.
+An outline of the remainder of the article is as follows. In Section 2 the multi-agent framework is
+introduced, and details of the framework scheduler, population environment, agent morphology, and
+behavioral algorithm are given. Section 3 illustrates the mechanisms and evolution of the pattern forma-
+tion process in homogeneous environments (without pre-pattern cues). Beginning with chemoattraction
+behaviors, we describe the formation of the default emergent transport networks and explain some of the
+emergent phenomena arising from the network formation. An exploration of possible patterning is
+shown, describing the effects of sensory parameter mapping and the effects of sensory coupling scale,
+population density, and diffusion gradient strength. An exploration of pattern formation based on
+chemorepulsive response to stimuli is also described, generating regularly spaced dissipative patterns.
+Section 4 illustrates the response of the patterning process to existing pre-pattern stimuli, illustrating
+how the pre-pattern cues affect the evolution of the transport networks. Two methods of network evo-
+lution are demonstrated, based on the random formation of the network condensing around the pre-
+pattern points, and on the effect of the pre-pattern nodes on a preexisting plasmodial sheet that is
+gradually reduced (shrinking) in size. The section concludes with an illustration of how the emergent
+transport networks respond to damage to them. The article concludes with a summary of the pattern
+formation results, some possible biological correlates of the patterning process, and an assessment of the
+importance of physical (rather than simply geometric) influences on the network topology. In keeping
+with some of the recent research inspired by the behaviors ofPhysarum, we suggest how the dynamic
+transport networks may be harnessed for spatially distributed unconventional computation.
+2 A Particle-Based Emergent Pattern Formation Model
+The model uses a multi-agent approach that was introduced in [24] as a means of constructing synthetic
+and bottom-up dynamical transport networks. The agentsʼ habitable environment landscape is specified
+by a two-dimensional digitized grayscale image, and its bounds are the image width and height. Specific
+grayscale values may used to denote certain features (habitable areas, obstacle boundaries, food stimuli
+sources, etc.). A layered approach is used: As well as the data landscape layer where the environment
+configuration is stored and the agents reside, other data structures, identical in size and corresponding
+to the coordinate system of the data layer, may be used (Figure 2). These separate layers are used to
+represent the projection of hazardous stimuli to the population (not described in this article) and to store
+the chemotactic stimuli that the agents both deposit and follow (thetrail layer). The majority of this re-
+port concentrates on pattern formation without any pre-patterning. Later sections illustrate the network
+J. Jones Pattern Formation and Evolution in Approximations of Physarum Transport Networks
+Artificial Life V olume 16, Number 2 131
+
+===== PAGE 7 =====
+
+behavior in response to very simple pre-patterning cues: the cues consisting of simple nodes representing
+preexisting concentration gradients. The dynamic behavior of the population ensures that the networks
+can respond to any changes in the pre-patterning cues.
+The framework is semi-continuous in its approach: Each grid cell can contain only a single agent
+and is addressed by discrete coordinates. However, the agents also maintain an internal floating point
+record of their position and direction. The floating point values are rounded to provide the nearest
+discrete grid cell location. The semi-continuous approach helps overcome the limitations of the dis-
+crete connectivity and movement imposed by the discrete architecture. The contents of each layer may
+also be subject to global environment effects such as evaporation and diffusion, depending on the
+particular modeling task. The trail data structure is subjected to a simple diffusion operator after every
+system step (a system step is defined as a sensory sampling of the environment and attempted forward
+movement for every member of the population). The diffusion operator takes the form of a pseudo-
+parallel simple mean filter in a 3 × 3 kernel that is subject to an adjustable decay value to affect chemo-
+attractant persistence.
+2.1 Agent Particle Behaviors
+The agents follow simple stimulus-response behaviors and are almost particle-like in their simplicity. A
+single agent represents a hypothetical particle ofPhysarum plasmodium gel-sol structure. When a particle
+moves, the movement can be said to represent the protoplasmic flux of sol. When a particle is not able to
+move, it can be said to represent the immobile gel matrix. The general morphology of an agent and its basic
+underlying algorithm is illustrated in Figure 3. An agent occupies a single discrete location in the environ-
+ment, corresponding to a single pixel of a digitized image. Each agent is typically initialized at a randomly
+chosen unoccupied and habitable location and with a random orientation (from 0 to 360 deg, freeing the
+agent from the restrictive architecture of the underlying discrete image). The agent receives chemotactic
+sensory stimuli from its environment (chemoattractant levels stored in the trail map) via three forward
+sensors, and the agent responds to differences in the local environment chemoattractant levels by altering
+its orientation angle by rotating left or right about its current position. Although specified in nonlinear
+algorithmic terms (
+IF-THEN statements), the particle algorithm corresponds simply to cellular behaviors
+of chemoattraction, orientation, and persistent movement. It should be noted that, in relation to typical
+agent-based models, the offset sensor distance is large (compared to the agent body size) and would nor-
+mally correspond to remote sensing behaviors. In this instance, however, the offset distance mimics the
+overlapping actin-myosin mesh of the plasmodium gel system. The offset sensor design generates signifi-
+cant sensory local coupling between the agent population (the sensory input of one agent can be strongly
+affected by the actions of nearby agents). Indeed, the strong coupling (minimum distance of 3 pixels
+Figure 2.Layered approach of coupled maps used in the framework. Areas on data map indicate pre-patterning stimuli.
+Such pre-patterning is considered only in the latter sections of this report.
+J. Jones Pattern Formation and Evolution in Approximations of Physarum Transport Networks
+132 Artificial Life V olume 16, Number 2
+
+===== PAGE 8 =====
+
+offset) is actually necessary for the complex behaviors to emerge. The cohesion of this aggregate“crowd”
+is ensured by the fact that there is mutual attraction to the stimuli deposited by the agent population. The
+population adopts autocrine chemotaxis behaviors (meaning that the agents both secrete and sense ap-
+proximations of the same chemoattractant, so the actions of the agents can also affect their behavior).
+One significant simplification with respect to the real organism is that both food sources and the changes
+in flux of internal protoplasm are represented by the same diffusing chemoattractant substance. The
+built-in lag between the agent particle movement (a simplistic approximation of actin-myosin contraction
+movement) and the production and diffusion of protoplasmic sol flux results in complex emergent
+population behaviors. The agent is forward biased, that is, only the sensors directly in front of the agentʼs
+current position are used to influence its behavior, thus ensuring a continuous dynamic.
+At each execution step of the scheduler, every agent attempts to move forward one step in the cur-
+rent direction. After every agent has attempted to move, the entire population performs its sensory
+behavior. If the movement is successful (i.e., if the next site is not occupied) the agent moves to the
+new site and deposits a constant chemoattractant value. If the movement is not successful, the agent
+remains in its current position, no chemoattractant is deposited, and a new orientation is randomly se-
+lected. Agents are selected from the population randomly in the motor and sensory stages to avoid the
+possibility of long term bias by sequential ordering. The agent both deposits to and senses from the trail
+map, resulting in an autocrine mode of stimulus/response. Note that patterning is also possible with a
+simple passive agent response— where the agent responds to chemoattractant concentration without
+affecting the chemoattractant levels. The passive approach to particle RD computing is described in
+[25], and a comparison of the active and passive approaches can be found in [26].
+Figure 3. Base agent behavioral algorithm and agent morphology. Top left: Agent motor-sensory algorithm orients agent
+toward strongest source of chemoattractant gradient and attempts to move forward in current direction. Top right: Individual
+agent structure showing central position and forward-biased offset sensors. Bottom left: Static collective of agents approxi-
+mates plasmodium actin-myosin mesh. Bottom right: Mobile stream of agents approximates sol flow within the plasmodium.
+J. Jones Pattern Formation and Evolution in Approximations of Physarum Transport Networks
+Artificial Life V olume 16, Number 2 133
+
+===== PAGE 9 =====
+
+The model contains a number of parameters that govern the multiagent framework as a whole,
+and the agent behaviors in particular, as listed in Table 1. Although there are a large number of
+parameters in the table, there are only three main agent parameters that significantly affect patterning
+(SA, RA, and SO) and two framework parameters with significant effects (%p and decayT).
+The parameter values were the same for all of the experiments documented below, except where
+noted. Two different methods were used to visualize the results. The first method simply places a dark-
+colored dot to indicate the position of each agent. Alternatively, the values in the diffusing trail map (the
+chemoattractant levels) can be used to indirectly infer the positions of the agents. The increasing trail-
+map values are shown as darker areas on the images. Images are taken at notable times during the
+evolution of the network patterns. Advantages in using the trail-map visualizations are that the diffu-
+sion boundaries of the trail networks can be seen, and the flux of trail levels can be visualized. Due to
+the complexity of the long-term behavior of the networks, the reader is also encouraged to refer to the
+supplementary video recordings, where noted, which illustrate the dynamic evolution of the system.
+The video recordings and larger example images of patterning parameterization can be found at
+http:/ /uncomp.uwe.ac.uk/jeff/pattern_formation_supplementary.htm. Video recordings are referred
+to below with names beginning“VR F”.
+3 Spontaneous Pattern Formation without Pre-pattern Cues
+Experiments were carried out using the default parameters described in Table 1. After initialization, the
+randomly distributed agent population spontaneously forms network trails; see Figure 4 and VR F4a–d.
+The spatial patterns are composed of the bidirectional flow of agents. The network forms because
+agents are attracted to the strongest local source of chemoattractant. Individual agents also secrete chemo-
+attractant when they move forward successfully. This behavior ensures that nearby agents are attracted
+to the sources of chemoattractant and a positive feedback loop is formed. The steep gradient strongly
+maintains agent flow within the boundaries, and chemoattractant levels quickly fall away from the trail
+region. Because the agents only deposit chemoattractant after a successful movement and because the
+agents have a forward-biased sensory apparatus, static clustering of agents is avoided and a dynamic net-
+work is formed.
+Table 1 .Model parameters.
+Parameter type Parameter name Typical values Description
+Framework environment Image environment 200 × 200 pixels Environment specified by grayscale image. Specific
+gray values correspond to properties of
+environment (obstacles, food sources, start
+points, exit points).
+%p 3 –15 Population as percentage of image area
+diffK 3 Diffusion kernel size
+decayT 0.1 Trail-map chemoattractant diffusion decay factor
+wProj 0.01 –0.1 Pre-pattern stimuli projection weight
+Boundary Periodic
+Diffusion and agent environmental boundary
+conditions
+Agent SA 22.5 or 45 deg FL and FR sensor angle from forward position
+RA 45 deg Agent rotation angle
+SO 9 pixels Sensor offset distance
+SW 1 pixel Sensor width
+SS 1 pixel per step Step size — how far agent moves per step
+depT 5 Chemoattractant deposition per step
+pCD 0 Probability of a random change in direction
+sMin 0 Sensitivity threshold
+J. Jones Pattern Formation and Evolution in Approximations of Physarum Transport Networks
+134 Artificial Life V olume 16, Number 2
+
+===== PAGE 10 =====
+
+The dynamic nature of the network exhibits complex emergent properties. Smaller cyclic areas of the
+network gradually contract and disappear. As the smaller cyclic areas disappear, larger lacunae predominate
+and grow as the smaller regions shrink. Occasionally, however, a bifurcation will appear in one of the net-
+work edges, and a new agent-chemoattractantsprout will branch out across the dividing space of a single
+lacuna. This growth sprout is composed of agents moving forward. The direction of growth of the new
+trail sprout is unpredictable, and when the gap is breached there is a surge of movement as the two moving
+flows are connected. This surge includes an outflow from the far edge to the moving sprout as agents
+within the trail at the far edge are attracted to the chemoattractant flow of the sprout.
+The result is a dynamic network whose shape is constantly changing but whose composite parts
+remain the same in number. For the default sensor parameters (RA 45 deg, SA 22.5 deg) the network
+never stabilizes completely (althoughtemporarily stable regimes have been observed, for example in the
+recordings VR F4e). The complexity of the network evolution is also affected by changes in network
+structure. For example, the collapse of a cyclic structure by contraction introduces a greater flux of
+agents into a different part of the network. This greater flux can affect the network flow in local areas,
+further changing the configuration. A simple relationship is thus formed: The change in network struc-
+ture (e.g., branching, closing) affects the local agent flux, which in turn affects the network structure, and
+so on. The dynamic evolution of the network with the default parameters occurs because the rotation
+angle is significantly greater than the sensor angle. The wide rotation angle places the sensors away from
+the main gradient stream. If this is coupled with random changes in direction (due to agent-agent colli-
+sions), a new bifurcation can become stabilized and reinforced by agent flow.
+When both SA and RA are 45 deg, the same initial complex network evolution is observed, but the
+bifurcation and sprouting of new trails does not persist. In this case the lacunae gradually become larger
+as the smaller cycles are closed. Eventually a simple network is formed which, when tiled, approximates
+a regular hexagonal tiling (Figure 5, VR F5a,b).
+The networks evolve without any pre-patterning of the environment, and different configurations
+appear at each run. The shape of the network is influenced by the random initial distribution of agents
+and the random initial orientation of the agents. The chemoattractant trails that emerge when the agents
+move break symmetry quickly when, for example, one area by chance accrues more chemoattractant than
+another. Once agents aggregate in trails, unoccupied areas become more devoid of chemoattractant (as
+the trails evaporate in general), further amplifying the disparity of (and attraction for) the areas. As in
+classical approaches to RD pattern formation, there is a reaction component (the deposition of chemo-
+attractant by agents and the orientation toward stronger concentration). There is also a diffusion com-
+ponent (the diffusion of the chemoattractant from the deposition sites). However, unlike classical
+Figure 4.Spontaneous formation and evolution of transport networks. Lattice 200 × 200, %p 15, RA 45, SA 22.5, SO 9.
+Trail-map patterns, images taken at 2, 22, 99, 175, 367, 512, 1740, and 4151 scheduler steps.
+J. Jones Pattern Formation and Evolution in Approximations of Physarum Transport Networks
+Artificial Life V olume 16, Number 2 135
+
+===== PAGE 11 =====
+
+morphogen-based models of Turing-type pattern formation, there is no explicit inhibition mechanism
+present. Note that without the presence of a diffusion mechanism, the patterning would be dependent
+to a large extent on the initial distribution and orientation of the agents.
+As well as the formation of the spatial patterns, the patterns appear to exhibit emergent quasi-
+mechanical behavior: a contraction effect resembling surface tension. The contraction of cyclic areas
+both increases local flow (Figure 6) and minimizes network path length, and the stable hexagonal tiling
+(RA 45, SA 45) is a self-balancing structure. The pattern is stable (although constantly turning over its
+components) because the interacting trail flows are effectively in competition with each other. The
+constantly changing network (RA 45, SA 22.5) does not reach minimal configurations as the branching
+behavior dynamically reconfigures the network— network length is sacrificed for network connectivity.
+The mass behavior of the agent population shows collective network formation. When observing
+a single agentʼs movement, however, we find that it does not follow the smooth flow that might be
+expected. The agent is hesitant and moves backward and forward as it progresses along a particular
+path. To investigate the characteristics of single-agent movement, the movement of a single particle
+was recorded in a confining environment over the course of 3,000 scheduler steps, and a character-
+istic result is shown in Figure 7.
+The movement is strongly indicative of shuttle streaming flow inPhysarum, and examples of such
+movement can be seen in the video recordings VR F6 and VR F7. The changes in direction are due
+to random deviations in path strength and agent-agent collisions. Although the emergent network
+area is only a small proportion of the total lattice area, over time the remodeling of the network (with
+branching behaviors RA 45, SA 22.5) ensures that every part of the lattice is traversed by the pop-
+ulation (Figure 8, left, and VR F8a) within 11,000 steps. By tracking the complete record of move-
+ment of a single agent in the population (on a smaller lattice for increased speed), a history of
+movement was collated. It was found that the agent traversed every possible location on the lattice
+within 475,000 scheduler steps (Figure 8, right, and VR F8b).
+3.1 Formation of Planar Structures
+It is also possible for the emergent agent networks to form uniform sheetlike structures. Figure 9
+shows the evolution of the stable RA 45, SA 45 network without periodic boundary conditions. The
+agents again coalesce into network trails, and the contraction behavior condenses the network until
+all interior space is removed and a sheetlike mass remains. This sheet configuration also exhibits
+Figure 5.Stable minimizing network approximates hexagonal tiling. Lattice 200 × 200, %p 15, RA 45, SA 45, SO 9. Trail
+map patterns, images taken at 27, 670, 2364, 4072, 13160, 16850, and 31190 steps. Final image shows approximate
+hexagonal tiling of stable state image 7 (dashed).
+J. Jones Pattern Formation and Evolution in Approximations of Physarum Transport Networks
+136 Artificial Life V olume 16, Number 2
+
+===== PAGE 12 =====
+
+unusual properties— the sheet itself forms a minimal surface shape, and ripple-like activity can be
+seen to propagate through the sheet (see VR F9). The sheet also shows relatively stable dissipative
+islands of greater trail flow. The islands reflect areas where a temporary vacancy of agents exists. The
+number and size of the islands is related to the sensor offset distance (SO) of the agents. When SO
+Figure 7. Tracking of single agent particle shows characteristic shuttle streaming movement pattern. Left: Agent particle
+population confined within narrow corridor with periodic boundary conditions. Larger circle indicates a single tracer agent
+particle. Right: Plot of agentX-coordinate positions over 4,000 scheduler steps. The movement trend to the right side is
+punctuated by oscillating direction changes, indicative of shuttle streaming.
+Figure 6. Increase of agent flux as cyclic structures close.X axis: scheduler steps;Y axis: arbitrary chemoattractant units.
+The area of the cyclic ring (inset (A) and top plot) increases in the flux of agents as the structure closes. The steep increase
+(C, D) is also partly because there are two streams in this area. There is a sudden peak (E) when the two paths merge
+completely. When the contraction is complete, the local flux level reduces (F). The area outside the cyclic structure
+maintains a relatively stable flux (inset (B) and bottom plot). At later stages, the flux is equalized (not shown) when the
+bulge in the flow is dissipated along the length of the line.
+J. Jones Pattern Formation and Evolution in Approximations of Physarum Transport Networks
+Artificial Life V olume 16, Number 2 137
+
+===== PAGE 13 =====
+
+increases, the number of vacancy islands decreases and the spacing between them increases (VR
+F9b). We suggest that the vacancy islands self-assemble based upon agent positions and orientation.
+The RA 45, SA 22.5 networks also condense when boundary conditions are fixed, but no solid
+sheetlike mass is formed: The branching activity prevents network condensation into a complete
+sheet structure (VR F9c).
+3.2 Effects of Sensory Scale and Pattern Formation
+The parameter SO (the distance between the agent position and the sensors) acts as a scaling factor.
+Smaller SO values exhibit a more fine-grained structure, while large values show wider patterns and
+coarser network paths. An example of how SO affects network formation can be seen in Figure 10
+for SO distances of 3, 9, 15, and 25 pixels.
+The parameter SO affects the scaling of the patterns because the distance from the agent location to
+the position of the sensors reflects an indirect coupling between separate agents. When SO is small, the
+agent receives sensory input from the chemical cues of only nearby agents and the coupling is weak. For
+large SO the increased distance represents a strong coupling between distant agents. The stronger cou-
+pling results in coarser patterns with correspondingly large network structures and path thicknesses. In
+general terms very small sensor offset distances (SO≈ 3 to 7) result in fine-grained network formation
+and evolution, while larger offsets result in coarse-grained networks. As the network scale increases, so
+does the speed of network evolution. The sensor scale may also affect thetype of pattern formed, due to
+interplay with population density. At high population densities, there is limited possibility of free agent
+movement (recall that agents only deposit chemoattractant when a move forward is successful), and, as
+the sensor offset scale increases, there is a shift in pattern formation from network with lacunae toward
+striped and spotted patterns (Figure 11). The shift in pattern type at high population densities and large
+Figure 8.Time taken to traverse entire lattice— population and single agent. Left: Entire population, lattice 200 × 200, %p 10,
+RA 45, SA 22.5, SO 9. Right: Single agent, lattice 100 × 100, %p 10, RA 45, SA 22.5, SO 5.
+Figure 9.Formation of sheetlike structures from emergent networks and the emergence of dissipative vacancy islands. Top
+row, left to right: network trail evolution over time: %p= 20 agent trails, RA 45, SA 45. Bottom row, left to right: network
+trails showing dissipative vacancy island patterns at SO 9, 13, 19, 23, 28, and 38.
+J. Jones Pattern Formation and Evolution in Approximations of Physarum Transport Networks
+138 Artificial Life V olume 16, Number 2
+
+===== PAGE 14 =====
+
+sensor scales is due to the fact that most agents cannot move. The pattern of spots seen below (for
+example, at %p 90 and SO 27) is actually produced by the formation of vacancy islands— small regions
+of vacant space surrounded by areas solidly packed with immobile agent particles. At low %p the pat-
+terning is associated with areas of high agent occupancy whereas at high %p the patterning is associated
+with areas of relatively low occupancy.
+3.3 Effect of Diffusion Decay and Population Size
+The pattern formation and evolution are also affected by the strength of the diffusion gradient and
+the initial number of agent particles. Space constraints prevent the illustration of the effects for every
+RA-SA combination, but Figure 12 shows the effect of increasing population size and decreasing
+diffusion gradient strength on pattern formation for the RA 45, SA 45 minimization behavior.
+Increasing the population size made the network boundaries thicker and reduced the number of
+lacunae. Increasing the diffusion decay parameter (reducing the strength of the gradient field) pro-
+duced coarser network edges. With very low decay (very strong gradients) the attraction between the
+particles was stronger and network connectivity was reduced.
+Figure 10.Effect of sensor offset distance (SO) on pattern scale and granularity. Lattice 200 × 200. For all experiments
+(%p 15, SA 45, RA 45), evolution stopped at 500 steps. Left to right: patterning produced with SO of 3, 9, 15, 25 pixels,
+particle positions shown.
+Figure 11.Interaction between population size and sensory scale. Columns: %p. Rows: sensor offset distance. Lattice 300 ×
+300, RA 45, SA 45, run for 500 steps. Trail patterns shown.
+J. Jones Pattern Formation and Evolution in Approximations of Physarum Transport Networks
+Artificial Life V olume 16, Number 2 139
+
+===== PAGE 15 =====
+
+3.4 Chemoattraction-based Pattern Formation: Parametric Exploration
+The previous results exhibit striking differences in pattern evolution by chemoattraction with only small
+changes in sensory parameters. How prevalent is complex behavior throughout the sensory parameter
+space? A systematic variation of the sensor angle (SA) and rotation angle (RA) revealed the patterns
+illustrated in Figure 13, which is a composite image constructed from results at each parameter setting.
+All experiments were run for 500 steps. Both parameters were monotonically varied from 0 to 180 deg
+in 22.5-deg increments.
+Figure 12.The effect of increasing population size and decreasing diffusion gradients on RA 45, SA 45 patterning. Columns:
+%p. Rows: diffusion decay strength. Lattice 300 × 300, SO 9, run for 500 steps. Agent particle positions shown.
+J. Jones Pattern Formation and Evolution in Approximations of Physarum Transport Networks
+140 Artificial Life V olume 16, Number 2
+
+===== PAGE 16 =====
+
+The patterns can be roughly grouped into classes based on their appearance. The patterning ranges
+from none (or incomplete patterning, especially at 0- and 180-deg SA and 0-deg RA, for obvious rea-
+sons), to partial patterning (along the RA 180-deg row), and to clear patterning in the remaining regions.
+The inner sections of the quadrant show a gradual decrease in connectivity as both RA and SA increase.
+The patterns can loosely be classed as reticular, labyrinthine, and island-like. Examples from each class
+are shown in Figure 14. Each column shows four examples from the different pattern classes.
+It should be noted that the patterns shown are only brief snapshots at a particular instant in time and
+the patterns continue to evolve. The course of the evolution may remain disordered (in the case where
+no patterning was seen), complex (as in RA 45, SA 22.5 with dynamic remodeling), minimizing (as in
+RA 45, SA 45), or a simplification of the initial patterning (see supplementary video recordings VR F14
+for examples of pattern evolution). This differs fromPhysarum, where the patterning is reduced by ad-
+hesion of the plasmodium to its substrate (although it would be fairly simple to slow the growth of the
+model over time to mimic this effect). The patterns formed correspond to changes in cohesion caused
+by differences in SA and RA. When both parameters are increased together there is a trend from retic-
+ular to labyrinthine to island-like patterns, so— in general terms— low values show higher connectivity,
+Figure 13.Patterns formed by chemoattraction on varying SA and RA from 0 to 180 deg. 500 × 500 lattice, %p 15, SO 9,
+run for 500 steps. Agent particle positions shown.
+J. Jones Pattern Formation and Evolution in Approximations of Physarum Transport Networks
+Artificial Life V olume 16, Number 2 141
+
+===== PAGE 17 =====
+
+whereas higher values result in more isolated patterns. There is also a resemblance between the pat-
+terning types in the model system and the patterning ofPhysarum in different parts of its life cycle. When
+the organism is in a nutrient-rich environment, growth is expansive and highly connected (reticular
+patterns). When nutrient concentrations are lower, growth is dendritic (labyrinthine patterns). Finally,
+in more hostile conditions (desiccated and/or exposed to light) there is a switch to isolated dense
+patterns of the sporelike sclerotium stage. It is interesting to speculate on whether nutrient availability
+affects the patterning of the organism in a similar way to the model— namely, changing the cohesion of
+the plasmodium.
+3.5 Chemorepulsion-Based Pattern Formation
+The attraction of the agents toward the strongest stimuli generated reticular, labyrinthine, and island-
+like patterning. How would the patterning differ when the agents were insteadrepelled by the chemical
+deposition that they produced? The patterning in Figure 15, illustrating the sensory parametric variation
+of SA and RA, shows the emergence of regular structures, reminiscent of classical Turing patterns.
+Figure 14.Examples of reticular, labyrinthine, island, and hybrid or incomplete patterns from the parameter space mapping.
+500 × 500 lattice, %p 15, SO 9, run for 500 steps. Agent particle positions shown. 1st column: examples of reticular patterns.
+2nd column: examples of labyrinthine patterns. 3rd column: examples of island patterns. 4th column: examples of hybrid or
+incomplete patterning.
+J. Jones Pattern Formation and Evolution in Approximations of Physarum Transport Networks
+142 Artificial Life V olume 16, Number 2
+
+===== PAGE 18 =====
+
+The algorithm for chemorepulsive patterning is conceptually the exact opposite of the algorithm
+specified in Figure 3. Instead or orienting toward the strongest source of chemoattractant, the
+agent orients itself away from the source. For some parameter settings (e.g., RA 45, SA 45) the
+formation or regularly spaced periodic structures is observed. The regular spacing of the structures
+is caused by agents attempting to move away from the source of the chemoattractant that they are
+depositing. The evolution of the structures is complex and highlighted in more detail in Figure 16,
+top row.
+The circular (approximately honeycomb tiling) domains initially emerge as tight circular flows of
+agents. Typically a circular flow is surrounded by six weaker regions, conceptually similar to the
+layout of the cartridge chambers in a revolver-type pistol. The concentration of agents from the
+inner circle is gradually distributed to the outer chambers as the flow of agents is balanced. Over
+a longer time period, the stable domains begin to exert a larger influence and the regular patterning is
+slowly enforced (also see video recordings VR F16a). Similar behaviors are observed for the emer-
+gence of regular striped domains (Figure 16, bottom row). Initially stripes formed in a number of
+different directions, but one particular direction begins to predominate, transforming neighboring
+Figure 15.Patterns with chemorepulsion behaviors formed by varying SA and RA from 0 to 180 deg. 300 × 300 lattice,
+%p 15, SO 19, run for 500 steps. Agent trails shown.
+J. Jones Pattern Formation and Evolution in Approximations of Physarum Transport Networks
+Artificial Life V olume 16, Number 2 143
+
+===== PAGE 19 =====
+
+striped regions to the dominant orientation, and ultimately resulting in a regularly distributed striped
+field (VR F16b, VR F16c).
+4 Pattern Formation with Pre-patterning Stimuli
+Since it is possible to generate complex patterns without preexisting cues, the role of pre-patterning
+stimuli should be to guide or modify, in some way, the underlying pattern formation process. Results
+of the response to pre-patterning cues are presented below. The preexisting cues are represented by
+sources of chemoattractant. The exact location of the source is represented by pixel locations in the
+agent environment lattice. The strength of the stimulus is related to the pixel intensity of the stimulus. At
+each scheduler step locations that are marked by stimulus pixels were projected to the chemoattractant
+layer (the layer in which the agent particles deposit and sense their environment). The projection
+strength can be modified by specifying aweighting factor (stimulus value × weight) where the weight
+is typically within the range 0.01 to 0.1 (depending on the area of the stimulus source). The projected
+pre-pattern stimuli are subject to the same diffusion process that applies to the agent-produced chemi-
+cal. The weighting of the pre-pattern stimuli affects both the steepness and the area of the local con-
+centration gradient (Figure 17).
+An example of the effect of simple pre-pattern stimuli is shown in Figure 18. When initialized with a
+small population size, the network initially emerges in much the same way as without pre-pattern cues.
+The network soon condenses on the strong chemotaxis stimuli presented by the two stimuli points.
+Using these points as an anchor, the network evolves until redundant paths are removed and the
+shortest path is left (VR F18). When the number of stimulus sources is increased, the network evolu-
+tion exhibits minimization behavior characteristic of minimum Steiner tree formation (for a given set of
+points, the Steiner tree represents the shortest amount of connecting material when all points are con-
+nected). Network evolution under the influence of pre-pattern stimuli appears to exhibit quasi-physical
+surface tension effects. This is an emergent phenomenon, which is clearly not specified by the particle
+algorithm (given in Figure 3). The surface tension effects resemble those seen in soap films and appear
+to follow Plateauʼs laws (meeting paths preferentially connect at three-way nodes and with 120-deg
+angles). In fact the network evolution around pre-patterning stimuli appears to correspond well with
+recent experimental network evolution using lipid nanotubes [31]. The final Steiner tree is formed when
+redundant network paths are shortened and closed by the emergent surface tension effects (Figure 19).
+The video recordings in VR F19 illustrate that the network converges on the final tree shape, despite
+often following very different dynamic graph trajectories.
+Figure 16. Evolution to regular periodic spacing in repulsive agents. Top row: 200 × 200 lattice, %p 20, RA 45, SA 45,
+SO 40. Individual dark flecks represent agent density. Bottom row: 200 × 200 lattice %p 20, RA 67.5, SA 112.5, SO 13.
+Darkness corresponds to chemoattractant values.
+J. Jones Pattern Formation and Evolution in Approximations of Physarum Transport Networks
+144 Artificial Life V olume 16, Number 2
+
+===== PAGE 20 =====
+
+4.1 Effect of Modifying Pre-pattern Stimuli Weights
+The small agent population sizes used in the above examples can result in instances where cycles
+cannot be closed due to the arrangement of the stimulus points. This may be desirable when the
+patterning aim is to maintain branching connectivity (for example, in vascular or alveolar connectiv-
+ity). By reducing the weight of the pre-pattern stimuli, the stimulus nodes exert less of an influence
+on the agent particles, due to the smaller gradients and reduced area of influence. Subsequently the
+network is less restricted in its evolution. Figure 20 (VR F20) shows a network whose evolution has
+been stopped by a particular ringlike configuration of points. The arrangement of stimulus points
+(top row, far right) coincides with the shape of the cyclic area, and the contraction of the cycle does
+Figure 18.Pattern formation and evolution under the influence of pre-patterning cues. 200 × 200 lattice, %p 2, RA 45, SA 45,
+SO 9. Pre-pattern projection weighting: 0.01. Top left: Environment shows pre-pattern cues (dark spots), initial agent posi-
+tions (small gray flecks), and boundary of the environment (uniform gray). Remaining images (left to right): Evolution of
+network formation (agent trails shown) as the network becomes“snagged.”Minimization of the network continues until
+the shortest path between the stimuli remains.
+Figure 17.Visualization of the effect of pre-patterning stimuli and the effect of stimuli weighting. Left to right: Chemoattractant
+levels of a circular sheet of agents with pre-pattern stimuli cues arranged as the four corners of a square; cross-section plot
+(indicated by arrow); 3D interpretation of left image. Pre-pattern projection weighting: top row, 0.06, bottom row, 0.01.
+J. Jones Pattern Formation and Evolution in Approximations of Physarum Transport Networks
+Artificial Life V olume 16, Number 2 145
+
+===== PAGE 21 =====
+
+not complete, because the attraction of the stimuli cancels out the contraction force. By reducing the
+weighting of the pre-pattern stimuli, their influence is reduced and the cycle is closed. The effect of
+t h ew e i g h tr e d u c t i o na p p e a r st ob ealoosening of the tension in the network. The enclosed shape
+(bottom row, middle picture) shows a minimal area enclosing all of the points. By randomly removing
+agents from the environment it is possible to mimic, in a very simple way, the effects of cellular apop-
+tosis. The network dynamically responds to a reduction in the number of its constituent parts by
+maintaining minimal connections to the pre-pattern nodes. Finally, strongly increasing the weighting
+Figure 19.Approximation of Steiner minimum trees by evolving network in response to regular pre-pattern cues. Lattice
+200 × 200, RA 45, SA 45, SO 9, %p 2 (except bottom row, %p 1.25). Pre-pattern projection weighting: 0.01. Left: agent
+particle positions. Remaining columns: chemoattractant pre-pattern stimuli and trail patterns.
+Figure 20.Effects of reducing and increasing pre-pattern stimuli weights. Lattice 200 × 200, RA 45, SA 45, %p 5 (2000 agents),
+SO 9. Pre-pattern weighting: 0.05. Trail patterns shown. Top row, 1–5: Condensation of pattern around points. Cyclic layout
+of points prevents closure (5). Bottom row, 6–10: Reducing stimulus strength to 0.01 allows closure (6–8). Randomly remov-
+ing agents shrinks pattern (∼600 agents remaining). 9: Increase of pre-pattern stimulus strength to 0.5 (tightening) removes
+Steiner nodes, forming the minimum spanning tree (10). Note that the final image shows agent particle positions, due to the
+large difference between pre-pattern concentration and trail concentration.
+J. Jones Pattern Formation and Evolution in Approximations of Physarum Transport Networks
+146 Artificial Life V olume 16, Number 2
+
+===== PAGE 22 =====
+
+of the pre-pattern nodes has the effect oftightening the network (bottom row, far right). The agents
+are much more strongly influenced by the pre-pattern stimuli, and the network nodes approximating
+Steiner points are removed, the network forming the minimum spanning tree structure (bottom row,
+final image; the agent positions are indicated, as the chemical trails cannot be directly visualized due to
+the difference in strength of the stimulus and network trail values).
+4.2 Deformation of Pre-existing Sheet Structure by Plasmodial Shrinkage
+The previous example shows that as the number of pre-pattern stimuli increases, there is an increased
+likelihood that the network connectivity will be affected by initial configuration of the agents. Cyclic
+areas are less likely to be closed, and the network maintains high connectivity at the expense of network
+overall length. Instead of seeding and condensing a network around the stimulus points, it is possible to
+use the stimuli to deform a pre-existing sheet of cells, such as those formed in Figure 9. The approach
+used is an approximation of the behavior of thePhysarum plasmodium, which, after initial coverage of
+the environment, shrinks to form networks of transport veins connecting the food sources. The plas-
+modial shrinkage method populates the environment with a very large number of agent particles (%p=
+50 in a 300 × 300 lattice: 45,000 agents) to ensure that the network forms a solid sheet structure. As the
+experiment progresses, agent particles, chosen at random, are removed from the environment. Agents
+are never readmitted to the environment once removed. The probability of agent removal was set to
+0.00025 for each agent at every scheduler step. At early stages of the experiment (when the population
+was high), the number of agents removed is relatively high. As the population size decreased, so did the
+number of agents removed.
+The results shown in Figure 21 compare the filamentous condensation approach (with low %p= 5)
+with the plasmodial shrinkage approach. The middle row shows three separate results from the conden-
+sation approach. The network patterns are similar despite following very different dynamic evolution
+Figure 21.Use of plasmodial sheet deformation method provides identical convergence and more regular results. Lattice
+300 × 300, RA 45, SA 45, SO 9, %p 5 (condensation method), %p 50 (plasmodial shrinkage method). Trail patterns
+shown. Top row: Evolution of one run of the sheet deformation method— the network automatically responds and adapts
+to a reduction in constituent parts. Middle row: Three separate results from network condensation methods— differences
+are seen in network structure. Bottom row: Three separate results from sheet deformation method— network structure
+is identical.
+J. Jones Pattern Formation and Evolution in Approximations of Physarum Transport Networks
+Artificial Life V olume 16, Number 2 147
+
+===== PAGE 23 =====
+
+trajectories (see recording VR F21a). There are differences in the network structure, however, notably
+toward the left side and the middle parts of the networks. The top row shows snapshots from the evo-
+lution of the plasmodial shrinkage approach. As the agent particles are randomly removed, the sheet
+dynamically deforms and reconfigures itself, influenced by the strong gradients of the pre-pattern stimuli
+(corresponding toPhysarum food sources). The relatively slow rate of particle removal ensures that the
+number of agents in the sheet is uniformly distributed and that particle flux can adapt in time to the
+changing environment. Faster rates of removal result in the spontaneous formation of cyclic areas—
+the sheet deformation is unbalanced, resulting in atearing of the sheet and holes being formed. The sheet
+maintains a minimal area as it shrinks, and the final results (bottom row, from three separate experiments)
+show identical network configurations. Further examination of the dynamic evolution of the plasmodial
+sheet for each separate experiment (VR F21b,c,d) shows an identical evolution pattern.
+4.3 Pattern Repair in Response to External Damage
+The previous examples of pre-patterning stimuli use the cues to guide the patterning process. The auto-
+matic reconfiguration of the network in response to a gradual removal of network components suggests
+methods to investigate how pattern formation mechanisms adapt to changes in their environment. Most
+investigations into pattern formation concentrate on the initial pattern formation process where struc-
+ture is built from the constituent parts (for example, during embryogenesis) and regular stable patterns
+are formed. The gradual removal of agent particles resembles apoptotic reshaping of initial patterning.
+Other mechanisms that affect patterning are not as gentle as apoptotic re-patterning— many pattern
+formation processes also occur in the repair of damage to bodily structures, for example in wound
+healing. Experiments were carried out to assess the effect of damage to the established patterns formed
+by chemorepulsion- and chemoattraction-based patterning. A synthetic wound was created by the in-
+stantaneous removal of agents within a square region. The agents that were removed were replaced at
+random locations in the undamaged area to maintain the same population size. During the agent re-
+placement period no agents were allowed to cross the wound boundary. When the number of agents
+was the same as before the damage was inflicted, the agents were allowed to migrate into the wound
+area. Figure 22 shows the behavior of chemorepulsion agents during the initial patterning process and in
+response to damage infliction. The figure shows the uniform flux of agents into the wound area and the
+closure of the wound. The initial pattern is reestablished under the influence of the undamaged areas
+surrounding the wound site. The final healed pattern is identical to the pattern before the damage was
+inflicted (VR F22).
+Figure 22.Damage to uniform pattern is repaired to regenerate original pattern in chemorepulsion-based patterning. Lattice
+300 × 300, RA 45, SA 45, SO 27, %p 10. Trail patterns shown. Top row: initial pattern formation, regular hexagonal pattern,
+damage to central area, and migration of agents toward the wound area (50, 2650, 2800, 2950, 3000 steps). Bottom row:
+Completion of migration closes the damaged area (1–2): Reorganization of the wound area reestablishes the initial pattern
+(3050, 3075, 3100, 3200, 3350 steps).
+J. Jones Pattern Formation and Evolution in Approximations of Physarum Transport Networks
+148 Artificial Life V olume 16, Number 2
+
+===== PAGE 24 =====
+
+The same approach was used to investigate the response of chemoattraction-based agents to damage
+(Figure 23). A population of agents was used to generate an initial dynamic reticular pattern before the
+square wound area was inflicted. The agents removed from the damaged area were seeded at random
+positions outside the damaged area to maintain the same number of particles. The agents were then
+allowed access to the wound area. However, instead of the uniform flux of agents into the wound area
+shown by the chemorepulsion approach, the agents began a gradual insertion of branchlike processes
+into the wound margin. The interaction between distant processes gradually spanned the wound area,
+and the area was then covered by branching from this initial connectivity. The reticular pattern was
+reestablished, but the patterning was different from the initial configuration before the damage was
+inflicted (VR F23).
+5 Conclusions and Scope for Further Work
+We have presented a particle-based approach to complex pattern formation and evolution by emergent
+transport networks inspired by the behaviors ofPhysarum polycephalum— an organism whose very exis-
+tence is based on mobile pattern formation and pattern evolution. The results presented in this article
+are in the spirit of chemotaxis-based cell migration approaches to pattern formation. Unlike previous
+approaches, however, the patterns formed by this approach are composed of dynamic particle flux. This
+particle-based approach utilizes extremely simple behaviors based on movement influenced by a for-
+ward sensory bias and simple chemotaxis (chemoattraction and chemorepulsion). The local activation
+mechanism is generated by the migration of agent particles toward (or away from) local gradients of
+chemoattraction. The diffusion mechanism is based upon simple diffusion of chemoattractant, whose
+depletion affects the region of sensory influence of the agent particles.
+By modifying the sensory parameters a wide variety of chemoattraction-based complex patterning
+was observed, including spotted, striped, labyrinthine, and reticular patterns. The patterns also exhibited
+sensitivity to both diffusion (affecting aggregation strength) and population size (affecting patterning by
+diminished local activation at small %p, and reduced movement at high %p). The scale of the pattern
+formation processes (size, network path width, and granularity) was also affected by the sensory cou-
+pling distance of each agent.
+Figure 23. Damage to reticular network is repaired by chemoattraction-based patterning. Lattice 300 × 300, RA 45,
+SA 22.5, SO 3, %p 10. Trail patterns shown. Top row: initial pattern formation, reticular network, damage to central
+area, and insertion of network processes into the wound area (0, 350, 840, 980 steps). Bottom row: Network pro-
+cesses gradually span the damaged area and branching structures emerge to cover the damaged area (1680, 3150, 4900,
+12600 steps).
+J. Jones Pattern Formation and Evolution in Approximations of Physarum Transport Networks
+Artificial Life V olume 16, Number 2 149
+
+===== PAGE 25 =====
+
+The flux of agents corresponded to the characteristic shuttle streaming movement seen inPhysarum
+gel-sol interactions. The complexity of the emergent patterning was due to the patterns actually being
+composed of the flux of agent particles— even apparently stable patterns were composed of the flux of
+highly mobile components. The dynamic nature of the pattern formation process resulted in complex
+quasimechanical emergent behaviors in the patterning. These behaviors were characterized by bifurca-
+tion of network patterns in response to random instabilities in network path flux, coupled with the
+merging of network flows, generating highly dynamic network patterns. Another characteristic pattern
+was the closure of cyclic network structures by an apparent tension mechanism (caused by the local
+increase in network flux when following shorter paths). The movement of particles altered the struc-
+ture of the network, in turn affecting the movement of agents in a complex cycle of interactions.
+Using an approach based on chemorepulsion, characteristic Turing-like dissipative patterns of regular
+spotted and striped arrays were generated. These patterns also exhibited complex evolution— areas of
+initial patterning propagated to nearby areas in competition with other local patterns. Ultimately, one
+particular area of patterning predominated and covered the entire area with a regular (although dynamic)
+pattern.
+The complex pattern formation was coupled to preexisting pattern stimuli, and network minimiza-
+tion behaviors were observed when the particle population condensed in networks surrounding the
+stimuli points. Similar network configurations converged from very different initial distributions. By
+adjusting the strength of the pre-pattern stimuli (tightening and loosening ), the network configuration was
+changed from a Steiner tree approximation to a minimum spanning tree approximation. By utilizing a
+large population of particles a synthetic plasmodium-like sheet was generated, which automatically re-
+configured itself in response to removal of its components— resulting in repeatable network minimization.
+Finally, examples of how the pattern formation mechanisms responded to damage to the patterns
+were demonstrated. Although mechanically and chemically very simple in comparison with the com-
+plex cascade of interactions in in-vivo wound healing, it was shown that chemorepulsion-based behav-
+iors were able to repair damage by a closing of the wound area and reestablish the original patterning.
+Chemoattraction-based patterns were able to repair the damaged areas by interdigitating migration into
+the wound area, gradually reestablishing the network, although without recovering the original pattern.
+With respect to biological pattern formation, the results show that complex patterning can be achieved
+using a cell migration approach and only a single chemoattractant chemical. The recent demonstration
+that human umbilical vein endothelial cells can spontaneously self-assemble into complex vascular
+network patterns when placed on a nutrient substrate provides experimental support for the role of
+chemotaxis in in-vivo pattern formation [42]. Another biologically useful property of the agent-based
+pattern formation is the functional properties of the pattern mechanisms— the patterns reflect desirable
+physical properties such as high connectivity in reticular patterns (which is essential in vascular networks
+to ensure adequate perfusion to body tissues) and minimal path costs shown in the evolved contracting
+patterns (which is essential for efficient transport of nutrients). The emergent functionality is as a result of
+the quasi-physical influences on the network evolution. The geometry of the pre-pattern cues (for ex-
+ample, the distances and angles between the stimulus points) affects the network evolution indirectly
+in more subtle ways than simple metrics of distance or angle might initially suggest.
+Further work could be carried out to extend the pattern formation process into three dimensions to
+assess the quality and the quasi-physical properties of patterning. It should also be noted that the very
+simple sensory and movement behaviors of the agents described herein occupy only a tiny subset of
+possible agent morphologies and behaviors. It would be very surprising if the patterns formed with
+other agent morphologies and behaviors did not prove as complex as those described here. These
+results were inspired by the behaviors ofPhysarum, stimulated by recent research using the organism
+as an unconventional computing substrate. We have shown that is possible to usePhysarum-like pattern
+formation and evolution to provide solutions to computational problems whose problem definition
+and solution may be represented as spatial patterns.Physarum has a number of advantages over other
+unconventional computing substrates: it is inexpensive, fault tolerant, and relatively simple to culture
+and observe. Its only disadvantages are that it is often rather unpredictable and difficult to control, and
+has slow growth and movement (compared to classical computing devices). We suggest that it might
+J. Jones Pattern Formation and Evolution in Approximations of Physarum Transport Networks
+150 Artificial Life V olume 16, Number 2
+
+===== PAGE 26 =====
+
+be possible to develop synthetic materials, using simple chemotaxis and migration such as described
+here, which would overcome some of the few limitations of using the real organism.
+Acknowledgments
+The author acknowledges the support of the Leverhulme Trust for a research fellowship under the
+project: F/00577/1 “Mould Intelligence— Designing Biological Amorphous Robots”(principal in-
+vestigator Andrew Adamatzky).
+References
+1. Adamatzky, A. (1991). Neural algorithm for constructing minimum spanning tree of a finite planar set.
+Neural Networks World, 6, 335–339.
+2. Adamatzky, A. (2007).Physarum machine: Implementation of a Kolmogorov-Uspensky machine on a
+biological substrate. Parallel Processing Letters, 17(4), 455–467.
+3. Adamatzky, A. (2008). Growing spanning trees in plasmodium machines.Kybernetes, 37(2), 258–264.
+4. Adamatzky, A., & Jones, J. (2008). TowardsPhysarum robots: Computing and manipulating on water
+surface. Journal of Bionic Engineering, 5(4), 348–357.
+5. Adamatzky, A., & Jones, J. (2009). Programmable reconfiguration ofPhysarum machines. Natural
+Computing, DOI: 10.1007/s11047-009-9146-8.
+6. Aono, M., & Hara, M. (2007). Amoeba-based nonequilibrium neurocomputer utilizing fluctuations and
+instability. InLecture notes in computer science, vol. 4618, p. 41.
+7. Bebber, D., Hynes, J., Darrah, P., Boddy, L., & Fricker, M. (2007). Biological solutions to transport
+network design. Proceedings of the Royal Society B: Biological Sciences, 274(1623), 2307–2315.
+8. Ben-Jacob, E. (2003). Bacterial self-organization: Co-enhancement of complexification and adaptability
+in a dynamic environment.Philosophical Transactions: Mathematical, Physical and Engineering Sciences, 361(1807),
+1283–1312.
+9. Bizon, C., Shattuck, M., Swift, J., McCormick, W., & Swinney, H. (1998). Patterns in 3D vertically
+oscillated granular layers: Simulation and experiment.Physical Review Letters, 80(1), 57–60.
+10. Bonabeau, E. (1997). From classical models of morphogenesis to agent-based models of pattern
+formation. Artificial Life, 3(3), 191–211.
+11. Bonabeau, E. (1998). A model for the emergence of pillars, walls and royal chambers in termite nests.
+Philosophical Transactions: Biological Sciences, 353(1375), 1561–1576.
+12. Bonabeau, E. (2002). Agent-based modeling: Methods and techniques for simulating human systems.
+Proceedings of the National Academy of Sciences of the U.S.A., 99(3), 7280–7287.
+13. Burstedde, C., Klauck, K., Schadschneider, A., & Zittartz, J. (2001). Simulation of pedestrian dynamics
+using a two-dimensional cellular automaton.Physica A: Statistical Mechanics and its Applications, 295(3–4),
+507–525.
+14. De Kepper, P., Boissonade, J., & Epstein, I. (1990). Chlorite-iodide reaction: A versatile system for the
+study of nonlinear dynamic behavior.The Journal of Physical Chemistry, 94(17), 6525–6536.
+15. Deneubourg, J., Aron, S., Goss, S., & Pasteels, J. (1990). The self-organizing exploratory pattern of the
+Argentine ant. Journal of Insect Behavior, 3(2), 159–168.
+16. Dorigo, M., Bonabeau, E., & Theraulaz, G. (2000). Ant algorithms and stigmergy.Future Generation
+Computer Systems, 16(8), 851–871.
+17. Dorigo, M., & Gambardella, L. M. (1997). Ant colonies for the travelling salesman problem.BioSystems,
+43(2), 73–81.
+18. Gierer, A., & Meinhardt, H. (1972). A theory of biological pattern formation.Biological Cybernetics, 12(1),
+30–39.
+19. Gunji, Y . P., Shirakawa, T., Niizato, T., & Haruna, T. (2008). Minimal model of a cell connecting
+amoebic motion and adaptive transport networks.Journal of Theoretical Biology, 253(4), 659–667.
+20. Helbing, D. (2001). Traffic and related self-driven many-particle systems.Reviews of Modern Physics,
+73(4), 1067–1141.
+J. Jones Pattern Formation and Evolution in Approximations of Physarum Transport Networks
+Artificial Life V olume 16, Number 2 151
+
+===== PAGE 27 =====
+
+21. Hickey, D., & Noriega, L. (2008). Relationship between structure and information processing in
+Physarum polycephalum. International Journal of Modelling, Identification and Control, 4(4), 348–356.
+22. Ishiguro, A., Shimizu, M., & Kawakatsu, T. (2006). A modular robot that exhibits amoebic locomotion.
+Robotics and Autonomous Systems, 54, 641–650.
+23. Jarrett, T., Ashton, D., Fricker, M., & Johnson, N. (2006). Interplay between function and structure in
+complex networks. Physical Review E, 74(2), 26116.
+24. Jones, J. (2010). The emergence and dynamical evolution of complex transport networks from
+simple low-level behaviours.International Journal of Unconventional Computing, 6(2), 125–144.
+25. Jones, J. (2008). An emergent pattern formation approach to dynamic spatial problems via quantitative
+front propagation and particle chemotaxis.International Journal of Unconventional Computing, 4(4), 1–34.
+26. Jones, J. (2009). Passive vs active approaches in particle approximations of reaction-diffusion
+computing. International Journal of Nanotechnology and Molecular Computation, 1(3), 37–63.
+27. Kessler, M., & Werner, B. (2003). Self-organization of sorted patterned ground.Science, 299(5605),
+380–383.
+28. Koch, A., & Meinhardt, H. (1994). Biological pattern formation: From basic mechanisms to complex
+structures. Reviews of Modern Physics, 66(4), 1481–1507.
+29. Liaw, S., Yang, C., Liu, R., & Hong, J. (2001). Turing model for the patterns of lady beetles.Physical
+Review E, 64(4), 41909.
+30. Liu, R., Liaw, S., & Maini, P. (2006). Two-stage Turing model for generating pigment patterns on the
+leopard and the jaguar.Physical Review E, 74(1), 11914.
+31. Lobovkina, T., Dommersnes, P. G., Tiourine, S., Joanny, J. F., & Orwar, O. (2008). Shape optimization
+in lipid nanotube networks.The European Physical Journal E— Soft Matter, 26(3), 295–300.
+32. Manoussaki, D. (2003). A mechanochemical model of angiogenesis and vasculogenesis.Mathematical
+Modelling and Numerical Analysis, 37(4), 581–599.
+33. Merks, R., & Glazier, J. (2006). Dynamic mechanisms of blood vessel growth.Nonlinearity, 19(1), 1–10.
+34. Morriss-Kay, G., & Sokolova, N. (1996). Embryonic development and pattern formation.The F ASEB
+Journal, 10(9), 961–968.
+35. Murray, J. (1988). How the leopard gets its spots.Scientific American, 258(3), 80–87.
+36. Murray, J., & Oster, G. (1984). Cell traction models for generating pattern and form in morphogenesis.
+Journal of Mathematical Biology, 19(3), 265–279.
+37. Nakagaki, T., Yamada, H., & Hara, M. (2004). Smart network solutions in an amoeboid organism.
+Biophysical Chemistry, 107(1), 1–5.
+38. Nakagaki, T., Yamada, H., & Toth, A. (2000). Maze-solving by an amoeboid organism.Nature, 407,4 7 0 .
+39. Oster, G. (1988). Lateral inhibition models of developmental processes.Mathematical Biosciences, 90,
+265–286.
+40. Ouyang, Q., & Swinney, H. (1991). Transition from a uniform state to hexagonal and striped Turing
+patterns. Nature, 352(6336), 610–612.
+41. Reynolds, C. (1987). Flocks, herds and schools: A distributed behavioral model.ACM SIGGRAPH
+Computer Graphics, 21(4), 25–34.
+42. Serini, G., Ambrosi, D., Giraudo, E., Gamba, A., Preziosi, L., & Bussolino, F. (2003). Modeling the
+early stages of vascular network assembly.The EMBO Journal, 22, 1771–1779.
+43. Shirakawa, T., Adamatzky, A., Gunji, Y ., & Miyake, Y . (in press). On simultaneous construction of V oronoi
+diagram and Delaunay triangulation byPhysarum polycephalum. International Journal of Bifurcation and Chaos.
+44. Takagi, S., & Ueda, T. (2007). Emergence and transitions of dynamic patterns of thickness oscillation
+of the plasmodium of the true slime moldPhysarum polycephalum. Physica D: Nonlinear Phenomena, 237(3),
+420–427.
+45. Takamatsu, A. (2006). Spontaneous switching among multiple spatio-temporal patterns in three-oscillator
+systems constructed with oscillatory cells of true slime mold.Physica D: Nonlinear Phenomena, 223(2),
+180–188.
+J. Jones Pattern Formation and Evolution in Approximations of Physarum Transport Networks
+152 Artificial Life V olume 16, Number 2
+
+===== PAGE 28 =====
+
+46. Takamatsu, A., Takaba, E., & Takizawa, G. (2009). Environment-dependent morphology in plasmodium
+of true slime moldPhysarum polycephalumand a network growth model.Journal of Theoretical Biology, 256(1),
+29–44.
+47. Tero, A., Kobayashi, R., & Nakagaki, T. (2007). A mathematical model for adaptive transport network
+in path finding by true slime mold. Journal of Theoretical Biology, 244(4), 553–564.
+48. Tosin, A., Ambrosi, D., & Preziosi, L. (2006). Mechanics and chemotaxis in the morphogenesis of
+vascular networks. Bulletin of Mathematical Biology, 68(7), 1819–1836.
+49. Tsuda, S., Aono, M., & Gunji, Y . (2004). Robust and emergentPhysarum logical-computing. BioSystems,
+73(1), 45–55.
+50. Tsuda, S., Zauner, K., & Gunji, Y . (2007). Robot control with biological cells.BioSystems, 87(2–3), 215–223.
+51. Turing, A. (1952). The chemical basis of morphogenesis.Philosophical Transactions of the Royal Society of
+London. Series B, Biological Sciences (1934–1990), 237(641), 37–72.
+52. Turk, G. (1991). Generating textures on arbitrary surfaces using reaction-diffusion. InProceedings of the
+18th Annual Conference on Computer Graphics and Interactive Techniques. New York: ACM.
+53. Tyson, J., Alexander, K., Manoranjan, V ., & Murray, J. (1989). Spiral waves of cyclic AMP in a model
+of slime mold aggregation.Physica D: Nonlinear Phenomena, 34(1–2), 193–207.
+J. Jones Pattern Formation and Evolution in Approximations of Physarum Transport Networks
+Artificial Life V olume 16, Number 2 153
+
+===== PAGE 29 =====
+
