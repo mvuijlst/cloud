@@ -49,6 +49,37 @@ let liquidImages = {};
 let genericLiquidImages = {};
 let staticLayer; // Replaces bgLayer, holds all static content
 let activeTiles = new Set(); // Optimization: Only update tiles that are flowing
+let autoPlayEnabled = true;
+let AUTO_PLAY_INTERVAL_MS = 650;
+let lastAutoPlaceAt = 0;
+let AUTO_PLAY_FRONTIER_THRESHOLD = 0.45;
+
+const DIRS = ['N', 'E', 'S', 'W'];
+const DIR_VECTORS = {
+  N: { x: 0, y: -1 },
+  E: { x: 1, y: 0 },
+  S: { x: 0, y: 1 },
+  W: { x: -1, y: 0 }
+};
+const OPPOSITE_DIR = {
+  N: 'S',
+  E: 'W',
+  S: 'N',
+  W: 'E'
+};
+const LIQUID_SURFACE_POLY = [
+  { x: 19, y: 2 },
+  { x: 34, y: 10 },
+  { x: 19, y: 18 },
+  { x: 4, y: 10 }
+];
+const LIQUID_ANCHORS = {
+  CENTER: { x: 19, y: 10 },
+  N: { x: 28.5, y: 5.5 },
+  E: { x: 28.5, y: 14.5 },
+  S: { x: 9.5, y: 14.5 },
+  W: { x: 9.5, y: 5.5 }
+};
 
 function preload() {
   for (let k in tileTypes) {
@@ -102,6 +133,45 @@ function isCardinalDir(d) {
 
 function isRightHalfDir(d) {
   return d === 'N' || d === 'E';
+}
+
+function getPreferredFlowDir(source) {
+  return OPPOSITE_DIR[source] || null;
+}
+
+function stepFrom(x, y, dir) {
+  let delta = DIR_VECTORS[dir];
+  return { x: x + delta.x, y: y + delta.y };
+}
+
+function hasConnection(type, dir) {
+  return !!tileTypes[type] && tileTypes[type].connections.includes(dir);
+}
+
+function getPotentialFlowOutDirs(type, source) {
+  if (!hasConnection(type, source)) return [];
+
+  let conns = tileTypes[type].connections;
+  let preferred = getPreferredFlowDir(source);
+  let dirs = [];
+
+  if (preferred && preferred !== source && conns.includes(preferred)) {
+    dirs.push(preferred);
+  }
+
+  if (type === 'cross') return dirs;
+
+  for (let dir of conns) {
+    if (dir !== source && dir !== preferred) {
+      dirs.push(dir);
+    }
+  }
+
+  return dirs;
+}
+
+function manhattan(x1, y1, x2, y2) {
+  return Math.abs(x1 - x2) + Math.abs(y1 - y2);
 }
 
 function getTileSpecificLiquidImage(tileType, dir) {
@@ -206,8 +276,8 @@ function setup() {
   noLoop();
   redraw();
 
-  // Start simulation ticking only when liquid is active
-  if (!window.IS_TEST_MODE && activeTiles.size > 0) {
+  // Start ticking for autoplay and/or liquid simulation
+  if (!window.IS_TEST_MODE && (autoPlayEnabled || activeTiles.size > 0)) {
     startSimLoop();
   }
 }
@@ -226,12 +296,15 @@ function stopSimLoop() {
 function simTick() {
   simTimer = null;
 
-  if (gameState === 'PLAYING' && !window.IS_TEST_MODE && activeTiles.size > 0) {
-    updateLiquid();
+  if (gameState === 'PLAYING' && !window.IS_TEST_MODE) {
+    maybeAutoPlay();
+    if (activeTiles.size > 0) {
+      updateLiquid();
+    }
     redraw();
   }
 
-  if (!window.IS_TEST_MODE && activeTiles.size > 0 && gameState === 'PLAYING') {
+  if (!window.IS_TEST_MODE && gameState === 'PLAYING' && (autoPlayEnabled || activeTiles.size > 0)) {
     simTimer = setTimeout(simTick, SIM_INTERVAL_MS);
   } else {
     stopSimLoop();
@@ -439,6 +512,280 @@ function fillHand() {
   }
 }
 
+function placeTileAt(x, y) {
+  if (!isValidGrid(x, y) || grid[y][x] !== null || hand.length === 0) return false;
+
+  let type = hand.pop();
+  grid[y][x] = { type: type, fixed: false, liquid: 0, liquidSource: null };
+
+  fillHand();
+  scanActiveTiles();
+
+  if (!window.IS_TEST_MODE && (autoPlayEnabled || activeTiles.size > 0)) {
+    startSimLoop();
+  }
+
+  redraw();
+  return true;
+}
+
+function collectConnectedOpenEdges() {
+  let openEdges = [];
+  if (!startTile || !grid[startTile.y] || !grid[startTile.y][startTile.x]) {
+    return { visited: new Set(), openEdges };
+  }
+
+  let visited = new Set();
+  let visitedStates = new Set();
+  let queue = [{ x: startTile.x, y: startTile.y, entry: 'CENTER' }];
+
+  while (queue.length > 0) {
+    let current = queue.shift();
+    let key = `${current.x},${current.y}`;
+    let stateKey = `${current.x},${current.y},${current.entry}`;
+    if (visitedStates.has(stateKey)) continue;
+
+    let tile = grid[current.y][current.x];
+    if (!tile) continue;
+
+    visitedStates.add(stateKey);
+    visited.add(key);
+
+    let outDirs;
+    if (current.entry === 'CENTER') {
+      outDirs = tileTypes[tile.type].connections.slice();
+    } else if (tile.flowOut) {
+      outDirs = [tile.flowOut];
+    } else {
+      outDirs = getPotentialFlowOutDirs(tile.type, current.entry);
+    }
+
+    for (let dir of outDirs) {
+      let next = stepFrom(current.x, current.y, dir);
+      if (!isValidGrid(next.x, next.y)) continue;
+
+      let neighbor = grid[next.y][next.x];
+      let requiredConn = OPPOSITE_DIR[dir];
+
+      if (neighbor) {
+        if (hasConnection(neighbor.type, requiredConn)) {
+          queue.push({ x: next.x, y: next.y, entry: requiredConn });
+        }
+      } else {
+        openEdges.push({
+          x: next.x,
+          y: next.y,
+          source: requiredConn,
+          fromX: current.x,
+          fromY: current.y,
+          fromDir: dir
+        });
+      }
+    }
+  }
+
+  return { visited, openEdges };
+}
+
+function findRouteLengthToEnd(startX, startY) {
+  if (!isValidGrid(startX, startY)) return null;
+
+  if (endTile && startX === endTile.x && startY === endTile.y) {
+    return 0;
+  }
+
+  if (grid[startY][startX] !== null) return null;
+
+  let queue = [{ x: startX, y: startY, dist: 1 }];
+  let seen = new Set([`${startX},${startY}`]);
+
+  while (queue.length > 0) {
+    let current = queue.shift();
+
+    for (let dir of DIRS) {
+      let next = stepFrom(current.x, current.y, dir);
+      if (!isValidGrid(next.x, next.y)) continue;
+
+      if (endTile && next.x === endTile.x && next.y === endTile.y) {
+        if (hasConnection(grid[next.y][next.x].type, OPPOSITE_DIR[dir])) {
+          return current.dist;
+        }
+        continue;
+      }
+
+      if (grid[next.y][next.x] !== null) continue;
+
+      let key = `${next.x},${next.y}`;
+      if (seen.has(key)) continue;
+
+      seen.add(key);
+      queue.push({ x: next.x, y: next.y, dist: current.dist + 1 });
+    }
+  }
+
+  return null;
+}
+
+function chooseStrategicPlacement(activeType) {
+  let { openEdges } = collectConnectedOpenEdges();
+  let best = null;
+
+  for (let edge of openEdges) {
+    if (!hasConnection(activeType, edge.source)) continue;
+
+    let outDirs = getPotentialFlowOutDirs(activeType, edge.source);
+    if (outDirs.length === 0) continue;
+
+    for (let outDir of outDirs) {
+      let next = stepFrom(edge.x, edge.y, outDir);
+      let routeLength = findRouteLengthToEnd(next.x, next.y);
+      if (routeLength === null) continue;
+
+      let branchPenalty = Math.max(0, tileTypes[activeType].connections.length - 2) * 5;
+      let score = routeLength * 30 + manhattan(edge.x, edge.y, endTile.x, endTile.y) * 2 + branchPenalty;
+
+      if (!best || score < best.score) {
+        best = { x: edge.x, y: edge.y, score };
+      }
+    }
+  }
+
+  return best;
+}
+
+function chooseParkingPlacement() {
+  let { visited } = collectConnectedOpenEdges();
+  let best = null;
+
+  for (let y = 0; y < GRID_SIZE; y++) {
+    for (let x = 0; x < GRID_SIZE; x++) {
+      if (grid[y][x] !== null) continue;
+
+      let occupiedNeighbors = 0;
+      let connectedNeighbors = 0;
+
+      for (let dir of DIRS) {
+        let next = stepFrom(x, y, dir);
+        if (!isValidGrid(next.x, next.y)) continue;
+
+        if (grid[next.y][next.x] !== null) {
+          occupiedNeighbors++;
+          if (visited.has(`${next.x},${next.y}`)) connectedNeighbors++;
+        }
+      }
+
+      let score =
+        (manhattan(x, y, startTile.x, startTile.y) + manhattan(x, y, endTile.x, endTile.y)) * 2 -
+        occupiedNeighbors * 8 -
+        connectedNeighbors * 24;
+
+      if (!best || score > best.score) {
+        best = { x, y, score };
+      }
+    }
+  }
+
+  return best;
+}
+
+function chooseAutoplayMove() {
+  if (hand.length === 0 || !startTile || !endTile) return null;
+
+  let activeType = hand[hand.length - 1];
+  let frontierEdges = collectAutoplayFrontierEdges();
+  let best = null;
+
+  for (let edge of frontierEdges) {
+    if (!hasConnection(activeType, edge.source)) continue;
+
+    let outDirs = getPotentialFlowOutDirs(activeType, edge.source);
+    if (outDirs.length === 0) continue;
+
+    for (let outDir of outDirs) {
+      let next = stepFrom(edge.x, edge.y, outDir);
+      let routeLength = findRouteLengthToEnd(next.x, next.y);
+      if (routeLength === null) continue;
+
+      let score = edge.priority * 1000 - routeLength * 20 - manhattan(edge.x, edge.y, endTile.x, endTile.y);
+      if (!best || score > best.score) {
+        best = { x: edge.x, y: edge.y, score };
+      }
+    }
+  }
+
+  return best;
+}
+
+function maybeAutoPlay() {
+  if (!autoPlayEnabled || hand.length === 0 || gameState !== 'PLAYING') return;
+
+  let now = millis();
+  if (now - lastAutoPlaceAt < AUTO_PLAY_INTERVAL_MS) return;
+
+  let move = chooseAutoplayMove();
+  if (!move) return;
+
+  if (placeTileAt(move.x, move.y)) {
+    lastAutoPlaceAt = now;
+  }
+}
+
+function collectAutoplayFrontierEdges() {
+  let edges = [];
+  let seen = new Set();
+
+  function addEdge(x, y, source, priority) {
+    if (!isValidGrid(x, y) || grid[y][x] !== null) return;
+
+    let key = `${x},${y},${source}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+    edges.push({ x, y, source, priority });
+  }
+
+  function collectFromFlow(x, y, tileType, flowState) {
+    if (!flowState || flowState.flowOut || flowState.isEnd) return;
+
+    let liquidLevel = flowState.liquid || 0;
+    let source = flowState.liquidSource;
+    if (!source) return;
+
+    let threshold = source === 'CENTER' ? 0.66 : AUTO_PLAY_FRONTIER_THRESHOLD;
+    if (liquidLevel < threshold) return;
+
+    let outDirs = source === 'CENTER'
+      ? tileTypes[tileType].connections.slice()
+      : getPotentialFlowOutDirs(tileType, source);
+
+    if (flowState.previewFlowOut && outDirs.includes(flowState.previewFlowOut)) {
+      outDirs = [flowState.previewFlowOut, ...outDirs.filter((dir) => dir !== flowState.previewFlowOut)];
+    }
+
+    for (let index = 0; index < outDirs.length; index++) {
+      let dir = outDirs[index];
+      let next = stepFrom(x, y, dir);
+      let priority = liquidLevel * 10 - index;
+      addEdge(next.x, next.y, OPPOSITE_DIR[dir], priority);
+    }
+  }
+
+  for (let key of activeTiles) {
+    let [x, y] = key.split(',').map(Number);
+    let tile = grid[y][x];
+    if (!tile) continue;
+
+    collectFromFlow(x, y, tile.type, tile);
+
+    if (tile.secondaryLiquids) {
+      for (let flow of tile.secondaryLiquids) {
+        collectFromFlow(x, y, tile.type, flow);
+      }
+    }
+  }
+
+  return edges.sort((a, b) => b.priority - a.priority);
+}
+
 function redrawAllStatic() {
   staticLayer.background(20);
   staticLayer.noStroke();
@@ -544,13 +891,141 @@ function drawPatchesStatic(x, y, screenPos, ctx, currentType) {
   }
 }
 
+function withLiquidSurfaceClip(ctx, screenPos, callback) {
+  let baseX = screenPos.x - 19;
+  let baseY = screenPos.y - 20;
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(baseX + LIQUID_SURFACE_POLY[0].x, baseY + LIQUID_SURFACE_POLY[0].y);
+  for (let i = 1; i < LIQUID_SURFACE_POLY.length; i++) {
+    ctx.lineTo(baseX + LIQUID_SURFACE_POLY[i].x, baseY + LIQUID_SURFACE_POLY[i].y);
+  }
+  ctx.closePath();
+  ctx.clip();
+  callback(baseX, baseY);
+  ctx.restore();
+}
+
+function getLiquidPoint(baseX, baseY, dir) {
+  let pt = LIQUID_ANCHORS[dir];
+  return { x: baseX + pt.x, y: baseY + pt.y };
+}
+
+function lerpPoint(a, b, t) {
+  return {
+    x: lerp(a.x, b.x, t),
+    y: lerp(a.y, b.y, t)
+  };
+}
+
+function strokeLiquidSegment(ctx, from, to, alphaScale, addHead) {
+  let shimmer = 0.92 + 0.08 * Math.sin(millis() * 0.012 + from.x * 0.08 + from.y * 0.04);
+
+  ctx.save();
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+
+  ctx.strokeStyle = `rgba(224, 152, 10, ${0.92 * alphaScale * shimmer})`;
+  ctx.lineWidth = 6;
+  ctx.beginPath();
+  ctx.moveTo(from.x, from.y);
+  ctx.lineTo(to.x, to.y);
+  ctx.stroke();
+
+  ctx.strokeStyle = `rgba(255, 229, 126, ${0.8 * alphaScale})`;
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(from.x, from.y);
+  ctx.lineTo(to.x, to.y);
+  ctx.stroke();
+
+  if (addHead) {
+    ctx.fillStyle = `rgba(255, 244, 176, ${0.78 * alphaScale})`;
+    ctx.beginPath();
+    ctx.ellipse(to.x, to.y, 2.4, 1.8, 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  ctx.restore();
+}
+
+function drawLiquidSegment(ctx, baseX, baseY, fromDir, toDir, progress, alphaScale) {
+  let p = constrain(progress, 0, 1);
+  if (p <= 0) return;
+
+  let from = getLiquidPoint(baseX, baseY, fromDir);
+  let to = getLiquidPoint(baseX, baseY, toDir);
+  let head = lerpPoint(from, to, p);
+  strokeLiquidSegment(ctx, from, head, alphaScale, p < 0.999);
+}
+
+function drawLiquidHub(ctx, baseX, baseY, progress, source, outDir, alphaScale) {
+  let p = constrain(progress, 0, 1);
+  if (p <= 0) return;
+
+  let center = getLiquidPoint(baseX, baseY, 'CENTER');
+  let biasDir = outDir || source;
+  let bias = biasDir && biasDir !== 'CENTER' ? DIR_VECTORS[biasDir] : { x: 0, y: 0 };
+  let rx = lerp(1.6, 6.8, p);
+  let ry = lerp(1.1, 4.9, p);
+  let cx = center.x + bias.x * p * 0.9;
+  let cy = center.y + bias.y * p * 0.45;
+
+  ctx.save();
+  ctx.fillStyle = `rgba(226, 156, 12, ${0.9 * alphaScale})`;
+  ctx.beginPath();
+  ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = `rgba(255, 239, 168, ${0.72 * alphaScale})`;
+  ctx.beginPath();
+  ctx.ellipse(cx + 0.7, cy - 0.5, Math.max(1.1, rx * 0.5), Math.max(0.8, ry * 0.45), 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+}
+
+function renderLiquidFlow(screenPos, ctx, type, level, source, flowOut, previewFlowOut) {
+  if (level <= 0) return;
+
+  let outDir = flowOut || null;
+  let previewDir = !flowOut ? previewFlowOut : null;
+
+  withLiquidSurfaceClip(ctx, screenPos, (baseX, baseY) => {
+    if (source && source !== 'CENTER') {
+      let incomingProgress = constrain(map(level, 0, 0.33, 0, 1), 0, 1);
+      drawLiquidSegment(ctx, baseX, baseY, source, 'CENTER', incomingProgress, 1);
+    }
+
+    if (level > 0.33) {
+      let hubProgress = constrain(map(level, 0.33, 0.66, 0, 1), 0, 1);
+      drawLiquidHub(ctx, baseX, baseY, hubProgress, source, outDir || previewDir, 1);
+
+      if (previewDir) {
+        let previewProgress = constrain(map(level, 0.42, 0.66, 0, 0.35), 0, 0.35);
+        drawLiquidSegment(ctx, baseX, baseY, 'CENTER', previewDir, previewProgress, 0.35);
+      }
+    }
+
+    if (source === 'CENTER' && level >= 0.66) {
+      let startOuts = tileTypes[type].connections;
+      if (startOuts.length > 0) {
+        let outwardProgress = constrain(map(level, 0.66, 1, 0, 1), 0, 1);
+        drawLiquidSegment(ctx, baseX, baseY, 'CENTER', startOuts[0], outwardProgress, 1);
+      }
+    } else if (outDir && level > 0.66) {
+      let outwardProgress = constrain(map(level, 0.66, 1, 0, 1), 0, 1);
+      drawLiquidSegment(ctx, baseX, baseY, 'CENTER', outDir, outwardProgress, 1);
+    }
+  });
+}
+
 function drawLiquidStatic(x, y, screenPos, ctx, tile) {
-  // Similar to drawLiquid but uses ctx
-  drawLiquidFlowStatic(screenPos, ctx, tile.type, tile.liquid, tile.liquidSource, tile.flowOut, tile.previewFlowOut);
+  renderLiquidFlow(screenPos, ctx, tile.type, tile.liquid, tile.liquidSource, tile.flowOut, tile.previewFlowOut);
 
   if (tile.secondaryLiquids) {
     for (let flow of tile.secondaryLiquids) {
-      drawLiquidFlowStatic(screenPos, ctx, tile.type, flow.liquid, flow.liquidSource, flow.flowOut, flow.previewFlowOut);
+      renderLiquidFlow(screenPos, ctx, tile.type, flow.liquid, flow.liquidSource, flow.flowOut, flow.previewFlowOut);
     }
   }
 }
@@ -810,6 +1285,8 @@ function drawHand() {
   textAlign(CENTER);
   textSize(12);
   text("NEXT", width / 2 - 90, 45);
+  fill(autoPlayEnabled ? '#ffe08a' : '#aaaaaa');
+  text(autoPlayEnabled ? 'AUTO [A]' : 'MANUAL [A]', width / 2 + 92, 45);
 }
 
 
@@ -820,22 +1297,17 @@ function mousePressed() {
   let mGrid = screenToGrid(mouseX, mouseY);
   
   if (isValidGrid(mGrid.x, mGrid.y)) {
-    // Check if empty
-    if (grid[mGrid.y][mGrid.x] === null) {
-      let type = hand.pop();
-      grid[mGrid.y][mGrid.x] = { type: type, fixed: false, liquid: 0, liquidSource: null };
-      
-      fillHand();
+    placeTileAt(mGrid.x, mGrid.y);
+  }
+}
 
-      // If liquid is active, resume animation so it can propagate into the new tile
-      scanActiveTiles();
-      if (!window.IS_TEST_MODE && activeTiles.size > 0) {
-        startSimLoop();
-      }
-
-      // Ensure placement is visible even when idle
-      redraw();
+function keyPressed() {
+  if ((key === 'a' || key === 'A') && !window.IS_TEST_MODE) {
+    autoPlayEnabled = !autoPlayEnabled;
+    if (autoPlayEnabled || activeTiles.size > 0) {
+      startSimLoop();
     }
+    redraw();
   }
 }
 
@@ -1254,13 +1726,12 @@ function drawLiquidArm(cx, cy, dir, progress) {
 
 // Override drawLiquid to handle incoming correctly
 function drawLiquid(x, y, screenPos, tile) {
-  // Main flow
-  drawLiquidFlow(screenPos, tile.type, tile.liquid, tile.liquidSource, tile.flowOut, tile.previewFlowOut);
+  renderLiquidFlow(screenPos, drawingContext, tile.type, tile.liquid, tile.liquidSource, tile.flowOut, tile.previewFlowOut);
 
   // Secondary flows (for testing or complex tiles)
   if (tile.secondaryLiquids) {
     for (let flow of tile.secondaryLiquids) {
-      drawLiquidFlow(screenPos, tile.type, flow.liquid, flow.liquidSource, flow.flowOut, flow.previewFlowOut);
+      renderLiquidFlow(screenPos, drawingContext, tile.type, flow.liquid, flow.liquidSource, flow.flowOut, flow.previewFlowOut);
     }
   }
   

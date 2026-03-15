@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pipe 2</title>
+  <link rel="stylesheet" href="style.css?v=20260306a" />
+</head>
+<body>
+  <main class="app-shell">
+    <header class="hud">
+      <div>
+        <h1>Pipe 2</h1>
+        <p>Endless autoplay that must place the three random rack pieces in left-to-right order.</p>
+      </div>
+      <div class="hud-status">
+        <span id="statusText">Loading…</span>
+        <span id="modeText">RUNNING</span>
+      </div>
+    </header>
+
+    <section class="canvas-wrap">
+      <canvas id="game" width="1280" height="860" aria-label="Pipe 2 game board"></canvas>
+      <div class="overlay-text" id="overlayText"></div>
+    </section>
+
+    <footer class="controls">
+      <span>A pause or resume</span>
+      <span>R restart</span>
+      <span>The leftmost rack tile must be played next; only exact channel-matching tiles go in the live path</span>
+    </footer>
+  </main>
+
+  <script src="game.js?v=20260306e"></script>
+</body>
+</html>

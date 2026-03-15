@@ -1,0 +1,107 @@
+:root {
+  color-scheme: dark;
+  --bg: #06080c;
+  --panel: rgba(255, 255, 255, 0.08);
+  --panel-border: rgba(255, 255, 255, 0.12);
+  --text: #eef4ff;
+  --muted: #9fb0c9;
+  --accent: #f6c247;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background:
+    radial-gradient(circle at top, rgba(32, 45, 70, 0.45), transparent 42%),
+    linear-gradient(180deg, #0a0d12 0%, var(--bg) 100%);
+  color: var(--text);
+  font-family: Inter, Segoe UI, Arial, sans-serif;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  padding: 18px;
+}
+
+.app-shell {
+  width: min(1320px, 100%);
+}
+
+.hud,
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 18px;
+  border: 1px solid var(--panel-border);
+  background: var(--panel);
+  backdrop-filter: blur(12px);
+  border-radius: 18px;
+}
+
+.hud {
+  margin-bottom: 14px;
+}
+
+.hud h1 {
+  margin: 0 0 4px;
+  font-size: 24px;
+}
+
+.hud p,
+.controls {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.hud-status {
+  display: grid;
+  justify-items: end;
+  gap: 6px;
+  font-weight: 700;
+}
+
+#modeText {
+  color: var(--accent);
+}
+
+.canvas-wrap {
+  position: relative;
+  border-radius: 24px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+}
+
+canvas {
+  width: 100%;
+  height: auto;
+  display: block;
+  background: #07090d;
+}
+
+.overlay-text {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  font-size: 40px;
+  letter-spacing: 0.08em;
+  font-weight: 800;
+  color: rgba(255, 248, 214, 0.9);
+  text-shadow: 0 3px 18px rgba(0, 0, 0, 0.55);
+}
+
+.controls {
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
