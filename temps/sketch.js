@@ -131,6 +131,8 @@ function toRoman(num) {
 let particles = [];
 let bgBuffer;
 let digitalMode = false;
+let lastToggle = 0;
+let toggleCooldown = 400; // ms debounce
 
 // Flap animation state: keyed by position index
 // Each entry: { prevChar, newChar, progress (0–1), startTime }
@@ -154,12 +156,24 @@ function setup() {
   }
 }
 
-function mousePressed() {
+function toggleMode() {
+  let now = millis();
+  if (now - lastToggle < toggleCooldown) return;
+  lastToggle = now;
   digitalMode = !digitalMode;
 }
 
+function touchStarted() {
+  toggleMode();
+  return false; // prevent default & suppress mousePressed
+}
+
+function mousePressed() {
+  toggleMode();
+}
+
 function keyPressed() {
-  if (key === 'd' || key === 'D') digitalMode = !digitalMode;
+  if (key === 'd' || key === 'D') toggleMode();
 }
 
 function buildBackground() {
@@ -203,9 +217,10 @@ function draw() {
     }
     drawDate(width * 0.68, height * 0.5, rev);
   } else {
-    const clockRadius = min(width, height) * 0.18;
+    // Portrait: give more space to both clock and date
+    const clockRadius = min(width * 0.32, height * 0.17);
     const cx = width / 2;
-    const clockCy = height * 0.25;
+    const clockCy = height * 0.28;
     if (digitalMode) {
       drawDigitalClock(cx, clockCy, clockRadius, decTime);
     } else {
@@ -213,7 +228,7 @@ function draw() {
     }
     const clockBottom = clockCy + clockRadius * 1.25;
     const bottomMargin = height - 30;
-    const dateZoneCy = clockBottom + (bottomMargin - clockBottom) * 0.45;
+    const dateZoneCy = clockBottom + (bottomMargin - clockBottom) * 0.42;
     drawDate(cx, dateZoneCy, rev);
   }
 }
@@ -308,7 +323,8 @@ function drawClockFace(cx, cy, radius, decTime) {
   stroke(195, 165, 90, 30);
   ellipse(0, 0, radius * 1.85);
 
-  // 10 hour markers
+  // 10 hour markers with Roman numerals
+  const ROMAN = ['X', 'I', 'II', 'III', 'IIII', 'V', 'VI', 'VII', 'VIII', 'IX'];
   for (let i = 0; i < 10; i++) {
     let angle = map(i, 0, 10, -HALF_PI, TWO_PI - HALF_PI);
     let innerR = radius * 0.82;
@@ -319,14 +335,20 @@ function drawClockFace(cx, cy, radius, decTime) {
     line(cos(angle) * innerR, sin(angle) * innerR,
          cos(angle) * outerR, sin(angle) * outerR);
 
-    // Hour numbers
-    let numR = radius * 0.72;
+    // Roman numeral, rotated to follow the dial
+    let numR = radius * 0.70;
+    let nx = cos(angle) * numR;
+    let ny = sin(angle) * numR;
+    push();
+    translate(nx, ny);
+    rotate(angle + HALF_PI);
     noStroke();
     fill(240, 232, 212);
     textAlign(CENTER, CENTER);
     textSize(radius * 0.12);
     textStyle(BOLD);
-    text(i, cos(angle) * numR, sin(angle) * numR);
+    text(ROMAN[i], 0, 0);
+    pop();
   }
 
   // 100 minute markers
@@ -414,7 +436,7 @@ function drawDate(cx, cy, rev) {
 
   const s = min(width, height);
   const landscape = width > height;
-  const scale = landscape ? 1.3 : 1.4;
+  const scale = landscape ? 1.3 : 1.7;
   const gap = s * 0.045 * scale;
 
   // Decorative top line
@@ -669,11 +691,13 @@ function drawDigitalClock(cx, cy, radius, decTime) {
   }
   prevDigits = digits;
 
-  // Flap dimensions scaled to radius
+  // Flap dimensions scaled to radius, but constrained to fit screen
+  let maxFlapW = (width - 80) / 6.5; // ensure 5 flaps + gaps fit
   let flapH = radius * 0.7;
-  let flapW = flapH * 0.62;
-  let flapGap = flapW * 0.12;
-  let groupGap = flapW * 0.35;
+  let flapW = min(flapH * 0.62, maxFlapW);
+  flapH = flapW / 0.62; // maintain aspect ratio
+  let flapGap = flapW * 0.1;
+  let groupGap = flapW * 0.28;
 
   // Total width: 1 + gap + 2 + gap + 2 + separators
   let totalW = flapW * 5 + flapGap * 4 + groupGap * 2;
