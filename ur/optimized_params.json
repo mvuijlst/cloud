@@ -1,0 +1,23 @@
+{
+  "feed_per_person": 10.846650749841121,
+  "harvest_min": 6,
+  "harvest_max": 9,
+  "plague_chance": 0.07682877209591783,
+  "attack_chance": 0.12802518182931621,
+  "imm_base": 0.012123466103882425,
+  "imm_range": 0.021950812216602295,
+  "rot_threshold": 78509,
+  "rot_rate_min": 0.029617645973828738,
+  "rot_rate_range": 0.10250917139977389,
+  "event_chance": 0.22952454561935917,
+  "land_price_min": 11,
+  "land_price_max": 14,
+  "feed_expansionist": 1.0419910777221917,
+  "feed_benevolent": 0.9897950522046857,
+  "feed_balanced": 0.9907138349909476,
+  "feed_agrarian": 0.97172864225806,
+  "feed_hoarder": 0.9750980173447539,
+  "feed_reckless": 0.998153366453986,
+  "feed_philosopher": 0.9440614126245483,
+  "start_grain_val": 272279
+}
