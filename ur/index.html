@@ -74,6 +74,7 @@
 
     <button class="btn-begin" onclick="beginReign()">Begin the Reign</button>
     <button class="btn-history" onclick="showHistory()">Hall of Kings</button>
+    <div class="ambient-note" id="start-attract-note">Ambient mode will begin shortly if left alone.</div>
     <div class="start-footer">Based on the classic 1968 FOCAL game</div>
   </div>
 </div>
@@ -116,6 +117,34 @@
   </div>
 
   <div class="chronicle-area" id="chronicle"></div>
+
+  <div class="right-sidebar" id="right-sidebar">
+    <div class="spectator-panel" id="spectator-panel">
+      <div class="spectator-main">
+        <div class="spectator-headline" id="spectator-headline">A dynasty waits to rise.</div>
+        <div class="spectator-subline" id="spectator-subline">The court stands ready.</div>
+        <div class="spectator-chips" id="spectator-chips"></div>
+      </div>
+      <div class="spectator-board">
+        <div class="sb-card">
+          <div class="sb-title">This Age</div>
+          <div class="sb-body" id="age-summary"></div>
+        </div>
+        <div class="sb-card">
+          <div class="sb-title">Watch</div>
+          <div class="sb-body" id="spectator-watch"></div>
+        </div>
+        <div class="sb-card">
+          <div class="sb-title">Records</div>
+          <div class="sb-body" id="spectator-records"></div>
+        </div>
+      </div>
+      <div class="ticker-wrap">
+        <div class="sb-title">Latest</div>
+        <div class="news-ticker" id="news-ticker"></div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- ═══════════════════════════════════════════════════════
@@ -137,6 +166,7 @@
       <button class="btn-end primary" onclick="goToStart()">New Reign</button>
       <button class="btn-end secondary" onclick="reviewChronicle()">Review Chronicle</button>
     </div>
+    <div class="end-autorestart" id="end-autorestart"></div>
   </div>
 </div>
 
