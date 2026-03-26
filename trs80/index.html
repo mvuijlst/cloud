@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ColorBASIC Home Computer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="studio-shell">
+    <section class="computer" aria-label="1980s BASIC home computer">
+      <div class="computer__bezel">
+        <header class="computer__brand">
+          <div>
+            <p class="computer__model">MICRO COLOR 8</p>
+            <p class="computer__tagline">LEVEL II BASIC</p>
+          </div>
+          <div class="computer__status">
+            <span class="led led--power"></span>
+            <span class="led led--drive"></span>
+          </div>
+        </header>
+
+        <section class="screen" aria-live="polite">
+          <div class="screen__glass"></div>
+          <div class="screen__content">
+            <div class="screen__chrome">
+              <span>64K RAM SYSTEM</span>
+              <span id="clock">00:00</span>
+            </div>
+            <pre id="terminal" class="terminal" aria-live="polite"></pre>
+            <form id="prompt-form" class="prompt prompt--hidden" autocomplete="off">
+              <label class="prompt__label" for="command-input">Command</label>
+              <input
+                id="command-input"
+                class="prompt__input"
+                type="text"
+                spellcheck="false"
+                autocomplete="off"
+                autocapitalize="off"
+                autofocus
+              >
+            </form>
+          </div>
+        </section>
+
+        <footer class="computer__deck">
+          <div class="computer__keys">
+            <button type="button" class="deck-key" data-action="run">RUN</button>
+            <button type="button" class="deck-key" data-action="list">LIST</button>
+            <button type="button" class="deck-key" data-action="demo">DEMO</button>
+            <button type="button" class="deck-key" data-action="break">BREAK</button>
+            <button type="button" class="deck-key" data-action="cls">CLS</button>
+            <button type="button" class="deck-key" data-action="new">NEW</button>
+          </div>
+          <div class="computer__hardware">
+            <p class="hardware__label">CPU SPEED</p>
+            <button type="button" id="speed-switch" class="speed-switch" aria-label="Execution speed">
+              <span class="speed-switch__track">
+                <span class="speed-switch__thumb"></span>
+              </span>
+              <span id="speed-value" class="speed-switch__value">NORMAL</span>
+            </button>
+          </div>
+          <p class="computer__hint">Type BASIC commands or line-numbered program statements, then press Enter.</p>
+        </footer>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
