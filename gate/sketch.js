@@ -5,6 +5,8 @@ let font;
 let word = 'GATEKEEPER';
 
 let fontSize = 90;
+let bgColor = '#f0ea21';
+let hullColor = '#2680f0';
 
 function preload() {
     font = loadFont('Roboto-Bold.ttf');
@@ -27,6 +29,34 @@ function setup() {
 function windowResized() {
     resizeCanvas(windowWidth, windowHeight);
     initShapes();
+}
+
+function mousePressed() {
+    // Ignore clicks on the controls
+    if (mouseY < 50) return;
+    randomizeColors();
+    initShapes();
+}
+
+function randomizeColors() {
+    // Pick a random hue, then use complementary for high contrast
+    let bgHue = random(360);
+    let hullHue = (bgHue + 120 + random(-30, 30)) % 360;
+    colorMode(HSB, 360, 100, 100);
+    bgColor = color(bgHue, random(70, 95), random(85, 100));
+    hullColor = color(hullHue, random(70, 95), random(55, 80));
+    colorMode(RGB, 255);
+    // Update HTML background to match
+    let r = Math.round(red(bgColor)), g = Math.round(green(bgColor)), b = Math.round(blue(bgColor));
+    let bgHex = '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+    document.body.style.backgroundColor = bgHex;
+    document.getElementById('controls').style.backgroundColor = bgHex;
+    // Set attribution text to a contrasting color
+    let lum = r * 0.299 + g * 0.587 + b * 0.114;
+    let textCol = lum > 140 ? '#333' : '#ddd';
+    let attrEl = document.getElementById('attribution');
+    attrEl.style.color = textCol;
+    attrEl.querySelector('a').style.color = textCol;
 }
 
 // Convert a single letter to a polygon shape (outline points centered on 0,0)
@@ -109,7 +139,6 @@ function initShapes() {
     }
 
     // Compute font size so all letters fit vertically with spacing
-    // Reserve 10% top/bottom padding
     let usableH = areaH * 0.85;
     let spacingRatio = 1.15; // spacing = fontSize * spacingRatio
     fontSize = usableH / (n * spacingRatio);
@@ -117,7 +146,7 @@ function initShapes() {
 
     let spacing = fontSize * spacingRatio;
     let totalH = n * spacing;
-    let topY = (height - totalH) / 2 + spacing / 2;
+    let topY = (height - totalH) / 2 + spacing / 2 - fontSize * 0.5;
 
     // Max horizontal oscillation: constrain so letters + their width stay on screen
     // We'll compute per-letter after building shapes
@@ -169,32 +198,28 @@ function initShapes() {
 }
 
 // ── Animation timing constants ──
-const ANTIC_FRAC = 0.07;    // fraction of half-cycle for anticipation windup
-const ANTIC_HOLD = 0.03;    // fraction of half-cycle to hold at anticipation apex
+const ANTIC_FRAC = 0.10;    // fraction of half-cycle for anticipation windup
 const ANTIC_AMOUNT = 0.03;  // how far back the anticipation goes (fraction of travel)
 const OVER_FRAC = 0.08;     // fraction of half-cycle for overshoot settle
 const OVER_AMOUNT = 0.04;   // how far past 1.0 the overshoot goes
 const END_HOLD = 0.02;      // fraction of half-cycle to hold at rest after overshoot
-const MOVE_FRAC = 1 - ANTIC_FRAC - ANTIC_HOLD - OVER_FRAC - END_HOLD;
+const MOVE_FRAC = 1 - ANTIC_FRAC - OVER_FRAC - END_HOLD;
 
-// Map a 0→1 half-cycle progress into a position value with anticipation + hold + move + overshoot + hold
+// Map a 0→1 half-cycle progress into a position value with anticipation + move + overshoot + hold
 function animCurve(p) {
     if (p < ANTIC_FRAC) {
-        // Anticipation: ease back slightly
+        // Anticipation: smoothstep back (fluid start and end)
         let at = p / ANTIC_FRAC; // 0→1
-        let eased = at * at; // ease-in
+        let eased = at * at * (3 - 2 * at); // smoothstep
         return -ANTIC_AMOUNT * eased;
-    } else if (p < ANTIC_FRAC + ANTIC_HOLD) {
-        // Hold at anticipation apex
-        return -ANTIC_AMOUNT;
-    } else if (p < ANTIC_FRAC + ANTIC_HOLD + MOVE_FRAC) {
+    } else if (p < ANTIC_FRAC + MOVE_FRAC) {
         // Main move: from -ANTIC_AMOUNT to 1 + OVER_AMOUNT
-        let mt = (p - ANTIC_FRAC - ANTIC_HOLD) / MOVE_FRAC; // 0→1
+        let mt = (p - ANTIC_FRAC) / MOVE_FRAC; // 0→1
         let eased = mt * mt * (3 - 2 * mt); // smoothstep
         return lerp(-ANTIC_AMOUNT, 1 + OVER_AMOUNT, eased);
-    } else if (p < ANTIC_FRAC + ANTIC_HOLD + MOVE_FRAC + OVER_FRAC) {
+    } else if (p < ANTIC_FRAC + MOVE_FRAC + OVER_FRAC) {
         // Overshoot settle: ease from 1 + OVER_AMOUNT back to 1
-        let ot = (p - ANTIC_FRAC - ANTIC_HOLD - MOVE_FRAC) / OVER_FRAC; // 0→1
+        let ot = (p - ANTIC_FRAC - MOVE_FRAC) / OVER_FRAC; // 0→1
         let eased = ot * ot * (3 - 2 * ot); // smoothstep
         return lerp(1 + OVER_AMOUNT, 1, eased);
     } else {
@@ -266,7 +291,7 @@ function convexHull(points) {
 
 // ── Draw the hull ──
 function drawHull(hull) {
-    fill('#2680f0');
+    fill(hullColor);
     stroke('#000');
     strokeWeight(4);
     strokeJoin(ROUND);
@@ -279,7 +304,7 @@ function drawHull(hull) {
 }
 
 function draw() {
-    background('#f0ea21');
+    background(bgColor);
 
     updateShapes();
 
