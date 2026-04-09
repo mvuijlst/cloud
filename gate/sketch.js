@@ -141,6 +141,13 @@ function initShapes() {
         let oA = random(-maxOffset, -maxOffset * 0.3);
         let oB = random(maxOffset * 0.3, maxOffset);
 
+        // Set rollR so the letter completes exact full rotations
+        // between offsetA and offsetB (upright at both extremes)
+        let travel = oB - oA;
+        let naturalR = letterData.halfH;
+        let numRot = Math.max(1, Math.round(travel / (TWO_PI * naturalR)));
+        let rollR = travel / (TWO_PI * numRot);
+
         shapes.push({
             type: 'polygon',
             localPts: letterData.localPts,
@@ -150,28 +157,77 @@ function initShapes() {
             baseY: topY + i * spacing,
             offsetA: oA,
             offsetB: oB,
-            freq: random(0.012, 0.022),
-            phase: random(TWO_PI),
+            freq: random(0.003, 0.006),
+            phase: random(1.0),
             angle: 0,
             x: 0,
             y: 0,
-            rollR: letterData.halfH,
+            rollR: rollR,
             pts: [] // world-space points computed each frame
         });
+    }
+}
+
+// ── Animation timing constants ──
+const ANTIC_FRAC = 0.07;    // fraction of half-cycle for anticipation windup
+const ANTIC_HOLD = 0.03;    // fraction of half-cycle to hold at anticipation apex
+const ANTIC_AMOUNT = 0.03;  // how far back the anticipation goes (fraction of travel)
+const OVER_FRAC = 0.08;     // fraction of half-cycle for overshoot settle
+const OVER_AMOUNT = 0.04;   // how far past 1.0 the overshoot goes
+const END_HOLD = 0.02;      // fraction of half-cycle to hold at rest after overshoot
+const MOVE_FRAC = 1 - ANTIC_FRAC - ANTIC_HOLD - OVER_FRAC - END_HOLD;
+
+// Map a 0→1 half-cycle progress into a position value with anticipation + hold + move + overshoot + hold
+function animCurve(p) {
+    if (p < ANTIC_FRAC) {
+        // Anticipation: ease back slightly
+        let at = p / ANTIC_FRAC; // 0→1
+        let eased = at * at; // ease-in
+        return -ANTIC_AMOUNT * eased;
+    } else if (p < ANTIC_FRAC + ANTIC_HOLD) {
+        // Hold at anticipation apex
+        return -ANTIC_AMOUNT;
+    } else if (p < ANTIC_FRAC + ANTIC_HOLD + MOVE_FRAC) {
+        // Main move: from -ANTIC_AMOUNT to 1 + OVER_AMOUNT
+        let mt = (p - ANTIC_FRAC - ANTIC_HOLD) / MOVE_FRAC; // 0→1
+        let eased = mt * mt * (3 - 2 * mt); // smoothstep
+        return lerp(-ANTIC_AMOUNT, 1 + OVER_AMOUNT, eased);
+    } else if (p < ANTIC_FRAC + ANTIC_HOLD + MOVE_FRAC + OVER_FRAC) {
+        // Overshoot settle: ease from 1 + OVER_AMOUNT back to 1
+        let ot = (p - ANTIC_FRAC - ANTIC_HOLD - MOVE_FRAC) / OVER_FRAC; // 0→1
+        let eased = ot * ot * (3 - 2 * ot); // smoothstep
+        return lerp(1 + OVER_AMOUNT, 1, eased);
+    } else {
+        // Hold at rest
+        return 1;
     }
 }
 
 // ── Update shape positions each frame ──
 function updateShapes() {
     for (let s of shapes) {
-        let t = sin(frameCount * s.freq + s.phase) * 0.5 + 0.5;
+        // Ping-pong timer: ramp 0→1→0 over the period
+        let raw = (frameCount * s.freq + s.phase) % 1;
+        let halfPhase, forward;
+        if (raw < 0.5) {
+            halfPhase = raw * 2; // 0→1 (moving A→B)
+            forward = true;
+        } else {
+            halfPhase = (raw - 0.5) * 2; // 0→1 (moving B→A)
+            forward = false;
+        }
+
+        let curve = animCurve(halfPhase);
+        let t = forward ? curve : 1 - curve;
+
         let dx = lerp(s.offsetA, s.offsetB, t);
 
         s.x = s.baseX + dx;
         s.y = s.baseY;
 
-        // Rolling angle: proportional to horizontal displacement
-        s.angle = dx / s.rollR;
+        // Rolling angle: realistic roll from leftmost extreme
+        // rollR is tuned so (offsetB - offsetA) / rollR = exact multiple of 2π
+        s.angle = (dx - s.offsetA) / s.rollR;
 
         // Compute world-space pts from localPts + rotation + translation
         let ca = cos(s.angle), sa = sin(s.angle);
