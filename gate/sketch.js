@@ -31,11 +31,20 @@ function windowResized() {
     initShapes();
 }
 
-function mousePressed() {
+function mousePressed(e) {
     // Ignore clicks on the controls
+    if (mouseY < 50) return;
+    // On mobile, skip mouse events generated from touch
+    if (e && e.sourceCapabilities && e.sourceCapabilities.firesTouchEvents) return;
+    randomizeColors();
+    initShapes();
+}
+
+function touchStarted() {
     if (mouseY < 50) return;
     randomizeColors();
     initShapes();
+    return false; // prevent duplicate mousePressed
 }
 
 function randomizeColors() {
@@ -130,29 +139,45 @@ function initShapes() {
     let n = word.length;
     if (n === 0) return;
 
-    // On landscape/wide screens, constrain to a square centered on screen
-    // On portrait/tall screens, use full dimensions
+    // Dynamic width constraint: fewer letters = wider, more letters = narrower
+    // Up to 5 chars: aspect ratio 1:1 (square), at 10+: 1:2 (half width)
+    // Linearly interpolate the width ratio between these
+    let widthRatio = n <= 5 ? 1.0 : Math.max(0.5, 1.0 - (n - 5) * 0.1);
+    // Account for controls area at top + bottom padding for taskbar/stroke
+    let controlsH = 00;
+    let bottomPad = 80;
     let areaW = width;
-    let areaH = height;
-    if (areaW > areaH) {
-        areaW = areaH; // square constraint on wide screens
+    let areaH = height - controlsH - bottomPad;
+    if (areaW > areaH * widthRatio) {
+        areaW = areaH * widthRatio;
     }
 
-    // Compute font size so all letters fit vertically with spacing
-    let usableH = areaH * 0.85;
-    let spacingRatio = 1.15; // spacing = fontSize * spacingRatio
-    fontSize = usableH / (n * spacingRatio);
-    fontSize = Math.min(fontSize, 300); // cap at reasonable max
+    // Probe letter shapes at a reference size to find the actual max
+    // bounding radius (for rotated letters), then compute fontSize.
+    let spacingRatio = 0.8;
+    let refSize = 100;
+    let maxBoundingR = 0;
+    for (let i = 0; i < n; i++) {
+        let ld = letterToShape(word[i], refSize);
+        if (!ld) continue;
+        let r = Math.sqrt(ld.halfH * ld.halfH + ld.halfW * ld.halfW);
+        maxBoundingR = Math.max(maxBoundingR, r);
+    }
+    let letterRadiusFactor = maxBoundingR / refSize;
+
+    // areaH must fit: (n-1)*spacing + 2*letterRadius
+    fontSize = areaH / ((n - 1) * spacingRatio + 2 * letterRadiusFactor);
+    fontSize = Math.min(fontSize, 300);
 
     let spacing = fontSize * spacingRatio;
-    let totalH = n * spacing;
-    let topY = (height - totalH) / 2 + spacing / 2 - fontSize * 0.5;
+    let letterRadius = fontSize * letterRadiusFactor;
+    let totalH = (n - 1) * spacing;
+    // Center vertically in available area (between controlsH and height-bottomPad)
+    let topY = controlsH + letterRadius + (areaH - totalH - 2 * letterRadius) / 2;
 
-    // Max horizontal oscillation: constrain so letters + their width stay on screen
-    // We'll compute per-letter after building shapes
     let maxHalfW = 0;
 
-    // First pass: build letter data
+    // Build final letter shapes at computed fontSize
     let letterDatas = [];
     for (let i = 0; i < n; i++) {
         let ld = letterToShape(word[i], fontSize);
@@ -167,8 +192,12 @@ function initShapes() {
 
     for (let i = 0; i < letterDatas.length; i++) {
         let letterData = letterDatas[i];
-        let oA = random(-maxOffset, -maxOffset * 0.3);
-        let oB = random(maxOffset * 0.3, maxOffset);
+        // All letters travel roughly the same distance
+        // Random center offset keeps them from all being synchronized
+        let halfTravel = maxOffset * random(0.7, 1.0);
+        let center = random(-maxOffset * 0.15, maxOffset * 0.15);
+        let oA = center - halfTravel;
+        let oB = center + halfTravel;
 
         // Set rollR so the letter completes exact full rotations
         // between offsetA and offsetB (upright at both extremes)
@@ -198,11 +227,11 @@ function initShapes() {
 }
 
 // ── Animation timing constants ──
-const ANTIC_FRAC = 0.10;    // fraction of half-cycle for anticipation windup
+const ANTIC_FRAC = 0.14;    // fraction of half-cycle for anticipation windup
 const ANTIC_AMOUNT = 0.03;  // how far back the anticipation goes (fraction of travel)
-const OVER_FRAC = 0.08;     // fraction of half-cycle for overshoot settle
+const OVER_FRAC = 0.12;     // fraction of half-cycle for overshoot settle
 const OVER_AMOUNT = 0.04;   // how far past 1.0 the overshoot goes
-const END_HOLD = 0.02;      // fraction of half-cycle to hold at rest after overshoot
+const END_HOLD = 0.04;      // fraction of half-cycle to hold at rest after overshoot
 const MOVE_FRAC = 1 - ANTIC_FRAC - OVER_FRAC - END_HOLD;
 
 // Map a 0→1 half-cycle progress into a position value with anticipation + move + overshoot + hold
