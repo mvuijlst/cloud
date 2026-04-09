@@ -2,7 +2,23 @@
 // Each shape is a polygon with localPts (relative to center) + animation state
 let shapes = [];
 let font;
-let word = 'GATEKEEPER';
+
+const WORDS = [
+    'gatekeeper','humbug','backlog','burnout','deadlock','gridlock','bottleneck',
+    'roadblock','layoff','cutbacks','shortfall','shutdown','rollback',
+    'downtime','outage','drift','deadwood','attrition','overwork',
+    'scarcity','downgrade','collapse','doomloop','deadzone','blackout',
+    'brownout','ruination','wasteland','standstill','washout','nosedive',
+    'defaults','foreclose','eviction','desolation','bleakness','grievance',
+    'suffocate','starvation','scrapheap','failure','panopticon','blacksite',
+    'killswitch','shadowban','spyware','malware','botnet','backdoor',
+    'bootloop','lockdown','paywall','ratelimit','redacted','blacklist',
+    'deepfake','doomscroll','darknet','coldstart','despair','hopeless',
+    'misery','numbness','sorrow','anguish','defeat','futility',
+    'loneliness','regret','shame','grief','dread','emptiness','ruin',
+    'loss','decline'
+];
+let word = WORDS[Math.floor(Math.random() * WORDS.length)].toUpperCase();
 
 let fontSize = 90;
 let bgColor = '#f0ea21';
@@ -18,10 +34,28 @@ function setup() {
     textFont(font);
     textAlign(CENTER, CENTER);
 
-    document.getElementById('animBtn').addEventListener('click', () => {
+    document.getElementById('wordInput').value = word;
+
+    document.getElementById('controls').addEventListener('submit', (e) => {
+        e.preventDefault();
         word = document.getElementById('wordInput').value.toUpperCase();
+        document.getElementById('controls').classList.add('hidden');
         initShapes();
     });
+
+    document.getElementById('toggleBtn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        let ctrl = document.getElementById('controls');
+        ctrl.classList.toggle('hidden');
+        initShapes(); // re-layout with/without controls space
+    });
+
+    // First visit in session: keep default yellow/blue. Reloads: randomize.
+    if (sessionStorage.getItem('gate_visited')) {
+        randomizeColors();
+    } else {
+        sessionStorage.setItem('gate_visited', '1');
+    }
 
     initShapes();
 }
@@ -32,18 +66,36 @@ function windowResized() {
 }
 
 function mousePressed(e) {
-    // Ignore clicks on the controls
-    if (mouseY < 50) return;
     // On mobile, skip mouse events generated from touch
     if (e && e.sourceCapabilities && e.sourceCapabilities.firesTouchEvents) return;
     randomizeColors();
     initShapes();
 }
 
+let _touchStartY = null;
+let _touchStartTarget = null;
 function touchStarted() {
-    if (mouseY < 50) return;
-    randomizeColors();
-    initShapes();
+    _touchStartY = mouseY;
+    _touchStartTarget = document.elementFromPoint(mouseX, mouseY);
+    // Don't prevent default — allow pull-to-refresh
+}
+
+function touchEnded() {
+    // Skip if touch was on a UI element
+    let ui = document.getElementById('toggleBtn');
+    let ctrl = document.getElementById('controls');
+    if (_touchStartTarget && (ui.contains(_touchStartTarget) || ctrl.contains(_touchStartTarget))) {
+        _touchStartY = null;
+        _touchStartTarget = null;
+        return;
+    }
+    // Only trigger color change on taps, not swipes
+    if (_touchStartY !== null && Math.abs(mouseY - _touchStartY) < 20) {
+        randomizeColors();
+        initShapes();
+    }
+    _touchStartY = null;
+    _touchStartTarget = null;
     return false; // prevent duplicate mousePressed
 }
 
@@ -59,6 +111,7 @@ function randomizeColors() {
     let r = Math.round(red(bgColor)), g = Math.round(green(bgColor)), b = Math.round(blue(bgColor));
     let bgHex = '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
     document.body.style.backgroundColor = bgHex;
+    document.documentElement.style.backgroundColor = bgHex;
     document.getElementById('controls').style.backgroundColor = bgHex;
     // Set attribution text to a contrasting color
     let lum = r * 0.299 + g * 0.587 + b * 0.114;
@@ -143,11 +196,9 @@ function initShapes() {
     // Up to 5 chars: aspect ratio 1:1 (square), at 10+: 1:2 (half width)
     // Linearly interpolate the width ratio between these
     let widthRatio = n <= 5 ? 1.0 : Math.max(0.5, 1.0 - (n - 5) * 0.1);
-    // Account for controls area at top + bottom padding for taskbar/stroke
-    let controlsH = 00;
-    let bottomPad = 80;
-    let areaW = width;
-    let areaH = height - controlsH - bottomPad;
+    let pad = 20;
+    let areaW = width - 2 * pad;
+    let areaH = height - 2 * pad;
     if (areaW > areaH * widthRatio) {
         areaW = areaH * widthRatio;
     }
@@ -172,8 +223,8 @@ function initShapes() {
     let spacing = fontSize * spacingRatio;
     let letterRadius = fontSize * letterRadiusFactor;
     let totalH = (n - 1) * spacing;
-    // Center vertically in available area (between controlsH and height-bottomPad)
-    let topY = controlsH + letterRadius + (areaH - totalH - 2 * letterRadius) / 2;
+    // Center vertically in available area
+    let topY = pad + letterRadius + (areaH - totalH - 2 * letterRadius) / 2;
 
     let maxHalfW = 0;
 
