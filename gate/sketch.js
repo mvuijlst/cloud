@@ -257,6 +257,12 @@ function initShapes() {
         let numRot = Math.max(1, Math.round(travel / (TWO_PI * naturalR)));
         let rollR = travel / (TWO_PI * numRot);
 
+        // Compute rest-state support distance (maxDot at angle=0, i.e. "down" = (0,1))
+        let restMaxDot = -Infinity;
+        for (let p of letterData.localPts) {
+            if (p.y > restMaxDot) restMaxDot = p.y;
+        }
+
         shapes.push({
             type: 'polygon',
             localPts: letterData.localPts,
@@ -272,6 +278,7 @@ function initShapes() {
             x: 0,
             y: 0,
             rollR: rollR,
+            restMaxDot: restMaxDot,
             pts: [] // world-space points computed each frame
         });
     }
@@ -328,11 +335,22 @@ function updateShapes() {
         let dx = lerp(s.offsetA, s.offsetB, t);
 
         s.x = s.baseX + dx;
-        s.y = s.baseY;
 
         // Rolling angle: realistic roll from leftmost extreme
         // rollR is tuned so (offsetB - offsetA) / rollR = exact multiple of 2π
         s.angle = (dx - s.offsetA) / s.rollR;
+
+        // Rolling bob: find current support distance (how far center is above ground)
+        // "Down" in local coords at angle θ is (sin θ, cos θ)
+        let downX = sin(s.angle), downY = cos(s.angle);
+        let maxDot = -Infinity;
+        for (let p of s.localPts) {
+            let d = p.x * downX + p.y * downY;
+            if (d > maxDot) maxDot = d;
+        }
+        // At rest (angle=0), maxDot = restMaxDot, so y = baseY.
+        // When rotated, center rises by (restMaxDot - maxDot) — negative means up.
+        s.y = s.baseY - (maxDot - s.restMaxDot);
 
         // Compute world-space pts from localPts + rotation + translation
         let ca = cos(s.angle), sa = sin(s.angle);
