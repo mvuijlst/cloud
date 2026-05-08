@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Waves</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: black;
+        }
+
+        #cog {
+            position: fixed;
+            top: 14px;
+            right: 14px;
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+            z-index: 20;
+            opacity: 0.45;
+            transition: opacity 0.2s;
+            user-select: none;
+        }
+        #cog:hover { opacity: 0.9; }
+        #cog svg { width: 100%; height: 100%; }
+
+        #panel {
+            position: fixed;
+            top: 54px;
+            right: 14px;
+            background: rgba(0,0,0,0.80);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 8px;
+            padding: 14px 18px;
+            color: #fff;
+            font-family: monospace;
+            font-size: 12px;
+            z-index: 10;
+            min-width: 210px;
+            backdrop-filter: blur(4px);
+            display: none;
+        }
+        #panel.open { display: block; }
+
+        #panel h3 {
+            margin: 0 0 12px;
+            font-size: 13px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            opacity: 0.6;
+        }
+
+        .row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 9px;
+            gap: 10px;
+        }
+
+        .row label {
+            white-space: nowrap;
+            opacity: 0.85;
+        }
+
+        .row input[type=range] {
+            flex: 1;
+            accent-color: #fff;
+            cursor: pointer;
+        }
+
+        .row .val {
+            width: 30px;
+            text-align: right;
+            opacity: 0.7;
+        }
+
+        #btnNew {
+            margin-top: 12px;
+            width: 100%;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.25);
+            color: #fff;
+            font-family: monospace;
+            font-size: 12px;
+            padding: 6px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+        #btnNew:hover { background: rgba(255,255,255,0.2); }
+    </style>
+</head>
+<body>
+    <canvas id="c" style="display:block"></canvas>
+
+    <div id="cog" title="Settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+    </div>
+
+    <div id="panel">
+        <h3>Controls</h3>
+
+        <div class="row">
+            <label>Points</label>
+            <input type="range" id="numPoints" min="4" max="40" value="12">
+            <span class="val" id="vNumPoints">12</span>
+        </div>
+
+        <div class="row">
+            <label>Distance</label>
+            <input type="range" id="baseDist" min="10" max="200" value="100">
+            <span class="val" id="vBaseDist">100</span>
+        </div>
+
+        <div class="row">
+            <label>Amplitude</label>
+            <input type="range" id="amplitude" min="0" max="150" value="15">
+            <span class="val" id="vAmplitude">15</span>
+        </div>
+
+        <div class="row">
+            <label>Speed</label>
+            <input type="range" id="speedMult" min="0" max="50" step="1" value="25">
+            <span class="val" id="vSpeedMult">25</span>
+        </div>
+
+        <div class="row">
+            <label>Shadow</label>
+            <input type="range" id="thickness" min="0.5" max="8" step="0.5" value="1.5">
+            <span class="val" id="vThickness">1.5</span>
+        </div>
+
+        <div class="row">
+            <label>Lines</label>
+            <input type="range" id="numLines" min="1" max="12" value="12">
+            <span class="val" id="vNumLines">12</span>
+        </div>
+
+        <div class="row">
+            <label>Spacing</label>
+            <input type="range" id="spacing" min="5" max="200" value="90">
+            <span class="val" id="vSpacing">90</span>
+        </div>
+
+        <div class="row">
+            <label>Falloff</label>
+            <input type="range" id="spacingFalloff" min="0.5" max="2" step="0.05" value="0.9">
+            <span class="val" id="vSpacingFalloff">0.9</span>
+        </div>
+        <div class="row">
+            <label>Extra amp</label>
+            <input type="range" id="extraAmp" min="0" max="80" value="25">
+            <span class="val" id="vExtraAmp">25</span>
+        </div>
+
+        <button id="btnNew" onclick="chooseEdge()">New edge</button>
+    </div>
+
+    <script>
+    (function () {
+        // Platform-aware defaults (used only when no localStorage value exists)
+        const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+                      || window.innerWidth < 600;
+        const DEFAULTS = isMobile
+            ? { numPoints:'14', baseDist:'52', amplitude:'15', speedMult:'20',
+                thickness:'1.5', numLines:'8', spacing:'40', spacingFalloff:'0.9', extraAmp:'19' }
+            : { numPoints:'12', baseDist:'100', amplitude:'15', speedMult:'25',
+                thickness:'1.5', numLines:'12', spacing:'90', spacingFalloff:'0.9', extraAmp:'25' };
+
+        const SLIDERS = [
+            ['numPoints',     'vNumPoints'],
+            ['baseDist',      'vBaseDist'],
+            ['amplitude',     'vAmplitude'],
+            ['speedMult',     'vSpeedMult'],
+            ['thickness',     'vThickness'],
+            ['numLines',      'vNumLines'],
+            ['spacing',       'vSpacing'],
+            ['spacingFalloff','vSpacingFalloff'],
+            ['extraAmp',      'vExtraAmp'],
+        ];
+        const NS = 'waves_';
+
+        SLIDERS.forEach(([id, vid]) => {
+            const el  = document.getElementById(id);
+            const lbl = document.getElementById(vid);
+            const saved = localStorage.getItem(NS + id);
+            el.value = saved !== null ? saved : DEFAULTS[id];
+            lbl.textContent = el.value;
+            el.addEventListener('input', () => {
+                lbl.textContent = el.value;
+                localStorage.setItem(NS + id, el.value);
+            });
+        });
+
+        // Cogwheel toggle
+        document.getElementById('cog').addEventListener('click', () => {
+            document.getElementById('panel').classList.toggle('open');
+        });
+    })();
+    </script>
+
+    <script src="sketch.js"></script>
+</body>
+</html>
+
+        #panel h3 {
+            margin: 0 0 12px;
+            font-size: 13px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            opacity: 0.6;
+        }
+
+        .row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 9px;
+            gap: 10px;
+        }
+
+        .row label {
+            white-space: nowrap;
+            opacity: 0.85;
+        }
+
+        .row input[type=range] {
+            flex: 1;
+            accent-color: #fff;
+            cursor: pointer;
+        }
+
+        .row .val {
+            width: 30px;
+            text-align: right;
+            opacity: 0.7;
+        }
+
+        #btnNew {
+            margin-top: 12px;
+            width: 100%;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.25);
+            color: #fff;
+            font-family: monospace;
+            font-size: 12px;
+            padding: 6px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+        #btnNew:hover { background: rgba(255,255,255,0.2); }
+    </style>
+</head>
+<body>
+    <canvas id="c" style="display:block"></canvas>
+    <div id="panel">
+        <h3>Controls</h3>
+
+        <div class="row">
+            <label>Points</label>
+            <input type="range" id="numPoints" min="4" max="40" value="20">
+            <span class="val" id="vNumPoints">20</span>
+        </div>
+
+        <div class="row">
+            <label>Distance</label>
+            <input type="range" id="baseDist" min="10" max="200" value="100">
+            <span class="val" id="vBaseDist">100</span>
+        </div>
+
+        <div class="row">
+            <label>Amplitude</label>
+            <input type="range" id="amplitude" min="0" max="150" value="36">
+            <span class="val" id="vAmplitude">36</span>
+        </div>
+
+        <div class="row">
+            <label>Speed</label>
+            <input type="range" id="speedMult" min="0" max="50" step="1" value="25">
+            <span class="val" id="vSpeedMult">25</span>
+        </div>
+
+        <div class="row">
+            <label>Shadow</label>
+            <input type="range" id="thickness" min="0.5" max="8" step="0.5" value="1.5">
+            <span class="val" id="vThickness">1.5</span>
+        </div>
+
+        <div class="row">
+            <label>Lines</label>
+            <input type="range" id="numLines" min="1" max="12" value="3">
+            <span class="val" id="vNumLines">3</span>
+        </div>
+
+        <div class="row">
+            <label>Spacing</label>
+            <input type="range" id="spacing" min="5" max="120" value="30">
+            <span class="val" id="vSpacing">30</span>
+        </div>
+
+        <div class="row">
+            <label>Falloff</label>
+            <input type="range" id="spacingFalloff" min="0.5" max="2" step="0.05" value="1">
+            <span class="val" id="vSpacingFalloff">1</span>
+        </div>
+        <div class="row">
+            <label>Extra amp</label>
+            <input type="range" id="extraAmp" min="0" max="80" value="20">
+            <span class="val" id="vExtraAmp">20</span>
+        </div>
+
+        <button id="btnNew" onclick="chooseEdge()">New edge</button>
+    </div>
+
+    <script>
+    (function () {
+        const SLIDERS = [
+            ['numPoints',     'vNumPoints'],
+            ['baseDist',      'vBaseDist'],
+            ['amplitude',     'vAmplitude'],
+            ['speedMult',     'vSpeedMult'],
+            ['thickness',     'vThickness'],
+            ['numLines',      'vNumLines'],
+            ['spacing',       'vSpacing'],
+            ['spacingFalloff','vSpacingFalloff'],
+            ['extraAmp',      'vExtraAmp'],
+        ];
+        const NS = 'waves_';
+
+        // Restore saved values, then wire up save-on-input
+        SLIDERS.forEach(([id, vid]) => {
+            const el  = document.getElementById(id);
+            const lbl = document.getElementById(vid);
+            const saved = localStorage.getItem(NS + id);
+            if (saved !== null) el.value = saved;
+            lbl.textContent = el.value;
+            el.addEventListener('input', () => {
+                lbl.textContent = el.value;
+                localStorage.setItem(NS + id, el.value);
+            });
+        });
+    })();
+    </script>
+
+    <script src="sketch.js"></script>
+</body>
+</html>
