@@ -1,0 +1,894 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Family tree islands</title>
+<style>
+ :root{
+   --bg:#0f1220; --panel:#171b2c; --panel2:#1b2030; --line:#2b3247;
+   --txt:#dfe3ee; --muted:#aeb6c8; --muted2:#8a93ab;
+   --accent:#f59e0b; --accent2:#7dd3fc; --green:#34d399;
+ }
+ *{box-sizing:border-box}
+ html,body{margin:0;height:100%;background:var(--bg);color:var(--txt);
+   font:14px "Segoe UI",Arial,sans-serif}
+ body{overflow:hidden}
+ button{font:inherit;cursor:pointer}
+ .scr{position:absolute;inset:0;display:none;overflow:auto}
+ .scr.on{display:block}
+
+ /* ---- centred card layout for upload + config ---- */
+ .wrap{max-width:880px;margin:0 auto;padding:38px 22px 60px}
+ h1{font-size:24px;font-weight:600;margin:0 0 4px}
+ .sub{color:var(--muted);margin:0 0 26px;line-height:1.5}
+ .sub code{background:var(--panel2);padding:1px 5px;border-radius:4px;color:var(--accent2)}
+
+ /* ---- upload ---- */
+ #drop{border:2px dashed var(--line);border-radius:14px;padding:54px 24px;text-align:center;
+   background:var(--panel);transition:.15s;cursor:pointer}
+ #drop:hover,#drop.hot{border-color:var(--accent);background:#1c2236}
+ #drop .big{font-size:17px;margin-bottom:6px}
+ #drop .small{color:var(--muted2);font-size:13px}
+ #drop .icn{font-size:40px;opacity:.55;margin-bottom:10px}
+ .err{color:#fca5a5;margin-top:14px;min-height:18px}
+ .samplerow{margin-top:18px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+ .samplerow .orline{color:var(--muted2)}
+
+ /* ---- config ---- */
+ .bar{display:flex;align-items:center;gap:14px;margin-bottom:24px;flex-wrap:wrap}
+ .pill{background:var(--panel2);border:1px solid var(--line);border-radius:20px;
+   padding:5px 13px;color:var(--muted);font-size:13px}
+ .pill b{color:var(--txt)}
+ .lbl{font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted2);
+   margin:26px 0 10px;font-weight:600}
+ .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
+ .snm{display:flex;justify-content:space-between;align-items:center;gap:8px;
+   background:var(--panel);border:1px solid var(--line);border-radius:9px;
+   padding:9px 13px;text-align:left;color:var(--txt);transition:.12s}
+ .snm:hover{border-color:#454f6e;background:var(--panel2)}
+ .snm.sel{border-color:var(--accent);background:#2a2415;box-shadow:0 0 0 1px var(--accent) inset}
+ .snm .nm{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+ .snm .ct{color:var(--muted2);font-size:12px;flex:none}
+ .snm .rk{color:var(--muted2);font-size:12px;width:20px;flex:none}
+
+ .search{position:relative;max-width:460px}
+ .search input{width:100%;background:var(--panel);border:1px solid var(--line);
+   border-radius:9px;padding:10px 36px 10px 13px;color:var(--txt);font:inherit;outline:none}
+ .search input:focus{border-color:var(--accent2)}
+ .search .x{position:absolute;right:8px;top:50%;transform:translateY(-50%);
+   background:none;border:none;color:var(--muted2);font-size:18px;line-height:1;padding:4px 6px}
+ .drop{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:9;
+   background:var(--panel2);border:1px solid var(--line);border-radius:9px;
+   max-height:300px;overflow:auto;box-shadow:0 10px 30px #0008}
+ .drop:empty{display:none}
+ .opt{padding:8px 13px;cursor:pointer;display:flex;justify-content:space-between;gap:10px}
+ .opt:hover,.opt.hi{background:#283050}
+ .opt .y{color:var(--muted2);font-size:12px;flex:none}
+ .chosen{margin-top:10px;color:var(--muted);font-size:13px}
+ .chosen b{color:var(--green)}
+
+ .actions{margin-top:34px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+ .btn{background:var(--accent);color:#1a1206;border:none;border-radius:9px;
+   padding:11px 22px;font-weight:600}
+ .btn:disabled{opacity:.4;cursor:not-allowed}
+ .btn.ghost{background:transparent;color:var(--muted);border:1px solid var(--line)}
+ .btn.ghost:hover{border-color:#454f6e;color:var(--txt)}
+ .note{color:var(--muted2);font-size:13px}
+
+ /* ---- viz (ported from trees.py) ---- */
+ #screen-viz{overflow:hidden}
+ #hd{position:fixed;top:0;left:0;right:0;padding:9px 14px;z-index:5;
+   background:linear-gradient(#0f1220,#0f1220cc,transparent)}
+ #hd .key{margin-left:14px;color:var(--muted);font-size:13px}
+ #hd .ctl{margin-left:18px;color:#cdd4e4;font-size:13px}
+ #hd .ctl input[type=range]{vertical-align:middle;width:120px}
+ #hd .ctl select{background:var(--panel2);color:var(--txt);border:1px solid var(--line);
+   border-radius:4px;padding:1px 4px}
+ #hd .back{background:var(--panel2);color:var(--txt);border:1px solid var(--line);
+   border-radius:6px;padding:3px 10px;font-size:13px;margin-right:6px}
+ #hd .back:hover{border-color:#454f6e}
+ .dotk{display:inline-block;width:10px;height:10px;border-radius:50%;vertical-align:-1px;margin:0 4px 0 12px}
+ #screen-viz svg{width:100vw;height:100vh;display:block}
+</style>
+</head>
+<body>
+
+<!-- ============ SCREEN 1: UPLOAD ============ -->
+<div id="screen-upload" class="scr on">
+ <div class="wrap">
+  <h1>Family tree islands</h1>
+  <p class="sub">Upload a GEDCOM file, pick a surname, optionally choose a base person, and explore the
+   family islands as an interactive graph. Everything runs in your browser &mdash;
+   your <code>.ged</code> file never leaves this page.</p>
+  <div id="drop">
+   <div class="icn">&#128194;</div>
+   <div class="big">Drop a <b>.ged</b> file here, or click to choose</div>
+   <div class="small">GEDCOM is parsed entirely on your device</div>
+   <input id="file" type="file" accept=".ged,.gedcom,text/plain" hidden>
+  </div>
+  <div id="sampleRow" class="samplerow" hidden>
+   <span class="orline">or</span>
+   <button id="useSample" class="btn ghost">Explore the included sample tree &rarr;</button>
+   <span class="note">a real family tree, trimmed to essentials with living people anonymized</span>
+  </div>
+  <div id="upErr" class="err"></div>
+ </div>
+</div>
+
+<!-- ============ SCREEN 2: CONFIG ============ -->
+<div id="screen-config" class="scr">
+ <div class="wrap">
+  <h1>Choose a family</h1>
+  <div class="bar">
+   <span class="pill">File: <b id="cfgFile">&mdash;</b></span>
+   <span class="pill"><b id="cfgIndi">0</b> people</span>
+   <span class="pill"><b id="cfgFam">0</b> families</span>
+   <button class="btn ghost" id="reupload">Upload another file</button>
+  </div>
+
+  <div class="lbl">1 &middot; Surname &mdash; the 20 most common</div>
+  <div id="surnGrid" class="grid"></div>
+
+  <div class="lbl">2 &middot; Base person <span style="text-transform:none;font-weight:400;color:var(--muted2)">(optional &mdash; links a chosen person to their ancestral island)</span></div>
+  <div class="search">
+   <input id="baseInput" type="text" placeholder="Type a name to search&hellip;" autocomplete="off">
+   <button class="x" id="baseClear" title="Clear">&times;</button>
+   <div id="baseDrop" class="drop"></div>
+  </div>
+  <div id="baseChosen" class="chosen"></div>
+
+  <div class="actions">
+   <button id="go" class="btn" disabled>Visualize &rarr;</button>
+   <span id="goNote" class="note">Pick a surname to continue.</span>
+  </div>
+ </div>
+</div>
+
+<!-- ============ SCREEN 3: VISUALIZATION ============ -->
+<div id="screen-viz" class="scr">
+ <div id="hd">
+  <button class="back" id="vizBack">&larr; Back</button>
+  <b id="vizTitle">family trees</b>
+  <span id="stat" class="key"></span>
+  <span class="ctl">island &ge; <input id="cut" type="range" min="1" max="50" value="3">
+    <b id="cutv">3</b> people</span>
+  <span class="ctl">spread <input id="spread" type="range" min="0.4" max="5" step="0.1" value="3">
+    <b id="spreadv">3.0&times;</b></span>
+  <span class="ctl">layout
+    <select id="mode"><option value="pack">chronological</option><option value="grid">grid</option></select></span>
+  <br>
+  <span id="legend" class="key"></span>
+  <span class="key">scroll = zoom, drag = pan</span>
+ </div>
+ <svg></svg>
+</div>
+
+<script src="default_data.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script>
+"use strict";
+
+/* ====================================================================
+   difflib.SequenceMatcher.ratio() port (Ratcliff/Obershelp).
+   For short strings (no autojunk), this matches CPython's result.
+   ==================================================================== */
+function ratio(a, b){
+  if(!a.length && !b.length) return 1;
+  const b2j = new Map();
+  for(let j=0;j<b.length;j++){
+    const ch=b[j];
+    if(!b2j.has(ch)) b2j.set(ch,[]);
+    b2j.get(ch).push(j);
+  }
+  function longest(alo,ahi,blo,bhi){
+    let besti=alo,bestj=blo,bestsize=0;
+    let j2len=new Map();
+    for(let i=alo;i<ahi;i++){
+      const newj2len=new Map();
+      const idxs=b2j.get(a[i]);
+      if(idxs){
+        for(const j of idxs){
+          if(j<blo) continue;
+          if(j>=bhi) break;
+          const k=(j2len.get(j-1)||0)+1;
+          newj2len.set(j,k);
+          if(k>bestsize){ besti=i-k+1; bestj=j-k+1; bestsize=k; }
+        }
+      }
+      j2len=newj2len;
+    }
+    return [besti,bestj,bestsize];
+  }
+  let matches=0;
+  const queue=[[0,a.length,0,b.length]];
+  while(queue.length){
+    const [alo,ahi,blo,bhi]=queue.pop();
+    const [i,j,k]=longest(alo,ahi,blo,bhi);
+    if(k){
+      matches+=k;
+      if(alo<i && blo<j) queue.push([alo,i,blo,j]);
+      if(i+k<ahi && j+k<bhi) queue.push([i+k,ahi,j+k,bhi]);
+    }
+  }
+  return (2.0*matches)/(a.length+b.length);
+}
+
+/* small set helpers */
+function intersects(a,b){ for(const x of a) if(b.has(x)) return true; return false; }
+
+/* Python round(): round-half-to-even (so estimated years match trees.py exactly) */
+function pyRound(x){
+  const f=Math.floor(x), d=x-f;
+  if(d<0.5) return f;
+  if(d>0.5) return f+1;
+  return (f%2===0)?f:f+1;
+}
+
+/* ====================================================================
+   PASS 1: parse every individual's surname(s) + display name, and every
+   family. (Faithful port of trees.py pass 1.)
+   ==================================================================== */
+function parseGedcom(text){
+  const lines=text.split(/\r\n|\r|\n/);
+  const slash=/\/([^/]*)\//;
+  const yearRe=/\d{3,4}/g;
+
+  const indi=new Set();
+  const indiSurn=new Map();       // id -> Set(lowercased surnames)
+  const indiSurnOrig=new Map();   // id -> Set(original-case surnames)
+  const indiName=new Map();       // id -> first non-married display name
+  const indiNameAny=new Map();    // id -> first display name (any type)
+  const indiBirt=new Map();       // id -> birth year
+  const indiBapt=new Map();       // id -> baptism/christening year
+  const fams=new Map();           // id -> {husb,wife,chil:[]}
+
+  let cur=null, ctx=null;
+  let fam={husb:null,wife:null,chil:[]};
+  let nbSurns=new Set(), nbType=null, nbDisp=null;
+  let curEvt=null;
+
+  function addSurn(i,s){
+    s=s.trim(); if(!s) return;
+    if(!indiSurnOrig.has(i)) indiSurnOrig.set(i,new Set());
+    indiSurnOrig.get(i).add(s);
+    if(!indiSurn.has(i)) indiSurn.set(i,new Set());
+    indiSurn.get(i).add(s.toLowerCase());
+  }
+  function flushName(i){
+    if(i!=null && nbDisp!=null){
+      if(!indiNameAny.has(i)) indiNameAny.set(i,nbDisp);
+      if(nbType!=="married"){
+        if(!indiName.has(i)) indiName.set(i,nbDisp);
+        for(const s of nbSurns) addSurn(i,s);
+      }
+    }
+    nbSurns=new Set(); nbType=null; nbDisp=null;
+  }
+
+  for(const raw of lines){
+    const line=raw.replace(/[\r\n]+$/,"");
+    if(line.startsWith("0 @")){
+      if(ctx==="I"){ flushName(cur); curEvt=null; }
+      else if(ctx==="F"){ fams.set(cur,fam); }
+      const p=line.split(/\s+/);
+      cur=p[1]; const typ=p.length>2?p[2]:"";
+      if(typ==="INDI"){ indi.add(cur); ctx="I"; }
+      else if(typ==="FAM"){ fam={husb:null,wife:null,chil:[]}; ctx="F"; }
+      else ctx=null;
+      continue;
+    }
+    if(ctx==="I"){
+      if(line.startsWith("1 NAME ")){
+        flushName(cur); curEvt=null;
+        const rest=line.slice(7);
+        const m=slash.exec(rest);
+        if(m) nbSurns.add(m[1]);
+        nbDisp=rest.replace(/\//g," ").replace(/\s+/g," ").trim()||null;
+      } else if(line.startsWith("2 TYPE ")){
+        nbType=line.slice(7).trim().toLowerCase();
+      } else if(line.startsWith("2 SURN ")){
+        nbSurns.add(line.slice(7));
+      } else if(line.startsWith("2 DATE ") && curEvt){
+        const nums=line.slice(7).match(yearRe);
+        if(nums){
+          const map=(curEvt==="BIRT")?indiBirt:indiBapt;
+          if(!map.has(cur)) map.set(cur,parseInt(nums[nums.length-1],10));
+        }
+      } else if(line.startsWith("1 ")){
+        flushName(cur);
+        if(line.startsWith("1 BIRT")) curEvt="BIRT";
+        else if(line.startsWith("1 BAPM")||line.startsWith("1 CHR")) curEvt="BAPT";
+        else curEvt=null;
+      }
+    } else if(ctx==="F"){
+      if(line.startsWith("1 HUSB ")) fam.husb=line.split(/\s+/)[2];
+      else if(line.startsWith("1 WIFE ")) fam.wife=line.split(/\s+/)[2];
+      else if(line.startsWith("1 CHIL ")) fam.chil.push(line.split(/\s+/)[2]);
+    }
+  }
+  if(ctx==="I") flushName(cur);
+  else if(ctx==="F") fams.set(cur,fam);
+
+  return {indi,indiSurn,indiSurnOrig,indiName,indiNameAny,indiBirt,indiBapt,fams};
+}
+
+/* ---- surname frequency + canonical "best form" ---- */
+function surnameStats(data){
+  const surnCount=new Map();
+  for(const ss of data.indiSurn.values())
+    for(const s of ss) surnCount.set(s,(surnCount.get(s)||0)+1);
+  const surnForm=new Map();  // low -> Map(orig -> count)
+  for(const ss of data.indiSurnOrig.values())
+    for(const s of ss){
+      const low=s.toLowerCase();
+      if(!surnForm.has(low)) surnForm.set(low,new Map());
+      const m=surnForm.get(low);
+      m.set(s,(m.get(s)||0)+1);
+    }
+  function bestForm(low){
+    const m=surnForm.get(low);
+    if(!m) return low;
+    let best=low, bn=-1;
+    for(const [k,v] of m) if(v>bn){ bn=v; best=k; }
+    return best;
+  }
+  function topN(n){
+    return [...surnCount.entries()].sort((a,b)=>b[1]-a[1]).slice(0,n);
+  }
+  return {surnCount,bestForm,topN};
+}
+
+function dispOf(data,i){
+  return data.indiName.get(i)||data.indiNameAny.get(i)||"?";
+}
+
+/* ====================================================================
+   Learn variant spellings (fixpoint over name-variations + paternal
+   links), gated by spelling similarity. Faithful port.
+   ==================================================================== */
+function learnVariants(data,chosen){
+  const SIM=0.62;
+  const variants=new Set([chosen]);
+  function variantLike(s){
+    for(const v of variants){ if(s===v || ratio(s,v)>=SIM) return true; }
+    return false;
+  }
+  function addCandidates(surnames,sink){
+    if(!surnames) return;
+    for(const s of surnames){
+      if(variants.has(s)) continue;
+      if(variantLike(s)) sink.add(s);
+    }
+  }
+  while(true){
+    const nw=new Set();
+    for(const ss of data.indiSurn.values())
+      if(intersects(ss,variants)) addCandidates(ss,nw);
+    for(const f of data.fams.values()){
+      const h=f.husb, kids=f.chil;
+      const hMatch = h!=null && data.indiSurn.has(h) && intersects(data.indiSurn.get(h),variants);
+      if(hMatch) for(const c of kids) addCandidates(data.indiSurn.get(c),nw);
+      if(h!=null && kids.some(c=>data.indiSurn.has(c)&&intersects(data.indiSurn.get(c),variants)))
+        addCandidates(data.indiSurn.get(h),nw);
+    }
+    if(nw.size===0) break;
+    for(const s of nw) variants.add(s);
+  }
+  return variants;
+}
+
+/* ====================================================================
+   Build the graph: edges, optional base-person link, components,
+   estimated years, and the node/link JSON the viz consumes.
+   ==================================================================== */
+function buildGraph(data,variants,baseId){
+  const {indi,indiSurn,indiName,indiNameAny,indiBirt,indiBapt,fams}=data;
+  const isMatch=i=>{ const ss=indiSurn.get(i); return ss?intersects(ss,variants):false; };
+  const disp=i=>indiName.get(i)||indiNameAny.get(i)||"?";
+
+  /* edges: parent-child (>=1 match) + spouse (>=1 match, or both nodes) */
+  const pc=new Map(), sp=new Map();              // "a|b" -> [a,b]
+  const addEdge=(m,a,b)=>m.set(a+"|"+b,[a,b]);
+  const nodes=new Set();
+  for(const i of indi) if(isMatch(i)) nodes.add(i);
+  for(const f of fams.values()){
+    const parents=[f.husb,f.wife].filter(Boolean);
+    for(const c of f.chil)
+      for(const p of parents)
+        if(isMatch(c)||isMatch(p)){ addEdge(pc,p,c); nodes.add(p); nodes.add(c); }
+  }
+  for(const f of fams.values()){
+    const h=f.husb,w=f.wife;
+    if(h&&w && (isMatch(h)||isMatch(w)||(nodes.has(h)&&nodes.has(w)))){
+      addEdge(sp,h,w); nodes.add(h); nodes.add(w);
+    }
+  }
+
+  /* link the base person into an island by walking UP their ancestry */
+  const basePath=new Set(), baseLine=new Set(), baseDepth=new Map();
+  let baseInfo="";
+  if(baseId!=null){
+    const parOf=new Map(), famOfChild=new Map();
+    for(const f of fams.values()){
+      const ps=[f.husb,f.wife].filter(Boolean);
+      for(const c of f.chil){
+        if(!parOf.has(c)) parOf.set(c,new Set());
+        for(const p of ps) parOf.get(c).add(p);
+        if(!famOfChild.has(c)) famOfChild.set(c,[]);
+        famOfChild.get(c).push(f);
+      }
+    }
+    const prev=new Map([[baseId,null]]);
+    let target = nodes.has(baseId)?baseId:null;
+    const dq=[baseId];
+    while(dq.length && target===null){
+      const x=dq.shift();
+      let broke=false;
+      for(const p of (parOf.get(x)||[])){
+        if(prev.has(p)) continue;
+        prev.set(p,x);
+        if(nodes.has(p)){ target=p; broke=true; break; }
+        dq.push(p);
+      }
+      if(broke) break;
+    }
+    if(target===null){
+      baseInfo = nodes.has(baseId)
+        ? `Base person “${disp(baseId)}” is already in the graph.`
+        : `No ancestral link from “${disp(baseId)}” to any family island found.`;
+    } else {
+      const path=[]; let x=target;
+      while(x!=null){ path.push(x); x=prev.get(x); }
+      path.reverse();
+      for(const n of path){ basePath.add(n); baseLine.add(n); }
+      const surnameNodes=new Set(nodes);
+      path.forEach((n,gen)=>baseDepth.set(n,gen));
+      for(let k=0;k<path.length-1;k++){
+        const child=path[k], parent=path[k+1];
+        const famLink=(famOfChild.get(child)||[]).find(f=>parent===f.husb||parent===f.wife)||null;
+        nodes.add(parent); addEdge(pc,parent,child);
+        if(famLink){
+          const h=famLink.husb,w=famLink.wife;
+          const spouse = (h===parent)?w:h;
+          if(spouse && (surnameNodes.has(spouse)||isMatch(spouse))){
+            addEdge(pc,spouse,child); addEdge(sp,h,w);
+          }
+        }
+      }
+      nodes.add(baseId);
+      baseInfo=`Linked base person up ${path.length-1} generation(s) to ${disp(target)}.`;
+    }
+  }
+
+  /* connected components (islands) via union-find */
+  const edges=[...pc.values(),...sp.values()];
+  const par=new Map(); for(const n of nodes) par.set(n,n);
+  function find(x){ while(par.get(x)!==x){ par.set(x,par.get(par.get(x))); x=par.get(x); } return x; }
+  function union(a,b){ const ra=find(a),rb=find(b); if(ra!==rb) par.set(ra,rb); }
+  for(const [a,b] of edges) union(a,b);
+  const comp=new Map();
+  for(const n of nodes){ const r=find(n); if(!comp.has(r)) comp.set(r,[]); comp.get(r).push(n); }
+  const roots=[...comp.keys()].sort((a,b)=>comp.get(b).length-comp.get(a).length);
+  const cid=new Map(); roots.forEach((r,k)=>cid.set(r,k));
+  const csize=new Map(); for(const n of nodes) csize.set(find(n),comp.get(find(n)).length);
+  let maxcs=1; for(const c of comp.values()) maxcs=Math.max(maxcs,c.length);
+
+  /* estimate missing birth years from relatives (~30 yrs / generation) */
+  const birthYear=n=>indiBirt.has(n)?indiBirt.get(n):(indiBapt.has(n)?indiBapt.get(n):undefined);
+  const GEN=30;
+  const parentsOf=new Map(), childrenOf=new Map();
+  for(const f of fams.values()){
+    const ps=[f.husb,f.wife].filter(Boolean);
+    for(const c of f.chil) for(const p of ps){
+      if(!parentsOf.has(c)) parentsOf.set(c,[]); parentsOf.get(c).push(p);
+      if(!childrenOf.has(p)) childrenOf.set(p,[]); childrenOf.get(p).push(c);
+    }
+  }
+  const year=new Map(); for(const n of nodes) year.set(n,birthYear(n));
+  const est=new Map();
+  const known=n=>{ const y=year.get(n); if(y!=null) return y; const e=est.get(n); return e!=null?e:null; };
+  for(let it=0;it<12;it++){
+    let changed=false;
+    for(const n of nodes){
+      if(known(n)!==null) continue;
+      const vals=[];
+      for(const p of (parentsOf.get(n)||[])){ const yp=known(p); if(yp!==null) vals.push(yp+GEN); }
+      for(const c of (childrenOf.get(n)||[])){ const yc=known(c); if(yc!==null) vals.push(yc-GEN); }
+      if(vals.length){ est.set(n,pyRound(vals.reduce((a,b)=>a+b,0)/vals.length)); changed=true; }
+    }
+    if(!changed) break;
+  }
+
+  /* node / link JSON */
+  const nodeList=[...nodes];
+  const idx=new Map(); nodeList.forEach((n,k)=>idx.set(n,k));
+  const yv=n=>{ const y=year.get(n); if(y!=null) return y; const e=est.get(n); return e!=null?e:null; };
+  const nodeJson=nodeList.map(n=>{
+    const hasYear=year.get(n)!=null;
+    return {
+      g: isMatch(n)?1:0,
+      b: n===baseId?2:(basePath.has(n)?1:0),
+      bd: baseDepth.has(n)?baseDepth.get(n):null,
+      bl: baseLine.has(n)?1:0,
+      n: indiName.get(n)||indiNameAny.get(n)||"?",
+      by: yv(n),
+      e: hasYear?0:(est.has(n)?1:0),
+      c: cid.get(find(n)),
+      cs: csize.get(find(n))
+    };
+  });
+  const linkJson=[
+    ...[...pc.values()].map(([a,b])=>({s:idx.get(a),t:idx.get(b),ty:0})),
+    ...[...sp.values()].map(([a,b])=>({s:idx.get(a),t:idx.get(b),ty:1}))
+  ];
+  const nmatch=nodeList.reduce((a,n)=>a+(isMatch(n)?1:0),0);
+  return {
+    nodeJson, linkJson, maxcs,
+    nmatch, nodeCount:nodes.size, islandCount:comp.size,
+    pcCount:pc.size, spCount:sp.size,
+    baseInfo, hasBasePath:basePath.size>0,
+    baseDisp: baseId!=null?disp(baseId):null
+  };
+}
+
+/* ====================================================================
+   VISUALIZATION (ported from trees.py d3 template, parameterized)
+   ==================================================================== */
+let CUR_SIM=null;
+function runViz(N, L, SURN, maxcs, initialCut, baseDisp, hasBasePath){
+  if(CUR_SIM){ CUR_SIM.stop(); CUR_SIM=null; }
+
+  document.getElementById("vizTitle").textContent = SURN+" family trees";
+  // legend
+  let legend = `<span class="dotk" style="background:#f59e0b"></span>${escapeHtml(SURN)}`
+    + `<span class="dotk" style="background:#6b7790"></span>parent / child`;
+  if(baseDisp && hasBasePath){
+    legend += `<span class="dotk" style="background:#34d399"></span>${escapeHtml(baseDisp)}`
+      + `<span class="dotk" style="background:#7dd3fc"></span>ancestral link`;
+  }
+  legend += ` &nbsp;<span style="display:inline-block;width:15px;border-top:2px solid #46506a;vertical-align:4px"></span> parent&ndash;child`
+    + ` &nbsp;<span style="display:inline-block;width:15px;border-top:2px solid #c2698c;vertical-align:4px"></span> spouse`;
+  document.getElementById("legend").innerHTML=legend;
+
+  const cutEl=document.getElementById("cut");
+  const cut=Math.min(Math.max(1,initialCut),maxcs);
+  cutEl.max=maxcs; cutEl.value=cut;
+  document.getElementById("cutv").textContent=cut;
+  document.getElementById("spread").value=3;
+  document.getElementById("spreadv").textContent="3.0×";
+  document.getElementById("mode").value="pack";
+
+  N.forEach((d,i)=>d.id=i);
+  L.forEach(l=>{ l.source=l.s; l.target=l.t; });
+
+  // spouse adjacency -- keeps couples level (same height)
+  const spMates=new Map();
+  L.forEach(l=>{ if(l.ty){
+    (spMates.get(l.s)||spMates.set(l.s,[]).get(l.s)).push(l.t);
+    (spMates.get(l.t)||spMates.set(l.t,[]).get(l.t)).push(l.s);
+  }});
+  const W=1700, PAD=30, GAP=26;
+  const cellR=n=>10*Math.sqrt(n)+16;
+  const colSpread=s=>1+(s-1)*0.4;
+
+  const svg=d3.select("#screen-viz svg");
+  svg.selectAll("*").remove();
+  const g=svg.append("g");
+  const linkG=g.append("g"), nodeG=g.append("g");
+  let link=linkG.selectAll("line"), node=nodeG.selectAll("circle");
+
+  const VSTRETCH=1.9;
+
+  const sim=d3.forceSimulation()
+    .force("link", d3.forceLink().id(d=>d.id).distance(15).strength(.45))
+    .force("charge", d3.forceManyBody().strength(-14).distanceMax(55))
+    .force("x", d3.forceX(d=>d.ax).strength(.20))
+    .force("y", d3.forceY(d=>d.ay).strength(.42))
+    .force("collide", d3.forceCollide(3.4))
+    .on("tick",()=>{ link.attr("x1",d=>d.source.x).attr("y1",d=>d.source.y)
+                         .attr("x2",d=>d.target.x).attr("y2",d=>d.target.y);
+                     node.attr("cx",d=>d.x).attr("cy",d=>d.y); });
+  CUR_SIM=sim;
+
+  function islandsOf(vis){
+    const m=new Map();
+    for(const d of vis){ (m.get(d.c)||m.set(d.c,[]).get(d.c)).push(d); }
+    return [...m.values()].sort((a,b)=>b.length-a.length);
+  }
+  function medianYear(isl){
+    const ys=isl.map(d=>d.by).filter(v=>v!=null).sort((a,b)=>a-b);
+    return ys.length ? ys[ys.length>>1] : null;
+  }
+  const byDate=(a,b)=>(medianYear(a)??1e9)-(medianYear(b)??1e9);
+
+  function placeByYear(isl,cx,cy,r){
+    const ys=isl.filter(d=>d.by!=null&&d.bd==null).map(d=>d.by);
+    if(ys.length<2){ for(const d of isl){ d.ax=cx; d.ay=cy; } return; }
+    const mn=Math.min(...ys), mx=Math.max(...ys), mid=(mn+mx)/2, half=(mx-mn)/2;
+    const H=r*VSTRETCH;
+    for(const d of isl){ const by=d.by!=null?d.by:mid; d.ax=cx; d.ay=cy+((by-mid)/half)*H; }
+  }
+  function packLayout(isls,spread){
+    const all=isls.flatMap(i=>i.filter(d=>d.bd==null).map(d=>d.by)).filter(v=>v!=null);
+    const gmin=all.length?Math.min(...all):0, gmax=all.length?Math.max(...all):1;
+    const span=Math.max(gmax-gmin,1), mid=(gmin+gmax)/2;
+    const Hax=Math.min(Math.max(span*2.6,500),2800);
+    const pxy=Hax/span;
+    const order=isls.slice().sort(byDate);
+    let x=PAD;
+    for(const isl of order){
+      const r=cellR(isl.length)*colSpread(spread), cx=x+r, my=medianYear(isl)??mid;
+      for(const d of isl){ const by=d.by!=null?d.by:my; d.ax=cx; d.ay=PAD+(by-gmin)*pxy; }
+      x+=2*r+GAP;
+    }
+    return {w:x+PAD, h:PAD*2+Hax};
+  }
+  function gridLayout(isls,spread){
+    const order=isls.slice().sort(byDate);
+    const n=order.length||1;
+    const cols=Math.max(1,Math.round(Math.sqrt(n)));
+    const maxR=Math.max(16,...order.map(i=>cellR(i.length)));
+    const cellW=2*maxR*colSpread(spread)+GAP, cellH=2*maxR*VSTRETCH+GAP;
+    order.forEach((isl,k)=>{
+      const cx=PAD+(k%cols)*cellW+cellW/2, cy=PAD+Math.floor(k/cols)*cellH+cellH/2;
+      placeByYear(isl,cx,cy,cellR(isl.length));
+    });
+    const rows=Math.ceil(n/cols);
+    return {w:PAD*2+cols*cellW, h:PAD*2+rows*cellH};
+  }
+
+  const BASE_STEP=18, BASE_DX=14;
+  function pinBase(vis){
+    for(const d of vis){ if(d.bd==null){ d.fx=null; d.fy=null; } }
+    const B=vis.filter(d=>d.bd!=null);
+    if(!B.length) return;
+    const top=B.reduce((a,b)=>b.bd>a.bd?b:a);
+    const cx=top.ax, topY=top.ay, topBd=top.bd;
+    for(const d of B){
+      d.fx=cx+(d.bl?0:BASE_DX);
+      d.fy=topY+(topBd-d.bd)*BASE_STEP;
+      d.x=d.fx; d.y=d.fy;
+    }
+  }
+  function levelSpouses(vis){
+    const visSet=new Set(vis.map(d=>d.id));
+    const tgt=new Map();
+    for(const d of vis){
+      if(d.bd!=null) continue;
+      const mates=(spMates.get(d.id)||[]).filter(m=>visSet.has(m));
+      if(!mates.length) continue;
+      let sum=d.ay, n=1;
+      for(const m of mates){ sum+=N[m].ay; n++; }
+      tgt.set(d.id, sum/n);
+    }
+    for(const d of vis){ if(tgt.has(d.id)) d.ay=tgt.get(d.id); }
+  }
+
+  function update(){
+    const cut=+d3.select("#cut").property("value");
+    const mode=d3.select("#mode").property("value");
+    const spread=+d3.select("#spread").property("value");
+    d3.select("#cutv").text(cut);
+    d3.select("#spreadv").text(spread.toFixed(1)+"×");
+    sim.force("x").strength(Math.max(.06,.20/spread));
+    sim.force("charge").strength(-14*spread).distanceMax(55*Math.max(1,spread));
+    const vis=N.filter(d=>d.cs>=cut);
+    const visSet=new Set(vis.map(d=>d.id));
+    const vl=L.filter(l=>visSet.has(l.s)&&visSet.has(l.t));
+    const isls=islandsOf(vis);
+    const dim=(mode==="grid"?gridLayout:packLayout)(isls,spread);
+    levelSpouses(vis);
+    vis.forEach(d=>{ d.x=d.ax; d.y=d.ay; });
+    pinBase(vis);
+    svg.attr("viewBox",[0,0,dim.w,Math.max(dim.h,innerHeight)]);
+
+    link=linkG.selectAll("line").data(vl,d=>d.s+"-"+d.t+"-"+d.ty)
+      .join("line")
+      .attr("stroke",d=>d.ty?"#c2698c":"#46506a")
+      .attr("stroke-opacity",d=>d.ty?.85:.5)
+      .attr("stroke-width",d=>d.ty?1.2:.8);
+    node=nodeG.selectAll("circle").data(vis,d=>d.id)
+      .join(enter=>enter.append("circle").call(s=>s.append("title")))
+      .attr("r",d=>d.b===2?5:d.b?3.2:d.g?3.4:2.3)
+      .attr("fill",d=>d.b===2?"#34d399":d.b?"#7dd3fc":d.g?"#f59e0b":"#6b7790")
+      .attr("stroke",d=>d.b===2?"#065f46":d.b?"#0c4a6e":d.g?"#7c4a02":"#2b3247")
+      .attr("stroke-width",d=>d.b===2?1:.5);
+    node.select("title").text(d=>(d.b===2?"★ ":"")
+      +(d.by!=null?`${d.n} (${d.e?"~":""}${d.by})`:d.n));
+
+    const ng=vis.filter(d=>d.g).length;
+    d3.select("#stat").html(`&mdash; ${isls.length} islands, ${ng} ${escapeHtml(SURN)} + ${vis.length-ng} relatives, `
+      +`${vl.filter(l=>!l.ty).length} parent&ndash;child &amp; ${vl.filter(l=>l.ty).length} spouse links`);
+
+    sim.nodes(vis); sim.force("link").links(vl); sim.alpha(.9).restart();
+  }
+  d3.select("#cut").on("input",update);
+  d3.select("#spread").on("input",update);
+  d3.select("#mode").on("change",update);
+  svg.call(d3.zoom().scaleExtent([.3,12]).on("zoom",e=>g.attr("transform",e.transform)));
+  update();
+}
+
+/* ====================================================================
+   APP / UI WIRING
+   ==================================================================== */
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c])); }
+function show(id){ document.querySelectorAll(".scr").forEach(s=>s.classList.remove("on"));
+  document.getElementById(id).classList.add("on"); }
+
+const APP={ data:null, stats:null, people:[], chosen:null, baseId:null };
+
+/* ---- upload ---- */
+const fileInput=document.getElementById("file");
+const drop=document.getElementById("drop");
+const upErr=document.getElementById("upErr");
+drop.addEventListener("click",()=>fileInput.click());
+drop.addEventListener("dragover",e=>{ e.preventDefault(); drop.classList.add("hot"); });
+drop.addEventListener("dragleave",()=>drop.classList.remove("hot"));
+drop.addEventListener("drop",e=>{ e.preventDefault(); drop.classList.remove("hot");
+  if(e.dataTransfer.files.length) loadFile(e.dataTransfer.files[0]); });
+fileInput.addEventListener("change",()=>{ if(fileInput.files.length) loadFile(fileInput.files[0]); });
+document.getElementById("reupload").addEventListener("click",()=>{ upErr.textContent=""; show("screen-upload"); });
+
+function loadFromText(text, filename){
+  try{
+    const data=parseGedcom(text);
+    if(data.indi.size===0){ upErr.textContent="No individuals (INDI records) found — is this a GEDCOM file?"; return; }
+    APP.data=data;
+    APP.stats=surnameStats(data);
+    APP.people=[...data.indi].map(i=>({
+      id:i,
+      disp:dispOf(data,i),
+      year: data.indiBirt.has(i)?data.indiBirt.get(i):(data.indiBapt.has(i)?data.indiBapt.get(i):null)
+    }));
+    APP.people.forEach(p=>p.lower=p.disp.toLowerCase());
+    APP.chosen=null; APP.baseId=null;
+    upErr.textContent="";
+    initConfig(filename);
+    show("screen-config");
+  }catch(err){
+    console.error(err);
+    upErr.textContent="Failed to parse the file: "+err.message;
+  }
+}
+
+function loadFile(file){
+  upErr.textContent="Reading "+file.name+" …";
+  const r=new FileReader();
+  r.onerror=()=>{ upErr.textContent="Could not read the file."; };
+  r.onload=()=>loadFromText(r.result, file.name);
+  r.readAsText(file,"utf-8");
+}
+
+/* default sample (bundled via default_data.js -> window.DEFAULT_GED) */
+if(typeof window!=="undefined" && window.DEFAULT_GED){
+  const row=document.getElementById("sampleRow");
+  if(row) row.hidden=false;
+  const us=document.getElementById("useSample");
+  if(us) us.addEventListener("click",()=>{
+    upErr.textContent="Loading sample…";
+    setTimeout(()=>loadFromText(window.DEFAULT_GED, "sample tree (anonymized)"), 20);
+  });
+}
+
+/* ---- config ---- */
+function initConfig(filename){
+  document.getElementById("cfgFile").textContent=filename;
+  document.getElementById("cfgIndi").textContent=APP.data.indi.size.toLocaleString();
+  document.getElementById("cfgFam").textContent=APP.data.fams.size.toLocaleString();
+
+  const grid=document.getElementById("surnGrid");
+  grid.innerHTML="";
+  APP.stats.topN(20).forEach(([low,n],k)=>{
+    const b=document.createElement("button");
+    b.className="snm";
+    b.innerHTML=`<span class="rk">${k+1}.</span>`
+      +`<span class="nm">${escapeHtml(APP.stats.bestForm(low))}</span>`
+      +`<span class="ct">${n}</span>`;
+    b.addEventListener("click",()=>{
+      APP.chosen=low;
+      [...grid.children].forEach(c=>c.classList.remove("sel"));
+      b.classList.add("sel");
+      refreshGo();
+    });
+    grid.appendChild(b);
+  });
+
+  // reset base picker
+  baseInput.value=""; APP.baseId=null; baseDrop.innerHTML=""; baseChosen.innerHTML="";
+  refreshGo();
+}
+
+function refreshGo(){
+  const go=document.getElementById("go");
+  const note=document.getElementById("goNote");
+  if(APP.chosen){
+    go.disabled=false;
+    note.textContent = APP.baseId!=null ? "" : "Base person is optional.";
+  }else{
+    go.disabled=true;
+    note.textContent="Pick a surname to continue.";
+  }
+}
+
+/* base person search */
+const baseInput=document.getElementById("baseInput");
+const baseDrop=document.getElementById("baseDrop");
+const baseChosen=document.getElementById("baseChosen");
+let baseHi=-1, baseMatches=[];
+
+function renderBaseDrop(){
+  baseDrop.innerHTML="";
+  baseMatches.forEach((p,k)=>{
+    const o=document.createElement("div");
+    o.className="opt"+(k===baseHi?" hi":"");
+    o.innerHTML=`<span>${escapeHtml(p.disp)}</span>`+(p.year?`<span class="y">${p.year}</span>`:"");
+    o.addEventListener("mousedown",e=>{ e.preventDefault(); pickBase(p); });
+    baseDrop.appendChild(o);
+  });
+}
+function searchBase(){
+  const q=baseInput.value.trim().toLowerCase();
+  if(!q){ baseMatches=[]; baseDrop.innerHTML=""; return; }
+  const toks=q.split(/\s+/);
+  const out=[];
+  for(const p of APP.people){
+    let ok=true;
+    for(const t of toks){ if(p.lower.indexOf(t)===-1){ ok=false; break; } }
+    if(ok){ out.push(p); if(out.length>200) break; }
+  }
+  out.sort((a,b)=>a.lower<b.lower?-1:a.lower>b.lower?1:0);
+  baseMatches=out.slice(0,40);
+  baseHi=-1;
+  renderBaseDrop();
+}
+function pickBase(p){
+  APP.baseId=p.id;
+  baseInput.value=p.disp;
+  baseDrop.innerHTML="";
+  baseChosen.innerHTML=`Base person: <b>${escapeHtml(p.disp)}</b>`+(p.year?` (${p.year})`:"");
+  refreshGo();
+}
+baseInput.addEventListener("input",()=>{ APP.baseId=null; baseChosen.innerHTML=""; searchBase(); refreshGo(); });
+baseInput.addEventListener("keydown",e=>{
+  if(!baseMatches.length) return;
+  if(e.key==="ArrowDown"){ e.preventDefault(); baseHi=Math.min(baseHi+1,baseMatches.length-1); renderBaseDrop(); }
+  else if(e.key==="ArrowUp"){ e.preventDefault(); baseHi=Math.max(baseHi-1,0); renderBaseDrop(); }
+  else if(e.key==="Enter"){ if(baseHi>=0){ e.preventDefault(); pickBase(baseMatches[baseHi]); } }
+  else if(e.key==="Escape"){ baseDrop.innerHTML=""; }
+});
+document.getElementById("baseClear").addEventListener("click",()=>{
+  baseInput.value=""; APP.baseId=null; baseDrop.innerHTML=""; baseChosen.innerHTML=""; refreshGo(); baseInput.focus();
+});
+document.addEventListener("click",e=>{ if(!e.target.closest(".search")) baseDrop.innerHTML=""; });
+
+/* visualize */
+document.getElementById("go").addEventListener("click",()=>{
+  if(!APP.chosen) return;
+  const go=document.getElementById("go");
+  go.disabled=true; document.getElementById("goNote").textContent="Building graph…";
+  setTimeout(()=>{
+    try{
+      const variants=learnVariants(APP.data,APP.chosen);
+      const G=buildGraph(APP.data,variants,APP.baseId);
+      const SURN=APP.stats.bestForm(APP.chosen);
+      if(G.baseInfo) console.log(G.baseInfo);
+      show("screen-viz");
+      runViz(G.nodeJson, G.linkJson, SURN, G.maxcs, 3, G.baseDisp, G.hasBasePath);
+    }catch(err){
+      console.error(err);
+      document.getElementById("goNote").textContent="Error: "+err.message;
+    }finally{
+      go.disabled=false; document.getElementById("goNote").textContent="";
+    }
+  },30);
+});
+
+document.getElementById("vizBack").addEventListener("click",()=>{
+  if(CUR_SIM){ CUR_SIM.stop(); CUR_SIM=null; }
+  show("screen-config");
+});
+</script>
+</body>
+</html>
