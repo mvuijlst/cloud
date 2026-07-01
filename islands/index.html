@@ -6,13 +6,66 @@
 <title>Family tree islands</title>
 <style>
  :root{
+   /* ---- UI chrome (dark, default) ---- */
    --bg:#0f1220; --panel:#171b2c; --panel2:#1b2030; --line:#2b3247;
    --txt:#dfe3ee; --muted:#aeb6c8; --muted2:#8a93ab;
    --accent:#f59e0b; --accent2:#7dd3fc; --green:#34d399;
+   --accent-ink:#1a1206;          /* text on the amber button */
+   --hover-line:#454f6e;          /* hover border */
+   --drop-hot:#1c2236;            /* drop-zone hover bg */
+   --sel-bg:#2a2415;              /* selected surname bg */
+   --opt-hi:#283050;              /* highlighted dropdown row */
+   --shadow:#0008;                /* dropdown shadow */
+   --err:#fca5a5;                 /* error text */
+   --hd-grad:linear-gradient(#0f1220,#0f1220cc,transparent);
+
+   /* ---- data-viz groups (dark) ----
+      Categorical, colour-blind-safe hues (Okabe-Ito derived):
+      orange / sky-blue / bluish-green are mutually distinguishable for
+      deuteranopia & protanopia; relatives stay a neutral grey so the
+      named groups pop. Each fill is paired with a darker stroke for a
+      crisp edge against the background. */
+   --viz-surn:#f59e0b;        --viz-surn-stroke:#7c4a02;   /* chosen surname */
+   --viz-rel:#6b7790;         --viz-rel-stroke:#2b3247;    /* parent/child relatives */
+   --viz-base:#34d399;        --viz-base-stroke:#065f46;   /* base person */
+   --viz-link-person:#7dd3fc; --viz-link-person-stroke:#0c4a6e; /* ancestral-link people */
+   --viz-link-pc:#46506a;     /* parent-child edge */
+   --viz-link-spouse:#c2698c; /* spouse edge */
+ }
+ :root[data-theme=light]{
+   /* ---- UI chrome (light) ---- */
+   --bg:#f4f6fb; --panel:#ffffff; --panel2:#eef1f8; --line:#d6dce8;
+   --txt:#1b2336; --muted:#48526b; --muted2:#6c768c;
+   --accent:#e58300; --accent2:#0284c7; --green:#059669;
+   --accent-ink:#3a2500;
+   --hover-line:#aab4c8;
+   --drop-hot:#eef2fb;
+   --sel-bg:#fff2d9;
+   --opt-hi:#e7ecf7;
+   --shadow:#1b233622;
+   --err:#c0341d;
+   --hd-grad:linear-gradient(#f4f6fb,#f4f6fbcc,transparent);
+
+   /* ---- data-viz groups (light) ----
+      Same hue families, darkened/saturated for contrast on a white
+      background (light fills wash out against white). */
+   --viz-surn:#d97706;        --viz-surn-stroke:#9a4f02;
+   --viz-rel:#94a3b8;         --viz-rel-stroke:#64748b;
+   --viz-base:#059669;        --viz-base-stroke:#065f46;
+   --viz-link-person:#0284c7; --viz-link-person-stroke:#075985;
+   --viz-link-pc:#9aa5bd;
+   --viz-link-spouse:#c2557f;
  }
  *{box-sizing:border-box}
  html,body{margin:0;height:100%;background:var(--bg);color:var(--txt);
-   font:14px "Segoe UI",Arial,sans-serif}
+   font:14px "Segoe UI",Arial,sans-serif;transition:background .2s,color .2s}
+
+ /* ---- light/dark toggle ---- */
+ #themeToggle{position:fixed;top:10px;right:12px;z-index:20;
+   width:34px;height:34px;border-radius:50%;border:1px solid var(--line);
+   background:var(--panel2);color:var(--txt);font-size:16px;line-height:1;
+   display:flex;align-items:center;justify-content:center;padding:0}
+ #themeToggle:hover{border-color:var(--hover-line)}
  body{overflow:hidden}
  button{font:inherit;cursor:pointer}
  .scr{position:absolute;inset:0;display:none;overflow:auto}
@@ -27,11 +80,11 @@
  /* ---- upload ---- */
  #drop{border:2px dashed var(--line);border-radius:14px;padding:54px 24px;text-align:center;
    background:var(--panel);transition:.15s;cursor:pointer}
- #drop:hover,#drop.hot{border-color:var(--accent);background:#1c2236}
+ #drop:hover,#drop.hot{border-color:var(--accent);background:var(--drop-hot)}
  #drop .big{font-size:17px;margin-bottom:6px}
  #drop .small{color:var(--muted2);font-size:13px}
  #drop .icn{font-size:40px;opacity:.55;margin-bottom:10px}
- .err{color:#fca5a5;margin-top:14px;min-height:18px}
+ .err{color:var(--err);margin-top:14px;min-height:18px}
  .samplerow{margin-top:18px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
  .samplerow .orline{color:var(--muted2)}
 
@@ -46,8 +99,8 @@
  .snm{display:flex;justify-content:space-between;align-items:center;gap:8px;
    background:var(--panel);border:1px solid var(--line);border-radius:9px;
    padding:9px 13px;text-align:left;color:var(--txt);transition:.12s}
- .snm:hover{border-color:#454f6e;background:var(--panel2)}
- .snm.sel{border-color:var(--accent);background:#2a2415;box-shadow:0 0 0 1px var(--accent) inset}
+ .snm:hover{border-color:var(--hover-line);background:var(--panel2)}
+ .snm.sel{border-color:var(--accent);background:var(--sel-bg);box-shadow:0 0 0 1px var(--accent) inset}
  .snm .nm{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
  .snm .ct{color:var(--muted2);font-size:12px;flex:none}
  .snm .rk{color:var(--muted2);font-size:12px;width:20px;flex:none}
@@ -60,39 +113,53 @@
    background:none;border:none;color:var(--muted2);font-size:18px;line-height:1;padding:4px 6px}
  .drop{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:9;
    background:var(--panel2);border:1px solid var(--line);border-radius:9px;
-   max-height:300px;overflow:auto;box-shadow:0 10px 30px #0008}
+   max-height:300px;overflow:auto;box-shadow:0 10px 30px var(--shadow)}
  .drop:empty{display:none}
  .opt{padding:8px 13px;cursor:pointer;display:flex;justify-content:space-between;gap:10px}
- .opt:hover,.opt.hi{background:#283050}
+ .opt:hover,.opt.hi{background:var(--opt-hi)}
  .opt .y{color:var(--muted2);font-size:12px;flex:none}
  .chosen{margin-top:10px;color:var(--muted);font-size:13px}
  .chosen b{color:var(--green)}
 
  .actions{margin-top:34px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
- .btn{background:var(--accent);color:#1a1206;border:none;border-radius:9px;
+ .btn{background:var(--accent);color:var(--accent-ink);border:none;border-radius:9px;
    padding:11px 22px;font-weight:600}
  .btn:disabled{opacity:.4;cursor:not-allowed}
  .btn.ghost{background:transparent;color:var(--muted);border:1px solid var(--line)}
- .btn.ghost:hover{border-color:#454f6e;color:var(--txt)}
+ .btn.ghost:hover{border-color:var(--hover-line);color:var(--txt)}
  .note{color:var(--muted2);font-size:13px}
 
  /* ---- viz (ported from trees.py) ---- */
  #screen-viz{overflow:hidden}
  #hd{position:fixed;top:0;left:0;right:0;padding:9px 14px;z-index:5;
-   background:linear-gradient(#0f1220,#0f1220cc,transparent)}
+   background:var(--hd-grad)}
  #hd .key{margin-left:14px;color:var(--muted);font-size:13px}
- #hd .ctl{margin-left:18px;color:#cdd4e4;font-size:13px}
+ #hd .ctl{margin-left:18px;color:var(--txt);font-size:13px}
  #hd .ctl input[type=range]{vertical-align:middle;width:120px}
+ #hd .ctl input[type=checkbox]{vertical-align:middle;margin:0 4px 0 0;accent-color:var(--accent)}
+ #hd label.ctl{cursor:pointer;user-select:none}
  #hd .ctl select{background:var(--panel2);color:var(--txt);border:1px solid var(--line);
    border-radius:4px;padding:1px 4px}
  #hd .back{background:var(--panel2);color:var(--txt);border:1px solid var(--line);
    border-radius:6px;padding:3px 10px;font-size:13px;margin-right:6px}
- #hd .back:hover{border-color:#454f6e}
+ #hd .back:hover{border-color:var(--hover-line)}
  .dotk{display:inline-block;width:10px;height:10px;border-radius:50%;vertical-align:-1px;margin:0 4px 0 12px}
  #screen-viz svg{width:100vw;height:100vh;display:block}
+
+ /* node / link colours are CSS-driven so the theme toggle recolours the
+    graph live (no re-simulation). d3 sets the category class per element. */
+ #screen-viz circle{stroke-width:.5px}
+ #screen-viz circle.n-surn{fill:var(--viz-surn);stroke:var(--viz-surn-stroke)}
+ #screen-viz circle.n-rel{fill:var(--viz-rel);stroke:var(--viz-rel-stroke)}
+ #screen-viz circle.n-link{fill:var(--viz-link-person);stroke:var(--viz-link-person-stroke)}
+ #screen-viz circle.n-base{fill:var(--viz-base);stroke:var(--viz-base-stroke);stroke-width:1px}
+ #screen-viz line.l-pc{stroke:var(--viz-link-pc)}
+ #screen-viz line.l-sp{stroke:var(--viz-link-spouse)}
 </style>
 </head>
 <body>
+
+<button id="themeToggle" type="button" aria-label="Toggle light / dark mode">&#9728;</button>
 
 <!-- ============ SCREEN 1: UPLOAD ============ -->
 <div id="screen-upload" class="scr on">
@@ -155,6 +222,9 @@
     <b id="cutv">3</b> people</span>
   <span class="ctl">spread <input id="spread" type="range" min="0.4" max="5" step="0.1" value="3">
     <b id="spreadv">3.0&times;</b></span>
+  <span class="ctl">island gap <input id="gap" type="range" min="-400" max="220" step="2" value="26">
+    <b id="gapv">26</b></span>
+  <label class="ctl"><input type="checkbox" id="byIsland">colour islands</label>
   <span class="ctl">layout
     <select id="mode"><option value="pack">chronological</option><option value="grid">grid</option></select></span>
   <br>
@@ -168,6 +238,32 @@
 <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
 <script>
 "use strict";
+
+/* ====================================================================
+   THEME — light / dark toggle. Persists to localStorage and falls back
+   to the OS preference. Colours live in CSS variables, so flipping the
+   data-theme attribute recolours both the UI and the live graph.
+   ==================================================================== */
+(function(){
+  const KEY="islands-theme";
+  const btn=document.getElementById("themeToggle");
+  let stored=null;
+  try{ stored=localStorage.getItem(KEY); }catch(e){}
+  const prefersLight = window.matchMedia
+    && window.matchMedia("(prefers-color-scheme: light)").matches;
+  function apply(t){
+    document.documentElement.setAttribute("data-theme", t);
+    // show the icon for the mode you'd switch TO
+    btn.innerHTML = (t==="light") ? "&#127769;" : "&#9728;";   // 🌙 / ☀️
+    btn.title = (t==="light") ? "Switch to dark mode" : "Switch to light mode";
+  }
+  apply(stored || (prefersLight ? "light" : "dark"));
+  btn.addEventListener("click",()=>{
+    const next = document.documentElement.getAttribute("data-theme")==="light" ? "dark" : "light";
+    apply(next);
+    try{ localStorage.setItem(KEY, next); }catch(e){}
+  });
+})();
 
 /* ====================================================================
    difflib.SequenceMatcher.ratio() port (Ratcliff/Obershelp).
@@ -536,28 +632,45 @@ function buildGraph(data,variants,baseId){
    VISUALIZATION (ported from trees.py d3 template, parameterized)
    ==================================================================== */
 let CUR_SIM=null;
-function runViz(N, L, SURN, maxcs, initialCut, baseDisp, hasBasePath){
+const DEFAULT_GAP=26;
+function runViz(N, L, SURN, maxcs, initialCut, baseDisp, hasBasePath, ctl){
   if(CUR_SIM){ CUR_SIM.stop(); CUR_SIM=null; }
+  ctl=ctl||{};
 
   document.getElementById("vizTitle").textContent = SURN+" family trees";
-  // legend
-  let legend = `<span class="dotk" style="background:#f59e0b"></span>${escapeHtml(SURN)}`
-    + `<span class="dotk" style="background:#6b7790"></span>parent / child`;
-  if(baseDisp && hasBasePath){
-    legend += `<span class="dotk" style="background:#34d399"></span>${escapeHtml(baseDisp)}`
-      + `<span class="dotk" style="background:#7dd3fc"></span>ancestral link`;
+  // legend — rebuilt on demand because "colour islands" can be toggled live.
+  function setLegend(byIsland){
+    let legend;
+    if(byIsland){
+      legend = `<span class="dotk" style="background:linear-gradient(90deg,#4e79a7,#59a14f,#edc948,#e15759)"></span>`
+        + `each colour = one family island`;
+    } else {
+      legend = `<span class="dotk" style="background:var(--viz-surn)"></span>${escapeHtml(SURN)}`
+        + `<span class="dotk" style="background:var(--viz-rel)"></span>parent / child`;
+      if(baseDisp && hasBasePath){
+        legend += `<span class="dotk" style="background:var(--viz-base)"></span>${escapeHtml(baseDisp)}`
+          + `<span class="dotk" style="background:var(--viz-link-person)"></span>ancestral link`;
+      }
+    }
+    legend += ` &nbsp;<span style="display:inline-block;width:15px;border-top:2px solid var(--viz-link-pc);vertical-align:4px"></span> parent&ndash;child`
+      + ` &nbsp;<span style="display:inline-block;width:15px;border-top:2px solid var(--viz-link-spouse);vertical-align:4px"></span> spouse`;
+    document.getElementById("legend").innerHTML=legend;
   }
-  legend += ` &nbsp;<span style="display:inline-block;width:15px;border-top:2px solid #46506a;vertical-align:4px"></span> parent&ndash;child`
-    + ` &nbsp;<span style="display:inline-block;width:15px;border-top:2px solid #c2698c;vertical-align:4px"></span> spouse`;
-  document.getElementById("legend").innerHTML=legend;
 
+  // initial control state — restored from a saved session when present,
+  // otherwise the defaults.
   const cutEl=document.getElementById("cut");
-  const cut=Math.min(Math.max(1,initialCut),maxcs);
+  const cut=Math.min(Math.max(1, ctl.cut!=null?ctl.cut:initialCut), maxcs);
   cutEl.max=maxcs; cutEl.value=cut;
   document.getElementById("cutv").textContent=cut;
-  document.getElementById("spread").value=3;
-  document.getElementById("spreadv").textContent="3.0×";
-  document.getElementById("mode").value="pack";
+  const spread0 = ctl.spread!=null?ctl.spread:3;
+  document.getElementById("spread").value=spread0;
+  document.getElementById("spreadv").textContent=spread0.toFixed(1)+"×";
+  const gap0 = ctl.gap!=null?ctl.gap:DEFAULT_GAP;
+  document.getElementById("gap").value=gap0;
+  document.getElementById("gapv").textContent=gap0;
+  document.getElementById("mode").value=ctl.mode||"pack";
+  document.getElementById("byIsland").checked=!!ctl.byIsland;
 
   N.forEach((d,i)=>d.id=i);
   L.forEach(l=>{ l.source=l.s; l.target=l.t; });
@@ -568,9 +681,12 @@ function runViz(N, L, SURN, maxcs, initialCut, baseDisp, hasBasePath){
     (spMates.get(l.s)||spMates.set(l.s,[]).get(l.s)).push(l.t);
     (spMates.get(l.t)||spMates.set(l.t,[]).get(l.t)).push(l.s);
   }});
-  const W=1700, PAD=30, GAP=26;
+  const W=1700, PAD=30;
   const cellR=n=>10*Math.sqrt(n)+16;
-  const colSpread=s=>1+(s-1)*0.4;
+  const colSpread=s=>1+(s-1)*0.22;   // gentler column inflation so islands stay closer at high spread
+  // distinct colour per island (connected component), keyed by component id
+  const islandColor=d3.scaleOrdinal(d3.schemeTableau10);
+  const darker=c=>{ const x=d3.color(c); return x?x.darker(0.9).formatHex():c; };
 
   const svg=d3.select("#screen-viz svg");
   svg.selectAll("*").remove();
@@ -609,7 +725,7 @@ function runViz(N, L, SURN, maxcs, initialCut, baseDisp, hasBasePath){
     const H=r*VSTRETCH;
     for(const d of isl){ const by=d.by!=null?d.by:mid; d.ax=cx; d.ay=cy+((by-mid)/half)*H; }
   }
-  function packLayout(isls,spread){
+  function packLayout(isls,spread,gap){
     const all=isls.flatMap(i=>i.filter(d=>d.bd==null).map(d=>d.by)).filter(v=>v!=null);
     const gmin=all.length?Math.min(...all):0, gmax=all.length?Math.max(...all):1;
     const span=Math.max(gmax-gmin,1), mid=(gmin+gmax)/2;
@@ -620,16 +736,17 @@ function runViz(N, L, SURN, maxcs, initialCut, baseDisp, hasBasePath){
     for(const isl of order){
       const r=cellR(isl.length)*colSpread(spread), cx=x+r, my=medianYear(isl)??mid;
       for(const d of isl){ const by=d.by!=null?d.by:my; d.ax=cx; d.ay=PAD+(by-gmin)*pxy; }
-      x+=2*r+GAP;
+      // a negative gap pulls islands together; floor the step so they never reverse or fully stack
+      x+=Math.max(2*r+gap, cellR(isl.length));
     }
     return {w:x+PAD, h:PAD*2+Hax};
   }
-  function gridLayout(isls,spread){
+  function gridLayout(isls,spread,gap){
     const order=isls.slice().sort(byDate);
     const n=order.length||1;
     const cols=Math.max(1,Math.round(Math.sqrt(n)));
     const maxR=Math.max(16,...order.map(i=>cellR(i.length)));
-    const cellW=2*maxR*colSpread(spread)+GAP, cellH=2*maxR*VSTRETCH+GAP;
+    const cellW=Math.max(2*maxR*colSpread(spread)+gap, maxR), cellH=Math.max(2*maxR*VSTRETCH+gap, maxR);
     order.forEach((isl,k)=>{
       const cx=PAD+(k%cols)*cellW+cellW/2, cy=PAD+Math.floor(k/cols)*cellH+cellH/2;
       placeByYear(isl,cx,cy,cellR(isl.length));
@@ -669,15 +786,19 @@ function runViz(N, L, SURN, maxcs, initialCut, baseDisp, hasBasePath){
     const cut=+d3.select("#cut").property("value");
     const mode=d3.select("#mode").property("value");
     const spread=+d3.select("#spread").property("value");
+    const gap=+d3.select("#gap").property("value");
+    const byIsland=d3.select("#byIsland").property("checked");
     d3.select("#cutv").text(cut);
     d3.select("#spreadv").text(spread.toFixed(1)+"×");
+    d3.select("#gapv").text(gap);
+    setLegend(byIsland);
     sim.force("x").strength(Math.max(.06,.20/spread));
     sim.force("charge").strength(-14*spread).distanceMax(55*Math.max(1,spread));
     const vis=N.filter(d=>d.cs>=cut);
     const visSet=new Set(vis.map(d=>d.id));
     const vl=L.filter(l=>visSet.has(l.s)&&visSet.has(l.t));
     const isls=islandsOf(vis);
-    const dim=(mode==="grid"?gridLayout:packLayout)(isls,spread);
+    const dim=(mode==="grid"?gridLayout:packLayout)(isls,spread,gap);
     levelSpouses(vis);
     vis.forEach(d=>{ d.x=d.ax; d.y=d.ay; });
     pinBase(vis);
@@ -685,15 +806,16 @@ function runViz(N, L, SURN, maxcs, initialCut, baseDisp, hasBasePath){
 
     link=linkG.selectAll("line").data(vl,d=>d.s+"-"+d.t+"-"+d.ty)
       .join("line")
-      .attr("stroke",d=>d.ty?"#c2698c":"#46506a")
+      .attr("class",d=>d.ty?"l-sp":"l-pc")
       .attr("stroke-opacity",d=>d.ty?.85:.5)
       .attr("stroke-width",d=>d.ty?1.2:.8);
     node=nodeG.selectAll("circle").data(vis,d=>d.id)
       .join(enter=>enter.append("circle").call(s=>s.append("title")))
       .attr("r",d=>d.b===2?5:d.b?3.2:d.g?3.4:2.3)
-      .attr("fill",d=>d.b===2?"#34d399":d.b?"#7dd3fc":d.g?"#f59e0b":"#6b7790")
-      .attr("stroke",d=>d.b===2?"#065f46":d.b?"#0c4a6e":d.g?"#7c4a02":"#2b3247")
-      .attr("stroke-width",d=>d.b===2?1:.5);
+      .attr("class",d=>d.b===2?"n-base":d.b?"n-link":d.g?"n-surn":"n-rel")
+      // colour-by-island uses inline styles (override the class CSS); null reverts to the theme palette
+      .style("fill", d=> byIsland ? islandColor(d.c) : null)
+      .style("stroke", d=> byIsland ? darker(islandColor(d.c)) : null);
     node.select("title").text(d=>(d.b===2?"★ ":"")
       +(d.by!=null?`${d.n} (${d.e?"~":""}${d.by})`:d.n));
 
@@ -702,9 +824,12 @@ function runViz(N, L, SURN, maxcs, initialCut, baseDisp, hasBasePath){
       +`${vl.filter(l=>!l.ty).length} parent&ndash;child &amp; ${vl.filter(l=>l.ty).length} spouse links`);
 
     sim.nodes(vis); sim.force("link").links(vl); sim.alpha(.9).restart();
+    saveCfg();   // persist live control state
   }
   d3.select("#cut").on("input",update);
   d3.select("#spread").on("input",update);
+  d3.select("#gap").on("input",update);
+  d3.select("#byIsland").on("change",update);
   d3.select("#mode").on("change",update);
   svg.call(d3.zoom().scaleExtent([.3,12]).on("zoom",e=>g.attr("transform",e.transform)));
   update();
@@ -719,6 +844,67 @@ function show(id){ document.querySelectorAll(".scr").forEach(s=>s.classList.remo
 
 const APP={ data:null, stats:null, people:[], chosen:null, baseId:null };
 
+/* ====================================================================
+   SESSION PERSISTENCE — remember the file, the chosen surname, the
+   focus person and the viz controls across browser sessions.
+   The GEDCOM text can be large, so a quota failure is caught and the
+   rest of the settings still persist. The bundled sample is stored as
+   a flag rather than its full text.
+   ==================================================================== */
+const LS_GED="islands-ged", LS_CFG="islands-cfg";
+let VISUALIZED=false;   // were we last looking at the graph?
+let RESTORING=false;    // suppress saves while re-applying a saved session
+
+function saveGed(name, text, sample){
+  try{
+    localStorage.setItem(LS_GED, JSON.stringify({name, sample:!!sample, text: sample?"":text}));
+  }catch(e){
+    console.warn("Couldn't store the GEDCOM (probably exceeds the storage quota); "
+      +"surname / focus / view settings are still remembered.", e && e.message);
+  }
+}
+function saveCfg(){
+  if(RESTORING) return;
+  const v=id=>document.getElementById(id).value;
+  try{
+    localStorage.setItem(LS_CFG, JSON.stringify({
+      chosen:APP.chosen, baseId:APP.baseId, visualized:VISUALIZED,
+      cut:+v("cut"), spread:+v("spread"), gap:+v("gap"), mode:v("mode"),
+      byIsland:document.getElementById("byIsland").checked
+    }));
+  }catch(e){}
+}
+function readJSON(key){ try{ return JSON.parse(localStorage.getItem(key)||"null"); }catch(e){ return null; } }
+
+function applyCfg(cfg){
+  if(!cfg) return;
+  if(cfg.chosen){
+    const grid=document.getElementById("surnGrid");
+    APP.chosen=cfg.chosen;
+    const btn=[...grid.children].find(b=>b.dataset.low===cfg.chosen);
+    if(btn){ [...grid.children].forEach(c=>c.classList.remove("sel")); btn.classList.add("sel"); }
+  }
+  if(cfg.baseId!=null){
+    const p=APP.people.find(x=>x.id===cfg.baseId);
+    if(p) pickBase(p);
+  }
+  refreshGo();
+  if(cfg.visualized && APP.chosen) visualize(cfg);   // jump back into the graph
+}
+
+function restoreSession(){
+  const ged=readJSON(LS_GED);
+  if(!ged) return;
+  const text = ged.sample ? (window.DEFAULT_GED||null) : (ged.text||null);
+  if(!text) return;                       // sample bundle missing, or text wasn't stored
+  const cfg=readJSON(LS_CFG);
+  RESTORING=true;
+  try{
+    loadFromText(text, ged.name, ged.sample);
+    if(APP.data) applyCfg(cfg);
+  }finally{ RESTORING=false; }
+}
+
 /* ---- upload ---- */
 const fileInput=document.getElementById("file");
 const drop=document.getElementById("drop");
@@ -731,7 +917,7 @@ drop.addEventListener("drop",e=>{ e.preventDefault(); drop.classList.remove("hot
 fileInput.addEventListener("change",()=>{ if(fileInput.files.length) loadFile(fileInput.files[0]); });
 document.getElementById("reupload").addEventListener("click",()=>{ upErr.textContent=""; show("screen-upload"); });
 
-function loadFromText(text, filename){
+function loadFromText(text, filename, isSample){
   try{
     const data=parseGedcom(text);
     if(data.indi.size===0){ upErr.textContent="No individuals (INDI records) found — is this a GEDCOM file?"; return; }
@@ -747,6 +933,10 @@ function loadFromText(text, filename){
     upErr.textContent="";
     initConfig(filename);
     show("screen-config");
+    if(!RESTORING){                                // a fresh load: remember the file, clear old selections
+      saveGed(filename, text, isSample);
+      VISUALIZED=false; saveCfg();
+    }
   }catch(err){
     console.error(err);
     upErr.textContent="Failed to parse the file: "+err.message;
@@ -757,7 +947,7 @@ function loadFile(file){
   upErr.textContent="Reading "+file.name+" …";
   const r=new FileReader();
   r.onerror=()=>{ upErr.textContent="Could not read the file."; };
-  r.onload=()=>loadFromText(r.result, file.name);
+  r.onload=()=>loadFromText(r.result, file.name, false);
   r.readAsText(file,"utf-8");
 }
 
@@ -768,7 +958,7 @@ if(typeof window!=="undefined" && window.DEFAULT_GED){
   const us=document.getElementById("useSample");
   if(us) us.addEventListener("click",()=>{
     upErr.textContent="Loading sample…";
-    setTimeout(()=>loadFromText(window.DEFAULT_GED, "sample tree (anonymized)"), 20);
+    setTimeout(()=>loadFromText(window.DEFAULT_GED, "sample tree (anonymized)", true), 20);
   });
 }
 
@@ -783,6 +973,7 @@ function initConfig(filename){
   APP.stats.topN(20).forEach(([low,n],k)=>{
     const b=document.createElement("button");
     b.className="snm";
+    b.dataset.low=low;
     b.innerHTML=`<span class="rk">${k+1}.</span>`
       +`<span class="nm">${escapeHtml(APP.stats.bestForm(low))}</span>`
       +`<span class="ct">${n}</span>`;
@@ -791,6 +982,7 @@ function initConfig(filename){
       [...grid.children].forEach(c=>c.classList.remove("sel"));
       b.classList.add("sel");
       refreshGo();
+      saveCfg();
     });
     grid.appendChild(b);
   });
@@ -849,8 +1041,9 @@ function pickBase(p){
   baseDrop.innerHTML="";
   baseChosen.innerHTML=`Base person: <b>${escapeHtml(p.disp)}</b>`+(p.year?` (${p.year})`:"");
   refreshGo();
+  saveCfg();
 }
-baseInput.addEventListener("input",()=>{ APP.baseId=null; baseChosen.innerHTML=""; searchBase(); refreshGo(); });
+baseInput.addEventListener("input",()=>{ APP.baseId=null; baseChosen.innerHTML=""; searchBase(); refreshGo(); saveCfg(); });
 baseInput.addEventListener("keydown",e=>{
   if(!baseMatches.length) return;
   if(e.key==="ArrowDown"){ e.preventDefault(); baseHi=Math.min(baseHi+1,baseMatches.length-1); renderBaseDrop(); }
@@ -859,12 +1052,12 @@ baseInput.addEventListener("keydown",e=>{
   else if(e.key==="Escape"){ baseDrop.innerHTML=""; }
 });
 document.getElementById("baseClear").addEventListener("click",()=>{
-  baseInput.value=""; APP.baseId=null; baseDrop.innerHTML=""; baseChosen.innerHTML=""; refreshGo(); baseInput.focus();
+  baseInput.value=""; APP.baseId=null; baseDrop.innerHTML=""; baseChosen.innerHTML=""; refreshGo(); saveCfg(); baseInput.focus();
 });
 document.addEventListener("click",e=>{ if(!e.target.closest(".search")) baseDrop.innerHTML=""; });
 
-/* visualize */
-document.getElementById("go").addEventListener("click",()=>{
+/* visualize ( ctl = optional saved control state to restore ) */
+function visualize(ctl){
   if(!APP.chosen) return;
   const go=document.getElementById("go");
   go.disabled=true; document.getElementById("goNote").textContent="Building graph…";
@@ -875,7 +1068,8 @@ document.getElementById("go").addEventListener("click",()=>{
       const SURN=APP.stats.bestForm(APP.chosen);
       if(G.baseInfo) console.log(G.baseInfo);
       show("screen-viz");
-      runViz(G.nodeJson, G.linkJson, SURN, G.maxcs, 3, G.baseDisp, G.hasBasePath);
+      VISUALIZED=true;   // set before runViz so the auto-saved state records it
+      runViz(G.nodeJson, G.linkJson, SURN, G.maxcs, (ctl&&ctl.cut!=null)?ctl.cut:3, G.baseDisp, G.hasBasePath, ctl||null);
     }catch(err){
       console.error(err);
       document.getElementById("goNote").textContent="Error: "+err.message;
@@ -883,12 +1077,17 @@ document.getElementById("go").addEventListener("click",()=>{
       go.disabled=false; document.getElementById("goNote").textContent="";
     }
   },30);
-});
+}
+document.getElementById("go").addEventListener("click",()=>visualize());
 
 document.getElementById("vizBack").addEventListener("click",()=>{
   if(CUR_SIM){ CUR_SIM.stop(); CUR_SIM=null; }
+  VISUALIZED=false; saveCfg();   // a reload now returns to the config screen
   show("screen-config");
 });
+
+/* restore the previous session (file + surname + focus + view) */
+restoreSession();
 </script>
 </body>
 </html>

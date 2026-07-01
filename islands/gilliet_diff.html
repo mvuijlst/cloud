@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gilliet islands &mdash; work since 28 June</title>
+<style>
+ :root{
+   --bg:#0f1220; --panel:#171b2c; --panel2:#1b2030; --line:#2b3247;
+   --txt:#dfe3ee; --muted:#aeb6c8; --muted2:#8a93ab;
+   --accent:#f59e0b; --accent2:#7dd3fc; --green:#34d399;
+   --accent-ink:#1a1206; --hover-line:#454f6e;
+   --hd-grad:linear-gradient(#0f1220,#0f1220cc,transparent);
+   --viz-rel:#6b7790;  --viz-rel-stroke:#2b3247;
+   --viz-link-pc:#46506a; --viz-link-spouse:#c2698c;
+ }
+ :root[data-theme=light]{
+   --bg:#f4f6fb; --panel:#ffffff; --panel2:#eef1f8; --line:#d6dce8;
+   --txt:#1b2336; --muted:#48526b; --muted2:#6c768c;
+   --accent:#e58300; --accent2:#0284c7; --green:#059669;
+   --accent-ink:#3a2500; --hover-line:#aab4c8;
+   --hd-grad:linear-gradient(#f4f6fb,#f4f6fbcc,transparent);
+   --viz-rel:#94a3b8;  --viz-rel-stroke:#64748b;
+   --viz-link-pc:#9aa5bd; --viz-link-spouse:#c2557f;
+ }
+ *{box-sizing:border-box}
+ html,body{margin:0;height:100%;background:var(--bg);color:var(--txt);overflow:hidden;
+   font:14px "Segoe UI",Arial,sans-serif;transition:background .2s,color .2s}
+ button{font:inherit;cursor:pointer}
+ #themeToggle{position:fixed;top:10px;right:12px;z-index:20;width:34px;height:34px;
+   border-radius:50%;border:1px solid var(--line);background:var(--panel2);color:var(--txt);
+   font-size:16px;display:flex;align-items:center;justify-content:center;padding:0}
+ #themeToggle:hover{border-color:var(--hover-line)}
+ #hd{position:fixed;top:0;left:0;right:0;padding:9px 14px;z-index:5;background:var(--hd-grad)}
+ #hd b#title{font-size:15px}
+ #hd .key{margin-left:12px;color:var(--muted);font-size:13px}
+ #hd .ctl{margin-left:16px;color:var(--txt);font-size:13px;white-space:nowrap}
+ #hd .ctl input[type=range]{vertical-align:middle}
+ #hd .ctl input[type=checkbox]{vertical-align:middle;margin:0 4px 0 0;accent-color:var(--accent)}
+ #hd label.ctl{cursor:pointer;user-select:none}
+ #play{background:var(--accent);color:var(--accent-ink);border:none;border-radius:7px;
+   padding:5px 14px;font-weight:600;margin-right:6px}
+ #scrub{width:240px}
+ .stamp{display:inline-block;min-width:120px}
+ .stamp b{color:var(--txt)}
+ .dotk{display:inline-block;width:10px;height:10px;border-radius:50%;vertical-align:-1px;margin:0 4px 0 12px}
+ svg{width:100vw;height:100vh;display:block}
+ line.l-pc{stroke:var(--viz-link-pc)}
+ line.l-sp{stroke:var(--viz-link-spouse)}
+ circle{stroke-width:.6px}
+ .hint{color:var(--muted2)}
+</style>
+</head>
+<body>
+<button id="themeToggle" type="button" aria-label="Toggle light / dark mode">&#9728;</button>
+
+<div id="hd">
+ <button id="play">&#9654; Play</button>
+ <b id="title">Gilliet islands: work since 28 June</b>
+ <span class="ctl"><span class="stamp"><b id="stampL">28 Jun</b></span>
+   <input id="scrub" type="range" min="0" max="1" step="0.001" value="0">
+   <span class="stamp" style="text-align:right"><b id="stampR">30 Jun</b></span></span>
+ <span id="stat" class="key"></span>
+ <br>
+ <span class="ctl">island &ge; <input id="cut" type="range" min="1" max="10" value="1"> <b id="cutv">1</b></span>
+ <span class="ctl">spread <input id="spread" type="range" min="0.6" max="4" step="0.1" value="1.4"> <b id="spreadv">1.4</b></span>
+ <span class="ctl">island gap <input id="gap" type="range" min="-40" max="160" step="4" value="20"> <b id="gapv">20</b></span>
+ <label class="ctl"><input type="checkbox" id="hideBig"> hide the large pre-existing branch</label>
+ <span id="legend" class="key"></span>
+ <span class="key hint">scroll = zoom, drag = pan</span>
+</div>
+<svg></svg>
+
+<script src="gilliet_diff_data.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script>
+"use strict";
+/* ---- theme toggle ---- */
+(function(){
+  const KEY="islands-theme", btn=document.getElementById("themeToggle");
+  let stored=null; try{ stored=localStorage.getItem(KEY); }catch(e){}
+  const prefersLight = matchMedia && matchMedia("(prefers-color-scheme: light)").matches;
+  function apply(t){ document.documentElement.setAttribute("data-theme",t);
+    btn.innerHTML=(t==="light")?"&#127769;":"&#9728;"; }
+  apply(stored||(prefersLight?"light":"dark"));
+  btn.onclick=()=>{ const n=document.documentElement.getAttribute("data-theme")==="light"?"dark":"light";
+    apply(n); try{ localStorage.setItem(KEY,n); }catch(e){} };
+})();
+
+const D=window.GILLIET_DIFF;
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+
+/* ---- master nodes (union of both snapshots, keyed by GEDCOM id) ---- */
+const byId=new Map();
+function ingest(side, arr){
+  for(const r of arr){
+    let m=byId.get(r.id);
+    if(!m){ m={id:r.id,name:r.n.replace(/\s+/g," ").trim()}; byId.set(r.id,m); }
+    m["has_"+side]=true; m["c_"+side]=r.c; m.g=r.g;
+    if(r.fa!=null) m.fa=(side==="a"||m.fa==null)?r.fa:m.fa;
+    if(r.by!=null && m.by==null) m.by=r.by;
+    if(r.e!=null && m.e==null) m.e=r.e;
+  }
+}
+ingest("b",D.before.nodes); ingest("a",D.after.nodes);
+const NODES=[...byId.values()];
+const idObj=new Map(NODES.map(n=>[n.id,n]));
+
+/* ---- links, union + presence flags, plus per-side lists for relaxing ---- */
+const lkey=l=>l.s+"|"+l.t+"|"+l.ty, lmap=new Map();
+for(const l of D.before.links){ lmap.set(lkey(l),{s:l.s,t:l.t,ty:l.ty,b:true,a:false}); }
+for(const l of D.after.links){ const k=lkey(l);
+  if(lmap.has(k)) lmap.get(k).a=true; else lmap.set(k,{s:l.s,t:l.t,ty:l.ty,b:false,a:true}); }
+const LINKS=[...lmap.values()];
+const beforeLinks=LINKS.filter(l=>l.b), afterLinks=LINKS.filter(l=>l.a);
+
+/* ---- vertical scale: birth year, shared by both states ---- */
+const ys=NODES.map(n=>n.by).filter(v=>v!=null);
+const gmin=Math.min(...ys), gmax=Math.max(...ys), span=Math.max(gmax-gmin,1);
+const PAD=46, H=Math.min(Math.max(span*3.0,520),3000), pxy=H/span;
+const cellR=n=>10*Math.sqrt(n)+15;
+const medYear=g=>{ const a=g.map(n=>n.by).filter(v=>v!=null).sort((x,y)=>x-y); return a.length?a[a.length>>1]:gmin; };
+const yOf=(n,med)=> PAD + ((n.by!=null?n.by:med)-gmin)*pxy;
+
+/* ---- final-island median year (for a stable left-to-right ordering that is the
+   SAME in both states, so islands never swap sides during the morph) ---- */
+const faMed=(()=>{ const g=new Map();
+  for(const n of NODES){ if(!n.has_a) continue; (g.get(n.fa)||g.set(n.fa,[]).get(n.fa)).push(n); }
+  const m=new Map(); for(const [fa,arr] of g) m.set(fa,medYear(arr)); return m; })();
+const domFa=arr=>{ const c=new Map(); for(const n of arr) c.set(n.fa,(c.get(n.fa)||0)+1);
+  let best=-1,f=arr[0].fa; for(const [k,v] of c) if(v>best){best=v;f=k;} return f; };
+
+/* ---- colour readiness: an after-island dominated by one pre-existing fragment
+   shows its colour from the start; genuinely-merged islands resolve grey->colour. */
+(function(){
+  const tot=new Map(), frg=new Map();
+  for(const n of NODES){ if(!n.has_b) continue; tot.set(n.fa,(tot.get(n.fa)||0)+1);
+    const m=frg.get(n.fa)||frg.set(n.fa,new Map()).get(n.fa); m.set(n.c_b,(m.get(n.c_b)||0)+1); }
+  const pre=new Map();
+  for(const [fa,m] of frg){ let dom=0; for(const v of m.values()) dom=Math.max(dom,v);
+    pre.set(fa, tot.get(fa)>=8 && dom/tot.get(fa)>=0.55); }
+  for(const n of NODES) n.colourReady=!!pre.get(n.fa);
+})();
+
+/* ---- spouse adjacency, to level undated people onto their spouse's year-height ---- */
+const SPMATE=new Map();
+for(const l of LINKS){ if(l.ty){
+  (SPMATE.get(l.s)||SPMATE.set(l.s,[]).get(l.s)).push(l.t);
+  (SPMATE.get(l.t)||SPMATE.set(l.t,[]).get(l.t)).push(l.s); } }
+
+/* ====================================================================
+   LAYOUT: relax each snapshot with the SAME force model as the main app
+   (forceLink .45 / charge -14 / forceX,Y to year-columns / collide 3.4),
+   then animate by interpolating between the two relaxed layouts.
+   ==================================================================== */
+function stateColumns(side, gap){
+  const present=NODES.filter(n=>n["has_"+side]);
+  const keyOf=n=> side==="a"?n.fa:n.c_b;
+  const groups=new Map();
+  for(const n of present){ const k=keyOf(n); (groups.get(k)||groups.set(k,[]).get(k)).push(n); }
+  const ord=[...groups.entries()].sort((A,B)=>{
+    const fA=side==="a"?A[0]:domFa(A[1]), fB=side==="a"?B[0]:domFa(B[1]);
+    return (faMed.get(fA)??gmin)-(faMed.get(fB)??gmin) || medYear(A[1])-medYear(B[1]); });
+  let x=0; const cx=new Map(), cmed=new Map();
+  for(const [k,arr] of ord){ const r=cellR(arr.length); cx.set(k,x+r); cmed.set(k,medYear(arr)); x+=2*r+gap; }
+  return {present,keyOf,cx,cmed,width:x};
+}
+function relax(side, spread, gap){
+  const {present,keyOf,cx,cmed,width}=stateColumns(side,gap);
+  for(const n of present){
+    let ay=yOf(n,cmed.get(keyOf(n)));
+    if(n.by==null){ const ms=(SPMATE.get(n.id)||[]).map(id=>idObj.get(id)).filter(m=>m&&m.by!=null);
+      if(ms.length) ay=PAD+(ms.reduce((s,m)=>s+m.by,0)/ms.length-gmin)*pxy; }
+    n.ax=cx.get(keyOf(n)); n.ay0=ay;
+    n.x=n.ax+(Math.random()-0.5)*6; n.y=ay; n.vx=n.vy=0;
+  }
+  const ls=(side==="a"?afterLinks:beforeLinks).map(l=>({source:l.s,target:l.t,ty:l.ty}));
+  const sim=d3.forceSimulation(present)
+    .force("link",d3.forceLink(ls).id(d=>d.id).distance(15).strength(.45))
+    .force("charge",d3.forceManyBody().strength(-14*spread).distanceMax(55*Math.max(1,spread)))
+    .force("x",d3.forceX(d=>d.ax).strength(Math.max(.06,.20/spread)))
+    .force("y",d3.forceY(d=>d.ay0).strength(.42))
+    .force("collide",d3.forceCollide(3.4))
+    .stop();
+  for(let i=0;i<320;i++) sim.tick();
+  const pos=new Map(); for(const n of present) pos.set(n.id,{x:n.x,y:n.y});
+  // per-final-island centroid (fallback home for nodes missing on this side)
+  const cen=new Map(), cnt=new Map();
+  for(const n of present){ const p=pos.get(n.id); const c=cen.get(n.fa)||{x:0,y:0};
+    c.x+=p.x; c.y+=p.y; cen.set(n.fa,c); cnt.set(n.fa,(cnt.get(n.fa)||0)+1); }
+  for(const [fa,c] of cen){ c.x/=cnt.get(fa); c.y/=cnt.get(fa); }
+  return {pos,cen,width};
+}
+let BEFORE,AFTER,VX0,VW;
+function computeLayouts(spread,gap){
+  BEFORE=relax("b",spread,gap);
+  AFTER =relax("a",spread,gap);
+  for(const n of NODES){
+    const pb=BEFORE.pos.get(n.id), pa=AFTER.pos.get(n.id);
+    const fb=BEFORE.cen.get(n.fa), fa2=AFTER.cen.get(n.fa);
+    const PB=pb||fb||pa, PA=pa||fa2||pb;
+    n.bx=PB.x; n.by2=PB.y; n.ax2=PA.x; n.ay2=PA.y;
+  }
+  let mn=Infinity,mx=-Infinity,ymn=Infinity,ymx=-Infinity;
+  for(const n of NODES){ mn=Math.min(mn,n.bx,n.ax2); mx=Math.max(mx,n.bx,n.ax2);
+    ymn=Math.min(ymn,n.by2,n.ay2); ymx=Math.max(ymx,n.by2,n.ay2); }
+  VX0=mn-PAD; VW=(mx-mn)+2*PAD; window.__VH=(ymx-ymn)+2*PAD; window.__VY0=ymn-PAD;
+}
+
+/* ---- colours ---- */
+const islandColor=d3.scaleOrdinal(d3.schemeTableau10);
+const darker=c=>{ const x=d3.color(c); return x?x.darker(0.9).formatHex():c; };
+let GREY=greyNow();
+function greyNow(){ const v=getComputedStyle(document.documentElement).getPropertyValue('--viz-rel').trim(); return v||'#6b7790'; }
+
+/* ---- svg ---- */
+const svg=d3.select("svg");
+const g=svg.append("g"), linkG=g.append("g"), nodeG=g.append("g");
+let link=linkG.selectAll("line"), node=nodeG.selectAll("circle");
+svg.call(d3.zoom().scaleExtent([.2,12]).on("zoom",e=>g.attr("transform",e.transform)));
+
+let T=0, CUT=1, HIDE=false, SPREAD=1.4, GAP=20;
+function ease(t){ return t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2; }
+function nodeOpacity(n){
+  if(n.has_a&&n.has_b) return 1;
+  if(n.has_b&&!n.has_a) return T<.55?1:Math.max(0,1-(T-.55)/.4);
+  if(n.has_a&&!n.has_b) return T<.45?0:Math.min(1,(T-.45)/.4);
+  return 1;
+}
+function linkOpacity(l){ const base=l.ty?.85:.5;
+  if(l.b&&l.a) return base;
+  if(l.b) return base*Math.max(0,1-T/.85);
+  return base*Math.max(0,(T-.15)/.85);
+}
+const _aSize=new Map(), _bSize=new Map();
+NODES.forEach(n=>{ if(n.has_a)_aSize.set(n.fa,(_aSize.get(n.fa)||0)+1);
+                   if(n.has_b)_bSize.set(n.c_b,(_bSize.get(n.c_b)||0)+1); });
+function visibleNodes(){
+  return NODES.filter(n=>{ if(HIDE&&n.fa===0) return false;
+    const a=n.has_a?(_aSize.get(n.fa)||0):0, b=n.has_b?(_bSize.get(n.c_b)||0):0;
+    return Math.max(a,b)>=CUT; });
+}
+function paintColour(){ if(!node) return;
+  const gc=d3.color(GREY), gstroke=(gc?gc.darker(0.6):d3.color('#5a627a')).formatHex(), e=ease(T);
+  node.style("fill",  d=>d3.interpolateRgb(GREY,   islandColor(d.fa))(d.colourReady?1:e))
+      .style("stroke",d=>d3.interpolateRgb(gstroke,darker(islandColor(d.fa)))(d.colourReady?1:e)); }
+new MutationObserver(()=>{ GREY=greyNow(); paintColour(); })
+  .observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+
+function render(){
+  const vis=visibleNodes(); const vset=new Set(vis.map(d=>d.id));
+  const vl=LINKS.filter(l=>vset.has(l.s)&&vset.has(l.t));
+  svg.attr("viewBox",[VX0, window.__VY0||0, VW, Math.max(window.__VH||H, innerHeight)]);
+  link=linkG.selectAll("line").data(vl,l=>lkey(l)).join("line")
+     .attr("class",l=>l.ty?"l-sp":"l-pc").attr("stroke-width",l=>l.ty?1.1:.8);
+  node=nodeG.selectAll("circle").data(vis,d=>d.id)
+     .join(en=>en.append("circle").call(s=>s.append("title")))
+     .attr("r",d=>d.g?3.4:2.3);
+  node.select("title").text(d=>d.by!=null?`${d.name} (${d.e?"~":""}${d.by})`:d.name);
+  const islB=new Set(vis.filter(n=>n.has_b).map(n=>n.c_b)).size;
+  const islA=new Set(vis.filter(n=>n.has_a).map(n=>n.fa)).size;
+  document.getElementById("stat").innerHTML=
+    `&mdash; <b>${islB}</b> islands on 28 Jun &rarr; <b>${islA}</b> on 30 Jun `+
+    `(${vis.filter(n=>n.has_b).length} &rarr; ${vis.filter(n=>n.has_a).length} people)`;
+  frame(T);
+}
+function frame(t){
+  T=t; const e=ease(t);
+  for(const n of NODES){ n.cx=n.bx+(n.ax2-n.bx)*e; n.cy=n.by2+(n.ay2-n.by2)*e; }
+  node.attr("cx",d=>d.cx).attr("cy",d=>d.cy).attr("opacity",nodeOpacity);
+  link.attr("x1",l=>idObj.get(l.s).cx).attr("y1",l=>idObj.get(l.s).cy)
+      .attr("x2",l=>idObj.get(l.t).cx).attr("y2",l=>idObj.get(l.t).cy)
+      .attr("stroke-opacity",linkOpacity);
+  paintColour();
+  document.getElementById("scrub").value=t;
+}
+
+document.getElementById("legend").innerHTML=
+  `<span class="dotk" style="background:linear-gradient(90deg,#4e79a7,#f28e2b,#59a14f,#e15759)"></span>colour = final family island`+
+  ` &nbsp;<span style="display:inline-block;width:15px;border-top:2px solid var(--viz-link-pc);vertical-align:4px"></span> parent&ndash;child`+
+  ` <span style="display:inline-block;width:15px;border-top:2px solid var(--viz-link-spouse);vertical-align:4px"></span> spouse`;
+
+/* ---- controls ---- */
+const scrub=document.getElementById("scrub");
+scrub.addEventListener("input",()=>{ stopPlay(); frame(+scrub.value); });
+const cut=document.getElementById("cut");
+cut.addEventListener("input",()=>{ CUT=+cut.value; document.getElementById("cutv").textContent=CUT; render(); });
+document.getElementById("hideBig").addEventListener("change",e=>{ HIDE=e.target.checked; render(); });
+const spreadEl=document.getElementById("spread");
+spreadEl.addEventListener("input",()=>{ SPREAD=+spreadEl.value; document.getElementById("spreadv").textContent=SPREAD.toFixed(1); });
+spreadEl.addEventListener("change",()=>{ computeLayouts(SPREAD,GAP); render(); });
+const gapEl=document.getElementById("gap");
+gapEl.addEventListener("input",()=>{ GAP=+gapEl.value; document.getElementById("gapv").textContent=GAP; });
+gapEl.addEventListener("change",()=>{ computeLayouts(SPREAD,GAP); render(); });
+
+/* ---- play ---- */
+let RAF=null, t0=0; const DUR=4200;
+function stopPlay(){ if(RAF){ cancelAnimationFrame(RAF); RAF=null;
+  document.getElementById("play").innerHTML="&#9654; Play"; } }
+function play(){
+  const startT=(T>=0.999)?0:T; if(startT===0) frame(0);
+  t0=performance.now()-startT*DUR;
+  document.getElementById("play").innerHTML="&#10073;&#10073; Pause";
+  const step=now=>{ const t=Math.min(1,(now-t0)/DUR); frame(t);
+    if(t<1){ RAF=requestAnimationFrame(step); } else { stopPlay(); } };
+  RAF=requestAnimationFrame(step);
+}
+document.getElementById("play").addEventListener("click",()=>{ if(RAF) stopPlay(); else play(); });
+
+/* ---- go ---- */
+computeLayouts(SPREAD,GAP);
+render();
+frame(0);
+setTimeout(()=>play(), 600);
+</script>
+</body>
+</html>
