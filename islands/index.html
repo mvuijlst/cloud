@@ -29,7 +29,7 @@
    --viz-rel:#6b7790;         --viz-rel-stroke:#2b3247;    /* parent/child relatives */
    --viz-base:#34d399;        --viz-base-stroke:#065f46;   /* base person */
    --viz-link-person:#7dd3fc; --viz-link-person-stroke:#0c4a6e; /* ancestral-link people */
-   --viz-link-pc:#46506a;     /* parent-child edge */
+   --viz-link-pc:#363d52;     /* parent-child edge */
    --viz-link-spouse:#c2698c; /* spouse edge */
  }
  :root[data-theme=light]{
@@ -53,7 +53,7 @@
    --viz-rel:#94a3b8;         --viz-rel-stroke:#64748b;
    --viz-base:#059669;        --viz-base-stroke:#065f46;
    --viz-link-person:#0284c7; --viz-link-person-stroke:#075985;
-   --viz-link-pc:#9aa5bd;
+   --viz-link-pc:#828da6;
    --viz-link-spouse:#c2557f;
  }
  *{box-sizing:border-box}
@@ -148,13 +148,18 @@
 
  /* node / link colours are CSS-driven so the theme toggle recolours the
     graph live (no re-simulation). d3 sets the category class per element. */
- #screen-viz circle{stroke-width:.5px}
- #screen-viz circle.n-surn{fill:var(--viz-surn);stroke:var(--viz-surn-stroke)}
- #screen-viz circle.n-rel{fill:var(--viz-rel);stroke:var(--viz-rel-stroke)}
- #screen-viz circle.n-link{fill:var(--viz-link-person);stroke:var(--viz-link-person-stroke)}
- #screen-viz circle.n-base{fill:var(--viz-base);stroke:var(--viz-base-stroke);stroke-width:1px}
+ #screen-viz path.node{stroke-width:.6px;stroke-linejoin:round}
+ #screen-viz path.n-surn{fill:var(--viz-surn);stroke:var(--viz-surn-stroke)}
+ #screen-viz path.n-rel{fill:var(--viz-rel);stroke:var(--viz-rel-stroke)}
+ #screen-viz path.n-base{fill:var(--viz-base);stroke:var(--viz-base-stroke);stroke-width:1px}
+ #screen-viz path.mk{stroke-width:.9px}            /* marriage glyph */
+ #screen-viz path.mk.est{opacity:.55}              /* inferred marriage date */
  #screen-viz line.l-pc{stroke:var(--viz-link-pc)}
  #screen-viz line.l-sp{stroke:var(--viz-link-spouse)}
+ /* island name labels — a --bg halo keeps them readable over nodes/edges */
+ #screen-viz text.islbl{fill:var(--txt);font-size:11px;font-weight:600;
+   paint-order:stroke;stroke:var(--bg);stroke-width:3px;stroke-linejoin:round;
+   pointer-events:none}
 </style>
 </head>
 <body>
@@ -192,6 +197,7 @@
    <span class="pill"><b id="cfgIndi">0</b> people</span>
    <span class="pill"><b id="cfgFam">0</b> families</span>
    <button class="btn ghost" id="reupload">Upload another file</button>
+   <button class="btn ghost" id="loadSampleCfg" hidden>Load the sample tree</button>
   </div>
 
   <div class="lbl">1 &middot; Surname &mdash; the 20 most common</div>
@@ -207,7 +213,8 @@
 
   <div class="actions">
    <button id="go" class="btn" disabled>Visualize &rarr;</button>
-   <span id="goNote" class="note">Pick a surname to continue.</span>
+   <button id="goAll" class="btn ghost">Visualise everyone &rarr;</button>
+   <span id="goNote" class="note">Pick a surname &mdash; or visualise everyone.</span>
   </div>
  </div>
 </div>
@@ -218,13 +225,16 @@
   <button class="back" id="vizBack">&larr; Back</button>
   <b id="vizTitle">family trees</b>
   <span id="stat" class="key"></span>
-  <span class="ctl">island &ge; <input id="cut" type="range" min="1" max="50" value="3">
-    <b id="cutv">3</b> people</span>
+  <span class="ctl">islands &ge; <input id="cut" type="range" min="1" max="15" value="3">
+    <b id="cutv">3</b> <span id="cutUnit">people</span></span>
+  <span class="ctl">hide <input id="hideTop" type="range" min="0" max="10" value="0">
+    <b id="hideTopv">0</b> largest</span>
   <span class="ctl">spread <input id="spread" type="range" min="0.4" max="5" step="0.1" value="3">
     <b id="spreadv">3.0&times;</b></span>
   <span class="ctl">island gap <input id="gap" type="range" min="-400" max="220" step="2" value="26">
     <b id="gapv">26</b></span>
   <label class="ctl"><input type="checkbox" id="byIsland">colour islands</label>
+  <label class="ctl"><input type="checkbox" id="showNames">island names</label>
   <span class="ctl">layout
     <select id="mode"><option value="pack">chronological</option><option value="grid">grid</option></select></span>
   <br>
@@ -337,12 +347,13 @@ function parseGedcom(text){
   const indiNameAny=new Map();    // id -> first display name (any type)
   const indiBirt=new Map();       // id -> birth year
   const indiBapt=new Map();       // id -> baptism/christening year
-  const fams=new Map();           // id -> {husb,wife,chil:[]}
+  const indiSex=new Map();        // id -> "M" | "F"
+  const fams=new Map();           // id -> {husb,wife,chil:[],marr}
 
   let cur=null, ctx=null;
-  let fam={husb:null,wife:null,chil:[]};
+  let fam={husb:null,wife:null,chil:[],marr:null};
   let nbSurns=new Set(), nbType=null, nbDisp=null;
-  let curEvt=null;
+  let curEvt=null, famEvt=null;
 
   function addSurn(i,s){
     s=s.trim(); if(!s) return;
@@ -370,7 +381,7 @@ function parseGedcom(text){
       const p=line.split(/\s+/);
       cur=p[1]; const typ=p.length>2?p[2]:"";
       if(typ==="INDI"){ indi.add(cur); ctx="I"; }
-      else if(typ==="FAM"){ fam={husb:null,wife:null,chil:[]}; ctx="F"; }
+      else if(typ==="FAM"){ fam={husb:null,wife:null,chil:[],marr:null}; ctx="F"; famEvt=null; }
       else ctx=null;
       continue;
     }
@@ -391,6 +402,10 @@ function parseGedcom(text){
           const map=(curEvt==="BIRT")?indiBirt:indiBapt;
           if(!map.has(cur)) map.set(cur,parseInt(nums[nums.length-1],10));
         }
+      } else if(line.startsWith("1 SEX ")){
+        flushName(cur); curEvt=null;
+        const s=line.slice(6).trim().charAt(0).toUpperCase();
+        if(s==="M"||s==="F") indiSex.set(cur,s);
       } else if(line.startsWith("1 ")){
         flushName(cur);
         if(line.startsWith("1 BIRT")) curEvt="BIRT";
@@ -398,15 +413,21 @@ function parseGedcom(text){
         else curEvt=null;
       }
     } else if(ctx==="F"){
-      if(line.startsWith("1 HUSB ")) fam.husb=line.split(/\s+/)[2];
-      else if(line.startsWith("1 WIFE ")) fam.wife=line.split(/\s+/)[2];
-      else if(line.startsWith("1 CHIL ")) fam.chil.push(line.split(/\s+/)[2]);
+      if(line.startsWith("1 HUSB ")){ fam.husb=line.split(/\s+/)[2]; famEvt=null; }
+      else if(line.startsWith("1 WIFE ")){ fam.wife=line.split(/\s+/)[2]; famEvt=null; }
+      else if(line.startsWith("1 CHIL ")){ fam.chil.push(line.split(/\s+/)[2]); famEvt=null; }
+      else if(line.startsWith("1 MARR")) famEvt="MARR";
+      else if(line.startsWith("2 DATE ") && famEvt==="MARR"){
+        const nums=line.slice(7).match(yearRe);
+        if(nums && fam.marr==null) fam.marr=parseInt(nums[nums.length-1],10);
+      }
+      else if(line.startsWith("1 ")) famEvt=null;
     }
   }
   if(ctx==="I") flushName(cur);
   else if(ctx==="F") fams.set(cur,fam);
 
-  return {indi,indiSurn,indiSurnOrig,indiName,indiNameAny,indiBirt,indiBapt,fams};
+  return {indi,indiSurn,indiSurnOrig,indiName,indiNameAny,indiBirt,indiBapt,indiSex,fams};
 }
 
 /* ---- surname frequency + canonical "best form" ---- */
@@ -478,27 +499,63 @@ function learnVariants(data,chosen){
    Build the graph: edges, optional base-person link, components,
    estimated years, and the node/link JSON the viz consumes.
    ==================================================================== */
-function buildGraph(data,variants,baseId){
-  const {indi,indiSurn,indiName,indiNameAny,indiBirt,indiBapt,fams}=data;
-  const isMatch=i=>{ const ss=indiSurn.get(i); return ss?intersects(ss,variants):false; };
+function buildGraph(data,variants,baseId,allPeople){
+  const {indi,indiSurn,indiSurnOrig,indiName,indiNameAny,indiBirt,indiBapt,indiSex,fams}=data;
+  // "everyone" mode: every individual matches, so the whole tree is built and
+  // split into islands (the island-size slider then hides the small ones).
+  const isMatch=allPeople ? (()=>true)
+    : i=>{ const ss=indiSurn.get(i); return ss?intersects(ss,variants):false; };
   const disp=i=>indiName.get(i)||indiNameAny.get(i)||"?";
 
-  /* edges: parent-child (>=1 match) + spouse (>=1 match, or both nodes) */
-  const pc=new Map(), sp=new Map();              // "a|b" -> [a,b]
-  const addEdge=(m,a,b)=>m.set(a+"|"+b,[a,b]);
-  const nodes=new Set();
-  for(const i of indi) if(isMatch(i)) nodes.add(i);
+  /* ---------------------------------------------------------------
+     Graph model
+       • person nodes  — as before, filtered to those touching the surname
+       • marriage/union nodes — one per participating family; spouses link
+         DOWN to the marriage, the marriage links DOWN to each child.
+     Edges: spouse→marriage (ty 1) and marriage→child (ty 0).
+     --------------------------------------------------------------- */
+  const nodes=new Set();                         // person ids
+  const unions=new Map();                         // family object -> union record
+  let unionSeq=0;
+  const pc=new Map(), sp=new Map();               // "a|b" -> [a,b]  (a,b are node ids)
+  const addPC=(u,c)=>pc.set(u+"|"+c,[u,c]);       // marriage -> child
+  const addSP=(s,u)=>sp.set(s+"|"+u,[s,u]);       // spouse   -> marriage
+  function makeUnion(f){
+    let u=unions.get(f);
+    if(!u){ u={uid:"U"+(unionSeq++), f, husb:f.husb, wife:f.wife, bd:null, bl:0}; unions.set(f,u); }
+    return u;
+  }
+
+  // seed with matching individuals; in everyone mode, skip people who appear
+  // in no family (they'd be lone 1-person islands the size slider hides anyway).
+  if(!allPeople) for(const i of indi) if(isMatch(i)) nodes.add(i);
+
+  /* pass 1 — which children each family contributes, and the person nodes
+     they pull in (mirrors the old parent-child inclusion rule). */
+  const famInfo=new Map();
   for(const f of fams.values()){
     const parents=[f.husb,f.wife].filter(Boolean);
-    for(const c of f.chil)
-      for(const p of parents)
-        if(isMatch(c)||isMatch(p)){ addEdge(pc,p,c); nodes.add(p); nodes.add(c); }
-  }
-  for(const f of fams.values()){
-    const h=f.husb,w=f.wife;
-    if(h&&w && (isMatch(h)||isMatch(w)||(nodes.has(h)&&nodes.has(w)))){
-      addEdge(sp,h,w); nodes.add(h); nodes.add(w);
+    const anyParentMatch=parents.some(isMatch);
+    const inclChildren=f.chil.filter(c=>isMatch(c)||anyParentMatch);
+    famInfo.set(f,{parents,inclChildren});
+    if(parents.length && inclChildren.length){
+      for(const p of parents) nodes.add(p);
+      for(const c of inclChildren) nodes.add(c);
     }
+  }
+  /* pass 2 — create a marriage node wherever there is a parent-child
+     structure, or a spouse pair worth drawing (either spouse matches, or
+     both are already nodes). */
+  for(const f of fams.values()){
+    const {parents,inclChildren}=famInfo.get(f);
+    const pcStructure=parents.length && inclChildren.length;
+    const spouseRel=f.husb && f.wife &&
+      (isMatch(f.husb)||isMatch(f.wife)||(nodes.has(f.husb)&&nodes.has(f.wife)));
+    if(!(pcStructure||spouseRel)) continue;
+    const u=makeUnion(f);
+    if(f.husb){ nodes.add(f.husb); addSP(f.husb,u.uid); }
+    if(f.wife){ nodes.add(f.wife); addSP(f.wife,u.uid); }
+    for(const c of inclChildren) addPC(u.uid,c);
   }
 
   /* link the base person into an island by walking UP their ancestry */
@@ -538,37 +595,25 @@ function buildGraph(data,variants,baseId){
       while(x!=null){ path.push(x); x=prev.get(x); }
       path.reverse();
       for(const n of path){ basePath.add(n); baseLine.add(n); }
-      const surnameNodes=new Set(nodes);
       path.forEach((n,gen)=>baseDepth.set(n,gen));
       for(let k=0;k<path.length-1;k++){
         const child=path[k], parent=path[k+1];
+        nodes.add(parent); nodes.add(child);
         const famLink=(famOfChild.get(child)||[]).find(f=>parent===f.husb||parent===f.wife)||null;
-        nodes.add(parent); addEdge(pc,parent,child);
         if(famLink){
-          const h=famLink.husb,w=famLink.wife;
-          const spouse = (h===parent)?w:h;
-          if(spouse && (surnameNodes.has(spouse)||isMatch(spouse))){
-            addEdge(pc,spouse,child); addEdge(sp,h,w);
-          }
+          const u=makeUnion(famLink);
+          u.bd=k+0.5; u.bl=1;                       // sit the marriage on the ancestral line
+          if(famLink.husb){ nodes.add(famLink.husb); addSP(famLink.husb,u.uid); }
+          if(famLink.wife){ nodes.add(famLink.wife); addSP(famLink.wife,u.uid); }
+          addPC(u.uid,child);
+        } else {
+          addPC(parent,child);                      // no family record: fall back to a direct link
         }
       }
       nodes.add(baseId);
       baseInfo=`Linked base person up ${path.length-1} generation(s) to ${disp(target)}.`;
     }
   }
-
-  /* connected components (islands) via union-find */
-  const edges=[...pc.values(),...sp.values()];
-  const par=new Map(); for(const n of nodes) par.set(n,n);
-  function find(x){ while(par.get(x)!==x){ par.set(x,par.get(par.get(x))); x=par.get(x); } return x; }
-  function union(a,b){ const ra=find(a),rb=find(b); if(ra!==rb) par.set(ra,rb); }
-  for(const [a,b] of edges) union(a,b);
-  const comp=new Map();
-  for(const n of nodes){ const r=find(n); if(!comp.has(r)) comp.set(r,[]); comp.get(r).push(n); }
-  const roots=[...comp.keys()].sort((a,b)=>comp.get(b).length-comp.get(a).length);
-  const cid=new Map(); roots.forEach((r,k)=>cid.set(r,k));
-  const csize=new Map(); for(const n of nodes) csize.set(find(n),comp.get(find(n)).length);
-  let maxcs=1; for(const c of comp.values()) maxcs=Math.max(maxcs,c.length);
 
   /* estimate missing birth years from relatives (~30 yrs / generation) */
   const birthYear=n=>indiBirt.has(n)?indiBirt.get(n):(indiBapt.has(n)?indiBapt.get(n):undefined);
@@ -596,31 +641,122 @@ function buildGraph(data,variants,baseId){
     if(!changed) break;
   }
 
-  /* node / link JSON */
-  const nodeList=[...nodes];
-  const idx=new Map(); nodeList.forEach((n,k)=>idx.set(n,k));
+  /* marriage date/year: real (MARR) → inferred from first child → inferred
+     from a reasonable marriage age. `me` flags an inferred (estimated) date. */
+  const MARRY_AGE=25;
+  for(const u of unions.values()){
+    const f=u.f;
+    if(f.marr!=null){ u.by=f.marr; u.me=0; continue; }
+    const cy=f.chil.map(known).filter(v=>v!=null);
+    if(cy.length){ u.by=Math.min(...cy)-1; u.me=1; continue; }
+    const py=[f.husb,f.wife].filter(Boolean).map(known).filter(v=>v!=null);
+    if(py.length){ u.by=pyRound(py.reduce((a,b)=>a+b,0)/py.length)+MARRY_AGE; u.me=1; continue; }
+    u.by=null; u.me=1;
+  }
+
+  /* connected components (islands) over people + marriages via union-find */
+  const unionList=[...unions.values()];
+  const allIds=[...nodes, ...unionList.map(u=>u.uid)];
+  const isPerson=id=>nodes.has(id);
+  const edges=[...pc.values(),...sp.values()];
+  const par=new Map(); for(const id of allIds) par.set(id,id);
+  function find(x){ while(par.get(x)!==x){ par.set(x,par.get(par.get(x))); x=par.get(x); } return x; }
+  function union(a,b){ const ra=find(a),rb=find(b); if(ra!==rb) par.set(ra,rb); }
+  for(const [a,b] of edges) union(a,b);
+  const comp=new Map();
+  for(const id of allIds){ const r=find(id); if(!comp.has(r)) comp.set(r,[]); comp.get(r).push(id); }
+  // island size = number of PEOPLE (marriages don't count toward the cut)
+  const psize=new Map();
+  for(const [r,ids] of comp) psize.set(r,ids.reduce((a,id)=>a+(isPerson(id)?1:0),0));
+  const roots=[...comp.keys()].sort((a,b)=>psize.get(b)-psize.get(a));
+  const cid=new Map(); roots.forEach((r,k)=>cid.set(r,k));
+  let maxcs=1; for(const s of psize.values()) maxcs=Math.max(maxcs,s);
+
+  /* ---- name each island (tiered) --------------------------------------
+     1. focus person's island → "<base>'s relatives"
+     2. surname-coherent island (one surname is a big enough share) → that
+        surname, anchored by the earliest known ancestor
+     3. a fused network (no dominant surname) → its most-connected member
+        plus size + date span, rather than a misleading surname.
+     -------------------------------------------------------------------- */
+  const COHERENT=0.4;                    // top-surname share needed to read as one family
+  const degree=new Map();
+  for(const [a,b] of edges){ degree.set(a,(degree.get(a)||0)+1); degree.set(b,(degree.get(b)||0)+1); }
+  const islandNames=[];                  // indexed by cid
+  for(const [r,ids] of comp){
+    const k=cid.get(r);
+    const persons=ids.filter(isPerson);
+    if(baseId!=null && persons.includes(baseId)){ islandNames[k]=`${disp(baseId)}’s relatives`; continue; }
+    const tally=new Map();               // surname spelling -> count
+    for(const p of persons) for(const s of (indiSurnOrig.get(p)||[])) tally.set(s,(tally.get(s)||0)+1);
+    let surn=null,best=0;
+    for(const [s,c] of tally) if(c>best){ best=c; surn=s; }
+    const share=persons.length?best/persons.length:0;
+    // anchor = earliest known bearer of the dominant surname, so the label's
+    // surname and its named ancestor agree (not some earlier in-law).
+    let anchor=null,ay=Infinity;
+    for(const p of persons){
+      const so=indiSurnOrig.get(p);
+      if(surn && !(so&&so.has(surn))) continue;
+      const y=known(p); if(y!=null && y<ay){ ay=y; anchor=p; }
+    }
+    if(surn && share>=COHERENT){
+      islandNames[k]= anchor ? `${surn} — ${disp(anchor)} (${est.has(anchor)?"~":""}${ay})` : surn;
+      continue;
+    }
+    let hub=null,hd=-1;                   // most-connected member of the network
+    for(const p of persons){ const d=degree.get(p)||0; if(d>hd){ hd=d; hub=p; } }
+    const ys=persons.map(known).filter(v=>v!=null);
+    const span=ys.length?` (${Math.min(...ys)}–${Math.max(...ys)})`:"";
+    islandNames[k]= hub
+      ? `${disp(hub)}’s network — ${persons.length} people${span}`
+      : `Island ${k+1} — ${persons.length} people${span}`;
+  }
+
+  /* node / link JSON — persons first, then marriages */
+  const personList=[...nodes];
+  const nodeIds=[...personList, ...unionList.map(u=>u.uid)];
+  const idx=new Map(); nodeIds.forEach((id,k)=>idx.set(id,k));
   const yv=n=>{ const y=year.get(n); if(y!=null) return y; const e=est.get(n); return e!=null?e:null; };
-  const nodeJson=nodeList.map(n=>{
+  const personJson=personList.map(n=>{
     const hasYear=year.get(n)!=null;
     return {
-      g: isMatch(n)?1:0,
+      k:0,                                          // 0 = person
+      sx: indiSex.get(n)||null,                     // "M" | "F" | null
+      g: isMatch(n)?1:0,                            // bears the chosen surname
       b: n===baseId?2:(basePath.has(n)?1:0),
       bd: baseDepth.has(n)?baseDepth.get(n):null,
       bl: baseLine.has(n)?1:0,
-      n: indiName.get(n)||indiNameAny.get(n)||"?",
+      n: disp(n),
       by: yv(n),
       e: hasYear?0:(est.has(n)?1:0),
       c: cid.get(find(n)),
-      cs: csize.get(find(n))
+      cs: psize.get(find(n)),
+      cn: islandNames[cid.get(find(n))]
     };
   });
+  const marriageJson=unionList.map(u=>({
+    k:1,                                            // 1 = marriage
+    ms: allPeople ? 1 : ((u.husb && isMatch(u.husb))?1:0),   // husband bears the surname → island colour (all coloured in everyone mode)
+    g:0,
+    b:0,
+    bd: u.bd!=null?u.bd:null,
+    bl: u.bl?1:0,
+    n: (u.husb?disp(u.husb):"—")+" ⚭ "+(u.wife?disp(u.wife):"—"),
+    by: u.by!=null?u.by:null,
+    e: u.me?1:0,
+    c: cid.get(find(u.uid)),
+    cs: psize.get(find(u.uid)),
+    cn: islandNames[cid.get(find(u.uid))]
+  }));
+  const nodeJson=[...personJson,...marriageJson];
   const linkJson=[
     ...[...pc.values()].map(([a,b])=>({s:idx.get(a),t:idx.get(b),ty:0})),
     ...[...sp.values()].map(([a,b])=>({s:idx.get(a),t:idx.get(b),ty:1}))
   ];
-  const nmatch=nodeList.reduce((a,n)=>a+(isMatch(n)?1:0),0);
+  const nmatch=personList.reduce((a,n)=>a+(isMatch(n)?1:0),0);
   return {
-    nodeJson, linkJson, maxcs,
+    nodeJson, linkJson, maxcs, islandNames,
     nmatch, nodeCount:nodes.size, islandCount:comp.size,
     pcCount:pc.size, spCount:sp.size,
     baseInfo, hasBasePath:basePath.size>0,
@@ -633,36 +769,50 @@ function buildGraph(data,variants,baseId){
    ==================================================================== */
 let CUR_SIM=null;
 const DEFAULT_GAP=26;
-function runViz(N, L, SURN, maxcs, initialCut, baseDisp, hasBasePath, ctl){
+function runViz(N, L, SURN, maxcs, initialCut, baseDisp, hasBasePath, ctl, allPeople){
   if(CUR_SIM){ CUR_SIM.stop(); CUR_SIM=null; }
   ctl=ctl||{};
 
-  document.getElementById("vizTitle").textContent = SURN+" family trees";
+  document.getElementById("vizTitle").textContent = allPeople ? "All families" : SURN+" family trees";
   // legend — rebuilt on demand because "colour islands" can be toggled live.
   function setLegend(byIsland){
+    // small inline glyphs so the legend echoes the graph's shapes/colours
+    const gl=(ch,v)=>`<span style="color:var(${v});font-size:13px">${ch}</span>`;
     let legend;
     if(byIsland){
       legend = `<span class="dotk" style="background:linear-gradient(90deg,#4e79a7,#59a14f,#edc948,#e15759)"></span>`
-        + `each colour = one family island`;
+        + (allPeople ? `each colour = one family island` : `each colour = one island (name-bearers); others grey`);
+    } else if(allPeople){
+      legend = `${gl("■●","--viz-surn")} everyone &nbsp;<span style="color:var(--muted2)">(turn on “colour islands” for per-family hues)</span>`;
+      if(baseDisp && hasBasePath) legend += ` &nbsp;${gl("★","--viz-base")} ${escapeHtml(baseDisp)}`;
     } else {
-      legend = `<span class="dotk" style="background:var(--viz-surn)"></span>${escapeHtml(SURN)}`
-        + `<span class="dotk" style="background:var(--viz-rel)"></span>parent / child`;
-      if(baseDisp && hasBasePath){
-        legend += `<span class="dotk" style="background:var(--viz-base)"></span>${escapeHtml(baseDisp)}`
-          + `<span class="dotk" style="background:var(--viz-link-person)"></span>ancestral link`;
-      }
+      legend = `${gl("■●","--viz-surn")} ${escapeHtml(SURN)}`
+        + ` &nbsp;${gl("■●","--viz-rel")} other`;
+      if(baseDisp && hasBasePath) legend += ` &nbsp;${gl("★","--viz-base")} ${escapeHtml(baseDisp)}`;
     }
-    legend += ` &nbsp;<span style="display:inline-block;width:15px;border-top:2px solid var(--viz-link-pc);vertical-align:4px"></span> parent&ndash;child`
-      + ` &nbsp;<span style="display:inline-block;width:15px;border-top:2px solid var(--viz-link-spouse);vertical-align:4px"></span> spouse`;
+    legend += ` &nbsp;&middot;&nbsp; ■ male &nbsp; ● female &nbsp; ▲ ?`
+      + ` &nbsp; ${gl("◆","--viz-link-spouse")} marriage`
+      + ` &nbsp;<span style="display:inline-block;width:15px;border-top:2px solid var(--viz-link-pc);vertical-align:4px"></span> to child`
+      + ` &nbsp;<span style="display:inline-block;width:15px;border-top:2px solid var(--viz-link-spouse);vertical-align:4px"></span> to marriage`;
     document.getElementById("legend").innerHTML=legend;
   }
 
   // initial control state — restored from a saved session when present,
   // otherwise the defaults.
-  const cutEl=document.getElementById("cut");
-  const cut=Math.min(Math.max(1, ctl.cut!=null?ctl.cut:initialCut), maxcs);
-  cutEl.max=maxcs; cutEl.value=cut;
-  document.getElementById("cutv").textContent=cut;
+  // island filters — linear, small ranges, because the meaningful choices live
+  // at the two tails: whether to keep tiny fragments (min size), and whether to
+  // keep the very largest islands. Island ids are size-ranked (0 = largest), so
+  // "hide the N largest" is just c >= hideTop. Default to hiding the one giant
+  // fused island in everyone mode.
+  const minEl=document.getElementById("cut");
+  minEl.max=Math.max(2,Math.min(15,maxcs));
+  const minSize0=Math.min(Math.max(1, ctl.cut!=null?ctl.cut:initialCut), +minEl.max);
+  minEl.value=minSize0;
+  document.getElementById("cutv").textContent=minSize0;
+  const hideEl=document.getElementById("hideTop");
+  const hideTop0=Math.min(Math.max(0, ctl.hideTop!=null?ctl.hideTop:(allPeople?1:0)), +hideEl.max);
+  hideEl.value=hideTop0;
+  document.getElementById("hideTopv").textContent=hideTop0;
   const spread0 = ctl.spread!=null?ctl.spread:3;
   document.getElementById("spread").value=spread0;
   document.getElementById("spreadv").textContent=spread0.toFixed(1)+"×";
@@ -671,16 +821,20 @@ function runViz(N, L, SURN, maxcs, initialCut, baseDisp, hasBasePath, ctl){
   document.getElementById("gapv").textContent=gap0;
   document.getElementById("mode").value=ctl.mode||"pack";
   document.getElementById("byIsland").checked=!!ctl.byIsland;
+  document.getElementById("showNames").checked = ctl.showNames!=null ? !!ctl.showNames : true;
 
   N.forEach((d,i)=>d.id=i);
   L.forEach(l=>{ l.source=l.s; l.target=l.t; });
 
-  // spouse adjacency -- keeps couples level (same height)
+  // spouse adjacency -- spouses of the same marriage are kept level. Each
+  // spouse links to a marriage node (ty 1, target = marriage), so the two
+  // (or more) sources sharing a marriage are mutual "mates".
   const spMates=new Map();
-  L.forEach(l=>{ if(l.ty){
-    (spMates.get(l.s)||spMates.set(l.s,[]).get(l.s)).push(l.t);
-    (spMates.get(l.t)||spMates.set(l.t,[]).get(l.t)).push(l.s);
-  }});
+  const byMarriage=new Map();
+  L.forEach(l=>{ if(l.ty){ (byMarriage.get(l.t)||byMarriage.set(l.t,[]).get(l.t)).push(l.s); }});
+  for(const sps of byMarriage.values())
+    for(const a of sps) for(const b of sps) if(a!==b)
+      (spMates.get(a)||spMates.set(a,[]).get(a)).push(b);
   const W=1700, PAD=30;
   const cellR=n=>10*Math.sqrt(n)+16;
   const colSpread=s=>1+(s-1)*0.22;   // gentler column inflation so islands stay closer at high spread
@@ -688,11 +842,27 @@ function runViz(N, L, SURN, maxcs, initialCut, baseDisp, hasBasePath, ctl){
   const islandColor=d3.scaleOrdinal(d3.schemeTableau10);
   const darker=c=>{ const x=d3.color(c); return x?x.darker(0.9).formatHex():c; };
 
+  // node glyphs: males square, females circle, unknown triangle, marriage
+  // diamond, chosen base person a star.
+  // marriage is a 45°-rotated square (rotation applied in the tick transform)
+  const symType=d=> d.k ? d3.symbolSquare
+                   : d.b===2 ? d3.symbolStar
+                   : d.sx==="M" ? d3.symbolSquare
+                   : d.sx==="F" ? d3.symbolCircle
+                   : d3.symbolTriangle;
+  const symSize=d=> d.k ? 24 : d.b===2 ? 90 : d.g ? 46 : 28;
+  const symPath=d=> d3.symbol().type(symType(d)).size(symSize(d))();
+  // colour bucket: bearers (and husband-bearer marriages) take the surname/
+  // island colour; everyone else is grey; the chosen base person stays green.
+  const colourClass=d=> d.k ? (d.ms?"n-surn":"n-rel")
+                       : (d.b===2?"n-base": d.g?"n-surn":"n-rel");
+  const bearerColoured=d=> d.k ? !!d.ms : (d.b!==2 && !!d.g);
+
   const svg=d3.select("#screen-viz svg");
   svg.selectAll("*").remove();
   const g=svg.append("g");
-  const linkG=g.append("g"), nodeG=g.append("g");
-  let link=linkG.selectAll("line"), node=nodeG.selectAll("circle");
+  const linkG=g.append("g"), nodeG=g.append("g"), labelG=g.append("g");
+  let link=linkG.selectAll("line"), node=nodeG.selectAll("path"), label=labelG.selectAll("text");
 
   const VSTRETCH=1.9;
 
@@ -704,7 +874,8 @@ function runViz(N, L, SURN, maxcs, initialCut, baseDisp, hasBasePath, ctl){
     .force("collide", d3.forceCollide(3.4))
     .on("tick",()=>{ link.attr("x1",d=>d.source.x).attr("y1",d=>d.source.y)
                          .attr("x2",d=>d.target.x).attr("y2",d=>d.target.y);
-                     node.attr("cx",d=>d.x).attr("cy",d=>d.y); });
+                     node.attr("transform",d=>`translate(${d.x},${d.y})`+(d.k?" rotate(45)":""));
+                     positionLabels(); });
   CUR_SIM=sim;
 
   function islandsOf(vis){
@@ -782,19 +953,33 @@ function runViz(N, L, SURN, maxcs, initialCut, baseDisp, hasBasePath, ctl){
     for(const d of vis){ if(tgt.has(d.id)) d.ay=tgt.get(d.id); }
   }
 
+  // labels sit above each island's *current* extent (not its layout anchor),
+  // so they track the island as the force layout — and a tight island gap —
+  // shift it around. Called every tick.
+  function positionLabels(){
+    label.attr("transform",d=>{
+      const x=d3.mean(d.nodes,n=>n.x), y=d3.min(d.nodes,n=>n.y)-6;
+      return `translate(${x},${y}) rotate(-90)`;
+    });
+  }
+
   function update(){
-    const cut=+d3.select("#cut").property("value");
+    const minSize=+document.getElementById("cut").value;
+    const hideTop=+document.getElementById("hideTop").value;
     const mode=d3.select("#mode").property("value");
     const spread=+d3.select("#spread").property("value");
     const gap=+d3.select("#gap").property("value");
     const byIsland=d3.select("#byIsland").property("checked");
-    d3.select("#cutv").text(cut);
+    const showNames=d3.select("#showNames").property("checked");
+    d3.select("#cutv").text(minSize);
+    d3.select("#cutUnit").text(minSize===1?"person":"people");
+    d3.select("#hideTopv").text(hideTop);
     d3.select("#spreadv").text(spread.toFixed(1)+"×");
     d3.select("#gapv").text(gap);
     setLegend(byIsland);
     sim.force("x").strength(Math.max(.06,.20/spread));
     sim.force("charge").strength(-14*spread).distanceMax(55*Math.max(1,spread));
-    const vis=N.filter(d=>d.cs>=cut);
+    const vis=N.filter(d=>d.cs>=minSize && d.c>=hideTop);
     const visSet=new Set(vis.map(d=>d.id));
     const vl=L.filter(l=>visSet.has(l.s)&&visSet.has(l.t));
     const isls=islandsOf(vis);
@@ -809,27 +994,50 @@ function runViz(N, L, SURN, maxcs, initialCut, baseDisp, hasBasePath, ctl){
       .attr("class",d=>d.ty?"l-sp":"l-pc")
       .attr("stroke-opacity",d=>d.ty?.85:.5)
       .attr("stroke-width",d=>d.ty?1.2:.8);
-    node=nodeG.selectAll("circle").data(vis,d=>d.id)
-      .join(enter=>enter.append("circle").call(s=>s.append("title")))
-      .attr("r",d=>d.b===2?5:d.b?3.2:d.g?3.4:2.3)
-      .attr("class",d=>d.b===2?"n-base":d.b?"n-link":d.g?"n-surn":"n-rel")
-      // colour-by-island uses inline styles (override the class CSS); null reverts to the theme palette
-      .style("fill", d=> byIsland ? islandColor(d.c) : null)
-      .style("stroke", d=> byIsland ? darker(islandColor(d.c)) : null);
-    node.select("title").text(d=>(d.b===2?"★ ":"")
-      +(d.by!=null?`${d.n} (${d.e?"~":""}${d.by})`:d.n));
+    node=nodeG.selectAll("path").data(vis,d=>d.id)
+      .join(enter=>enter.append("path").call(s=>s.append("title")))
+      .attr("d",symPath)
+      .attr("class",d=>"node "+colourClass(d)+(d.k?" mk":"")+(d.k&&d.e?" est":""))
+      // colour-by-island uses inline styles (override the class CSS) for the
+      // bearer-coloured nodes only; null reverts to the theme palette (grey /
+      // base green stay class-driven so the theme toggle recolours them live).
+      .style("fill", d=> byIsland&&bearerColoured(d) ? islandColor(d.c) : null)
+      .style("stroke", d=> byIsland&&bearerColoured(d) ? darker(islandColor(d.c)) : null);
+    node.select("title").text(d=>{
+      const base = d.k
+        ? `⚭ ${d.n}${d.by!=null?` (${d.e?"~":""}${d.by})`:""}`
+        : (d.b===2?"★ ":"")+(d.by!=null?`${d.n} (${d.e?"~":""}${d.by})`:d.n);
+      return d.cn ? `${base}\n⌂ ${d.cn}` : base;
+    });
 
-    const ng=vis.filter(d=>d.g).length;
-    d3.select("#stat").html(`&mdash; ${isls.length} islands, ${ng} ${escapeHtml(SURN)} + ${vis.length-ng} relatives, `
-      +`${vl.filter(l=>!l.ty).length} parent&ndash;child &amp; ${vl.filter(l=>l.ty).length} spouse links`);
+    // island name labels — one per visible island, at its top, reading upward
+    const labelData = showNames ? isls.map(isl=>({
+      c: isl[0].c, name: isl[0].cn, nodes: isl
+    })).filter(d=>d.name) : [];
+    label=labelG.selectAll("text").data(labelData,d=>d.c)
+      .join("text")
+      .attr("class","islbl")
+      .attr("text-anchor","start")
+      .text(d=>d.name);
+    positionLabels();
+
+    const persons=vis.filter(d=>!d.k), ng=persons.filter(d=>d.g).length;
+    const nm=vis.length-persons.length;
+    const who = allPeople
+      ? `${persons.length} people`
+      : `${ng} ${escapeHtml(SURN)} + ${persons.length-ng} relatives`;
+    d3.select("#stat").html(`&mdash; ${isls.length} islands, ${who}, `
+      +`${nm} marriages, ${vl.filter(l=>!l.ty).length} parent&ndash;child &amp; ${vl.filter(l=>l.ty).length} spouse links`);
 
     sim.nodes(vis); sim.force("link").links(vl); sim.alpha(.9).restart();
     saveCfg();   // persist live control state
   }
   d3.select("#cut").on("input",update);
+  d3.select("#hideTop").on("input",update);
   d3.select("#spread").on("input",update);
   d3.select("#gap").on("input",update);
   d3.select("#byIsland").on("change",update);
+  d3.select("#showNames").on("change",update);
   d3.select("#mode").on("change",update);
   svg.call(d3.zoom().scaleExtent([.3,12]).on("zoom",e=>g.attr("transform",e.transform)));
   update();
@@ -839,10 +1047,26 @@ function runViz(N, L, SURN, maxcs, initialCut, baseDisp, hasBasePath, ctl){
    APP / UI WIRING
    ==================================================================== */
 function escapeHtml(s){ return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c])); }
-function show(id){ document.querySelectorAll(".scr").forEach(s=>s.classList.remove("on"));
-  document.getElementById(id).classList.add("on"); }
+function applyScreen(id){
+  document.querySelectorAll(".scr").forEach(s=>s.classList.remove("on"));
+  document.getElementById(id).classList.add("on");
+}
+/* Screen changes push a browser-history entry, so the Back button (and any
+   swipe-back gesture) walks the app's own screens instead of leaving the page. */
+function show(id){
+  applyScreen(id);
+  if(!history.state || history.state.screen!==id) history.pushState({screen:id}, "");
+}
+// label the initial (upload) screen so there's a base state for Back to land on
+if(!history.state) history.replaceState({screen:"screen-upload"}, "");
+window.addEventListener("popstate", e=>{
+  const id=(e.state&&e.state.screen)||"screen-upload";
+  applyScreen(id);
+  if(id!=="screen-viz" && CUR_SIM){ CUR_SIM.stop(); CUR_SIM=null; }  // stop the layout when leaving the graph
+  VISUALIZED=(id==="screen-viz"); saveCfg();
+});
 
-const APP={ data:null, stats:null, people:[], chosen:null, baseId:null };
+const APP={ data:null, stats:null, people:[], chosen:null, baseId:null, allPeople:false };
 
 /* ====================================================================
    SESSION PERSISTENCE — remember the file, the chosen surname, the
@@ -868,9 +1092,10 @@ function saveCfg(){
   const v=id=>document.getElementById(id).value;
   try{
     localStorage.setItem(LS_CFG, JSON.stringify({
-      chosen:APP.chosen, baseId:APP.baseId, visualized:VISUALIZED,
-      cut:+v("cut"), spread:+v("spread"), gap:+v("gap"), mode:v("mode"),
-      byIsland:document.getElementById("byIsland").checked
+      chosen:APP.chosen, baseId:APP.baseId, allPeople:APP.allPeople, visualized:VISUALIZED,
+      cut:+v("cut"), hideTop:+v("hideTop"), spread:+v("spread"), gap:+v("gap"), mode:v("mode"),
+      byIsland:document.getElementById("byIsland").checked,
+      showNames:document.getElementById("showNames").checked
     }));
   }catch(e){}
 }
@@ -888,8 +1113,9 @@ function applyCfg(cfg){
     const p=APP.people.find(x=>x.id===cfg.baseId);
     if(p) pickBase(p);
   }
+  APP.allPeople=!!cfg.allPeople;
   refreshGo();
-  if(cfg.visualized && APP.chosen) visualize(cfg);   // jump back into the graph
+  if(cfg.visualized && (APP.chosen || APP.allPeople)) visualize(cfg);   // jump back into the graph
 }
 
 function restoreSession(){
@@ -951,15 +1177,21 @@ function loadFile(file){
   r.readAsText(file,"utf-8");
 }
 
-/* default sample (bundled via default_data.js -> window.DEFAULT_GED) */
+/* default sample (bundled via default_data.js -> window.DEFAULT_GED).
+   Reachable from the upload screen AND the config bar, so you can always
+   return to the standard tree even after uploading your own file. */
+function loadSample(){
+  upErr.textContent="Loading sample…";
+  setTimeout(()=>loadFromText(window.DEFAULT_GED, "sample tree (anonymized)", true), 20);
+}
 if(typeof window!=="undefined" && window.DEFAULT_GED){
   const row=document.getElementById("sampleRow");
   if(row) row.hidden=false;
+  const cfgBtn=document.getElementById("loadSampleCfg");
+  if(cfgBtn) cfgBtn.hidden=false;
   const us=document.getElementById("useSample");
-  if(us) us.addEventListener("click",()=>{
-    upErr.textContent="Loading sample…";
-    setTimeout(()=>loadFromText(window.DEFAULT_GED, "sample tree (anonymized)", true), 20);
-  });
+  if(us) us.addEventListener("click",loadSample);
+  if(cfgBtn) cfgBtn.addEventListener("click",loadSample);
 }
 
 /* ---- config ---- */
@@ -978,7 +1210,7 @@ function initConfig(filename){
       +`<span class="nm">${escapeHtml(APP.stats.bestForm(low))}</span>`
       +`<span class="ct">${n}</span>`;
     b.addEventListener("click",()=>{
-      APP.chosen=low;
+      APP.chosen=low; APP.allPeople=false;
       [...grid.children].forEach(c=>c.classList.remove("sel"));
       b.classList.add("sel");
       refreshGo();
@@ -1000,7 +1232,7 @@ function refreshGo(){
     note.textContent = APP.baseId!=null ? "" : "Base person is optional.";
   }else{
     go.disabled=true;
-    note.textContent="Pick a surname to continue.";
+    note.textContent="Pick a surname — or visualise everyone.";
   }
 }
 
@@ -1058,32 +1290,43 @@ document.addEventListener("click",e=>{ if(!e.target.closest(".search")) baseDrop
 
 /* visualize ( ctl = optional saved control state to restore ) */
 function visualize(ctl){
-  if(!APP.chosen) return;
-  const go=document.getElementById("go");
-  go.disabled=true; document.getElementById("goNote").textContent="Building graph…";
+  if(!APP.chosen && !APP.allPeople) return;
+  const go=document.getElementById("go"), goAll=document.getElementById("goAll");
+  go.disabled=true; goAll.disabled=true; document.getElementById("goNote").textContent="Building graph…";
   setTimeout(()=>{
     try{
-      const variants=learnVariants(APP.data,APP.chosen);
-      const G=buildGraph(APP.data,variants,APP.baseId);
-      const SURN=APP.stats.bestForm(APP.chosen);
+      const variants=APP.allPeople ? null : learnVariants(APP.data,APP.chosen);
+      const G=buildGraph(APP.data,variants,APP.baseId,APP.allPeople);
+      const SURN=APP.allPeople ? "everyone" : APP.stats.bestForm(APP.chosen);
       if(G.baseInfo) console.log(G.baseInfo);
       show("screen-viz");
       VISUALIZED=true;   // set before runViz so the auto-saved state records it
-      runViz(G.nodeJson, G.linkJson, SURN, G.maxcs, (ctl&&ctl.cut!=null)?ctl.cut:3, G.baseDisp, G.hasBasePath, ctl||null);
+      runViz(G.nodeJson, G.linkJson, SURN, G.maxcs, (ctl&&ctl.cut!=null)?ctl.cut:3, G.baseDisp, G.hasBasePath, ctl||null, APP.allPeople);
     }catch(err){
       console.error(err);
       document.getElementById("goNote").textContent="Error: "+err.message;
     }finally{
-      go.disabled=false; document.getElementById("goNote").textContent="";
+      go.disabled=false; goAll.disabled=false; document.getElementById("goNote").textContent="";
     }
   },30);
 }
-document.getElementById("go").addEventListener("click",()=>visualize());
+document.getElementById("go").addEventListener("click",()=>{ APP.allPeople=false; visualize(); });
+document.getElementById("goAll").addEventListener("click",()=>{
+  APP.allPeople=true;
+  // per-island hues are the useful default when the whole tree is on screen
+  visualize({byIsland:true});
+});
 
 document.getElementById("vizBack").addEventListener("click",()=>{
-  if(CUR_SIM){ CUR_SIM.stop(); CUR_SIM=null; }
-  VISUALIZED=false; saveCfg();   // a reload now returns to the config screen
-  show("screen-config");
+  // walk the browser history back one step; the popstate handler stops the
+  // simulation and shows the previous screen. Fall back to config if there is
+  // no prior history entry to return to.
+  if(history.state && history.state.screen==="screen-viz" && history.length>1) history.back();
+  else{
+    if(CUR_SIM){ CUR_SIM.stop(); CUR_SIM=null; }
+    VISUALIZED=false; saveCfg();
+    show("screen-config");
+  }
 });
 
 /* restore the previous session (file + surname + focus + view) */
