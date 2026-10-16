@@ -123,7 +123,19 @@
             cursor: pointer;
         }
         button:hover { background: rgba(255,255,255,0.2); }
-        #evInfo { margin-top: 6px; opacity: 0.6; }
+        #evInfo, #targetInfo { margin-top: 6px; opacity: 0.6; }
+        #target {
+            width: 100%;
+            box-sizing: border-box;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.25);
+            color: #fff;
+            color-scheme: dark;
+            font-family: inherit;
+            font-size: 12px;
+            padding: 5px 6px;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
@@ -137,6 +149,10 @@
     </svg>
 </div>
 <div id="panel">
+    <h3>Pensioendatum</h3>
+    <input type="date" id="target">
+    <div id="targetInfo"></div>
+    <div class="sep"></div>
     <h3>Lagen</h3>
     <label class="row"><input type="checkbox" data-layer="stats"> Cijfers</label>
     <label class="row"><input type="checkbox" data-layer="moon"> Volle en nieuwe maan</label>
@@ -168,7 +184,15 @@
 // after 17:00. On top of that: seasons along the outer rim, calendar events
 // along the inner rim, and full/new moons as dots.
 
-const TARGET = new Date(2037, 8, 1, 0, 0, 0, 0).getTime();
+// The target (retirement) date can be changed in the settings panel and is
+// remembered per browser as 'YYYY-MM-DD'.
+const DEFAULT_TARGET = '2037-09-01';
+const parseDay = s => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d).getTime(); };
+let TARGET = parseDay(DEFAULT_TARGET);
+try {
+    const saved = JSON.parse(localStorage.getItem('timeleft_target'));
+    if (saved && /^\d{4}-\d{2}-\d{2}$/.test(saved)) TARGET = parseDay(saved);
+} catch (e) { /* storage unavailable */ }
 
 const WORK_START = 9;
 const WORK_END = 17;
@@ -213,6 +237,14 @@ BANDS.forEach(b => {
     b.prevR = null;
     b.offset = 0;
 });
+
+// the years band keeps its sweep whatever the target: nominal = years left
+function fitYearBand() {
+    const b = BANDS[BANDS.length - 1];
+    b.nominal = Math.max(1, Math.ceil((TARGET - clock()) / (365.25 * 86400000)));
+    b.step = b.turns * 2 * Math.PI / b.nominal;
+}
+fitYearBand();
 
 // ---- settings (remembered per browser) ----
 
@@ -410,7 +442,8 @@ function moonTime(k) {
 }
 
 const MOONS = [];
-{
+function buildMoons() {
+    MOONS.length = 0;
     const k0 = Math.floor((new Date(clock()).getFullYear() - 2001) * 12.3685);
     const k1 = Math.ceil((new Date(TARGET).getFullYear() + 1 - 2000) * 12.3685);
     for (let k = k0; k <= k1; k++) {
@@ -418,6 +451,7 @@ const MOONS = [];
         MOONS.push({ t: moonTime(k + 0.5), full: true });
     }
 }
+buildMoons();
 const moonsIn = (t0, t1) => MOONS.filter(m => m.t >= t0 && m.t < t1);
 
 // ---- seasons (start dates rounded to the usual day) ----
@@ -969,6 +1003,27 @@ function setCalendar(text, save) {
     invalidate();
 }
 setCalendar(store.get('ics', null), false);
+
+const targetEl = document.getElementById('target'), targetInfo = document.getElementById('targetInfo');
+const fullDate = t => { const d = new Date(t); return d.getDate() + ' ' + MONTHS[d.getMonth()] + ' ' + d.getFullYear(); };
+function showTarget(msg) {
+    const d = new Date(TARGET);
+    targetEl.value = d.getFullYear() + '-' + p2(d.getMonth() + 1) + '-' + p2(d.getDate());
+    targetInfo.textContent = msg || 'Aftellen tot ' + fullDate(TARGET) + '.';
+}
+targetEl.addEventListener('change', () => {
+    const v = targetEl.value || DEFAULT_TARGET;   // emptied: back to the default
+    const t = parseDay(v);
+    if (!(t > clock())) { showTarget('Kies een datum in de toekomst.'); return; }
+    TARGET = t;
+    store.set('target', v);
+    fitYearBand();
+    buildMoons();
+    setCalendar(store.get('ics', null), false);   // recurring events are expanded up to the target
+    statsBase = null;
+    showTarget();
+});
+showTarget();
 
 const fileInput = document.getElementById('ics');
 document.getElementById('btnIcs').addEventListener('click', () => fileInput.click());
