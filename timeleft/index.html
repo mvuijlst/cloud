@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#000000">
+    <link rel="manifest" href="../manifest.json">
+    <title>Time left</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: black;
+        }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script>
+// Time left until TARGET, drawn as a nautilus shell.
+// The mouth of the spiral is now, the tip is the target (or the other way
+// round with ?seconds=inside). Along the way the shell is divided into bands:
+// the rest of this second in tenths, the rest of this minute in seconds, the
+// rest of this hour in minutes, ... and finally the remaining calendar years.
+// Each band gets a nominal angular sweep, so a full band of 60 seconds is
+// as long as a full band of 60 minutes, and the shell grows logarithmically.
+// Green marks time not spent working: weekends, and before 9:00 / after 17:00.
+
+const TARGET = new Date(2037, 8, 1, 0, 0, 0, 0).getTime();
+
+const WORK_START = 9;
+const WORK_END = 17;
+
+const GROWTH = 1.1;                   // shell radius factor per full turn
+const B = Math.log(GROWTH) / (0.5 * Math.PI);
+const ROT = Math.PI * 0.95;            // screen angle of the mouth
+const TWEEN = 0.35;                    // seconds for band jumps to settle (unless a band sets its own)
+
+// ?at=2027-03-10T14:30 previews another moment (the clock keeps running from there)
+const AT = new URLSearchParams(location.search).get('at');
+const SHIFT = AT && !isNaN(Date.parse(AT)) ? Date.parse(AT) - Date.now() : 0;
+
+// seconds at the mouth (default) or, with ?seconds=inside, at the tip
+const SECONDS_OUTSIDE = new URLSearchParams(location.search).get('seconds') !== 'inside';
+
+const GREEN = ['#3a9e69', '#4fbb80'];
+
+const BANDS = [
+    { unit: 'tenth',  cont: 'second', nominal: 10,   turns: 0.2,  mode: 'uniform', grey: ['#4d3e63', '#5d4c76'], tween: 0.03 },
+    { unit: 'second', cont: 'minute', nominal: 60,   turns: 0.6,  mode: 'uniform', grey: ['#3b4360', '#4a5372'], tween: 0.15 },
+    { unit: 'minute', cont: 'hour',   nominal: 60,   turns: 0.75, mode: 'uniform', grey: ['#5a4144', '#6b4f53'] },
+    { unit: 'hour',   cont: 'day',    nominal: 24,   turns: 0.7,  mode: 'uniform', grey: ['#454545', '#545454'] },
+    { unit: 'day',    cont: 'week',   nominal: 7,    turns: 0.6,  mode: 'exact',   grey: ['#454545', '#545454'] },
+    { unit: 'week',   cont: 'month',  nominal: 4.35, turns: 0.5,  mode: 'exact',   grey: ['#454545', '#545454'] },
+    { unit: 'month',  cont: 'year',   nominal: 12,   turns: 0.7,  mode: 'exact',   grey: ['#454545', '#545454'] },
+    { unit: 'year',   cont: null,     nominal: 11,   turns: 1.9,  mode: 'weekly',  grey: ['#454545', '#545454'] },
+];
+BANDS.forEach(b => {
+    b.step = b.turns * 2 * Math.PI / b.nominal;   // angle per full cell
+    b.cache = null;
+    b.prevR = null;
+    b.offset = 0;
+});
+
+// ---- calendar helpers (local time) ----
+
+function floorU(u, t) {
+    const d = new Date(t);
+    switch (u) {
+        case 'tenth':  d.setMilliseconds(d.getMilliseconds() - d.getMilliseconds() % 100); break;
+        case 'second': d.setMilliseconds(0); break;
+        case 'minute': d.setSeconds(0, 0); break;
+        case 'hour':   d.setMinutes(0, 0, 0); break;
+        case 'day':    d.setHours(0, 0, 0, 0); break;
+        case 'week':   d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - (d.getDay() + 6) % 7); break;
+        case 'month':  d.setHours(0, 0, 0, 0); d.setDate(1); break;
+        case 'year':   d.setHours(0, 0, 0, 0); d.setMonth(0, 1); break;
+    }
+    return d.getTime();
+}
+
+// t must be floored to u
+function addU(u, t) {
+    switch (u) {
+        case 'tenth':  return t + 100;
+        case 'second': return t + 1000;
+        case 'minute': return t + 60000;
+        case 'hour':   return t + 3600000;
+    }
+    const d = new Date(t);
+    switch (u) {
+        case 'day':   d.setDate(d.getDate() + 1); break;
+        case 'week':  d.setDate(d.getDate() + 7); break;
+        case 'month': d.setMonth(d.getMonth() + 1); break;
+        case 'year':  d.setFullYear(d.getFullYear() + 1); break;
+    }
+    return d.getTime();
+}
+
+function ceilU(u, t) {
+    const f = floorU(u, t);
+    return f === t ? t : addU(u, f);
+}
+
+function parityOf(u, t) {
+    const d = new Date(t);
+    switch (u) {
+        case 'tenth':  return Math.floor(d.getMilliseconds() / 100) % 2;
+        case 'second': return d.getSeconds() % 2;
+        case 'minute': return d.getMinutes() % 2;
+        case 'hour':   return d.getHours() % 2;
+        case 'day':    return Math.round(t / 86400000) % 2;
+        case 'week':   return Math.round(t / 604800000) % 2;
+        case 'month':  return d.getMonth() % 2;
+        case 'year':   return d.getFullYear() % 2;
+    }
+    return 0;
+}
+
+function isOff(t) {
+    const d = new Date(t);
+    const dow = d.getDay(), h = d.getHours();
+    return dow === 0 || dow === 6 || h < WORK_START || h >= WORK_END;
+}
+
+// Split [t0, t1) into runs of "off" fraction g (0 = working, 1 = off).
+function segments(t0, t1, mode) {
+    if (mode === 'uniform') return [{ a: t0, b: t1, g: isOff(t0) ? 1 : 0 }];
+    const out = [];
+    const push = (a, b, g) => {
+        a = Math.max(a, t0); b = Math.min(b, t1);
+        if (b <= a) return;
+        const last = out[out.length - 1];
+        if (last && last.g === g && last.b === a) last.b = b;
+        else out.push({ a, b, g });
+    };
+    if (mode === 'weekly') {
+        // too fine to draw hour by hour: gather each week's working hours
+        // into one block centred on Monday-Friday
+        const hour = 3600000, work = 5 * (WORK_END - WORK_START) * hour;
+        let ws = floorU('week', t0);
+        while (ws < t1) {
+            const we = addU('week', ws);
+            const mid = ws + 60 * hour;
+            push(ws, mid - work / 2, 1);
+            push(mid - work / 2, mid + work / 2, 0);
+            push(mid + work / 2, we, 1);
+            ws = we;
+        }
+        return out;
+    }
+    let ds = floorU('day', t0);
+    while (ds < t1) {
+        const de = addU('day', ds);
+        const dow = new Date(ds).getDay();
+        const weekend = dow === 0 || dow === 6;
+        if (weekend) {
+            push(ds, de, 1);
+        } else {
+            const ws = new Date(ds).setHours(WORK_START);
+            const we = new Date(ds).setHours(WORK_END);
+            push(ds, ws, 1);
+            push(ws, we, 0);
+            push(we, de, 1);
+        }
+        ds = de;
+    }
+    return out;
+}
+
+function buildCells(band, t0, t1) {
+    const cells = [];
+    let t = t0, R = 0;
+    while (t < t1) {
+        const us = floorU(band.unit, t), ue = addU(band.unit, us);
+        const e = Math.min(ue, t1);
+        const frac = (e - t) / (ue - us);
+        cells.push({ t0: t, t1: e, frac, at: R, parity: parityOf(band.unit, us), segs: segments(t, e, band.mode) });
+        R += frac;
+        t = e;
+    }
+    return { t0, t1, cells, R };
+}
+
+// ---- canvas & geometry ----
+
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+let W = 0, H = 0, S = 1, CX = 0, CY = 0;
+
+function resize() {
+    const dpr = window.devicePixelRatio || 1;
+    W = window.innerWidth; H = window.innerHeight;
+    canvas.width = Math.round(W * dpr);
+    canvas.height = Math.round(H * dpr);
+    canvas.style.width = W + 'px';
+    canvas.style.height = H + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    // fit the outermost whorl (wall over the last turn) to the screen
+    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+    for (let i = 0; i <= 400; i++) {
+        const phi = -2 * Math.PI * i / 400;
+        const r = Math.exp(B * phi), a = ROT + phi;
+        const x = r * Math.cos(a), y = -r * Math.sin(a);
+        minX = Math.min(minX, x); maxX = Math.max(maxX, x);
+        minY = Math.min(minY, y); maxY = Math.max(maxY, y);
+    }
+    const margin = Math.min(W, H) * 0.06;
+    S = Math.min((W - 2 * margin) / (maxX - minX), (H - 2 * margin) / (maxY - minY));
+    CX = W / 2 - S * (minX + maxX) / 2;
+    CY = H / 2 - S * (minY + maxY) / 2;
+}
+
+// wall radius at shell angle phi (phi = 0 is the outer lip of the mouth)
+const wallR = phi => S * Math.exp(B * phi);
+const px = (r, phi) => CX + r * Math.cos(ROT + phi);
+const py = (r, phi) => CY - r * Math.sin(ROT + phi);
+
+// ribbon wedge between inner whorl (phi - 2pi) and outer wall (phi)
+function wedge(a0, a1) {
+    const n = Math.max(1, Math.ceil(Math.abs(a1 - a0) / 0.03));
+    ctx.beginPath();
+    for (let i = 0; i <= n; i++) {
+        const p = a0 + (a1 - a0) * i / n, r = wallR(p);
+        i === 0 ? ctx.moveTo(px(r, p), py(r, p)) : ctx.lineTo(px(r, p), py(r, p));
+    }
+    for (let i = n; i >= 0; i--) {
+        const p = a0 + (a1 - a0) * i / n, r = wallR(p - 2 * Math.PI);
+        ctx.lineTo(px(r, p), py(r, p));
+    }
+    ctx.closePath();
+}
+
+function septum(p) {
+    const ro = wallR(p), ri = wallR(p - 2 * Math.PI);
+    ctx.moveTo(px(ri, p), py(ri, p));
+    ctx.lineTo(px(ro, p), py(ro, p));
+}
+
+function mix(c1, c2, g) {
+    if (g <= 0) return c1;
+    if (g >= 1) return c2;
+    const h = (c, i) => parseInt(c.slice(1 + 2 * i, 3 + 2 * i), 16);
+    let s = '#';
+    for (let i = 0; i < 3; i++) s += Math.round(h(c1, i) + (h(c2, i) - h(c1, i)) * g).toString(16).padStart(2, '0');
+    return s;
+}
+
+// ---- frame ----
+
+let lastFrame = null;
+
+function frame(ts) {
+    const dt = lastFrame === null ? 0 : Math.min(1, (ts - lastFrame) / 1000);
+    lastFrame = ts;
+    const now = Date.now() + SHIFT;
+
+    ctx.fillStyle = 'black';
+    ctx.fillRect(0, 0, W, H);
+
+    // band time ranges, chained from now to the target
+    let t = Math.min(now, TARGET);
+    const layout = [];
+    for (const band of BANDS) {
+        const end = band.cont ? Math.max(t, Math.min(TARGET, ceilU(band.cont, t))) : TARGET;
+        if (!band.cache || band.cache.t0 !== t || band.cache.t1 !== end) band.cache = buildCells(band, t, end);
+        const R = band.cache.R;
+        // a jump in band length (a unit rolling over) is eased instead of snapped
+        if (band.prevR !== null) {
+            const dR = R - band.prevR;
+            const continuous = band === BANDS[0] && dR <= 0 && dR > -0.5;
+            if (!continuous && dR !== 0) band.offset -= dR;
+        }
+        band.prevR = R;
+        band.offset *= Math.exp(-dt / (band.tween || TWEEN));
+        if (Math.abs(band.offset) < 1e-4) band.offset = 0;
+        layout.push({ band, span: Math.max(0, R + band.offset) * band.step });
+        t = end;
+    }
+
+    // Lay the bands out. phiA is a band's "now" end, phiB its later end.
+    if (SECONDS_OUTSIDE) {
+        // now at the mouth, time runs inwards to the target at the tip;
+        // anchored where the mouth would be with a full minute of seconds,
+        // so the seconds are eaten away from the lip
+        let phi = -BANDS[0].nominal * BANDS[0].step + layout[0].span;
+        for (const L of layout) {
+            L.phiA = phi;
+            L.phiB = phi - L.span;
+            phi = L.phiB;
+        }
+    } else {
+        // now at the tip, time runs outwards to the target at the mouth
+        let phi = 0;
+        for (let k = layout.length - 1; k >= 0; k--) {
+            layout[k].phiB = phi;
+            layout[k].phiA = phi - layout[k].span;
+            phi = layout[k].phiA;
+        }
+    }
+    const ends = layout.flatMap(L => [L.phiA, L.phiB]);
+    const tip = Math.min(...ends), mouth = Math.max(...ends);
+
+    // cells
+    for (const L of layout) {
+        const { band } = L, { cells, R } = band.cache;
+        if (!R || L.span <= 0) continue;
+        const per = (L.phiB - L.phiA) / R;
+        for (const c of cells) {
+            const c0 = L.phiA + c.at * per, c1 = c0 + c.frac * per;
+            const grey = band.grey[c.parity], green = GREEN[c.parity];
+            ctx.fillStyle = grey;
+            wedge(c0, c1);
+            ctx.fill();
+            const k = (c1 - c0) / (c.t1 - c.t0);
+            for (const s of c.segs) {
+                if (s.g <= 0) continue;
+                ctx.fillStyle = mix(grey, green, s.g);
+                wedge(c0 + (s.a - c.t0) * k, c0 + (s.b - c.t0) * k);
+                ctx.fill();
+            }
+        }
+        // septa between cells, thinner towards the tip
+        const mid = (L.phiA + L.phiB) / 2;
+        ctx.strokeStyle = 'black';
+        ctx.lineWidth = Math.max(0.4, Math.min(2, wallR(mid) * 0.004 * Math.min(1, Math.abs(per) * 8)));
+        ctx.beginPath();
+        for (const c of cells) septum(L.phiA + c.at * per);
+        ctx.stroke();
+    }
+
+    // shell walls and band boundaries
+    ctx.strokeStyle = 'rgba(235,235,235,0.9)';
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    const from = tip - 2 * Math.PI;
+    const n = Math.max(2, Math.ceil((mouth - from) / 0.02));
+    for (let i = 0; i <= n; i++) {
+        const p = from + (mouth - from) * i / n, r = wallR(p);
+        i === 0 ? ctx.moveTo(px(r, p), py(r, p)) : ctx.lineTo(px(r, p), py(r, p));
+    }
+    septum(tip);
+    septum(mouth);
+    ctx.lineWidth = Math.max(1, S * 0.004);
+    ctx.stroke();
+
+    ctx.beginPath();
+    for (let k = 1; k < layout.length; k++) septum(layout[k].phiA);
+    ctx.lineWidth = Math.max(0.75, S * 0.0025);
+    ctx.stroke();
+
+    requestAnimationFrame(frame);
+}
+
+window.addEventListener('resize', resize);
+resize();
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
