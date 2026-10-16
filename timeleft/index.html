@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#000000">
     <link rel="manifest" href="../manifest.json">
-    <title>Time left</title>
+    <title>Resterende tijd</title>
     <style>
         @font-face {
             font-family: 'IBMPlexMono';
@@ -130,29 +130,29 @@
 <canvas id="c"></canvas>
 <div id="stats"></div>
 <div id="tip"></div>
-<div id="cog" title="Settings">
+<div id="cog" title="Instellingen">
     <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="3"/>
         <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.830 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.650 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
     </svg>
 </div>
 <div id="panel">
-    <h3>Layers</h3>
-    <label class="row"><input type="checkbox" data-layer="stats"> Numbers</label>
-    <label class="row"><input type="checkbox" data-layer="moon"> Full and new moons</label>
-    <label class="row"><input type="checkbox" data-layer="seasons"> Seasons</label>
-    <label class="row"><input type="checkbox" data-layer="events"> Calendar</label>
+    <h3>Lagen</h3>
+    <label class="row"><input type="checkbox" data-layer="stats"> Cijfers</label>
+    <label class="row"><input type="checkbox" data-layer="moon"> Volle en nieuwe maan</label>
+    <label class="row"><input type="checkbox" data-layer="seasons"> Seizoenen</label>
+    <label class="row"><input type="checkbox" data-layer="events"> Agenda</label>
     <div class="sep"></div>
-    <h3>Key</h3>
-    <div class="legend"><span class="key" style="background:#545454"></span> working time</div>
-    <div class="legend"><span class="key" style="background:#4fbb80"></span> free time</div>
-    <div class="legend"><span class="key" style="background:linear-gradient(90deg,#6f93c9 25%,#d79ac0 25% 50%,#e8c35a 50% 75%,#cf7a45 75%)"></span> winter, spring, summer, autumn</div>
-    <div class="legend"><span class="key" style="background:#e86fd0"></span> calendar event</div>
-    <div class="legend"><span class="key" style="background:radial-gradient(circle,#f4f1e0 45%,transparent 50%)"></span> full moon (ring: new moon)</div>
+    <h3>Legende</h3>
+    <div class="legend"><span class="key" style="background:#545454"></span> werktijd</div>
+    <div class="legend"><span class="key" style="background:#4fbb80"></span> vrije tijd</div>
+    <div class="legend"><span class="key" style="background:linear-gradient(90deg,#6f93c9 25%,#d79ac0 25% 50%,#e8c35a 50% 75%,#cf7a45 75%)"></span> winter, lente, zomer, herfst</div>
+    <div class="legend"><span class="key" style="background:#e86fd0"></span> afspraak uit agenda</div>
+    <div class="legend"><span class="key" style="background:radial-gradient(circle,#f4f1e0 45%,transparent 50%)"></span> volle maan (ring: nieuwe maan)</div>
     <div class="sep"></div>
-    <h3>Calendar</h3>
-    <button id="btnIcs">Load .ics file</button>
-    <button id="btnClear">Clear calendar</button>
+    <h3>Agenda</h3>
+    <button id="btnIcs">.ics-bestand laden</button>
+    <button id="btnClear">Agenda wissen</button>
     <div id="evInfo"></div>
     <input type="file" id="ics" accept=".ics,text/calendar" hidden>
 </div>
@@ -192,9 +192,9 @@ const GREEN = ['#3a9e69', '#4fbb80'];
 const EVENT = '#e86fd0';
 const SEASONS = [
     { name: 'winter', color: '#6f93c9' },
-    { name: 'spring', color: '#d79ac0' },
-    { name: 'summer', color: '#e8c35a' },
-    { name: 'autumn', color: '#cf7a45' },
+    { name: 'lente',  color: '#d79ac0' },
+    { name: 'zomer',  color: '#e8c35a' },
+    { name: 'herfst', color: '#cf7a45' },
 ];
 
 const BANDS = [
@@ -305,19 +305,19 @@ function holidays(y) {
     if (holidayCache[y]) return holidayCache[y];
     const map = new Map();
     const add = (d, name) => map.set(d.getMonth() * 100 + d.getDate(), name);
-    for (let i = 0; i < 5; i++) add(plusDays(julyMonday(y), i), '21 July week');
-    for (let d = 26; d <= 31; d++) add(new Date(y, 11, d), 'Christmas break');
+    for (let i = 0; i < 5; i++) add(plusDays(julyMonday(y), i), 'week van 21 juli');
+    for (let d = 26; d <= 31; d++) add(new Date(y, 11, d), 'kerstvakantie');
     const e = easter(y);
-    add(new Date(y, 0, 1), "New Year's Day");
-    add(plusDays(e, 1), 'Easter Monday');
-    add(new Date(y, 4, 1), 'Labour Day');
-    add(plusDays(e, 39), 'Ascension');
-    add(plusDays(e, 50), 'Whit Monday');
-    add(new Date(y, 6, 21), 'National Day');
-    add(new Date(y, 7, 15), 'Assumption');
-    add(new Date(y, 10, 1), 'All Saints');
-    add(new Date(y, 10, 11), 'Armistice');
-    add(new Date(y, 11, 25), 'Christmas');
+    add(new Date(y, 0, 1), 'Nieuwjaar');
+    add(plusDays(e, 1), 'Paasmaandag');
+    add(new Date(y, 4, 1), 'Dag van de Arbeid');
+    add(plusDays(e, 39), 'O.L.H. Hemelvaart');
+    add(plusDays(e, 50), 'Pinkstermaandag');
+    add(new Date(y, 6, 21), 'Nationale feestdag');
+    add(new Date(y, 7, 15), 'O.L.V. Hemelvaart');
+    add(new Date(y, 10, 1), 'Allerheiligen');
+    add(new Date(y, 10, 11), 'Wapenstilstand');
+    add(new Date(y, 11, 25), 'Kerstmis');
     return holidayCache[y] = map;
 }
 
@@ -478,7 +478,7 @@ function parseIcs(text) {
                 const step = rule.INTERVAL ? +rule.INTERVAL : 1;
                 let t = s, n = 0;
                 while (t < TARGET && t <= until && n < count && n < 5000) {
-                    if (t + dur > horizonStart) out.push({ s: t, e: t + dur, title: ev.title || '(untitled)' });
+                    if (t + dur > horizonStart) out.push({ s: t, e: t + dur, title: ev.title || '(zonder titel)' });
                     if (!freq) break;
                     const d = new Date(t);
                     if (freq === 'day') d.setDate(d.getDate() + step);
@@ -629,12 +629,13 @@ function hitTest(x, y) {
     return null;
 }
 
-const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
-                'August', 'September', 'October', 'November', 'December'];
+const DAYS = ['zo', 'ma', 'di', 'wo', 'do', 'vr', 'za'];
+const MONTHS = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli',
+                'augustus', 'september', 'oktober', 'november', 'december'];
+const MONTHS_SHORT = ['jan', 'feb', 'mrt', 'apr', 'mei', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec'];
 const p2 = n => String(n).padStart(2, '0');
 const hm = t => { const d = new Date(t); return p2(d.getHours()) + ':' + p2(d.getMinutes()); };
-const dayStr = t => { const d = new Date(t); return DAYS[d.getDay()] + ' ' + d.getDate() + ' ' + MONTHS[d.getMonth()].slice(0, 3); };
+const dayStr = t => { const d = new Date(t); return DAYS[d.getDay()] + ' ' + d.getDate() + ' ' + MONTHS_SHORT[d.getMonth()]; };
 const num = n => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 const esc = s => s.replace(/[&<>]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[ch]));
 
@@ -648,7 +649,7 @@ function isoWeek(t) {
 
 function hours(ms) {
     const h = ms / 3600000;
-    return h >= 10 ? num(h) + ' h' : (Math.round(h * 10) / 10) + ' h';
+    return h >= 10 ? num(h) + ' u' : String(Math.round(h * 10) / 10).replace('.', ',') + ' u';
 }
 
 function describe({ L, c, t }) {
@@ -661,18 +662,18 @@ function describe({ L, c, t }) {
         case 'minute': title = hm(t); break;
         case 'hour':   title = dayStr(t) + ', ' + hm(us) + '–' + hm(addU('hour', us)); break;
         case 'day':    title = dayStr(t) + ' ' + d.getFullYear(); break;
-        case 'week':   title = 'Week ' + isoWeek(us) + ' · ' + dayStr(us) + ' – ' + dayStr(plusDays(new Date(us), 6)); break;
+        case 'week':   title = 'Week ' + isoWeek(us) + ' · ' + dayStr(c.t0) + ' – ' + dayStr(c.t1 - 1); break;
         case 'month':  title = MONTHS[d.getMonth()] + ' ' + d.getFullYear(); break;
-        case 'year':   title = String(d.getFullYear()) + (c.t1 === TARGET ? ' (until ' + dayStr(TARGET) + ')' : ''); break;
+        case 'year':   title = String(d.getFullYear()) + (c.t1 === TARGET ? ' (tot ' + dayStr(TARGET) + ')' : ''); break;
     }
     lines.push('<span class="h">' + title + '</span>');
 
     if (['tenth', 'second', 'minute', 'hour'].includes(u)) {
         const name = holidayName(t);
-        lines.push(isOff(t) ? 'free' + (name ? ' · ' + name : '') : 'working');
+        lines.push(isOff(t) ? 'vrij' + (name ? ' · ' + name : '') : 'werk');
     } else {
         const work = workIn(c.t0, c.t1);
-        lines.push(hours(work) + ' work · ' + hours(c.t1 - c.t0 - work) + ' free');
+        lines.push(hours(work) + ' werk · ' + hours(c.t1 - c.t0 - work) + ' vrij');
         const names = [];
         for (let ds = floorU('day', c.t0); ds < c.t1; ds = addU('day', ds)) {
             const n = holidayName(ds);
@@ -688,16 +689,16 @@ function describe({ L, c, t }) {
         const moons = moonsIn(c.t0, c.t1);
         const full = moons.filter(m => m.full);
         if (u === 'year') {
-            if (full.length) lines.push('<span class="d">' + full.length + ' full moons</span>');
+            if (full.length) lines.push('<span class="d">' + full.length + ' volle manen</span>');
         } else {
-            for (const m of moons) lines.push('<span class="d">' + (m.full ? '● full' : '○ new') + ' moon ' + dayStr(m.t) + ' ' + hm(m.t) + '</span>');
+            for (const m of moons) lines.push('<span class="d">' + (m.full ? '● volle' : '○ nieuwe') + ' maan ' + dayStr(m.t) + ' ' + hm(m.t) + '</span>');
         }
     }
     if (LAYERS.events && c.events.length) {
         for (const e of c.events.slice(0, 6)) {
             lines.push('<span style="color:' + EVENT + '">' + dayStr(e.s) + ' · ' + esc(e.title) + '</span>');
         }
-        if (c.events.length > 6) lines.push('<span style="color:' + EVENT + '">… ' + (c.events.length - 6) + ' more</span>');
+        if (c.events.length > 6) lines.push('<span style="color:' + EVENT + '">… ' + (c.events.length - 6) + ' meer</span>');
     }
     return lines.join('\n');
 }
@@ -767,10 +768,10 @@ function updateStats(now) {
     if (!statsBase || now - statsAt > 1000 || now < statsAt) { statsBase = computeStats(now); statsAt = now; }
     const s = statsBase, left = Math.max(0, TARGET - now) / 60000;
     statsEl.innerHTML =
-        '<b>' + num(s.workDays) + '</b> working days · <b>' + num(s.work / 3600000) + '</b> hours of work\n' +
-        '<b>' + Math.round(s.free * 100) + '%</b> of the time left is free\n' +
-        '<b>' + num(s.weekends) + '</b> weekends · <b>' + s.fullMoons + '</b> full moons\n' +
-        '<b>' + num(left * HEART_RATE) + '</b> heartbeats · <b>' + num(left * BREATH_RATE) + '</b> breaths';
+        '<b>' + num(s.workDays) + '</b> werkdagen · <b>' + num(s.work / 3600000) + '</b> uren werk\n' +
+        '<b>' + Math.round(s.free * 100) + '%</b> van de tijd is geen werk\n' +
+        '<b>' + num(s.weekends) + '</b> weekends · <b>' + s.fullMoons + '</b> volle manen\n' +
+        '<b>' + num(left * HEART_RATE) + '</b> hartslagen · <b>' + num(left * BREATH_RATE) + '</b> ademtochten';
 }
 
 // ---- frame ----
@@ -964,7 +965,7 @@ function setCalendar(text, save) {
         EVENTS = [];
     }
     if (save) store.set('ics', text || null);
-    evInfo.textContent = text ? EVENTS.length + ' events loaded' : 'No calendar loaded. You can also drop an .ics file on the page.';
+    evInfo.textContent = text ? EVENTS.length + ' afspraken geladen' : 'Geen agenda geladen. Je kunt ook een .ics-bestand op de pagina slepen.';
     invalidate();
 }
 setCalendar(store.get('ics', null), false);
