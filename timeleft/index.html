@@ -29,7 +29,8 @@
 // rest of this hour in minutes, ... and finally the remaining calendar years.
 // Each band gets a nominal angular sweep, so a full band of 60 seconds is
 // as long as a full band of 60 minutes, and the shell grows logarithmically.
-// Green marks time not spent working: weekends, and before 9:00 / after 17:00.
+// Green marks time not spent working: weekends, holidays, and before 9:00 /
+// after 17:00.
 
 const TARGET = new Date(2037, 8, 1, 0, 0, 0, 0).getTime();
 
@@ -122,10 +123,51 @@ function parityOf(u, t) {
     return 0;
 }
 
+// Days off besides weekends: the ten Belgian public holidays, everything from
+// Christmas to New Year's Day, and the working week around 21 July (the week
+// before, when 21 July falls in a weekend).
+const holidayCache = {};
+
+function easter(y) {
+    const a = y % 19, b = Math.floor(y / 100), c = y % 100;
+    const d = Math.floor(b / 4), e = b % 4, f = Math.floor((b + 8) / 25);
+    const g = Math.floor((b - f + 1) / 3), h = (19 * a + b - d - g + 15) % 30;
+    const i = Math.floor(c / 4), k = c % 4, l = (32 + 2 * e + 2 * i - h - k) % 7;
+    const m = Math.floor((a + 11 * h + 22 * l) / 451);
+    const n = h + l - 7 * m + 114;
+    return new Date(y, Math.floor(n / 31) - 1, n % 31 + 1);
+}
+
+function holidays(y) {
+    if (holidayCache[y]) return holidayCache[y];
+    const set = new Set();
+    const add = d => set.add(d.getMonth() * 100 + d.getDate());
+    const plus = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
+    const e = easter(y);
+    add(new Date(y, 0, 1));          // New Year's Day
+    add(plus(e, 1));                 // Easter Monday
+    add(new Date(y, 4, 1));          // Labour Day
+    add(plus(e, 39));                // Ascension
+    add(plus(e, 50));                // Whit Monday
+    add(new Date(y, 6, 21));         // National Day
+    add(new Date(y, 7, 15));         // Assumption
+    add(new Date(y, 10, 1));         // All Saints
+    add(new Date(y, 10, 11));        // Armistice
+    for (let d = 25; d <= 31; d++) add(new Date(y, 11, d));   // Christmas to New Year
+    const jul21 = new Date(y, 6, 21), dow = jul21.getDay();
+    const monday = plus(jul21, dow === 0 ? -6 : 1 - dow);   // Sat/Sun: the Monday just before
+    for (let i = 0; i < 5; i++) add(plus(monday, i));
+    return holidayCache[y] = set;
+}
+
+function isDayOff(t) {
+    const d = new Date(t), dow = d.getDay();
+    return dow === 0 || dow === 6 || holidays(d.getFullYear()).has(d.getMonth() * 100 + d.getDate());
+}
+
 function isOff(t) {
-    const d = new Date(t);
-    const dow = d.getDay(), h = d.getHours();
-    return dow === 0 || dow === 6 || h < WORK_START || h >= WORK_END;
+    const h = new Date(t).getHours();
+    return isDayOff(t) || h < WORK_START || h >= WORK_END;
 }
 
 // Split [t0, t1) into runs of "off" fraction g (0 = working, 1 = off).
@@ -142,10 +184,13 @@ function segments(t0, t1, mode) {
     if (mode === 'weekly') {
         // too fine to draw hour by hour: gather each week's working hours
         // into one block centred on Monday-Friday
-        const hour = 3600000, work = 5 * (WORK_END - WORK_START) * hour;
+        const hour = 3600000;
         let ws = floorU('week', t0);
         while (ws < t1) {
             const we = addU('week', ws);
+            let days = 0;
+            for (let d = ws; d < we; d = addU('day', d)) if (!isDayOff(d)) days++;
+            const work = days * (WORK_END - WORK_START) * hour;
             const mid = ws + 60 * hour;
             push(ws, mid - work / 2, 1);
             push(mid - work / 2, mid + work / 2, 0);
@@ -157,9 +202,7 @@ function segments(t0, t1, mode) {
     let ds = floorU('day', t0);
     while (ds < t1) {
         const de = addU('day', ds);
-        const dow = new Date(ds).getDay();
-        const weekend = dow === 0 || dow === 6;
-        if (weekend) {
+        if (isDayOff(ds)) {
             push(ds, de, 1);
         } else {
             const ws = new Date(ds).setHours(WORK_START);
