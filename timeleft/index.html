@@ -10,17 +10,152 @@
     <link rel="manifest" href="../manifest.json">
     <title>Time left</title>
     <style>
+        @font-face {
+            font-family: 'IBMPlexMono';
+            src: url('../IBMPlexMono-Regular.ttf');
+        }
         body {
             margin: 0;
             padding: 0;
             overflow: hidden;
             background-color: black;
+            font-family: 'IBMPlexMono', monospace;
+            color: #fff;
         }
-        canvas { display: block; }
+        canvas { display: block; touch-action: none; }
+
+        #stats {
+            position: fixed;
+            left: 16px;
+            bottom: 14px;
+            font-size: 12px;
+            line-height: 1.6;
+            color: rgba(255,255,255,0.55);
+            pointer-events: none;
+            user-select: none;
+            white-space: pre;
+        }
+        #stats b { font-weight: normal; color: rgba(255,255,255,0.9); }
+
+        #tip {
+            position: fixed;
+            display: none;
+            pointer-events: none;
+            background: rgba(0,0,0,0.82);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 6px;
+            padding: 8px 11px;
+            font-size: 12px;
+            line-height: 1.55;
+            white-space: pre;
+            z-index: 30;
+            backdrop-filter: blur(3px);
+        }
+        #tip .h { color: #fff; }
+        #tip .d { color: rgba(255,255,255,0.65); }
+
+        #cog {
+            position: fixed;
+            top: 14px;
+            right: 14px;
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+            z-index: 20;
+            opacity: 0.45;
+            transition: opacity 0.2s;
+            user-select: none;
+        }
+        #cog:hover { opacity: 0.9; }
+        #cog svg { width: 100%; height: 100%; }
+
+        #panel {
+            position: fixed;
+            top: 54px;
+            right: 14px;
+            background: rgba(0,0,0,0.80);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 8px;
+            padding: 14px 18px;
+            font-size: 12px;
+            z-index: 10;
+            min-width: 230px;
+            backdrop-filter: blur(4px);
+            display: none;
+        }
+        #panel.open { display: block; }
+        #panel h3 {
+            margin: 0 0 10px;
+            font-size: 13px;
+            font-weight: normal;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            opacity: 0.6;
+        }
+        #panel h3 + * { margin-top: 0; }
+        #panel .sep { height: 12px; }
+        .row {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            margin-bottom: 7px;
+            opacity: 0.85;
+            cursor: pointer;
+        }
+        .row input { accent-color: #fff; cursor: pointer; margin: 0; }
+        .key {
+            width: 14px;
+            height: 10px;
+            border-radius: 2px;
+            flex: none;
+        }
+        .legend { display: flex; align-items: center; gap: 9px; margin-bottom: 6px; opacity: 0.75; }
+        button {
+            margin-top: 6px;
+            width: 100%;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.25);
+            color: #fff;
+            font-family: inherit;
+            font-size: 12px;
+            padding: 6px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover { background: rgba(255,255,255,0.2); }
+        #evInfo { margin-top: 6px; opacity: 0.6; }
     </style>
 </head>
 <body>
 <canvas id="c"></canvas>
+<div id="stats"></div>
+<div id="tip"></div>
+<div id="cog" title="Settings">
+    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.830 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.650 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+    </svg>
+</div>
+<div id="panel">
+    <h3>Layers</h3>
+    <label class="row"><input type="checkbox" data-layer="stats"> Numbers</label>
+    <label class="row"><input type="checkbox" data-layer="moon"> Full and new moons</label>
+    <label class="row"><input type="checkbox" data-layer="seasons"> Seasons</label>
+    <label class="row"><input type="checkbox" data-layer="events"> Calendar</label>
+    <div class="sep"></div>
+    <h3>Key</h3>
+    <div class="legend"><span class="key" style="background:#545454"></span> working time</div>
+    <div class="legend"><span class="key" style="background:#4fbb80"></span> free time</div>
+    <div class="legend"><span class="key" style="background:linear-gradient(90deg,#6f93c9 25%,#d79ac0 25% 50%,#e8c35a 50% 75%,#cf7a45 75%)"></span> winter, spring, summer, autumn</div>
+    <div class="legend"><span class="key" style="background:#e86fd0"></span> calendar event</div>
+    <div class="legend"><span class="key" style="background:radial-gradient(circle,#f4f1e0 45%,transparent 50%)"></span> full moon (ring: new moon)</div>
+    <div class="sep"></div>
+    <h3>Calendar</h3>
+    <button id="btnIcs">Load .ics file</button>
+    <button id="btnClear">Clear calendar</button>
+    <div id="evInfo"></div>
+    <input type="file" id="ics" accept=".ics,text/calendar" hidden>
+</div>
 <script>
 // Time left until TARGET, drawn as a nautilus shell.
 // The mouth of the spiral is now, the tip is the target (or the other way
@@ -30,12 +165,15 @@
 // Each band gets a nominal angular sweep, so a full band of 60 seconds is
 // as long as a full band of 60 minutes, and the shell grows logarithmically.
 // Green marks time not spent working: weekends, holidays, and before 9:00 /
-// after 17:00.
+// after 17:00. On top of that: seasons along the outer rim, calendar events
+// along the inner rim, and full/new moons as dots.
 
 const TARGET = new Date(2037, 8, 1, 0, 0, 0, 0).getTime();
 
 const WORK_START = 9;
 const WORK_END = 17;
+
+const HEART_RATE = 70, BREATH_RATE = 15; // per minute
 
 const GROWTH = 1.1;                   // shell radius factor per full turn
 const B = Math.log(GROWTH) / (0.5 * Math.PI);
@@ -45,21 +183,29 @@ const TWEEN = 0.35;                    // seconds for band jumps to settle (unle
 // ?at=2027-03-10T14:30 previews another moment (the clock keeps running from there)
 const AT = new URLSearchParams(location.search).get('at');
 const SHIFT = AT && !isNaN(Date.parse(AT)) ? Date.parse(AT) - Date.now() : 0;
+const clock = () => Date.now() + SHIFT;
 
 // seconds at the mouth (default) or, with ?seconds=inside, at the tip
 const SECONDS_OUTSIDE = new URLSearchParams(location.search).get('seconds') !== 'inside';
 
 const GREEN = ['#3a9e69', '#4fbb80'];
+const EVENT = '#e86fd0';
+const SEASONS = [
+    { name: 'winter', color: '#6f93c9' },
+    { name: 'spring', color: '#d79ac0' },
+    { name: 'summer', color: '#e8c35a' },
+    { name: 'autumn', color: '#cf7a45' },
+];
 
 const BANDS = [
     { unit: 'tenth',  cont: 'second', nominal: 10,   turns: 0.2,  mode: 'uniform', grey: ['#4d3e63', '#5d4c76'], tween: 0.03 },
     { unit: 'second', cont: 'minute', nominal: 60,   turns: 0.6,  mode: 'uniform', grey: ['#3b4360', '#4a5372'], tween: 0.15 },
     { unit: 'minute', cont: 'hour',   nominal: 60,   turns: 0.75, mode: 'uniform', grey: ['#5a4144', '#6b4f53'] },
     { unit: 'hour',   cont: 'day',    nominal: 24,   turns: 0.7,  mode: 'uniform', grey: ['#454545', '#545454'] },
-    { unit: 'day',    cont: 'week',   nominal: 7,    turns: 0.6,  mode: 'exact',   grey: ['#454545', '#545454'] },
-    { unit: 'week',   cont: 'month',  nominal: 4.35, turns: 0.5,  mode: 'exact',   grey: ['#454545', '#545454'] },
-    { unit: 'month',  cont: 'year',   nominal: 12,   turns: 0.7,  mode: 'exact',   grey: ['#454545', '#545454'] },
-    { unit: 'year',   cont: null,     nominal: 11,   turns: 1.9,  mode: 'weekly',  grey: ['#454545', '#545454'] },
+    { unit: 'day',    cont: 'week',   nominal: 7,    turns: 0.6,  mode: 'exact',   grey: ['#454545', '#545454'], rim: true },
+    { unit: 'week',   cont: 'month',  nominal: 4.35, turns: 0.5,  mode: 'exact',   grey: ['#454545', '#545454'], rim: true },
+    { unit: 'month',  cont: 'year',   nominal: 12,   turns: 0.7,  mode: 'exact',   grey: ['#454545', '#545454'], rim: true },
+    { unit: 'year',   cont: null,     nominal: 11,   turns: 1.9,  mode: 'weekly',  grey: ['#454545', '#545454'], rim: true },
 ];
 BANDS.forEach(b => {
     b.step = b.turns * 2 * Math.PI / b.nominal;   // angle per full cell
@@ -67,6 +213,15 @@ BANDS.forEach(b => {
     b.prevR = null;
     b.offset = 0;
 });
+
+// ---- settings (remembered per browser) ----
+
+const store = {
+    get(k, d) { try { const v = localStorage.getItem('timeleft_' + k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem('timeleft_' + k, JSON.stringify(v)); } catch (e) { /* storage unavailable */ } },
+};
+const LAYERS = {};
+for (const k of ['stats', 'moon', 'seasons', 'events']) LAYERS[k] = store.get('layer_' + k, true);
 
 // ---- calendar helpers (local time) ----
 
@@ -138,31 +293,42 @@ function easter(y) {
     return new Date(y, Math.floor(n / 31) - 1, n % 31 + 1);
 }
 
+const plusDays = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
+
+function julyMonday(y) {
+    const jul21 = new Date(y, 6, 21), dow = jul21.getDay();
+    return plusDays(jul21, dow === 0 ? -6 : 1 - dow);   // Sat/Sun: the Monday just before
+}
+
+// month*100+day -> name
 function holidays(y) {
     if (holidayCache[y]) return holidayCache[y];
-    const set = new Set();
-    const add = d => set.add(d.getMonth() * 100 + d.getDate());
-    const plus = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
+    const map = new Map();
+    const add = (d, name) => map.set(d.getMonth() * 100 + d.getDate(), name);
+    for (let i = 0; i < 5; i++) add(plusDays(julyMonday(y), i), '21 July week');
+    for (let d = 26; d <= 31; d++) add(new Date(y, 11, d), 'Christmas break');
     const e = easter(y);
-    add(new Date(y, 0, 1));          // New Year's Day
-    add(plus(e, 1));                 // Easter Monday
-    add(new Date(y, 4, 1));          // Labour Day
-    add(plus(e, 39));                // Ascension
-    add(plus(e, 50));                // Whit Monday
-    add(new Date(y, 6, 21));         // National Day
-    add(new Date(y, 7, 15));         // Assumption
-    add(new Date(y, 10, 1));         // All Saints
-    add(new Date(y, 10, 11));        // Armistice
-    for (let d = 25; d <= 31; d++) add(new Date(y, 11, d));   // Christmas to New Year
-    const jul21 = new Date(y, 6, 21), dow = jul21.getDay();
-    const monday = plus(jul21, dow === 0 ? -6 : 1 - dow);   // Sat/Sun: the Monday just before
-    for (let i = 0; i < 5; i++) add(plus(monday, i));
-    return holidayCache[y] = set;
+    add(new Date(y, 0, 1), "New Year's Day");
+    add(plusDays(e, 1), 'Easter Monday');
+    add(new Date(y, 4, 1), 'Labour Day');
+    add(plusDays(e, 39), 'Ascension');
+    add(plusDays(e, 50), 'Whit Monday');
+    add(new Date(y, 6, 21), 'National Day');
+    add(new Date(y, 7, 15), 'Assumption');
+    add(new Date(y, 10, 1), 'All Saints');
+    add(new Date(y, 10, 11), 'Armistice');
+    add(new Date(y, 11, 25), 'Christmas');
+    return holidayCache[y] = map;
+}
+
+function holidayName(t) {
+    const d = new Date(t);
+    return holidays(d.getFullYear()).get(d.getMonth() * 100 + d.getDate());
 }
 
 function isDayOff(t) {
-    const d = new Date(t), dow = d.getDay();
-    return dow === 0 || dow === 6 || holidays(d.getFullYear()).has(d.getMonth() * 100 + d.getDate());
+    const dow = new Date(t).getDay();
+    return dow === 0 || dow === 6 || holidayName(t) !== undefined;
 }
 
 function isOff(t) {
@@ -216,6 +382,132 @@ function segments(t0, t1, mode) {
     return out;
 }
 
+// working milliseconds in [t0, t1)
+function workIn(t0, t1) {
+    let ms = 0;
+    for (let ds = floorU('day', t0); ds < t1; ds = addU('day', ds)) {
+        if (isDayOff(ds)) continue;
+        const a = Math.max(new Date(ds).setHours(WORK_START), t0);
+        const b = Math.min(new Date(ds).setHours(WORK_END), t1);
+        if (b > a) ms += b - a;
+    }
+    return ms;
+}
+
+// ---- moon (Meeus, ch. 49, main terms: good to well within an hour) ----
+
+function moonTime(k) {
+    const rad = Math.PI / 180, s = Math.sin;
+    const T = k / 1236.85;
+    const jde = 2451550.09766 + 29.530588861 * k + 0.00015437 * T * T;
+    const M = (2.5534 + 29.1053567 * k) * rad;
+    const Mp = (201.5643 + 385.81693528 * k) * rad;
+    const F = (160.7108 + 390.67050284 * k) * rad;
+    const corr = k % 1 !== 0
+        ? -0.40614 * s(Mp) + 0.17302 * s(M) + 0.01614 * s(2 * Mp) + 0.01043 * s(2 * F) + 0.00734 * s(Mp - M) - 0.00515 * s(Mp + M) + 0.00209 * s(2 * M)
+        : -0.40720 * s(Mp) + 0.17241 * s(M) + 0.01608 * s(2 * Mp) + 0.01039 * s(2 * F) + 0.00739 * s(Mp - M) - 0.00514 * s(Mp + M) + 0.00208 * s(2 * M);
+    return (jde + corr - 2440587.5) * 86400000 - 69000;   // TT -> UTC
+}
+
+const MOONS = [];
+{
+    const k0 = Math.floor((new Date(clock()).getFullYear() - 2001) * 12.3685);
+    const k1 = Math.ceil((new Date(TARGET).getFullYear() + 1 - 2000) * 12.3685);
+    for (let k = k0; k <= k1; k++) {
+        MOONS.push({ t: moonTime(k), full: false });
+        MOONS.push({ t: moonTime(k + 0.5), full: true });
+    }
+}
+const moonsIn = (t0, t1) => MOONS.filter(m => m.t >= t0 && m.t < t1);
+
+// ---- seasons (start dates rounded to the usual day) ----
+
+function seasonStarts(y) {
+    return [[new Date(y, 2, 20).getTime(), 1], [new Date(y, 5, 21).getTime(), 2],
+            [new Date(y, 8, 22).getTime(), 3], [new Date(y, 11, 21).getTime(), 0]];
+}
+
+function seasonAt(t) {
+    let s = 0;
+    for (const [b, i] of seasonStarts(new Date(t).getFullYear())) if (t >= b) s = i;
+    return s;
+}
+
+function seasonSegs(t0, t1) {
+    const out = [];
+    let t = t0;
+    while (t < t1) {
+        const y = new Date(t).getFullYear();
+        const next = [...seasonStarts(y), ...seasonStarts(y + 1)].find(([b]) => b > t)[0];
+        const e = Math.min(next, t1);
+        out.push({ a: t, b: e, s: seasonAt(t) });
+        t = e;
+    }
+    return out;
+}
+
+// ---- calendar events from an .ics file ----
+
+let EVENTS = [];
+
+function parseIcsDate(v) {
+    const m = /^(\d{4})(\d{2})(\d{2})(?:T(\d{2})(\d{2})(\d{2})(Z)?)?/.exec(v);
+    if (!m) return null;
+    const p = m.slice(1, 7).map(x => x === undefined ? 0 : +x);
+    p[1] -= 1;
+    return { t: m[7] ? Date.UTC(...p) : new Date(...p).getTime(), allDay: m[4] === undefined };
+}
+
+// Handles single events and simple RRULEs (FREQ, INTERVAL, COUNT, UNTIL);
+// BYDAY and friends are ignored.
+function parseIcs(text) {
+    const lines = text.replace(/\r?\n[ \t]/g, '').split(/\r?\n/);
+    const out = [], horizonStart = clock() - 366 * 86400000;
+    let ev = null;
+    for (const line of lines) {
+        if (line === 'BEGIN:VEVENT') { ev = {}; continue; }
+        if (line === 'END:VEVENT') {
+            if (ev && ev.start) {
+                const s = ev.start.t;
+                const e = ev.end ? ev.end.t : ev.start.allDay ? addU('day', s) : s + 3600000;
+                const dur = Math.max(e - s, 60000);
+                const rule = ev.rrule || {};
+                const freq = { DAILY: 'day', WEEKLY: 'week', MONTHLY: 'month', YEARLY: 'year' }[rule.FREQ];
+                const until = rule.UNTIL ? parseIcsDate(rule.UNTIL).t : Infinity;
+                const count = rule.COUNT ? +rule.COUNT : Infinity;
+                const step = rule.INTERVAL ? +rule.INTERVAL : 1;
+                let t = s, n = 0;
+                while (t < TARGET && t <= until && n < count && n < 5000) {
+                    if (t + dur > horizonStart) out.push({ s: t, e: t + dur, title: ev.title || '(untitled)' });
+                    if (!freq) break;
+                    const d = new Date(t);
+                    if (freq === 'day') d.setDate(d.getDate() + step);
+                    if (freq === 'week') d.setDate(d.getDate() + 7 * step);
+                    if (freq === 'month') d.setMonth(d.getMonth() + step);
+                    if (freq === 'year') d.setFullYear(d.getFullYear() + step);
+                    t = d.getTime();
+                    n++;
+                }
+            }
+            ev = null;
+            continue;
+        }
+        if (!ev) continue;
+        const i = line.indexOf(':');
+        if (i < 0) continue;
+        const key = line.slice(0, i).split(';')[0], val = line.slice(i + 1);
+        if (key === 'DTSTART') ev.start = parseIcsDate(val);
+        else if (key === 'DTEND') ev.end = parseIcsDate(val);
+        else if (key === 'SUMMARY') ev.title = val.replace(/\\([,;\\])/g, '$1').replace(/\\n/gi, ' ');
+        else if (key === 'RRULE') ev.rrule = Object.fromEntries(val.split(';').map(p => p.split('=')));
+    }
+    return out.sort((a, b) => a.s - b.s);
+}
+
+const eventsIn = (t0, t1) => EVENTS.filter(e => e.e > t0 && e.s < t1);
+
+// ---- cells ----
+
 function buildCells(band, t0, t1) {
     const cells = [];
     let t = t0, R = 0;
@@ -223,7 +515,12 @@ function buildCells(band, t0, t1) {
         const us = floorU(band.unit, t), ue = addU(band.unit, us);
         const e = Math.min(ue, t1);
         const frac = (e - t) / (ue - us);
-        cells.push({ t0: t, t1: e, frac, at: R, parity: parityOf(band.unit, us), segs: segments(t, e, band.mode) });
+        cells.push({
+            t0: t, t1: e, frac, at: R, parity: parityOf(band.unit, us),
+            segs: segments(t, e, band.mode),
+            seasons: band.rim ? seasonSegs(t, e) : [],
+            events: eventsIn(t, e),
+        });
         R += frac;
         t = e;
     }
@@ -264,17 +561,19 @@ function resize() {
 const wallR = phi => S * Math.exp(B * phi);
 const px = (r, phi) => CX + r * Math.cos(ROT + phi);
 const py = (r, phi) => CY - r * Math.sin(ROT + phi);
+// radius at fraction f across the ribbon (0 = inner whorl, 1 = outer wall)
+const ribbonR = (phi, f) => { const ri = wallR(phi - 2 * Math.PI); return ri + (wallR(phi) - ri) * f; };
 
-// ribbon wedge between inner whorl (phi - 2pi) and outer wall (phi)
-function wedge(a0, a1) {
+// ribbon wedge between fractions f0 and f1 across the ribbon
+function wedge(a0, a1, f0 = 0, f1 = 1) {
     const n = Math.max(1, Math.ceil(Math.abs(a1 - a0) / 0.03));
     ctx.beginPath();
     for (let i = 0; i <= n; i++) {
-        const p = a0 + (a1 - a0) * i / n, r = wallR(p);
+        const p = a0 + (a1 - a0) * i / n, r = ribbonR(p, f1);
         i === 0 ? ctx.moveTo(px(r, p), py(r, p)) : ctx.lineTo(px(r, p), py(r, p));
     }
     for (let i = n; i >= 0; i--) {
-        const p = a0 + (a1 - a0) * i / n, r = wallR(p - 2 * Math.PI);
+        const p = a0 + (a1 - a0) * i / n, r = ribbonR(p, f0);
         ctx.lineTo(px(r, p), py(r, p));
     }
     ctx.closePath();
@@ -295,14 +594,193 @@ function mix(c1, c2, g) {
     return s;
 }
 
+// angle of time t inside a laid-out band, and the local angle per millisecond
+function phiAt(L, t) {
+    for (const c of L.band.cache.cells) {
+        if (t >= c.t0 && t < c.t1) {
+            const k = c.frac * L.per / (c.t1 - c.t0);
+            return { phi: L.phiA + c.at * L.per + (t - c.t0) * k, k: Math.abs(k) };
+        }
+    }
+    return null;
+}
+
+// ---- hover / tap ----
+
+let lastLayout = [], lastTip = 0, lastMouth = 0;
+let pointer = null, touchTimer = null;
+
+function hitTest(x, y) {
+    const dx = x - CX, dy = CY - y, r = Math.hypot(dx, dy);
+    if (!r) return null;
+    const base = Math.atan2(dy, dx) - ROT;
+    const lo = Math.log(r / S) / B;   // the ribbon at radius r spans phi in [lo, lo + 2pi]
+    const phi = base + 2 * Math.PI * Math.ceil((lo - base) / (2 * Math.PI));
+    if (phi < lastTip || phi > lastMouth) return null;
+    for (const L of lastLayout) {
+        if (!L.per || phi < Math.min(L.phiA, L.phiB) || phi > Math.max(L.phiA, L.phiB)) continue;
+        const u = (phi - L.phiA) / L.per;
+        for (const c of L.band.cache.cells) {
+            if (u >= c.at && u <= c.at + c.frac) {
+                return { L, c, t: c.t0 + (u - c.at) / c.frac * (c.t1 - c.t0) };
+            }
+        }
+    }
+    return null;
+}
+
+const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
+                'August', 'September', 'October', 'November', 'December'];
+const p2 = n => String(n).padStart(2, '0');
+const hm = t => { const d = new Date(t); return p2(d.getHours()) + ':' + p2(d.getMinutes()); };
+const dayStr = t => { const d = new Date(t); return DAYS[d.getDay()] + ' ' + d.getDate() + ' ' + MONTHS[d.getMonth()].slice(0, 3); };
+const num = n => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+const esc = s => s.replace(/[&<>]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[ch]));
+
+function isoWeek(t) {
+    const d = new Date(t);
+    d.setHours(0, 0, 0, 0);
+    d.setDate(d.getDate() + 3 - (d.getDay() + 6) % 7);
+    const w1 = new Date(d.getFullYear(), 0, 4);
+    return 1 + Math.round(((d - w1) / 86400000 - 3 + (w1.getDay() + 6) % 7) / 7);
+}
+
+function hours(ms) {
+    const h = ms / 3600000;
+    return h >= 10 ? num(h) + ' h' : (Math.round(h * 10) / 10) + ' h';
+}
+
+function describe({ L, c, t }) {
+    const u = L.band.unit, d = new Date(t), lines = [];
+    const us = floorU(u, c.t0);
+    let title;
+    switch (u) {
+        case 'tenth':  title = hm(t) + ':' + p2(d.getSeconds()) + '.' + Math.floor(d.getMilliseconds() / 100); break;
+        case 'second': title = hm(t) + ':' + p2(d.getSeconds()); break;
+        case 'minute': title = hm(t); break;
+        case 'hour':   title = dayStr(t) + ', ' + hm(us) + '–' + hm(addU('hour', us)); break;
+        case 'day':    title = dayStr(t) + ' ' + d.getFullYear(); break;
+        case 'week':   title = 'Week ' + isoWeek(us) + ' · ' + dayStr(us) + ' – ' + dayStr(plusDays(new Date(us), 6)); break;
+        case 'month':  title = MONTHS[d.getMonth()] + ' ' + d.getFullYear(); break;
+        case 'year':   title = String(d.getFullYear()) + (c.t1 === TARGET ? ' (until ' + dayStr(TARGET) + ')' : ''); break;
+    }
+    lines.push('<span class="h">' + title + '</span>');
+
+    if (['tenth', 'second', 'minute', 'hour'].includes(u)) {
+        const name = holidayName(t);
+        lines.push(isOff(t) ? 'free' + (name ? ' · ' + name : '') : 'working');
+    } else {
+        const work = workIn(c.t0, c.t1);
+        lines.push(hours(work) + ' work · ' + hours(c.t1 - c.t0 - work) + ' free');
+        const names = [];
+        for (let ds = floorU('day', c.t0); ds < c.t1; ds = addU('day', ds)) {
+            const n = holidayName(ds);
+            if (n && !names.includes(n)) names.push(n);
+        }
+        if (names.length) lines.push(names.slice(0, 6).join(', ') + (names.length > 6 ? ', …' : ''));
+    }
+
+    if (LAYERS.seasons) {
+        lines.push('<span class="d">' + SEASONS[seasonAt(t)].name + '</span>');
+    }
+    if (LAYERS.moon) {
+        const moons = moonsIn(c.t0, c.t1);
+        const full = moons.filter(m => m.full);
+        if (u === 'year') {
+            if (full.length) lines.push('<span class="d">' + full.length + ' full moons</span>');
+        } else {
+            for (const m of moons) lines.push('<span class="d">' + (m.full ? '● full' : '○ new') + ' moon ' + dayStr(m.t) + ' ' + hm(m.t) + '</span>');
+        }
+    }
+    if (LAYERS.events && c.events.length) {
+        for (const e of c.events.slice(0, 6)) {
+            lines.push('<span style="color:' + EVENT + '">' + dayStr(e.s) + ' · ' + esc(e.title) + '</span>');
+        }
+        if (c.events.length > 6) lines.push('<span style="color:' + EVENT + '">… ' + (c.events.length - 6) + ' more</span>');
+    }
+    return lines.join('\n');
+}
+
+const tipEl = document.getElementById('tip');
+let tipHtml = '';
+
+function updateTip() {
+    const h = pointer && hitTest(pointer.x, pointer.y);
+    if (!h) {
+        tipEl.style.display = 'none';
+        tipHtml = '';
+        return null;
+    }
+    const html = describe(h);
+    if (html !== tipHtml) { tipEl.innerHTML = html; tipHtml = html; }
+    tipEl.style.display = 'block';
+    const w = tipEl.offsetWidth, hh = tipEl.offsetHeight;
+    let x = pointer.x + 16, y = pointer.y + 16;
+    if (x + w > W - 8) x = pointer.x - w - 16;
+    if (y + hh > H - 8) y = pointer.y - hh - 16;
+    tipEl.style.left = Math.max(8, x) + 'px';
+    tipEl.style.top = Math.max(8, y) + 'px';
+    return h;
+}
+
+canvas.addEventListener('pointermove', e => {
+    if (e.pointerType === 'mouse') pointer = { x: e.clientX, y: e.clientY };
+});
+canvas.addEventListener('pointerleave', e => { if (e.pointerType === 'mouse') pointer = null; });
+canvas.addEventListener('pointerdown', e => {
+    if (e.pointerType === 'mouse') return;
+    pointer = { x: e.clientX, y: e.clientY };
+    clearTimeout(touchTimer);
+    touchTimer = setTimeout(() => { pointer = null; }, 5000);
+});
+
+// ---- numbers ----
+
+const statsEl = document.getElementById('stats');
+let statsBase = null, statsAt = 0;
+
+function computeStats(now) {
+    let work = 0, workDays = 0;
+    for (let ds = floorU('day', now); ds < TARGET; ds = addU('day', ds)) {
+        const w = workIn(Math.max(ds, now), Math.min(addU('day', ds), TARGET));
+        if (w > 0) { work += w; workDays++; }
+    }
+    let weekends = 0;
+    for (let sat = addU('day', addU('day', addU('day', addU('day', addU('day', floorU('week', now)))))); sat < TARGET; sat = addU('week', sat)) {
+        if (addU('day', addU('day', sat)) > now) weekends++;
+    }
+    let xmas = 0, july = 0;
+    const y0 = new Date(now).getFullYear();
+    for (let y = y0; y <= new Date(TARGET).getFullYear(); y++) {
+        if (new Date(y, 11, 25).getTime() < TARGET && new Date(y + 1, 0, 2).getTime() > now) xmas++;
+        const mon = julyMonday(y).getTime();
+        if (mon < TARGET && plusDays(julyMonday(y), 5).getTime() > now) july++;
+    }
+    const fullMoons = MOONS.filter(m => m.full && m.t > now && m.t < TARGET).length;
+    return { work, workDays, weekends, xmas, july, fullMoons, free: 1 - work / Math.max(1, TARGET - now) };
+}
+
+function updateStats(now) {
+    statsEl.style.display = LAYERS.stats ? 'block' : 'none';
+    if (!LAYERS.stats) return;
+    if (!statsBase || now - statsAt > 1000 || now < statsAt) { statsBase = computeStats(now); statsAt = now; }
+    const s = statsBase, left = Math.max(0, TARGET - now) / 60000;
+    statsEl.innerHTML =
+        '<b>' + num(s.workDays) + '</b> working days · <b>' + num(s.work / 3600000) + '</b> hours of work\n' +
+        '<b>' + Math.round(s.free * 100) + '%</b> of the time left is free\n' +
+        '<b>' + num(s.weekends) + '</b> weekends · <b>' + s.fullMoons + '</b> full moons\n' +
+        '<b>' + num(left * HEART_RATE) + '</b> heartbeats · <b>' + num(left * BREATH_RATE) + '</b> breaths';
+}
+
 // ---- frame ----
 
-let lastFrame = null;
+let lastFrame = null, lastStatsText = 0;
 
 function frame(ts) {
     const dt = lastFrame === null ? 0 : Math.min(1, (ts - lastFrame) / 1000);
     lastFrame = ts;
-    const now = Date.now() + SHIFT;
+    const now = clock();
 
     ctx.fillStyle = 'black';
     ctx.fillRect(0, 0, W, H);
@@ -347,26 +825,47 @@ function frame(ts) {
             phi = layout[k].phiA;
         }
     }
+    for (const L of layout) L.per = L.band.cache.R ? (L.phiB - L.phiA) / L.band.cache.R : 0;
     const ends = layout.flatMap(L => [L.phiA, L.phiB]);
     const tip = Math.min(...ends), mouth = Math.max(...ends);
+    lastLayout = layout; lastTip = tip; lastMouth = mouth;
 
     // cells
     for (const L of layout) {
         const { band } = L, { cells, R } = band.cache;
         if (!R || L.span <= 0) continue;
-        const per = (L.phiB - L.phiA) / R;
+        const per = L.per;
         for (const c of cells) {
             const c0 = L.phiA + c.at * per, c1 = c0 + c.frac * per;
+            const k = (c1 - c0) / (c.t1 - c.t0);
+            const at = tt => c0 + (tt - c.t0) * k;
             const grey = band.grey[c.parity], green = GREEN[c.parity];
             ctx.fillStyle = grey;
             wedge(c0, c1);
             ctx.fill();
-            const k = (c1 - c0) / (c.t1 - c.t0);
             for (const s of c.segs) {
                 if (s.g <= 0) continue;
                 ctx.fillStyle = mix(grey, green, s.g);
-                wedge(c0 + (s.a - c.t0) * k, c0 + (s.b - c.t0) * k);
+                wedge(at(s.a), at(s.b));
                 ctx.fill();
+            }
+            if (LAYERS.seasons) {
+                for (const s of c.seasons) {
+                    ctx.fillStyle = SEASONS[s.s].color;
+                    wedge(at(s.a), at(s.b), 0.93, 1);
+                    ctx.fill();
+                }
+            }
+            if (LAYERS.events && c.events.length) {
+                ctx.fillStyle = EVENT;
+                for (const e of c.events) {
+                    let a = at(Math.max(e.s, c.t0)), b = at(Math.min(e.e, c.t1));
+                    // keep short events visible: at least about one pixel wide
+                    const minA = 1.2 / ribbonR(a, 0.05);
+                    if (Math.abs(b - a) < minA) { const m = (a + b) / 2, s = Math.sign(b - a) || 1; a = m - s * minA / 2; b = m + s * minA / 2; }
+                    wedge(a, b, 0, 0.1);
+                    ctx.fill();
+                }
             }
         }
         // septa between cells, thinner towards the tip
@@ -376,6 +875,32 @@ function frame(ts) {
         ctx.beginPath();
         for (const c of cells) septum(L.phiA + c.at * per);
         ctx.stroke();
+    }
+
+    // moons
+    if (LAYERS.moon) {
+        for (const L of layout) {
+            if (!L.per || L.span <= 0) continue;
+            for (const m of moonsIn(L.band.cache.t0, L.band.cache.t1)) {
+                const p = phiAt(L, m.t);
+                if (p === null) continue;
+                const phi = p.phi, r = ribbonR(phi, 0.5), th = wallR(phi) - wallR(phi - 2 * Math.PI);
+                // never larger than a fraction of the gap to the next moon phase
+                const gap = p.k * 14.77 * 86400000 * r;
+                const size = Math.min(6, th * 0.07, gap * 0.12);
+                if (size < 1.2) continue;
+                ctx.beginPath();
+                ctx.arc(px(r, phi), py(r, phi), size, 0, 2 * Math.PI);
+                if (m.full) {
+                    ctx.fillStyle = '#f4f1e0';
+                    ctx.fill();
+                } else {
+                    ctx.strokeStyle = '#f4f1e0';
+                    ctx.lineWidth = Math.max(0.8, size * 0.35);
+                    ctx.stroke();
+                }
+            }
+        }
     }
 
     // shell walls and band boundaries
@@ -399,8 +924,58 @@ function frame(ts) {
     ctx.lineWidth = Math.max(0.75, S * 0.0025);
     ctx.stroke();
 
+    // hovered cell
+    const h = updateTip();
+    if (h) {
+        const c0 = h.L.phiA + h.c.at * h.L.per, c1 = c0 + h.c.frac * h.L.per;
+        wedge(c0, c1);
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+    }
+
+    if (ts - lastStatsText > 100) { updateStats(now); lastStatsText = ts; }
+
     requestAnimationFrame(frame);
 }
+
+// ---- panel ----
+
+const cog = document.getElementById('cog'), panel = document.getElementById('panel');
+cog.addEventListener('click', () => panel.classList.toggle('open'));
+
+const invalidate = () => BANDS.forEach(b => { b.cache = null; });
+
+document.querySelectorAll('[data-layer]').forEach(el => {
+    const k = el.dataset.layer;
+    el.checked = LAYERS[k];
+    el.addEventListener('change', () => {
+        LAYERS[k] = el.checked;
+        store.set('layer_' + k, el.checked);
+        statsBase = null;
+    });
+});
+
+const evInfo = document.getElementById('evInfo');
+function setCalendar(text, save) {
+    try {
+        EVENTS = text ? parseIcs(text) : [];
+    } catch (e) {
+        EVENTS = [];
+    }
+    if (save) store.set('ics', text || null);
+    evInfo.textContent = text ? EVENTS.length + ' events loaded' : 'No calendar loaded. You can also drop an .ics file on the page.';
+    invalidate();
+}
+setCalendar(store.get('ics', null), false);
+
+const fileInput = document.getElementById('ics');
+document.getElementById('btnIcs').addEventListener('click', () => fileInput.click());
+document.getElementById('btnClear').addEventListener('click', () => setCalendar(null, true));
+const readFile = f => f && f.text().then(text => setCalendar(text, true));
+fileInput.addEventListener('change', () => { readFile(fileInput.files[0]); fileInput.value = ''; });
+window.addEventListener('dragover', e => e.preventDefault());
+window.addEventListener('drop', e => { e.preventDefault(); readFile(e.dataTransfer.files[0]); });
 
 window.addEventListener('resize', resize);
 resize();
