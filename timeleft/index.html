@@ -733,20 +733,37 @@ function drawSky(t) {
         sky.fillRect(0, 0, W, H);
     }
 
-    // stars, the brightest first to appear at dusk
-    for (const [ra, dec, mag, tint] of STARS) {
+    // stars, the brightest first to appear at dusk; drawn every frame by drawStars
+    skyStars.length = 0;
+    STARS.forEach(([ra, dec, mag, tint], i) => {
         const vis = Math.max(0, Math.min(1, (-h - 2 + (1.5 - mag) * 1.2) / 8));
-        if (vis <= 0) continue;
+        if (vis <= 0) return;
         const s = horizontal(t, ra * 15, dec);
-        if (s.u <= 0) continue;
+        if (s.u <= 0) return;
         const k = R / (1 + s.u);
-        const x = cx - s.e * k, y = cy - s.n * k;
-        const r = Math.max(0.8, 2.4 - 0.4 * mag);
-        const a = vis * Math.min(0.95, 0.5 + 0.5 * Math.pow(10, -0.2 * mag)) * Math.min(1, s.u * 6 + 0.3);
-        sky.fillStyle = rgb(TINTS[tint] || [240, 240, 235], a);
-        sky.beginPath();
-        sky.arc(x, y, r, 0, 2 * Math.PI);
-        sky.fill();
+        skyStars.push({
+            x: cx - s.e * k, y: cy - s.n * k,
+            r: Math.max(0.8, 2.4 - 0.4 * mag),
+            a: vis * Math.min(0.95, 0.5 + 0.5 * Math.pow(10, -0.2 * mag)) * Math.min(1, s.u * 6 + 0.3),
+            c: (TINTS[tint] || [240, 240, 235]).join(','),
+            // scintillation grows with the air the light crosses: about 1/sin(altitude)
+            amp: Math.min(0.45, 0.1 / Math.max(0.15, s.u)),
+            // each star its own slow rhythm
+            f1: 0.6 + (i * 0.618 % 1) * 0.9, f2: 1.3 + (i * 0.414 % 1) * 1.4, p: i * 2.4,
+        });
+    });
+}
+
+const skyStars = [];
+
+function drawStars(ts) {
+    const sec = ts / 1000;
+    for (const s of skyStars) {
+        const tw = 0.6 * Math.sin(sec * s.f1 + s.p) + 0.4 * Math.sin(sec * s.f2 + s.p * 1.7);
+        ctx.fillStyle = 'rgba(' + s.c + ',' + (s.a * (1 - s.amp * (0.5 + 0.5 * tw))).toFixed(3) + ')';
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, 2 * Math.PI);
+        ctx.fill();
     }
 }
 
@@ -1091,6 +1108,7 @@ function frame(ts) {
         // the sky turns a quarter degree a minute: redrawing every 20 s is plenty
         if (Math.abs(now - skyAt) > 20000 || skyW !== W || skyH !== H) drawSky(now);
         ctx.drawImage(skyCanvas, 0, 0, W, H);
+        drawStars(ts);
     } else {
         ctx.fillStyle = 'black';
         ctx.fillRect(0, 0, W, H);
