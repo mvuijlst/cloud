@@ -239,7 +239,7 @@
     <label class="row"><input type="checkbox" data-layer="sky"> Hemel boven Gent</label>
     <div class="sep"></div>
     <h3>Legende</h3>
-    <div class="legend"><span class="key" style="background:#464e61"></span> werktijd</div>
+    <div class="legend"><span class="key" style="background:linear-gradient(90deg,#604d5a,#50566d,#445a61,#435e59)"></span> werktijd</div>
     <div class="legend"><span class="key" style="background:linear-gradient(90deg,#b688a8,#8f9bc8,#70aec0,#72bdae)"></span> vrije tijd</div>
     <div class="legend"><span class="key" style="background:linear-gradient(90deg,#6f93c9 25%,#d79ac0 25% 50%,#e8c35a 50% 75%,#cf7a45 75%)"></span> winter, lente, zomer, herfst</div>
     <div class="legend"><span class="key" style="background:#e86fd0"></span> afspraak uit agenda</div>
@@ -271,8 +271,8 @@
 // rest of this hour in minutes, ... and finally the remaining calendar years.
 // Each band gets a nominal angular sweep, so a full band of 60 seconds is
 // as long as a full band of 60 minutes, and the shell grows logarithmically.
-// Light tones mark time not spent working (slate is work): weekends, holidays,
-// and before 9:00 / after 17:00. On top of that: seasons along the outer rim,
+// Light tones mark time not spent working (dark muted ones are work): weekends,
+// holidays, and before 9:00 / after 17:00. On top of that: seasons along the outer rim,
 // calendar events along the inner rim, and full/new moons as dots. Behind it all: the sky over
 // Ghent at this moment, with its stars.
 
@@ -314,18 +314,32 @@ const SEASONS = [
 
 // Time off in light tones that run from plum at the mouth through periwinkle
 // and blue to sea-glass in the years band, like the sheen inside a shell;
-// work in dark slate.
+// work in a dark, very desaturated version of the same tone.
 const BANDS = [
-    { unit: 'tenth',  cont: 'second', nominal: 10,   turns: 0.2,  mode: 'uniform', work: ['#433a58', '#4f4567'], free: ['#a8789a', '#b688a8'], tween: 0.03 },
-    { unit: 'second', cont: 'minute', nominal: 60,   turns: 0.6,  mode: 'uniform', work: ['#33405a', '#3e4c68'], free: ['#9580b4', '#a390c1'], tween: 0.15 },
-    { unit: 'minute', cont: 'hour',   nominal: 60,   turns: 0.75, mode: 'uniform', work: ['#4a3846', '#574353'], free: ['#7f8cbc', '#8f9bc8'] },
-    { unit: 'hour',   cont: 'day',    nominal: 24,   turns: 0.7,  mode: 'uniform', work: ['#3a4152', '#464e61'], free: ['#6c97b8', '#7ca6c5'] },
-    { unit: 'day',    cont: 'week',   nominal: 7,    turns: 0.6,  mode: 'exact',   work: ['#3a4152', '#464e61'], free: ['#5f9fb3', '#70aec0'], rim: true },
-    { unit: 'week',   cont: 'month',  nominal: 4.35, turns: 0.5,  mode: 'exact',   work: ['#3a4152', '#464e61'], free: ['#59a6ab', '#6bb5b9'], rim: true },
-    { unit: 'month',  cont: 'year',   nominal: 12,   turns: 0.7,  mode: 'exact',   work: ['#3a4152', '#464e61'], free: ['#5aaba3', '#6cbab1'], rim: true },
-    { unit: 'year',   cont: null,     nominal: 11,   turns: 1.9,  mode: 'weekly',  work: ['#3a4152', '#464e61'], free: ['#5fae9f', '#72bdae'], rim: true },
+    { unit: 'tenth',  cont: 'second', nominal: 10,   turns: 0.2,  mode: 'uniform', free: ['#a8789a', '#b688a8'], tween: 0.03 },
+    { unit: 'second', cont: 'minute', nominal: 60,   turns: 0.6,  mode: 'uniform', free: ['#9580b4', '#a390c1'], tween: 0.15 },
+    { unit: 'minute', cont: 'hour',   nominal: 60,   turns: 0.75, mode: 'uniform', free: ['#7f8cbc', '#8f9bc8'] },
+    { unit: 'hour',   cont: 'day',    nominal: 24,   turns: 0.7,  mode: 'uniform', free: ['#6c97b8', '#7ca6c5'] },
+    { unit: 'day',    cont: 'week',   nominal: 7,    turns: 0.6,  mode: 'exact',   free: ['#5f9fb3', '#70aec0'], rim: true },
+    { unit: 'week',   cont: 'month',  nominal: 4.35, turns: 0.5,  mode: 'exact',   free: ['#59a6ab', '#6bb5b9'], rim: true },
+    { unit: 'month',  cont: 'year',   nominal: 12,   turns: 0.7,  mode: 'exact',   free: ['#5aaba3', '#6cbab1'], rim: true },
+    { unit: 'year',   cont: null,     nominal: 11,   turns: 1.9,  mode: 'weekly',  free: ['#5fae9f', '#72bdae'], rim: true },
 ];
+
+// a band's work colour: its free colour at half the saturation and a good
+// deal darker
+function muted(hex) {
+    const c = [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16) / 255);
+    const mx = Math.max(...c), mn = Math.min(...c), l = (mx + mn) / 2, d = mx - mn;
+    const sat = d ? d / (1 - Math.abs(2 * l - 1)) : 0;
+    const h = !d ? 0 : mx === c[0] ? ((c[1] - c[2]) / d + 6) % 6 : mx === c[1] ? (c[2] - c[0]) / d + 2 : (c[0] - c[1]) / d + 4;
+    const S = sat * 0.5, L = l * 0.6, C = (1 - Math.abs(2 * L - 1)) * S, X = C * (1 - Math.abs(h % 2 - 1));
+    const rgb = [[C, X, 0], [X, C, 0], [0, C, X], [0, X, C], [X, 0, C], [C, 0, X]][Math.floor(h) % 6];
+    return '#' + rgb.map(v => Math.round((v + L - C / 2) * 255).toString(16).padStart(2, '0')).join('');
+}
+
 BANDS.forEach(b => {
+    b.work = b.free.map(muted);
     b.step = b.turns * 2 * Math.PI / b.nominal;   // angle per full cell
     b.cache = null;
     b.prevR = null;
