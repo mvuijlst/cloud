@@ -236,10 +236,11 @@
     <label class="row"><input type="checkbox" data-layer="moon"> Volle en nieuwe maan</label>
     <label class="row"><input type="checkbox" data-layer="seasons"> Seizoenen</label>
     <label class="row"><input type="checkbox" data-layer="events"> Agenda</label>
+    <label class="row"><input type="checkbox" data-layer="sky"> Hemel boven Gent</label>
     <div class="sep"></div>
     <h3>Legende</h3>
-    <div class="legend"><span class="key" style="background:#545454"></span> werktijd</div>
-    <div class="legend"><span class="key" style="background:#4fbb80"></span> vrije tijd</div>
+    <div class="legend"><span class="key" style="background:#464e61"></span> werktijd</div>
+    <div class="legend"><span class="key" style="background:linear-gradient(90deg,#b688a8,#8f9bc8,#70aec0,#72bdae)"></span> vrije tijd</div>
     <div class="legend"><span class="key" style="background:linear-gradient(90deg,#6f93c9 25%,#d79ac0 25% 50%,#e8c35a 50% 75%,#cf7a45 75%)"></span> winter, lente, zomer, herfst</div>
     <div class="legend"><span class="key" style="background:#e86fd0"></span> afspraak uit agenda</div>
     <div class="legend"><span class="key" style="background:radial-gradient(circle,#f4f1e0 45%,transparent 50%)"></span> volle maan (ring: nieuwe maan)</div>
@@ -270,9 +271,10 @@
 // rest of this hour in minutes, ... and finally the remaining calendar years.
 // Each band gets a nominal angular sweep, so a full band of 60 seconds is
 // as long as a full band of 60 minutes, and the shell grows logarithmically.
-// Green marks time not spent working: weekends, holidays, and before 9:00 /
-// after 17:00. On top of that: seasons along the outer rim, calendar events
-// along the inner rim, and full/new moons as dots.
+// Light tones mark time not spent working (slate is work): weekends, holidays,
+// and before 9:00 / after 17:00. On top of that: seasons along the outer rim,
+// calendar events along the inner rim, and full/new moons as dots. Behind it all: the sky over
+// Ghent at this moment, with its stars.
 
 // The target (retirement) date can be changed in the settings panel and is
 // remembered per browser as 'YYYY-MM-DD'.
@@ -302,7 +304,6 @@ const clock = () => Date.now() + SHIFT;
 // seconds at the mouth (default) or, with ?seconds=inside, at the tip
 const SECONDS_OUTSIDE = new URLSearchParams(location.search).get('seconds') !== 'inside';
 
-const GREEN = ['#3a9e69', '#4fbb80'];
 const EVENT = '#e86fd0';
 const SEASONS = [
     { name: 'winter', color: '#6f93c9' },
@@ -311,15 +312,18 @@ const SEASONS = [
     { name: 'herfst', color: '#cf7a45' },
 ];
 
+// Time off in light tones that run from plum at the mouth through periwinkle
+// and blue to sea-glass in the years band, like the sheen inside a shell;
+// work in dark slate.
 const BANDS = [
-    { unit: 'tenth',  cont: 'second', nominal: 10,   turns: 0.2,  mode: 'uniform', grey: ['#4d3e63', '#5d4c76'], tween: 0.03 },
-    { unit: 'second', cont: 'minute', nominal: 60,   turns: 0.6,  mode: 'uniform', grey: ['#3b4360', '#4a5372'], tween: 0.15 },
-    { unit: 'minute', cont: 'hour',   nominal: 60,   turns: 0.75, mode: 'uniform', grey: ['#5a4144', '#6b4f53'] },
-    { unit: 'hour',   cont: 'day',    nominal: 24,   turns: 0.7,  mode: 'uniform', grey: ['#454545', '#545454'] },
-    { unit: 'day',    cont: 'week',   nominal: 7,    turns: 0.6,  mode: 'exact',   grey: ['#454545', '#545454'], rim: true },
-    { unit: 'week',   cont: 'month',  nominal: 4.35, turns: 0.5,  mode: 'exact',   grey: ['#454545', '#545454'], rim: true },
-    { unit: 'month',  cont: 'year',   nominal: 12,   turns: 0.7,  mode: 'exact',   grey: ['#454545', '#545454'], rim: true },
-    { unit: 'year',   cont: null,     nominal: 11,   turns: 1.9,  mode: 'weekly',  grey: ['#454545', '#545454'], rim: true },
+    { unit: 'tenth',  cont: 'second', nominal: 10,   turns: 0.2,  mode: 'uniform', work: ['#433a58', '#4f4567'], free: ['#a8789a', '#b688a8'], tween: 0.03 },
+    { unit: 'second', cont: 'minute', nominal: 60,   turns: 0.6,  mode: 'uniform', work: ['#33405a', '#3e4c68'], free: ['#9580b4', '#a390c1'], tween: 0.15 },
+    { unit: 'minute', cont: 'hour',   nominal: 60,   turns: 0.75, mode: 'uniform', work: ['#4a3846', '#574353'], free: ['#7f8cbc', '#8f9bc8'] },
+    { unit: 'hour',   cont: 'day',    nominal: 24,   turns: 0.7,  mode: 'uniform', work: ['#3a4152', '#464e61'], free: ['#6c97b8', '#7ca6c5'] },
+    { unit: 'day',    cont: 'week',   nominal: 7,    turns: 0.6,  mode: 'exact',   work: ['#3a4152', '#464e61'], free: ['#5f9fb3', '#70aec0'], rim: true },
+    { unit: 'week',   cont: 'month',  nominal: 4.35, turns: 0.5,  mode: 'exact',   work: ['#3a4152', '#464e61'], free: ['#59a6ab', '#6bb5b9'], rim: true },
+    { unit: 'month',  cont: 'year',   nominal: 12,   turns: 0.7,  mode: 'exact',   work: ['#3a4152', '#464e61'], free: ['#5aaba3', '#6cbab1'], rim: true },
+    { unit: 'year',   cont: null,     nominal: 11,   turns: 1.9,  mode: 'weekly',  work: ['#3a4152', '#464e61'], free: ['#5fae9f', '#72bdae'], rim: true },
 ];
 BANDS.forEach(b => {
     b.step = b.turns * 2 * Math.PI / b.nominal;   // angle per full cell
@@ -343,7 +347,7 @@ const store = {
     set(k, v) { try { localStorage.setItem('timeleft_' + k, JSON.stringify(v)); } catch (e) { /* storage unavailable */ } },
 };
 const LAYERS = {};
-for (const k of ['stats', 'moon', 'seasons', 'events']) LAYERS[k] = store.get('layer_' + k, true);
+for (const k of ['stats', 'moon', 'seasons', 'events', 'sky']) LAYERS[k] = store.get('layer_' + k, true);
 
 // ---- calendar helpers (local time) ----
 
@@ -587,6 +591,163 @@ function seasonSegs(t0, t1) {
         t = e;
     }
     return out;
+}
+
+// ---- sky: the sky over Ghent right now, as the background ----
+// The screen is the sky seen looking straight up: zenith in the middle,
+// north at the top, east on the left, the horizon through the corners
+// (stereographic). Colours follow the sun's altitude and stay dark; the
+// twilight glow sits on the horizon in the sun's direction. Stars fade in
+// as the sun goes down.
+
+const LAT = 51.05, LON = 3.72;
+const RAD = Math.PI / 180;
+
+// bright stars, J2000: [RA hours, Dec degrees, magnitude, tint]
+// (tint: 'o' orange/red giants, 'b' blue-white)
+const STARS = [
+    [6.752, -16.716, -1.46, 'b'], [14.261, 19.182, -0.05, 'o'], [18.616, 38.784, 0.03, 'b'], [5.278, 45.998, 0.08],
+    [5.242, -8.202, 0.13, 'b'], [7.655, 5.225, 0.34], [5.919, 7.407, 0.5, 'o'], [19.846, 8.868, 0.77],
+    [4.599, 16.509, 0.85, 'o'], [16.490, -26.432, 0.96, 'o'], [13.420, -11.161, 0.97, 'b'], [7.755, 28.026, 1.14, 'o'],
+    [22.961, -29.622, 1.16], [20.690, 45.280, 1.25], [10.140, 11.967, 1.35, 'b'], [6.977, -28.972, 1.5, 'b'],
+    [7.577, 31.888, 1.58], [17.560, -37.104, 1.62, 'b'], [5.419, 6.350, 1.64, 'b'], [5.438, 28.608, 1.65],
+    [5.604, -1.202, 1.69, 'b'], [5.679, -1.943, 1.74, 'b'], [12.900, 55.960, 1.77], [11.062, 61.751, 1.79, 'o'],
+    [3.405, 49.861, 1.79], [7.140, -26.393, 1.83], [18.403, -34.385, 1.85], [13.792, 49.313, 1.86, 'b'],
+    [5.992, 44.948, 1.9], [6.629, 16.399, 1.93], [2.530, 89.264, 1.98], [6.378, -17.956, 1.98, 'b'],
+    [9.460, -8.659, 1.98, 'o'], [2.120, 23.462, 2.0, 'o'], [10.333, 19.842, 2.0, 'o'], [0.727, -17.987, 2.02],
+    [18.921, -26.297, 2.05], [1.163, 35.621, 2.05, 'o'], [0.140, 29.091, 2.06], [17.582, 12.560, 2.08],
+    [14.845, 74.156, 2.08, 'o'], [5.796, -9.670, 2.09, 'b'], [11.818, 14.572, 2.13], [3.136, 40.956, 2.1],
+    [2.065, 42.330, 2.1, 'o'], [13.399, 54.925, 2.23], [15.578, 26.715, 2.23], [0.675, 56.537, 2.24, 'o'],
+    [17.943, 51.489, 2.24, 'o'], [5.533, -0.299, 2.23, 'b'], [0.153, 59.150, 2.28], [20.370, 40.257, 2.23],
+    [11.031, 56.382, 2.37], [21.736, 9.875, 2.39, 'o'], [23.063, 28.083, 2.42, 'o'], [11.897, 53.695, 2.44],
+    [23.079, 15.205, 2.49], [0.945, 60.717, 2.47, 'b'], [21.310, 62.585, 2.45], [3.038, 4.090, 2.54, 'o'],
+    [11.235, 20.524, 2.56], [5.546, -17.822, 2.58], [15.738, 6.426, 2.63, 'o'], [1.430, 60.235, 2.68],
+    [12.257, 57.033, 3.31], [1.911, 20.808, 2.64], [12.263, -17.542, 2.59], [14.750, 27.074, 2.37, 'o'],
+    [13.911, 18.398, 2.68], [19.512, 27.960, 3.08, 'o'], [20.770, 33.970, 2.48, 'o'], [19.750, 45.131, 2.87],
+    [19.771, 10.613, 2.72, 'o'], [13.036, 10.959, 2.83], [12.694, -1.449, 2.74], [3.791, 24.105, 2.87, 'b'],
+    [0.221, 15.184, 2.83, 'b'], [16.504, 21.490, 2.77], [16.688, 31.603, 2.81], [17.251, 36.809, 3.16],
+    [16.714, 38.922, 3.48], [17.244, 14.390, 3.1, 'o'], [14.535, 38.308, 3.03], [12.934, 38.318, 2.89],
+    [7.335, 21.982, 3.53], [6.732, 25.131, 3.06], [6.383, 22.514, 2.88, 'o'], [6.248, 22.507, 3.28],
+    [15.345, 71.834, 3.0], [14.073, 64.376, 3.65], [17.507, 52.301, 2.79], [16.400, 61.514, 2.73],
+    [17.146, 65.715, 3.17], [19.209, 67.661, 3.07], [4.950, 33.166, 2.69, 'o'], [5.995, 37.213, 2.62],
+    [5.033, 43.823, 3.0], [3.715, 47.788, 3.01], [3.964, 40.010, 2.89], [4.477, 19.180, 3.53, 'o'],
+    [4.330, 15.628, 3.65], [4.382, 17.543, 3.76], [5.627, 21.143, 3.0], [5.585, 9.934, 3.39],
+    [22.096, -0.320, 2.95], [21.526, -5.571, 2.9], [21.784, -16.127, 2.85], [20.350, -14.781, 3.05],
+    [16.091, -19.806, 2.62], [16.006, -22.622, 2.29], [16.353, -25.593, 2.9], [16.598, -28.216, 2.82],
+    [16.836, -34.293, 2.29], [18.350, -29.828, 2.7], [18.466, -25.422, 2.81], [19.044, -29.880, 2.6],
+    [18.761, -26.991, 3.17], [14.848, -16.042, 2.75], [15.283, -9.383, 2.61], [17.725, 4.567, 2.77],
+    [17.173, -15.725, 2.43], [16.619, -10.567, 2.56], [16.239, -3.694, 2.73], [18.097, -30.424, 2.99],
+    [12.498, -16.515, 2.95], [12.573, -23.397, 2.65], [12.169, -22.620, 3.0], [5.131, -5.086, 2.79],
+    [3.967, -13.509, 2.95], [7.453, 8.289, 2.89], [7.401, -29.303, 2.45], [6.338, -30.063, 3.02],
+    [5.661, -34.074, 2.65], [5.471, -20.759, 2.84], [9.764, 23.774, 2.98], [11.237, 15.430, 3.33],
+    [10.278, 23.417, 3.44], [10.122, 16.763, 3.52], [8.987, 48.042, 3.14], [0.655, 30.861, 3.27],
+    [2.159, 34.987, 3.0], [1.885, 29.579, 3.41], [22.717, 30.221, 2.94], [22.691, 10.831, 3.4],
+    [22.170, 6.198, 3.53], [22.834, 24.602, 3.48], [18.835, 33.363, 3.52], [18.982, 32.690, 3.25],
+    [20.661, 15.912, 3.77], [20.626, 14.595, 3.63], [19.922, 6.407, 3.71], [19.425, 3.115, 3.36],
+    [19.090, 13.863, 2.99], [19.104, -4.882, 3.43], [20.188, -0.821, 3.23], [23.656, 77.632, 3.21],
+    [21.478, 70.561, 3.23], [22.181, 58.201, 3.35], [22.828, 66.200, 3.5], [1.907, 63.670, 3.38],
+    [15.464, 29.106, 3.68], [15.032, 40.390, 3.5], [14.531, 30.371, 3.58], [15.258, 33.315, 3.47],
+    [12.927, 3.397, 3.38], [13.578, -0.596, 3.37], [2.722, 3.236, 3.47], [1.143, -10.182, 3.45],
+    [1.734, -15.937, 3.5], [22.711, -46.885, 2.1], [17.892, 56.873, 3.75],
+];
+const TINTS = { o: [255, 214, 170], b: [205, 222, 255] };
+
+const daysJ2000 = t => t / 86400000 + 2440587.5 - 2451545.0;
+
+// sun's right ascension and declination (degrees), good to a fraction of a degree
+function sunRaDec(t) {
+    const d = daysJ2000(t);
+    const g = (357.528 + 0.9856003 * d) * RAD;
+    const lam = (280.460 + 0.9856474 * d + 1.915 * Math.sin(g) + 0.020 * Math.sin(2 * g)) * RAD;
+    const eps = (23.439 - 0.0000004 * d) * RAD;
+    return [Math.atan2(Math.cos(eps) * Math.sin(lam), Math.cos(lam)) / RAD, Math.asin(Math.sin(eps) * Math.sin(lam)) / RAD];
+}
+
+// local east, north and up components of a direction on the sky
+function horizontal(t, raDeg, decDeg) {
+    const lst = 280.46061837 + 360.98564736629 * daysJ2000(t) + LON;
+    const H = (lst - raDeg) * RAD, dec = decDeg * RAD, phi = LAT * RAD;
+    return {
+        e: -Math.cos(dec) * Math.sin(H),
+        n: Math.cos(phi) * Math.sin(dec) - Math.sin(phi) * Math.cos(dec) * Math.cos(H),
+        u: Math.sin(phi) * Math.sin(dec) + Math.cos(phi) * Math.cos(dec) * Math.cos(H),
+    };
+}
+
+const sunAltitude = t => { const [ra, dec] = sunRaDec(t); return Math.asin(horizontal(t, ra, dec).u) / RAD; };
+
+// sky colours by sun altitude: [altitude, zenith, horizon]
+const SKY = [
+    [-18, [1, 2, 6],    [3, 4, 10]],
+    [-12, [1, 2, 7],    [4, 6, 16]],
+    [-6,  [3, 7, 18],   [12, 16, 34]],
+    [0,   [7, 13, 30],  [24, 26, 44]],
+    [8,   [10, 19, 38], [26, 34, 52]],
+    [30,  [12, 23, 44], [28, 40, 58]],
+];
+
+function skyColors(h) {
+    if (h <= SKY[0][0]) return [SKY[0][1], SKY[0][2]];
+    for (let i = 1; i < SKY.length; i++) {
+        if (h <= SKY[i][0]) {
+            const [h0, z0, o0] = SKY[i - 1], [h1, z1, o1] = SKY[i], f = (h - h0) / (h1 - h0);
+            const lerp = (a, b) => a.map((v, k) => v + (b[k] - v) * f);
+            return [lerp(z0, z1), lerp(o0, o1)];
+        }
+    }
+    return [SKY[SKY.length - 1][1], SKY[SKY.length - 1][2]];
+}
+
+const rgb = (c, a = 1) => 'rgba(' + c.map(Math.round).join(',') + ',' + a + ')';
+const skyCanvas = document.createElement('canvas'), sky = skyCanvas.getContext('2d');
+let skyAt = -Infinity, skyW = 0, skyH = 0;
+
+function drawSky(t) {
+    const dpr = window.devicePixelRatio || 1;
+    skyCanvas.width = Math.round(W * dpr);
+    skyCanvas.height = Math.round(H * dpr);
+    sky.setTransform(dpr, 0, 0, dpr, 0, 0);
+    skyAt = t; skyW = W; skyH = H;
+
+    const cx = W / 2, cy = H / 2, R = Math.hypot(W, H) / 2;
+    const [sra, sdec] = sunRaDec(t), sun = horizontal(t, sra, sdec);
+    const h = Math.asin(sun.u) / RAD;
+    const [zen, hor] = skyColors(h);
+
+    let g = sky.createRadialGradient(cx, cy, 0, cx, cy, R);
+    g.addColorStop(0, rgb(zen));
+    g.addColorStop(1, rgb(hor));
+    sky.fillStyle = g;
+    sky.fillRect(0, 0, W, H);
+
+    // dawn and dusk glow on the horizon below the sun
+    const glow = Math.exp(-Math.pow((h + 3) / 6, 2));
+    if (glow > 0.01) {
+        const len = Math.hypot(sun.e, sun.n) || 1;
+        const gx = cx - sun.e / len * R, gy = cy - sun.n / len * R;
+        g = sky.createRadialGradient(gx, gy, 0, gx, gy, R * 1.1);
+        g.addColorStop(0, rgb([70, 34, 18], 0.75 * glow));
+        g.addColorStop(0.45, rgb([40, 22, 30], 0.35 * glow));
+        g.addColorStop(1, rgb([0, 0, 0], 0));
+        sky.fillStyle = g;
+        sky.fillRect(0, 0, W, H);
+    }
+
+    // stars, the brightest first to appear at dusk
+    for (const [ra, dec, mag, tint] of STARS) {
+        const vis = Math.max(0, Math.min(1, (-h - 2 + (1.5 - mag) * 1.2) / 8));
+        if (vis <= 0) continue;
+        const s = horizontal(t, ra * 15, dec);
+        if (s.u <= 0) continue;
+        const k = R / (1 + s.u);
+        const x = cx - s.e * k, y = cy - s.n * k;
+        const r = Math.max(0.8, 2.4 - 0.4 * mag);
+        const a = vis * Math.min(0.95, 0.5 + 0.5 * Math.pow(10, -0.2 * mag)) * Math.min(1, s.u * 6 + 0.3);
+        sky.fillStyle = rgb(TINTS[tint] || [240, 240, 235], a);
+        sky.beginPath();
+        sky.arc(x, y, r, 0, 2 * Math.PI);
+        sky.fill();
+    }
 }
 
 // ---- calendar events from an .ics file ----
@@ -926,8 +1087,14 @@ function frame(ts) {
     lastFrame = ts;
     const now = clock();
 
-    ctx.fillStyle = 'black';
-    ctx.fillRect(0, 0, W, H);
+    if (LAYERS.sky) {
+        // the sky turns a quarter degree a minute: redrawing every 20 s is plenty
+        if (Math.abs(now - skyAt) > 20000 || skyW !== W || skyH !== H) drawSky(now);
+        ctx.drawImage(skyCanvas, 0, 0, W, H);
+    } else {
+        ctx.fillStyle = 'black';
+        ctx.fillRect(0, 0, W, H);
+    }
 
     // band time ranges, chained from now to the target
     let t = Math.min(now, TARGET);
@@ -974,7 +1141,7 @@ function frame(ts) {
     const tip = Math.min(...ends), mouth = Math.max(...ends);
     lastLayout = layout; lastTip = tip; lastMouth = mouth;
 
-    // cells
+    // cells: slate for work, the band's light tone for the rest
     for (const L of layout) {
         const { band } = L, { cells, R } = band.cache;
         if (!R || L.span <= 0) continue;
@@ -983,13 +1150,13 @@ function frame(ts) {
             const c0 = L.phiA + c.at * per, c1 = c0 + c.frac * per;
             const k = (c1 - c0) / (c.t1 - c.t0);
             const at = tt => c0 + (tt - c.t0) * k;
-            const grey = band.grey[c.parity], green = GREEN[c.parity];
-            ctx.fillStyle = grey;
+            const work = band.work[c.parity], free = band.free[c.parity];
+            ctx.fillStyle = work;
             wedge(c0, c1);
             ctx.fill();
             for (const s of c.segs) {
                 if (s.g <= 0) continue;
-                ctx.fillStyle = mix(grey, green, s.g);
+                ctx.fillStyle = mix(work, free, s.g);
                 wedge(at(s.a), at(s.b));
                 ctx.fill();
             }
@@ -1014,7 +1181,7 @@ function frame(ts) {
         }
         // septa between cells, thinner towards the tip
         const mid = (L.phiA + L.phiB) / 2;
-        ctx.strokeStyle = 'black';
+        ctx.strokeStyle = 'rgba(16,12,20,0.55)';
         ctx.lineWidth = Math.max(0.4, Math.min(2, wallR(mid) * 0.004 * Math.min(1, Math.abs(per) * 8)));
         ctx.beginPath();
         for (const c of cells) septum(L.phiA + c.at * per);
@@ -1035,12 +1202,19 @@ function frame(ts) {
                 if (size < 1.2) continue;
                 ctx.beginPath();
                 ctx.arc(px(r, phi), py(r, phi), size, 0, 2 * Math.PI);
+                // dark-edged, so they show on sea-glass and slate alike
                 if (m.full) {
-                    ctx.fillStyle = '#f4f1e0';
+                    ctx.fillStyle = '#fffaf0';
                     ctx.fill();
+                    ctx.strokeStyle = 'rgba(50,30,18,0.85)';
+                    ctx.lineWidth = Math.max(0.8, size * 0.25);
+                    ctx.stroke();
                 } else {
-                    ctx.strokeStyle = '#f4f1e0';
-                    ctx.lineWidth = Math.max(0.8, size * 0.35);
+                    ctx.strokeStyle = 'rgba(255,250,240,0.9)';
+                    ctx.lineWidth = Math.max(1.6, size * 0.6);
+                    ctx.stroke();
+                    ctx.strokeStyle = 'rgba(50,30,18,0.9)';
+                    ctx.lineWidth = Math.max(0.8, size * 0.3);
                     ctx.stroke();
                 }
             }
@@ -1073,8 +1247,11 @@ function frame(ts) {
     if (h) {
         const c0 = h.L.phiA + h.c.at * h.L.per, c1 = c0 + h.c.frac * h.L.per;
         wedge(c0, c1);
+        ctx.strokeStyle = 'rgba(40,24,14,0.9)';
+        ctx.lineWidth = 3;
+        ctx.stroke();
         ctx.strokeStyle = '#fff';
-        ctx.lineWidth = 1.5;
+        ctx.lineWidth = 1.2;
         ctx.stroke();
     }
 
