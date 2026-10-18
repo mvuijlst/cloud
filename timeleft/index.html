@@ -136,6 +136,84 @@
             padding: 5px 6px;
             border-radius: 5px;
         }
+
+        #plan {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.6);
+            z-index: 40;
+        }
+        #plan.open { display: flex; }
+        #plan .box {
+            position: relative;
+            box-sizing: border-box;
+            max-width: calc(100vw - 32px);
+            max-height: calc(100vh - 32px);
+            overflow: auto;
+            background: rgba(12,12,12,0.95);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 8px;
+            padding: 16px 18px;
+            font-size: 12px;
+        }
+        #plan h3 {
+            margin: 0 0 12px;
+            font-size: 13px;
+            font-weight: normal;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            opacity: 0.6;
+        }
+        #planClose {
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            font-size: 20px;
+            cursor: pointer;
+            opacity: 0.6;
+        }
+        #planClose:hover { opacity: 1; }
+        #planGrid {
+            display: grid;
+            grid-template-columns: 34px repeat(31, minmax(14px, 26px));
+            gap: 2px;
+            touch-action: none;
+            user-select: none;
+        }
+        #planGrid .n { text-align: center; opacity: 0.6; font-size: 11px; }
+        #planGrid .m { opacity: 0.85; align-self: center; }
+        #planGrid .c { height: 26px; border-radius: 2px; cursor: pointer; }
+        #planGrid .c.k-weekend { cursor: default; }
+        #planGrid .c.past { opacity: 0.4; cursor: default; }
+        #planGrid .c.today { outline: 2px solid #fff; outline-offset: -2px; }
+        #planKinds {
+            display: grid;
+            grid-template-columns: repeat(3, auto);
+            grid-template-rows: repeat(2, auto);
+            grid-auto-flow: column;
+            justify-content: center;
+            gap: 6px 22px;
+            margin: 16px 0 10px;
+        }
+        #planKinds .kind {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: auto;
+            margin: 0;
+            padding: 3px 7px;
+            background: none;
+            border: 1px solid transparent;
+            text-align: left;
+        }
+        #planKinds button.kind:hover { background: rgba(255,255,255,0.08); }
+        #planKinds .kind.sel { border-color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.1); }
+        #planKinds span.kind { opacity: 0.6; }
+        #planKinds .key { width: 18px; height: 13px; }
+        #planInfo { opacity: 0.6; line-height: 1.6; }
     </style>
 </head>
 <body>
@@ -166,11 +244,23 @@
     <div class="legend"><span class="key" style="background:#e86fd0"></span> afspraak uit agenda</div>
     <div class="legend"><span class="key" style="background:radial-gradient(circle,#f4f1e0 45%,transparent 50%)"></span> volle maan (ring: nieuwe maan)</div>
     <div class="sep"></div>
+    <h3>Verlof</h3>
+    <button id="btnPlan">Verlof plannen</button>
+    <div class="sep"></div>
     <h3>Agenda</h3>
     <button id="btnIcs">.ics-bestand laden</button>
     <button id="btnClear">Agenda wissen</button>
     <div id="evInfo"></div>
     <input type="file" id="ics" accept=".ics,text/calendar" hidden>
+</div>
+<div id="plan">
+    <div class="box">
+        <span id="planClose" title="Sluiten">×</span>
+        <h3 id="planTitle">Verlof</h3>
+        <div id="planGrid"></div>
+        <div id="planKinds"></div>
+        <div id="planInfo"></div>
+    </div>
 </div>
 <script>
 // Time left until TARGET, drawn as a nautilus shell.
@@ -312,8 +402,23 @@ function parityOf(u, t) {
 
 // Days off besides weekends: the ten Belgian public holidays, everything from
 // Christmas to New Year's Day, and the working week around 21 July (the week
-// before, when 21 July falls in a weekend).
+// before, when 21 July falls in a weekend). Days set in the leave planner
+// override these (weekends excepted).
 const holidayCache = {};
+const MANDATORY = new Set(['kerstvakantie', 'week van 21 juli']);
+
+const KINDS = {
+    werkdag:   { label: 'werkdag',          off: false, color: '#e0e0e0' },
+    weekend:   { label: 'weekend',          off: true,  color: '#72d09a' },
+    opleiding: { label: 'opleiding e.d.',   off: false, color: '#8fa898' },
+    vakantie:  { label: 'vakantie',         off: true,  color: '#229954' },
+    feestdag:  { label: 'feestdag',         off: true,  color: '#2e9bdc' },
+    verplicht: { label: 'verplicht vrijaf', off: true,  color: '#57cbef' },
+};
+
+// planner entries, 'YYYY-MM-DD' -> kind
+let OWN = store.get('days', {});
+const dayKey = t => { const d = new Date(t); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
 
 function easter(y) {
     const a = y % 19, b = Math.floor(y / 100), c = y % 100;
@@ -353,15 +458,19 @@ function holidays(y) {
     return holidayCache[y] = map;
 }
 
-function holidayName(t) {
-    const d = new Date(t);
-    return holidays(d.getFullYear()).get(d.getMonth() * 100 + d.getDate());
+// { kind, off, name }: what sort of day t falls on
+function dayInfo(t) {
+    const d = new Date(t), dow = d.getDay();
+    const name = holidays(d.getFullYear()).get(d.getMonth() * 100 + d.getDate());
+    if (dow === 0 || dow === 6) return { kind: 'weekend', off: true, name };
+    const own = OWN[dayKey(t)];
+    if (own) return { kind: own, off: KINDS[own].off, name: own === 'werkdag' ? undefined : KINDS[own].label };
+    if (!name) return { kind: 'werkdag', off: false };
+    return { kind: MANDATORY.has(name) ? 'verplicht' : 'feestdag', off: true, name };
 }
 
-function isDayOff(t) {
-    const dow = new Date(t).getDay();
-    return dow === 0 || dow === 6 || holidayName(t) !== undefined;
-}
+const holidayName = t => dayInfo(t).name;
+const isDayOff = t => dayInfo(t).off;
 
 function isOff(t) {
     const h = new Date(t).getHours();
@@ -704,7 +813,7 @@ function describe({ L, c, t }) {
 
     if (['tenth', 'second', 'minute', 'hour'].includes(u)) {
         const name = holidayName(t);
-        lines.push(isOff(t) ? 'vrij' + (name ? ' · ' + name : '') : 'werk');
+        lines.push((isOff(t) ? 'vrij' : 'werk') + (name ? ' · ' + name : ''));
     } else {
         const work = workIn(c.t0, c.t1);
         lines.push(hours(work) + ' werk · ' + hours(c.t1 - c.t0 - work) + ' vrij');
@@ -802,7 +911,7 @@ function updateStats(now) {
     if (!statsBase || now - statsAt > 1000 || now < statsAt) { statsBase = computeStats(now); statsAt = now; }
     const s = statsBase, left = Math.max(0, TARGET - now) / 60000;
     statsEl.innerHTML =
-        '<b>' + num(s.workDays) + '</b> werkdagen · <b>' + num(s.work / 3600000) + '</b> uren werk\n' +
+        '<b>' + num(s.workDays) + '</b> werkdagen · <b>' + num(s.work / 3600000) + '</b> uur werk\n' +
         '<b>' + Math.round(s.free * 100) + '%</b> van de tijd is geen werk\n' +
         '<b>' + num(s.weekends) + '</b> weekends · <b>' + s.fullMoons + '</b> volle manen\n' +
         '<b>' + num(left * HEART_RATE) + '</b> hartslagen · <b>' + num(left * BREATH_RATE) + '</b> ademtochten';
@@ -1032,6 +1141,101 @@ const readFile = f => f && f.text().then(text => setCalendar(text, true));
 fileInput.addEventListener('change', () => { readFile(fileInput.files[0]); fileInput.value = ''; });
 window.addEventListener('dragover', e => e.preventDefault());
 window.addEventListener('drop', e => { e.preventDefault(); readFile(e.dataTransfer.files[0]); });
+
+// ---- leave planner: the rest of this year, a row per month ----
+// Pick a kind, then click or drag over days. Painting a day with the kind it
+// already has resets it to its default. Weekends and past days are fixed.
+
+const planEl = document.getElementById('plan'), planGrid = document.getElementById('planGrid');
+const planKinds = document.getElementById('planKinds'), planInfo = document.getElementById('planInfo');
+let brush = 'vakantie', painting = null, lastPainted = null;
+
+function renderKinds() {
+    planKinds.innerHTML = '';
+    for (const k of Object.keys(KINDS)) {
+        const el = document.createElement(k === 'weekend' ? 'span' : 'button');
+        el.className = 'kind' + (k === brush ? ' sel' : '');
+        el.innerHTML = '<span class="key" style="background:' + KINDS[k].color + '"></span>' + KINDS[k].label;
+        if (k !== 'weekend') el.addEventListener('click', () => { brush = k; renderKinds(); });
+        planKinds.appendChild(el);
+    }
+}
+
+function renderPlan() {
+    const today = floorU('day', clock()), d0 = new Date(today), y = d0.getFullYear();
+    document.getElementById('planTitle').textContent = 'Verlof ' + y;
+    let html = '<span></span>';
+    for (let i = 1; i <= 31; i++) html += '<span class="n">' + i + '</span>';
+    for (let m = d0.getMonth(); m < 12; m++) {
+        html += '<span class="m">' + MONTHS_SHORT[m] + '</span>';
+        const len = new Date(y, m + 1, 0).getDate();
+        for (let i = 1; i <= 31; i++) {
+            if (i > len) { html += '<span></span>'; continue; }
+            const t = new Date(y, m, i).getTime(), info = dayInfo(t);
+            html += '<span class="c k-' + info.kind + (t < today ? ' past' : '') + (t === today ? ' today' : '') +
+                '" style="background:' + KINDS[info.kind].color + '" data-t="' + t +
+                '" title="' + dayStr(t) + (info.name ? ' · ' + info.name : '') + '"></span>';
+        }
+    }
+    planGrid.innerHTML = html;
+
+    const n = { werkdag: 0, vakantie: 0, opleiding: 0 };
+    for (let t = today; t < new Date(y + 1, 0, 1).getTime(); t = addU('day', t)) {
+        const k = dayInfo(t).kind;
+        if (k in n) n[k]++;
+    }
+    planInfo.innerHTML = 'Nog ' + n.werkdag + ' werkdagen dit jaar · ' + n.vakantie + ' vakantiedagen · ' +
+        n.opleiding + ' dagen opleiding e.d.<br>Kies een soort en klik of sleep over de dagen; nog eens klikken zet een dag terug.';
+}
+
+// the day cell under a point, if it can be changed
+function planCell(x, y) {
+    const el = document.elementFromPoint(x, y);
+    if (!el || !el.classList.contains('c') || el.classList.contains('past') || el.classList.contains('k-weekend')) return null;
+    return +el.dataset.t;
+}
+
+// paints t, and when dragging along a month also the days skipped since the last one
+function paint(t) {
+    let a = t, b = t;
+    if (lastPainted !== null && new Date(lastPainted).getMonth() === new Date(t).getMonth()) {
+        a = Math.min(t, lastPainted); b = Math.max(t, lastPainted);
+    }
+    lastPainted = t;
+    for (let d = a; d <= b; d = addU('day', d)) {
+        if (dayInfo(d).kind === 'weekend' || d < floorU('day', clock())) continue;
+        const k = dayKey(d);
+        delete OWN[k];
+        if (painting !== 'reset' && dayInfo(d).kind !== painting) OWN[k] = painting;
+    }
+    renderPlan();
+}
+
+planGrid.addEventListener('pointerdown', e => {
+    const t = planCell(e.clientX, e.clientY);
+    if (t === null) return;
+    painting = OWN[dayKey(t)] === brush ? 'reset' : brush;
+    lastPainted = null;
+    paint(t);
+});
+planGrid.addEventListener('pointermove', e => {
+    if (!painting) return;
+    const t = planCell(e.clientX, e.clientY);
+    if (t !== null && t !== lastPainted) paint(t);
+});
+window.addEventListener('pointerup', () => {
+    if (!painting) return;
+    painting = null;
+    store.set('days', OWN);
+    invalidate();
+    statsBase = null;
+});
+
+const closePlan = () => planEl.classList.remove('open');
+document.getElementById('btnPlan').addEventListener('click', () => { renderKinds(); renderPlan(); planEl.classList.add('open'); });
+document.getElementById('planClose').addEventListener('click', closePlan);
+planEl.addEventListener('click', e => { if (e.target === planEl) closePlan(); });
+window.addEventListener('keydown', e => { if (e.key === 'Escape') closePlan(); });
 
 window.addEventListener('resize', resize);
 resize();
