@@ -1,0 +1,1784 @@
+{
+ "n_encoded": 60,
+ "n_missing": 20,
+ "missing": [
+  "06a",
+  "19a",
+  "24a",
+  "25a",
+  "26b",
+  "37a",
+  "38a",
+  "39a",
+  "40a",
+  "45a",
+  "53a",
+  "54a",
+  "56a",
+  "57a",
+  "58a",
+  "68a",
+  "70a",
+  "70b",
+  "71a",
+  "72a"
+ ],
+ "all": {
+  "n": 60,
+  "accepted": 58,
+  "mean_cov": 0.988,
+  "mean_prec": 0.978,
+  "mean_iou": 0.699,
+  "primitives_median": 29.5,
+  "primitives_total": 1847,
+  "escapes_total": 15,
+  "with_escapes": 4,
+  "with_repeat": 32,
+  "with_mirror": 36
+ },
+ "by_group": {
+  "pilot": {
+   "n": 9,
+   "accepted": 7,
+   "mean_cov": 0.951,
+   "mean_prec": 0.943,
+   "mean_iou": 0.617,
+   "primitives_median": 21.0,
+   "primitives_total": 215,
+   "escapes_total": 5,
+   "with_escapes": 1,
+   "with_repeat": 4,
+   "with_mirror": 2
+  },
+  "main": {
+   "n": 51,
+   "accepted": 51,
+   "mean_cov": 0.995,
+   "mean_prec": 0.984,
+   "mean_iou": 0.714,
+   "primitives_median": 30.0,
+   "primitives_total": 1632,
+   "escapes_total": 10,
+   "with_escapes": 3,
+   "with_repeat": 28,
+   "with_mirror": 34
+  },
+  "holdout": {}
+ },
+ "by_family": {
+  "axial": {
+   "n": 15,
+   "accepted": 15,
+   "mean_cov": 0.997,
+   "mean_prec": 0.987,
+   "mean_iou": 0.717,
+   "primitives_median": 25.0,
+   "primitives_total": 379,
+   "escapes_total": 0,
+   "with_escapes": 0,
+   "with_repeat": 5,
+   "with_mirror": 14
+  },
+  "bowl": {
+   "n": 11,
+   "accepted": 11,
+   "mean_cov": 0.989,
+   "mean_prec": 0.983,
+   "mean_iou": 0.691,
+   "primitives_median": 43.0,
+   "primitives_total": 402,
+   "escapes_total": 0,
+   "with_escapes": 0,
+   "with_repeat": 8,
+   "with_mirror": 8
+  },
+  "comb": {
+   "n": 8,
+   "accepted": 7,
+   "mean_cov": 0.986,
+   "mean_prec": 0.981,
+   "mean_iou": 0.7,
+   "primitives_median": 28.0,
+   "primitives_total": 225,
+   "escapes_total": 0,
+   "with_escapes": 0,
+   "with_repeat": 6,
+   "with_mirror": 3
+  },
+  "compartment": {
+   "n": 16,
+   "accepted": 16,
+   "mean_cov": 0.996,
+   "mean_prec": 0.974,
+   "mean_iou": 0.702,
+   "primitives_median": 30.5,
+   "primitives_total": 496,
+   "escapes_total": 0,
+   "with_escapes": 0,
+   "with_repeat": 9,
+   "with_mirror": 8
+  },
+  "cursive": {
+   "n": 6,
+   "accepted": 6,
+   "mean_cov": 0.973,
+   "mean_prec": 0.97,
+   "mean_iou": 0.676,
+   "primitives_median": 33.5,
+   "primitives_total": 214,
+   "escapes_total": 15,
+   "with_escapes": 4,
+   "with_repeat": 3,
+   "with_mirror": 1
+  },
+  "radial": {
+   "n": 4,
+   "accepted": 3,
+   "mean_cov": 0.952,
+   "mean_prec": 0.943,
+   "mean_iou": 0.679,
+   "primitives_median": 33.0,
+   "primitives_total": 131,
+   "escapes_total": 0,
+   "with_escapes": 0,
+   "with_repeat": 1,
+   "with_mirror": 2
+  }
+ },
+ "primitive_type_counts": {
+  "line": 716,
+  "ring": 473,
+  "arc": 183,
+  "tri": 130,
+  "pline": 102,
+  "spiral": 90,
+  "cross": 87,
+  "bez": 40,
+  "dot": 20,
+  "crescent": 6
+ },
+ "escapes_by_family": {
+  "axial": {
+   "drawings": 15,
+   "total": 0,
+   "with_escapes": 0
+  },
+  "bowl": {
+   "drawings": 11,
+   "total": 0,
+   "with_escapes": 0
+  },
+  "compartment": {
+   "drawings": 16,
+   "total": 0,
+   "with_escapes": 0
+  },
+  "comb": {
+   "drawings": 8,
+   "total": 0,
+   "with_escapes": 0
+  },
+  "cursive": {
+   "drawings": 6,
+   "total": 15,
+   "with_escapes": 4
+  },
+  "radial": {
+   "drawings": 4,
+   "total": 0,
+   "with_escapes": 0
+  }
+ },
+ "wishes": [
+  {
+   "id": "04a",
+   "wish": "cross with per-arm lengths: the middle cross is a flared bar across the stem with no vertical arms of its own"
+  },
+  {
+   "id": "05a",
+   "wish": "cross with per-arm shape: these corner crosses have three straight-sided flared arms and the fourth arm runs on as a plain bar"
+  },
+  {
+   "id": "07a",
+   "wish": "an S-curl primitive (two opposed spirals joined by a diagonal) would replace three members per copy"
+  },
+  {
+   "id": "08a",
+   "wish": "cross with per-arm lengths: the large cross's left arm is a third longer than its right arm"
+  },
+  {
+   "id": "10a",
+   "wish": "a flared bar (cross with only two arms) for the double-lined band with concave filled ends"
+  },
+  {
+   "id": "13a",
+   "wish": "a closed lobed outline (heart / omega / leaf) primitive; five escapes here are all of that kind"
+  },
+  {
+   "id": "13b",
+   "wish": "a closed lobed outline (heart / omega) primitive, as for 13a"
+  },
+  {
+   "id": "14a",
+   "wish": "a flared bar (two-armed cross) for the I-bars, as in 10a"
+  },
+  {
+   "id": "14b",
+   "wish": "a flared bar (two-armed cross) for the I-bar, as in 14a"
+  },
+  {
+   "id": "15a",
+   "wish": "a rotated/slanted closed loop (an arc with a rot field, or a loop primitive) would have replaced the four cursive-loop bez members"
+  },
+  {
+   "id": "16a",
+   "wish": "bowtie: a bar with a triangular wedge at each end (a two-armed flared cross); encoded as line + 2 tri because cross would invent flared vertical arms"
+  },
+  {
+   "id": "17a",
+   "wish": "bowtie: a bar with a triangular wedge at each end on a stem (line + 2 tri here)"
+  },
+  {
+   "id": "17a",
+   "wish": "T with hanging wedges: a bar whose ends carry downward right-triangle wedges, repeated twice"
+  },
+  {
+   "id": "18a",
+   "wish": "bowtie (bar with two triangular wedges) + triangular foot on a stem, as in 16a/17a"
+  },
+  {
+   "id": "18a",
+   "wish": "an elliptical spiral: the right-hand flourish is an upright elliptical loop winding inward"
+  },
+  {
+   "id": "18b",
+   "wish": "bowtie (bar with two triangular wedges) + triangular foot on a stem, used twice here and in 16a/17a/18a"
+  },
+  {
+   "id": "18b",
+   "wish": "a tapered stroke: the flagged '1' is 0.10 wide at the top and pen-width at the bottom (encoded as a thick line over a normal one)"
+  },
+  {
+   "id": "20a",
+   "wish": "bowtie + foot on a stem (as 16a/17a/18a/18b), here with an inverted-triangle cup above it"
+  },
+  {
+   "id": "20a",
+   "wish": "an elliptical ring: the two bottom lobes are stroked ellipses (encoded as 360-degree elliptical arcs; kept outside the mirror because a reflected full-circle arc renders with zero sweep)"
+  },
+  {
+   "id": "22a",
+   "wish": "bowtie bar (bar with triangular wedge tips), four of them of decreasing width: a bowtie member with a width would record this as a repeat"
+  },
+  {
+   "id": "23a",
+   "wish": "a key: ring + bar + wedge tip (bar with one bowtie wedge), used twice"
+  },
+  {
+   "id": "28a",
+   "wish": "cross with per-arm flare (the big cross inside the oval has three pattee arms and a plain stem as its fourth)"
+  },
+  {
+   "id": "29a",
+   "wish": "cross with per-arm flare (the bottom cross has three pattee arms; its top arm is the plain stem from the centre ring)"
+  },
+  {
+   "id": "30a",
+   "wish": "horizontal pattee pair: the bow-tie in each compartment is two flared cross arms without the vertical pair; encoded as two filled tri plus a line"
+  },
+  {
+   "id": "31a",
+   "wish": "cross with unequal arm lengths (the two big crosses have vertical arms about 1.5x the horizontal ones)"
+  },
+  {
+   "id": "32a",
+   "wish": "horizontal pattee pair (the two bow-ties through the stem are flared cross arms without the vertical pair; encoded as two tri plus a line)"
+  },
+  {
+   "id": "34a",
+   "wish": "flared line ends: the rails and posts of the central block end in pattee flares; only the rail ends are approximated with tri"
+  },
+  {
+   "id": "35a",
+   "wish": "cross with per-arm shape: the central figure is a stem with two pattee side arms and a funnel-shaped top; encoded as two tri, a funnel tri and lines"
+  },
+  {
+   "id": "41a",
+   "wish": "coil/helix: the left spring is six stacked e-shaped turns, encoded as a repeat of arc plus bar"
+  },
+  {
+   "id": "44a",
+   "wish": "a closed rounded-compartment outline (pill, D, pouch) as one member; each here costs two to four lines and arcs"
+  },
+  {
+   "id": "47a",
+   "wish": "a flared cross whose top arm is the entering stem (three flared arms) and whose foot is a bell; rendered here as cross plus tri"
+  },
+  {
+   "id": "47a",
+   "wish": "a cross with one arm drawn out into a long plain stroke"
+  },
+  {
+   "id": "47b",
+   "wish": "a flared cross whose top arm is the entering stem (three flared arms) and whose foot is a bell; rendered here as cross plus tri"
+  },
+  {
+   "id": "48a",
+   "wish": "a flared cross whose top arm is the entering stem and whose foot is a bell; rendered as cross plus tri"
+  },
+  {
+   "id": "49a",
+   "wish": "a sawtooth or scalloped edge following a curve: repeat along a path rather than by a fixed translation"
+  },
+  {
+   "id": "49a",
+   "wish": "a flared cross whose top arm is the entering stem and whose foot is a bell; rendered as cross plus tri"
+  },
+  {
+   "id": "51a",
+   "wish": "a flared cross whose top arm is the entering stem and whose foot is a bell; rendered as cross plus tri"
+  },
+  {
+   "id": "51a",
+   "wish": "a barbed arrowhead (triangle with a notched base)"
+  },
+  {
+   "id": "52a",
+   "wish": "a serifed key (bar with flared ends, I-beam) as one member"
+  },
+  {
+   "id": "55a",
+   "wish": "a brace or bracket (bowed spine with curled ends) as one member"
+  },
+  {
+   "id": "55a",
+   "wish": "a serifed key (bar with flared ends) as one member"
+  },
+  {
+   "id": "60a",
+   "wish": "cross with per-arm flare flags: the bottom cross has a plain stem up to the rail instead of a flared top arm"
+  },
+  {
+   "id": "60a",
+   "wish": "a single flared arm or serif-foot primitive: the inner posts end in cross-pattee feet, approximated here by filled tri"
+  },
+  {
+   "id": "62a",
+   "wish": "cross with a wider tip spread: the diagonal pattee ornaments flare to about 0.85 s, the renderer's 0.55 s leaves the tip corners uncovered"
+  },
+  {
+   "id": "62a",
+   "wish": "a single flared arm / fillet primitive: the T-junction inside the bowl and the ring pedestals are concave fillets, approximated by filled tri"
+  },
+  {
+   "id": "63a",
+   "wish": "cross with per-arm flare flags: the big central cross has a plain stem above instead of a flared top arm"
+  },
+  {
+   "id": "63a",
+   "wish": "arrowhead with a notched base: encoded as a filled pline"
+  },
+  {
+   "id": "64a",
+   "wish": "repeat along an arc or path: the eleven wing scallops follow a convex curve, forced here into three straight repeats"
+  },
+  {
+   "id": "64a",
+   "wish": "cross with per-arm flare flags: only the two side arms are flared, the top arm is a plain stem under a thin cap"
+  },
+  {
+   "id": "65a",
+   "wish": "cross with per-arm flare flags: all three crosses hang from plain stems, only the side and foot arms are flared"
+  },
+  {
+   "id": "65a",
+   "wish": "rotated ellipse: the cursive loop is a tilted oval, encoded as an axis-aligned one"
+  },
+  {
+   "id": "66a",
+   "wish": "cross with per-arm flare flags: the 45-degree cross has three flared arms and a plain shaft back to the rail corner"
+  },
+  {
+   "id": "66a",
+   "wish": "rotated ellipse: the lower cursive loop is a tilted teardrop, encoded as an axis-aligned oval"
+  },
+  {
+   "id": "67a",
+   "wish": "flared bar (two-armed pattee) primitive: the crossbar inside the big circle has concave flared ends, approximated by filled tri"
+  }
+ ],
+ "per_drawing": [
+  {
+   "id": "01a",
+   "group": "pilot",
+   "family": "axial",
+   "primitives": 21,
+   "escapes": 0,
+   "repeats": 0,
+   "mirrors": 1,
+   "by_type": {
+    "cross": 2,
+    "line": 5,
+    "ring": 11,
+    "spiral": 2,
+    "pline": 1
+   },
+   "cov": 0.982,
+   "prec": 0.972,
+   "iou": 0.662,
+   "accepted": true,
+   "wishes": []
+  },
+  {
+   "id": "02a",
+   "group": "main",
+   "family": "bowl",
+   "primitives": 28,
+   "escapes": 0,
+   "repeats": 2,
+   "mirrors": 1,
+   "by_type": {
+    "line": 10,
+    "ring": 5,
+    "cross": 1,
+    "arc": 10,
+    "tri": 2
+   },
+   "cov": 1.0,
+   "prec": 1.0,
+   "iou": 0.707,
+   "accepted": true,
+   "wishes": []
+  },
+  {
+   "id": "03a",
+   "group": "main",
+   "family": "axial",
+   "primitives": 24,
+   "escapes": 0,
+   "repeats": 0,
+   "mirrors": 1,
+   "by_type": {
+    "line": 12,
+    "arc": 3,
+    "crescent": 1,
+    "ring": 6,
+    "pline": 2
+   },
+   "cov": 0.998,
+   "prec": 0.99,
+   "iou": 0.755,
+   "accepted": true,
+   "wishes": []
+  },
+  {
+   "id": "04a",
+   "group": "main",
+   "family": "axial",
+   "primitives": 16,
+   "escapes": 0,
+   "repeats": 0,
+   "mirrors": 2,
+   "by_type": {
+    "line": 8,
+    "cross": 4,
+    "arc": 1,
+    "tri": 2,
+    "ring": 1
+   },
+   "cov": 1.0,
+   "prec": 0.972,
+   "iou": 0.75,
+   "accepted": true,
+   "wishes": [
+    "cross with per-arm lengths: the middle cross is a flared bar across the stem with no vertical arms of its own"
+   ]
+  },
+  {
+   "id": "05a",
+   "group": "main",
+   "family": "axial",
+   "primitives": 11,
+   "escapes": 0,
+   "repeats": 0,
+   "mirrors": 1,
+   "by_type": {
+    "ring": 4,
+    "line": 5,
+    "cross": 2
+   },
+   "cov": 1.0,
+   "prec": 0.961,
+   "iou": 0.679,
+   "accepted": true,
+   "wishes": [
+    "cross with per-arm shape: these corner crosses have three straight-sided flared arms and the fourth arm runs on as a plain bar"
+   ]
+  },
+  {
+   "id": "07a",
+   "group": "main",
+   "family": "compartment",
+   "primitives": 36,
+   "escapes": 0,
+   "repeats": 3,
+   "mirrors": 3,
+   "by_type": {
+    "line": 13,
+    "pline": 1,
+    "arc": 6,
+    "spiral": 16
+   },
+   "cov": 1.0,
+   "prec": 0.996,
+   "iou": 0.694,
+   "accepted": true,
+   "wishes": [
+    "an S-curl primitive (two opposed spirals joined by a diagonal) would replace three members per copy"
+   ]
+  },
+  {
+   "id": "08a",
+   "group": "main",
+   "family": "compartment",
+   "primitives": 22,
+   "escapes": 0,
+   "repeats": 0,
+   "mirrors": 1,
+   "by_type": {
+    "arc": 3,
+    "cross": 3,
+    "line": 8,
+    "tri": 6,
+    "spiral": 2
+   },
+   "cov": 1.0,
+   "prec": 0.988,
+   "iou": 0.691,
+   "accepted": true,
+   "wishes": [
+    "cross with per-arm lengths: the large cross's left arm is a third longer than its right arm"
+   ]
+  },
+  {
+   "id": "09a",
+   "group": "pilot",
+   "family": "comb",
+   "primitives": 39,
+   "escapes": 0,
+   "repeats": 1,
+   "mirrors": 0,
+   "by_type": {
+    "arc": 4,
+    "line": 16,
+    "ring": 9,
+    "spiral": 10
+   },
+   "cov": 0.943,
+   "prec": 0.932,
+   "iou": 0.531,
+   "accepted": false,
+   "wishes": []
+  },
+  {
+   "id": "09b",
+   "group": "pilot",
+   "family": "comb",
+   "primitives": 36,
+   "escapes": 0,
+   "repeats": 4,
+   "mirrors": 0,
+   "by_type": {
+    "ring": 11,
+    "line": 15,
+    "arc": 4,
+    "spiral": 6
+   },
+   "cov": 1.0,
+   "prec": 0.99,
+   "iou": 0.72,
+   "accepted": true,
+   "wishes": []
+  },
+  {
+   "id": "10a",
+   "group": "main",
+   "family": "axial",
+   "primitives": 18,
+   "escapes": 0,
+   "repeats": 0,
+   "mirrors": 2,
+   "by_type": {
+    "ring": 8,
+    "line": 4,
+    "tri": 3,
+    "arc": 1,
+    "spiral": 1,
+    "pline": 1
+   },
+   "cov": 1.0,
+   "prec": 1.0,
+   "iou": 0.78,
+   "accepted": true,
+   "wishes": [
+    "a flared bar (cross with only two arms) for the double-lined band with concave filled ends"
+   ]
+  },
+  {
+   "id": "11a",
+   "group": "main",
+   "family": "comb",
+   "primitives": 26,
+   "escapes": 0,
+   "repeats": 1,
+   "mirrors": 1,
+   "by_type": {
+    "line": 12,
+    "arc": 2,
+    "tri": 4,
+    "ring": 4,
+    "spiral": 4
+   },
+   "cov": 1.0,
+   "prec": 0.997,
+   "iou": 0.73,
+   "accepted": true,
+   "wishes": []
+  },
+  {
+   "id": "12a",
+   "group": "pilot",
+   "family": "bowl",
+   "primitives": 15,
+   "escapes": 0,
+   "repeats": 1,
+   "mirrors": 1,
+   "by_type": {
+    "line": 6,
+    "cross": 3,
+    "ring": 5,
+    "arc": 1
+   },
+   "cov": 0.989,
+   "prec": 0.976,
+   "iou": 0.639,
+   "accepted": true,
+   "wishes": []
+  },
+  {
+   "id": "13a",
+   "group": "main",
+   "family": "cursive",
+   "primitives": 30,
+   "escapes": 5,
+   "repeats": 0,
+   "mirrors": 0,
+   "by_type": {
+    "line": 11,
+    "arc": 3,
+    "spiral": 1,
+    "ring": 12,
+    "pline": 1,
+    "cross": 2
+   },
+   "cov": 0.993,
+   "prec": 0.951,
+   "iou": 0.663,
+   "accepted": true,
+   "wishes": [
+    "a closed lobed outline (heart / omega / leaf) primitive; five escapes here are all of that kind"
+   ]
+  },
+  {
+   "id": "13b",
+   "group": "main",
+   "family": "cursive",
+   "primitives": 26,
+   "escapes": 4,
+   "repeats": 0,
+   "mirrors": 0,
+   "by_type": {
+    "line": 9,
+    "arc": 2,
+    "spiral": 2,
+    "ring": 9,
+    "tri": 2,
+    "cross": 2
+   },
+   "cov": 1.0,
+   "prec": 0.989,
+   "iou": 0.718,
+   "accepted": true,
+   "wishes": [
+    "a closed lobed outline (heart / omega) primitive, as for 13a"
+   ]
+  },
+  {
+   "id": "14a",
+   "group": "main",
+   "family": "bowl",
+   "primitives": 20,
+   "escapes": 0,
+   "repeats": 2,
+   "mirrors": 1,
+   "by_type": {
+    "line": 4,
+    "ring": 8,
+    "pline": 4,
+    "tri": 3,
+    "arc": 1
+   },
+   "cov": 1.0,
+   "prec": 1.0,
+   "iou": 0.719,
+   "accepted": true,
+   "wishes": [
+    "a flared bar (two-armed cross) for the I-bars, as in 10a"
+   ]
+  },
+  {
+   "id": "14b",
+   "group": "main",
+   "family": "bowl",
+   "primitives": 20,
+   "escapes": 0,
+   "repeats": 0,
+   "mirrors": 2,
+   "by_type": {
+    "line": 5,
+    "ring": 7,
+    "tri": 4,
+    "pline": 2,
+    "arc": 1,
+    "crescent": 1
+   },
+   "cov": 0.999,
+   "prec": 0.993,
+   "iou": 0.776,
+   "accepted": true,
+   "wishes": [
+    "a flared bar (two-armed cross) for the I-bar, as in 14a"
+   ]
+  },
+  {
+   "id": "15a",
+   "group": "main",
+   "family": "comb",
+   "primitives": 30,
+   "escapes": 0,
+   "repeats": 2,
+   "mirrors": 2,
+   "by_type": {
+    "line": 5,
+    "ring": 19,
+    "pline": 1,
+    "bez": 5
+   },
+   "cov": 1.0,
+   "prec": 1.0,
+   "iou": 0.801,
+   "accepted": true,
+   "wishes": [
+    "a rotated/slanted closed loop (an arc with a rot field, or a loop primitive) would have replaced the four cursive-loop bez members"
+   ]
+  },
+  {
+   "id": "16a",
+   "group": "main",
+   "family": "axial",
+   "primitives": 24,
+   "escapes": 0,
+   "repeats": 1,
+   "mirrors": 1,
+   "by_type": {
+    "line": 6,
+    "tri": 12,
+    "arc": 2,
+    "bez": 2,
+    "spiral": 2
+   },
+   "cov": 1.0,
+   "prec": 1.0,
+   "iou": 0.698,
+   "accepted": true,
+   "wishes": [
+    "bowtie: a bar with a triangular wedge at each end (a two-armed flared cross); encoded as line + 2 tri because cross would invent flared vertical arms"
+   ]
+  },
+  {
+   "id": "17a",
+   "group": "main",
+   "family": "compartment",
+   "primitives": 25,
+   "escapes": 0,
+   "repeats": 1,
+   "mirrors": 0,
+   "by_type": {
+    "ring": 6,
+    "line": 11,
+    "tri": 6,
+    "spiral": 1,
+    "dot": 1
+   },
+   "cov": 1.0,
+   "prec": 1.0,
+   "iou": 0.754,
+   "accepted": true,
+   "wishes": [
+    "bowtie: a bar with a triangular wedge at each end on a stem (line + 2 tri here)",
+    "T with hanging wedges: a bar whose ends carry downward right-triangle wedges, repeated twice"
+   ]
+  },
+  {
+   "id": "18a",
+   "group": "main",
+   "family": "cursive",
+   "primitives": 37,
+   "escapes": 1,
+   "repeats": 3,
+   "mirrors": 0,
+   "by_type": {
+    "line": 21,
+    "ring": 11,
+    "arc": 2,
+    "tri": 3
+   },
+   "cov": 0.997,
+   "prec": 0.99,
+   "iou": 0.705,
+   "accepted": true,
+   "wishes": [
+    "bowtie (bar with two triangular wedges) + triangular foot on a stem, as in 16a/17a",
+    "an elliptical spiral: the right-hand flourish is an upright elliptical loop winding inward"
+   ]
+  },
+  {
+   "id": "18b",
+   "group": "main",
+   "family": "cursive",
+   "primitives": 45,
+   "escapes": 0,
+   "repeats": 1,
+   "mirrors": 1,
+   "by_type": {
+    "ring": 13,
+    "line": 19,
+    "arc": 4,
+    "tri": 8,
+    "bez": 1
+   },
+   "cov": 0.963,
+   "prec": 0.97,
+   "iou": 0.688,
+   "accepted": true,
+   "wishes": [
+    "bowtie (bar with two triangular wedges) + triangular foot on a stem, used twice here and in 16a/17a/18a",
+    "a tapered stroke: the flagged '1' is 0.10 wide at the top and pen-width at the bottom (encoded as a thick line over a normal one)"
+   ]
+  },
+  {
+   "id": "20a",
+   "group": "main",
+   "family": "axial",
+   "primitives": 27,
+   "escapes": 0,
+   "repeats": 1,
+   "mirrors": 1,
+   "by_type": {
+    "ring": 6,
+    "line": 10,
+    "bez": 2,
+    "pline": 2,
+    "arc": 3,
+    "tri": 4
+   },
+   "cov": 0.988,
+   "prec": 0.999,
+   "iou": 0.743,
+   "accepted": true,
+   "wishes": [
+    "bowtie + foot on a stem (as 16a/17a/18a/18b), here with an inverted-triangle cup above it",
+    "an elliptical ring: the two bottom lobes are stroked ellipses (encoded as 360-degree elliptical arcs; kept outside the mirror because a reflected full-circle arc renders with zero sweep)"
+   ]
+  },
+  {
+   "id": "21a",
+   "group": "main",
+   "family": "axial",
+   "primitives": 17,
+   "escapes": 0,
+   "repeats": 2,
+   "mirrors": 0,
+   "by_type": {
+    "ring": 8,
+    "line": 7,
+    "arc": 2
+   },
+   "cov": 1.0,
+   "prec": 0.994,
+   "iou": 0.743,
+   "accepted": true,
+   "wishes": []
+  },
+  {
+   "id": "22a",
+   "group": "main",
+   "family": "axial",
+   "primitives": 27,
+   "escapes": 0,
+   "repeats": 0,
+   "mirrors": 1,
+   "by_type": {
+    "line": 10,
+    "ring": 9,
+    "tri": 8
+   },
+   "cov": 1.0,
+   "prec": 1.0,
+   "iou": 0.699,
+   "accepted": true,
+   "wishes": [
+    "bowtie bar (bar with triangular wedge tips), four of them of decreasing width: a bowtie member with a width would record this as a repeat"
+   ]
+  },
+  {
+   "id": "23a",
+   "group": "main",
+   "family": "bowl",
+   "primitives": 24,
+   "escapes": 0,
+   "repeats": 0,
+   "mirrors": 1,
+   "by_type": {
+    "arc": 3,
+    "line": 8,
+    "ring": 11,
+    "tri": 2
+   },
+   "cov": 0.966,
+   "prec": 0.966,
+   "iou": 0.652,
+   "accepted": true,
+   "wishes": [
+    "a key: ring + bar + wedge tip (bar with one bowtie wedge), used twice"
+   ]
+  },
+  {
+   "id": "26a",
+   "group": "pilot",
+   "family": "cursive",
+   "primitives": 30,
+   "escapes": 5,
+   "repeats": 0,
+   "mirrors": 0,
+   "by_type": {
+    "line": 8,
+    "cross": 4,
+    "ring": 17,
+    "pline": 1
+   },
+   "cov": 0.89,
+   "prec": 0.945,
+   "iou": 0.582,
+   "accepted": true,
+   "wishes": []
+  },
+  {
+   "id": "27a",
+   "group": "main",
+   "family": "comb",
+   "primitives": 23,
+   "escapes": 0,
+   "repeats": 2,
+   "mirrors": 0,
+   "by_type": {
+    "tri": 1,
+    "line": 11,
+    "pline": 1,
+    "ring": 8,
+    "spiral": 1,
+    "arc": 1
+   },
+   "cov": 0.986,
+   "prec": 0.99,
+   "iou": 0.74,
+   "accepted": true,
+   "wishes": []
+  },
+  {
+   "id": "28a",
+   "group": "main",
+   "family": "compartment",
+   "primitives": 50,
+   "escapes": 0,
+   "repeats": 2,
+   "mirrors": 1,
+   "by_type": {
+    "cross": 4,
+    "ring": 9,
+    "line": 21,
+    "arc": 12,
+    "tri": 1,
+    "bez": 1,
+    "pline": 1,
+    "crescent": 1
+   },
+   "cov": 0.992,
+   "prec": 0.908,
+   "iou": 0.612,
+   "accepted": true,
+   "wishes": [
+    "cross with per-arm flare (the big cross inside the oval has three pattee arms and a plain stem as its fourth)"
+   ]
+  },
+  {
+   "id": "29a",
+   "group": "main",
+   "family": "radial",
+   "primitives": 39,
+   "escapes": 0,
+   "repeats": 0,
+   "mirrors": 2,
+   "by_type": {
+    "line": 14,
+    "ring": 5,
+    "dot": 15,
+    "spiral": 4,
+    "cross": 1
+   },
+   "cov": 1.0,
+   "prec": 0.974,
+   "iou": 0.72,
+   "accepted": true,
+   "wishes": [
+    "cross with per-arm flare (the bottom cross has three pattee arms; its top arm is the plain stem from the centre ring)"
+   ]
+  },
+  {
+   "id": "30a",
+   "group": "main",
+   "family": "compartment",
+   "primitives": 52,
+   "escapes": 0,
+   "repeats": 4,
+   "mirrors": 1,
+   "by_type": {
+    "line": 15,
+    "arc": 7,
+    "pline": 6,
+    "tri": 8,
+    "ring": 14,
+    "cross": 2
+   },
+   "cov": 0.983,
+   "prec": 0.944,
+   "iou": 0.667,
+   "accepted": true,
+   "wishes": [
+    "horizontal pattee pair: the bow-tie in each compartment is two flared cross arms without the vertical pair; encoded as two filled tri plus a line"
+   ]
+  },
+  {
+   "id": "31a",
+   "group": "main",
+   "family": "axial",
+   "primitives": 34,
+   "escapes": 0,
+   "repeats": 1,
+   "mirrors": 1,
+   "by_type": {
+    "line": 12,
+    "tri": 8,
+    "spiral": 2,
+    "bez": 2,
+    "arc": 2,
+    "ring": 2,
+    "cross": 6
+   },
+   "cov": 0.997,
+   "prec": 0.96,
+   "iou": 0.655,
+   "accepted": true,
+   "wishes": [
+    "cross with unequal arm lengths (the two big crosses have vertical arms about 1.5x the horizontal ones)"
+   ]
+  },
+  {
+   "id": "32a",
+   "group": "main",
+   "family": "cursive",
+   "primitives": 46,
+   "escapes": 0,
+   "repeats": 1,
+   "mirrors": 0,
+   "by_type": {
+    "line": 15,
+    "tri": 7,
+    "arc": 5,
+    "bez": 1,
+    "dot": 1,
+    "ring": 12,
+    "pline": 2,
+    "spiral": 2,
+    "cross": 1
+   },
+   "cov": 0.994,
+   "prec": 0.977,
+   "iou": 0.7,
+   "accepted": true,
+   "wishes": [
+    "horizontal pattee pair (the two bow-ties through the stem are flared cross arms without the vertical pair; encoded as two tri plus a line)"
+   ]
+  },
+  {
+   "id": "33a",
+   "group": "main",
+   "family": "compartment",
+   "primitives": 20,
+   "escapes": 0,
+   "repeats": 1,
+   "mirrors": 1,
+   "by_type": {
+    "line": 6,
+    "arc": 1,
+    "ring": 8,
+    "pline": 1,
+    "cross": 2,
+    "spiral": 2
+   },
+   "cov": 0.995,
+   "prec": 0.99,
+   "iou": 0.731,
+   "accepted": true,
+   "wishes": []
+  },
+  {
+   "id": "34a",
+   "group": "main",
+   "family": "axial",
+   "primitives": 38,
+   "escapes": 0,
+   "repeats": 0,
+   "mirrors": 1,
+   "by_type": {
+    "line": 16,
+    "pline": 2,
+    "bez": 2,
+    "spiral": 8,
+    "ring": 2,
+    "tri": 4,
+    "arc": 2,
+    "dot": 2
+   },
+   "cov": 1.0,
+   "prec": 0.984,
+   "iou": 0.738,
+   "accepted": true,
+   "wishes": [
+    "flared line ends: the rails and posts of the central block end in pattee flares; only the rail ends are approximated with tri"
+   ]
+  },
+  {
+   "id": "35a",
+   "group": "main",
+   "family": "axial",
+   "primitives": 33,
+   "escapes": 0,
+   "repeats": 0,
+   "mirrors": 1,
+   "by_type": {
+    "line": 9,
+    "tri": 5,
+    "ring": 5,
+    "bez": 6,
+    "spiral": 8
+   },
+   "cov": 1.0,
+   "prec": 0.999,
+   "iou": 0.734,
+   "accepted": true,
+   "wishes": [
+    "cross with per-arm shape: the central figure is a stem with two pattee side arms and a funnel-shaped top; encoded as two tri, a funnel tri and lines"
+   ]
+  },
+  {
+   "id": "36a",
+   "group": "pilot",
+   "family": "compartment",
+   "primitives": 29,
+   "escapes": 0,
+   "repeats": 0,
+   "mirrors": 0,
+   "by_type": {
+    "line": 14,
+    "ring": 8,
+    "cross": 2,
+    "arc": 3,
+    "bez": 1,
+    "pline": 1
+   },
+   "cov": 0.993,
+   "prec": 0.889,
+   "iou": 0.551,
+   "accepted": true,
+   "wishes": []
+  },
+  {
+   "id": "41a",
+   "group": "main",
+   "family": "radial",
+   "primitives": 27,
+   "escapes": 0,
+   "repeats": 1,
+   "mirrors": 0,
+   "by_type": {
+    "ring": 4,
+    "line": 14,
+    "arc": 6,
+    "tri": 2,
+    "cross": 1
+   },
+   "cov": 1.0,
+   "prec": 0.971,
+   "iou": 0.706,
+   "accepted": true,
+   "wishes": [
+    "coil/helix: the left spring is six stacked e-shaped turns, encoded as a repeat of arc plus bar"
+   ]
+  },
+  {
+   "id": "42a",
+   "group": "main",
+   "family": "bowl",
+   "primitives": 62,
+   "escapes": 0,
+   "repeats": 5,
+   "mirrors": 0,
+   "by_type": {
+    "ring": 24,
+    "line": 25,
+    "arc": 7,
+    "cross": 5,
+    "tri": 1
+   },
+   "cov": 0.953,
+   "prec": 0.974,
+   "iou": 0.648,
+   "accepted": true,
+   "wishes": []
+  },
+  {
+   "id": "42b",
+   "group": "main",
+   "family": "bowl",
+   "primitives": 50,
+   "escapes": 0,
+   "repeats": 4,
+   "mirrors": 0,
+   "by_type": {
+    "ring": 19,
+    "line": 19,
+    "arc": 7,
+    "cross": 4,
+    "tri": 1
+   },
+   "cov": 0.989,
+   "prec": 0.98,
+   "iou": 0.651,
+   "accepted": true,
+   "wishes": []
+  },
+  {
+   "id": "43a",
+   "group": "main",
+   "family": "axial",
+   "primitives": 25,
+   "escapes": 0,
+   "repeats": 1,
+   "mirrors": 1,
+   "by_type": {
+    "line": 12,
+    "arc": 4,
+    "spiral": 1,
+    "ring": 5,
+    "pline": 3
+   },
+   "cov": 1.0,
+   "prec": 0.988,
+   "iou": 0.637,
+   "accepted": true,
+   "wishes": []
+  },
+  {
+   "id": "44a",
+   "group": "main",
+   "family": "compartment",
+   "primitives": 43,
+   "escapes": 0,
+   "repeats": 2,
+   "mirrors": 2,
+   "by_type": {
+    "line": 20,
+    "arc": 2,
+    "pline": 4,
+    "bez": 3,
+    "cross": 1,
+    "ring": 13
+   },
+   "cov": 0.999,
+   "prec": 0.997,
+   "iou": 0.719,
+   "accepted": true,
+   "wishes": [
+    "a closed rounded-compartment outline (pill, D, pouch) as one member; each here costs two to four lines and arcs"
+   ]
+  },
+  {
+   "id": "46a",
+   "group": "main",
+   "family": "bowl",
+   "primitives": 45,
+   "escapes": 0,
+   "repeats": 0,
+   "mirrors": 0,
+   "by_type": {
+    "bez": 1,
+    "spiral": 2,
+    "pline": 9,
+    "ring": 16,
+    "line": 17
+   },
+   "cov": 0.997,
+   "prec": 0.989,
+   "iou": 0.767,
+   "accepted": true,
+   "wishes": []
+  },
+  {
+   "id": "47a",
+   "group": "main",
+   "family": "compartment",
+   "primitives": 15,
+   "escapes": 0,
+   "repeats": 0,
+   "mirrors": 0,
+   "by_type": {
+    "ring": 1,
+    "line": 5,
+    "pline": 5,
+    "cross": 3,
+    "tri": 1
+   },
+   "cov": 1.0,
+   "prec": 0.953,
+   "iou": 0.732,
+   "accepted": true,
+   "wishes": [
+    "a flared cross whose top arm is the entering stem (three flared arms) and whose foot is a bell; rendered here as cross plus tri",
+    "a cross with one arm drawn out into a long plain stroke"
+   ]
+  },
+  {
+   "id": "47b",
+   "group": "main",
+   "family": "compartment",
+   "primitives": 11,
+   "escapes": 0,
+   "repeats": 0,
+   "mirrors": 0,
+   "by_type": {
+    "ring": 1,
+    "line": 3,
+    "pline": 3,
+    "cross": 3,
+    "tri": 1
+   },
+   "cov": 0.988,
+   "prec": 0.979,
+   "iou": 0.707,
+   "accepted": true,
+   "wishes": [
+    "a flared cross whose top arm is the entering stem (three flared arms) and whose foot is a bell; rendered here as cross plus tri"
+   ]
+  },
+  {
+   "id": "48a",
+   "group": "main",
+   "family": "compartment",
+   "primitives": 24,
+   "escapes": 0,
+   "repeats": 2,
+   "mirrors": 0,
+   "by_type": {
+    "ring": 7,
+    "line": 9,
+    "pline": 3,
+    "tri": 3,
+    "cross": 2
+   },
+   "cov": 0.996,
+   "prec": 0.989,
+   "iou": 0.726,
+   "accepted": true,
+   "wishes": [
+    "a flared cross whose top arm is the entering stem and whose foot is a bell; rendered as cross plus tri"
+   ]
+  },
+  {
+   "id": "49a",
+   "group": "main",
+   "family": "bowl",
+   "primitives": 45,
+   "escapes": 0,
+   "repeats": 2,
+   "mirrors": 2,
+   "by_type": {
+    "ring": 4,
+    "line": 12,
+    "arc": 4,
+    "cross": 1,
+    "tri": 2,
+    "bez": 2,
+    "pline": 20
+   },
+   "cov": 0.982,
+   "prec": 0.967,
+   "iou": 0.659,
+   "accepted": true,
+   "wishes": [
+    "a sawtooth or scalloped edge following a curve: repeat along a path rather than by a fixed translation",
+    "a flared cross whose top arm is the entering stem and whose foot is a bell; rendered as cross plus tri"
+   ]
+  },
+  {
+   "id": "50a",
+   "group": "pilot",
+   "family": "comb",
+   "primitives": 21,
+   "escapes": 0,
+   "repeats": 2,
+   "mirrors": 0,
+   "by_type": {
+    "line": 9,
+    "ring": 9,
+    "pline": 1,
+    "cross": 2
+   },
+   "cov": 1.0,
+   "prec": 0.976,
+   "iou": 0.675,
+   "accepted": true,
+   "wishes": []
+  },
+  {
+   "id": "51a",
+   "group": "main",
+   "family": "axial",
+   "primitives": 33,
+   "escapes": 0,
+   "repeats": 0,
+   "mirrors": 1,
+   "by_type": {
+    "ring": 12,
+    "line": 14,
+    "bez": 1,
+    "tri": 3,
+    "cross": 1,
+    "spiral": 2
+   },
+   "cov": 0.991,
+   "prec": 0.995,
+   "iou": 0.723,
+   "accepted": true,
+   "wishes": [
+    "a flared cross whose top arm is the entering stem and whose foot is a bell; rendered as cross plus tri",
+    "a barbed arrowhead (triangle with a notched base)"
+   ]
+  },
+  {
+   "id": "52a",
+   "group": "main",
+   "family": "compartment",
+   "primitives": 32,
+   "escapes": 0,
+   "repeats": 0,
+   "mirrors": 1,
+   "by_type": {
+    "ring": 7,
+    "line": 20,
+    "cross": 3,
+    "arc": 2
+   },
+   "cov": 1.0,
+   "prec": 0.99,
+   "iou": 0.678,
+   "accepted": true,
+   "wishes": [
+    "a serifed key (bar with flared ends, I-beam) as one member"
+   ]
+  },
+  {
+   "id": "55a",
+   "group": "main",
+   "family": "compartment",
+   "primitives": 41,
+   "escapes": 0,
+   "repeats": 3,
+   "mirrors": 3,
+   "by_type": {
+    "line": 15,
+    "ring": 10,
+    "tri": 3,
+    "cross": 2,
+    "bez": 4,
+    "spiral": 4,
+    "pline": 2,
+    "arc": 1
+   },
+   "cov": 0.999,
+   "prec": 1.0,
+   "iou": 0.699,
+   "accepted": true,
+   "wishes": [
+    "a brace or bracket (bowed spine with curled ends) as one member",
+    "a serifed key (bar with flared ends) as one member"
+   ]
+  },
+  {
+   "id": "59a",
+   "group": "main",
+   "family": "axial",
+   "primitives": 31,
+   "escapes": 0,
+   "repeats": 0,
+   "mirrors": 1,
+   "by_type": {
+    "cross": 1,
+    "line": 12,
+    "ring": 10,
+    "pline": 8
+   },
+   "cov": 1.0,
+   "prec": 0.998,
+   "iou": 0.765,
+   "accepted": true,
+   "wishes": []
+  },
+  {
+   "id": "60a",
+   "group": "main",
+   "family": "bowl",
+   "primitives": 43,
+   "escapes": 0,
+   "repeats": 1,
+   "mirrors": 1,
+   "by_type": {
+    "line": 16,
+    "tri": 2,
+    "arc": 18,
+    "bez": 2,
+    "ring": 2,
+    "spiral": 2,
+    "cross": 1
+   },
+   "cov": 1.0,
+   "prec": 0.985,
+   "iou": 0.689,
+   "accepted": true,
+   "wishes": [
+    "cross with per-arm flare flags: the bottom cross has a plain stem up to the rail instead of a flared top arm",
+    "a single flared arm or serif-foot primitive: the inner posts end in cross-pattee feet, approximated here by filled tri"
+   ]
+  },
+  {
+   "id": "61a",
+   "group": "pilot",
+   "family": "comb",
+   "primitives": 12,
+   "escapes": 0,
+   "repeats": 0,
+   "mirrors": 0,
+   "by_type": {
+    "ring": 2,
+    "pline": 2,
+    "line": 5,
+    "cross": 3
+   },
+   "cov": 0.955,
+   "prec": 0.965,
+   "iou": 0.66,
+   "accepted": true,
+   "wishes": []
+  },
+  {
+   "id": "62a",
+   "group": "main",
+   "family": "radial",
+   "primitives": 53,
+   "escapes": 0,
+   "repeats": 0,
+   "mirrors": 4,
+   "by_type": {
+    "line": 21,
+    "cross": 4,
+    "ring": 14,
+    "dot": 1,
+    "arc": 5,
+    "bez": 2,
+    "tri": 4,
+    "spiral": 2
+   },
+   "cov": 0.998,
+   "prec": 0.985,
+   "iou": 0.76,
+   "accepted": true,
+   "wishes": [
+    "cross with a wider tip spread: the diagonal pattee ornaments flare to about 0.85 s, the renderer's 0.55 s leaves the tip corners uncovered",
+    "a single flared arm / fillet primitive: the T-junction inside the bowl and the ring pedestals are concave fillets, approximated by filled tri"
+   ]
+  },
+  {
+   "id": "63a",
+   "group": "main",
+   "family": "comb",
+   "primitives": 38,
+   "escapes": 0,
+   "repeats": 0,
+   "mirrors": 1,
+   "by_type": {
+    "line": 20,
+    "ring": 9,
+    "arc": 3,
+    "pline": 3,
+    "cross": 3
+   },
+   "cov": 1.0,
+   "prec": 0.996,
+   "iou": 0.74,
+   "accepted": true,
+   "wishes": [
+    "cross with per-arm flare flags: the big central cross has a plain stem above instead of a flared top arm",
+    "arrowhead with a notched base: encoded as a filled pline"
+   ]
+  },
+  {
+   "id": "64a",
+   "group": "main",
+   "family": "bowl",
+   "primitives": 50,
+   "escapes": 0,
+   "repeats": 3,
+   "mirrors": 1,
+   "by_type": {
+    "line": 13,
+    "cross": 1,
+    "arc": 23,
+    "ring": 9,
+    "bez": 2,
+    "spiral": 2
+   },
+   "cov": 1.0,
+   "prec": 0.984,
+   "iou": 0.69,
+   "accepted": true,
+   "wishes": [
+    "repeat along an arc or path: the eleven wing scallops follow a convex curve, forced here into three straight repeats",
+    "cross with per-arm flare flags: only the two side arms are flared, the top arm is a plain stem under a thin cap"
+   ]
+  },
+  {
+   "id": "65a",
+   "group": "main",
+   "family": "compartment",
+   "primitives": 28,
+   "escapes": 0,
+   "repeats": 0,
+   "mirrors": 0,
+   "by_type": {
+    "line": 13,
+    "arc": 6,
+    "tri": 1,
+    "ring": 2,
+    "pline": 2,
+    "spiral": 1,
+    "cross": 3
+   },
+   "cov": 1.0,
+   "prec": 0.992,
+   "iou": 0.692,
+   "accepted": true,
+   "wishes": [
+    "cross with per-arm flare flags: all three crosses hang from plain stems, only the side and foot arms are flared",
+    "rotated ellipse: the cursive loop is a tilted oval, encoded as an axis-aligned one"
+   ]
+  },
+  {
+   "id": "66a",
+   "group": "main",
+   "family": "compartment",
+   "primitives": 35,
+   "escapes": 0,
+   "repeats": 0,
+   "mirrors": 0,
+   "by_type": {
+    "line": 22,
+    "pline": 4,
+    "cross": 1,
+    "ring": 5,
+    "arc": 3
+   },
+   "cov": 1.0,
+   "prec": 0.976,
+   "iou": 0.76,
+   "accepted": true,
+   "wishes": [
+    "cross with per-arm flare flags: the 45-degree cross has three flared arms and a plain shaft back to the rail corner",
+    "rotated ellipse: the lower cursive loop is a tilted teardrop, encoded as an axis-aligned oval"
+   ]
+  },
+  {
+   "id": "67a",
+   "group": "main",
+   "family": "compartment",
+   "primitives": 33,
+   "escapes": 0,
+   "repeats": 1,
+   "mirrors": 0,
+   "by_type": {
+    "ring": 11,
+    "line": 16,
+    "tri": 2,
+    "pline": 3,
+    "arc": 1
+   },
+   "cov": 0.999,
+   "prec": 1.0,
+   "iou": 0.812,
+   "accepted": true,
+   "wishes": [
+    "flared bar (two-armed pattee) primitive: the crossbar inside the big circle has concave flared ends, approximated by filled tri"
+   ]
+  },
+  {
+   "id": "69a",
+   "group": "pilot",
+   "family": "radial",
+   "primitives": 12,
+   "escapes": 0,
+   "repeats": 0,
+   "mirrors": 0,
+   "by_type": {
+    "line": 3,
+    "ring": 4,
+    "crescent": 3,
+    "cross": 1,
+    "tri": 1
+   },
+   "cov": 0.81,
+   "prec": 0.844,
+   "iou": 0.531,
+   "accepted": false,
+   "wishes": []
+  }
+ ]
+}

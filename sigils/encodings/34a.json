@@ -1,0 +1,36 @@
+{
+ "id": "34a", "identity": 34, "variant": "a", "name": "Furfur",
+ "vocab": "1.0", "aspect": 1.610, "stroke": 0.038,
+ "family_by_eye": "axial",
+ "members": [
+  {"t": "line", "p": [0.275, 0.456, 1.325, 0.456]},
+  {"t": "line", "p": [0.55, 0.237, 1.05, 0.237]},
+  {"t": "line", "p": [0.55, 0.567, 1.05, 0.567]},
+  {"t": "line", "p": [0.793, 0.237, 0.793, 0.705]},
+  {"t": "pline", "p": [[0.60, 0.705], [0.985, 0.705], [0.793, 0.975]], "closed": true},
+  {"t": "pline", "p": [[0.675, 0.75], [0.91, 0.75], [0.793, 0.875]], "closed": true},
+  {"t": "mirror", "axis": "x", "at": 0.80, "m": [
+   {"t": "bez", "p": [[0.20, 0.125], [0.26, 0.30], [0.30, 0.55], [0.245, 0.785]]},
+   {"t": "line", "p": [0.20, 0.125, 0.114, 0.041]},
+   {"t": "spiral", "c": [0.07, 0.085], "r": [0.062, 0.018], "a": [-45, -320]},
+   {"t": "line", "p": [0.20, 0.125, 0.268, 0.023]},
+   {"t": "spiral", "c": [0.31, 0.065], "r": [0.06, 0.018], "a": [225, 320]},
+   {"t": "line", "p": [0.245, 0.785, 0.10, 0.826]},
+   {"t": "spiral", "c": [0.068, 0.77], "r": [0.065, 0.018], "a": [60, 330]},
+   {"t": "line", "p": [0.245, 0.785, 0.308, 0.869]},
+   {"t": "spiral", "c": [0.347, 0.823], "r": [0.06, 0.018], "a": [130, -330]},
+   {"t": "ring", "c": [0.449, 0.456], "r": 0.06},
+   {"t": "tri", "p": [[0.52, 0.205], [0.52, 0.27], [0.58, 0.237]], "fill": true},
+   {"t": "tri", "p": [[0.52, 0.535], [0.52, 0.60], [0.58, 0.567]], "fill": true},
+   {"t": "line", "p": [0.57, 0.237, 0.57, 0.567]},
+   {"t": "line", "p": [0.715, 0.237, 0.715, 0.567]},
+   {"t": "arc", "c": [0.643, 0.385], "r": [0.072, 0.045], "a": [0, 180]},
+   {"t": "dot", "c": [0.724, 0.642], "r": 0.04}
+  ]}
+ ],
+ "escapes": [],
+ "wishes": [
+  "flared line ends: the rails and posts of the central block end in pattee flares; only the rail ends are approximated with tri"
+ ],
+ "notes": "Central block: a top rail and a floor with flared ends, a mid bar running the full width, two arched loops in the upper band and an arcade of four bays in the lower band, a stem down to two nested outlined triangles with a dot on either side; the mid bar passes through a ring on each side and ends on a tall S-curved bracket whose four ends curl into spirals. Bilateral."
+}

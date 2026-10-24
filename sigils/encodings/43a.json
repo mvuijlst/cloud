@@ -1,0 +1,31 @@
+{
+ "id": "43a", "identity": 43, "variant": "a", "name": "Sabnock",
+ "vocab": "1.0", "aspect": 1.408, "stroke": 0.033,
+ "family_by_eye": "axial",
+ "members": [
+  {"t": "line", "p": [0.135, 0.18, 1.09, 0.18]},
+  {"t": "line", "p": [0.135, 0.265, 0.88, 0.265]},
+  {"t": "arc", "c": [0.135, 0.2225], "r": 0.0425, "a": [90, 270]},
+  {"t": "arc", "c": [0.88, 0.2225], "r": 0.0425, "a": [270, 450]},
+  {"t": "spiral", "c": [1.09, 0.095], "r": [0.085, 0.012], "a": [90, -680]},
+  {"t": "mirror", "axis": "x", "at": 0.525, "m": [
+   {"t": "ring", "c": [0.35, 0.11], "r": 0.063},
+   {"t": "line", "p": [0.35, 0.265, 0.35, 0.45]},
+   {"t": "arc", "c": [0.525, 0.45], "r": [0.175, 0.15], "a": [90, 180]}
+  ]},
+  {"t": "line", "p": [0.525, 0.60, 0.52, 0.87]},
+  {"t": "ring", "c": [0.515, 0.93], "r": 0.06},
+  {"t": "line", "p": [0.0, 0.765, 1.01, 0.765]},
+  {"t": "pline", "p": [[0.0, 0.765], [0.135, 0.60], [0.135, 0.765]], "closed": true},
+  {"t": "pline", "p": [[0.82, 0.62], [0.975, 0.765], [0.82, 0.905]], "closed": true},
+  {"t": "pline", "p": [[1.01, 0.535], [1.14, 0.535], [1.14, 0.99], [1.01, 0.99]], "closed": true},
+  {"t": "repeat", "n": 5, "d": [0, 0.0715], "m": [
+   {"t": "line", "p": [1.01, 0.62, 1.14, 0.62]}
+  ]},
+  {"t": "line", "p": [1.14, 0.765, 1.245, 0.765]},
+  {"t": "ring", "c": [1.32, 0.77], "r": 0.075},
+  {"t": "ring", "c": [1.32, 0.77], "r": 0.034}
+ ],
+ "escapes": [],
+ "notes": "Outlined pill rail whose top line runs on into a counter-clockwise curl; two rings standing on the pill and two stems hanging from it into a pointed bowl, mirrored; stem from the bowl's point through a long lower rail to a ring; the lower rail carries an outlined right triangle at its left end, an outlined arrowhead, a six-cell ladder, and a double ring at the right end."
+}

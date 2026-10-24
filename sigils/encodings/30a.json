@@ -1,0 +1,44 @@
+{
+ "id": "30a", "identity": 30, "variant": "a", "name": "Forneus",
+ "vocab": "1.0", "aspect": 1.050, "stroke": 0.028,
+ "family_by_eye": "compartment",
+ "members": [
+  {"t": "line", "p": [0.155, 0.34, 0.89, 0.34]},
+  {"t": "line", "p": [0.155, 0.678, 0.89, 0.678]},
+  {"t": "repeat", "n": 3, "d": [0.2435, 0], "m": [
+   {"t": "arc", "c": [0.2775, 0.335], "r": 0.12, "a": [180, 360]},
+   {"t": "arc", "c": [0.2775, 0.675], "r": 0.12, "a": [0, 180]}
+  ]},
+  {"t": "repeat", "n": 3, "d": [0.222, 0], "m": [
+   {"t": "pline", "p": [[0.256, 0.385], [0.356, 0.385], [0.356, 0.43], [0.256, 0.43]], "closed": true, "fill": true},
+   {"t": "tri", "p": [[0.228, 0.455], [0.228, 0.545], [0.294, 0.50]], "fill": true},
+   {"t": "tri", "p": [[0.384, 0.455], [0.384, 0.545], [0.318, 0.50]], "fill": true},
+   {"t": "line", "p": [0.236, 0.50, 0.376, 0.50]},
+   {"t": "pline", "p": [[0.256, 0.58], [0.356, 0.58], [0.356, 0.628], [0.256, 0.628]], "closed": true, "fill": true}
+  ]},
+  {"t": "ring", "c": [0.525, 0.265], "r": 0.045},
+  {"t": "ring", "c": [0.525, 0.752], "r": 0.045},
+  {"t": "arc", "c": [0.522, 0.80], "r": [0.118, 0.058], "a": [0, 180]},
+  {"t": "mirror", "axis": "x", "at": 0.522, "m": [
+   {"t": "line", "p": [0.155, 0.335, 0.155, 0.675]},
+   {"t": "line", "p": [0.40, 0.215, 0.40, 0.79]},
+   {"t": "cross", "c": [0.405, 0.095], "s": 0.095, "flared": true},
+   {"t": "line", "p": [0.405, 0.795, 0.405, 0.882]},
+   {"t": "ring", "c": [0.405, 0.928], "r": 0.046},
+   {"t": "line", "p": [0.073, 0.06, 0.073, 0.805]},
+   {"t": "tri", "p": [[0.073, 0.05], [0.024, 0.185], [0.124, 0.185]], "fill": true},
+   {"t": "ring", "c": [0.073, 0.85], "r": 0.045},
+   {"t": "repeat", "n": 2, "d": [0.065, 0], "m": [
+    {"t": "repeat", "n": 2, "d": [0, 0.071], "m": [
+     {"t": "ring", "c": [0.041, 0.443], "r": 0.03}
+    ]}
+   ]},
+   {"t": "line", "p": [0.12, 0.48, 0.16, 0.48]}
+  ]}
+ ],
+ "escapes": [],
+ "wishes": [
+  "horizontal pattee pair: the bow-tie in each compartment is two flared cross arms without the vertical pair; encoded as two filled tri plus a line"
+ ],
+ "notes": "Three arched compartments side by side (semicircular tops and bottoms on two bars), each holding a filled bar, a bow-tie of two flared wedges and a second filled bar; rings in the middle arches; two flared crosses standing on the inner walls; two ring pendants and a shallow bowl under the floor; a spear-tipped vertical with a 2x2 ring cluster and a ring foot on each side. Bilateral."
+}

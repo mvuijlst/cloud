@@ -1,0 +1,28 @@
+{
+ "id": "03a", "identity": 3, "variant": "a", "name": "Vassago",
+ "vocab": "1.0", "aspect": 0.793, "stroke": 0.030,
+ "family_by_eye": "axial",
+ "members": [
+  {"t": "line", "p": [0.400, 0.095, 0.400, 0.55]},
+  {"t": "arc", "c": [0.402, 0.035], "r": [0.047, 0.06], "a": [180, 360]},
+  {"t": "crescent", "c": [0.4025, 0.1345], "r": 0.10, "ri": 0.0875, "k": 0.52, "rot": -90},
+  {"t": "line", "p": [0.215, 0.326, 0.578, 0.326]},
+  {"t": "ring", "c": [0.398, 0.61], "r": 0.060},
+  {"t": "line", "p": [0.215, 0.765, 0.578, 0.765], "w": 0.045},
+  {"t": "line", "p": [0.215, 0.832, 0.578, 0.832], "w": 0.04},
+  {"t": "ring", "c": [0.395, 0.917], "r": 0.08},
+  {"t": "mirror", "axis": "x", "at": 0.397, "m": [
+   {"t": "line", "p": [0.215, 0.326, 0.215, 0.84]},
+   {"t": "line", "p": [0.215, 0.326, 0.122, 0.232]},
+   {"t": "ring", "c": [0.08, 0.19], "r": 0.059},
+   {"t": "pline", "p": [[0.215, 0.513], [0.073, 0.513], [0.073, 0.617], [0.215, 0.617]]},
+   {"t": "line", "p": [0.119, 0.513, 0.119, 0.617]},
+   {"t": "line", "p": [0.215, 0.705, 0.098, 0.822]},
+   {"t": "ring", "c": [0.062, 0.858], "r": 0.054},
+   {"t": "arc", "c": [0.4455, 0.9175], "r": 0.0895, "a": [126, 234]}
+  ]}
+ ],
+ "escapes": [],
+ "wishes": [],
+ "notes": "Axial: a stem from a crest (thick crescent horns over a small U) through a crossbar to a central ring; two uprights with diagonal arms to rings at the four corners; a small divided compartment on each flank; a double-banded sill with a ring-and-lens ornament below."
+}

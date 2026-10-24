@@ -1,0 +1,27 @@
+{
+ "chosen_on": "2026-10-24, before any encoding was written",
+ "seed": 20261024,
+ "rule": "10 identities stratified by feature cluster of the a-drawing, pilot identities excluded, variants kept together",
+ "pilot": [
+  1,
+  9,
+  12,
+  26,
+  36,
+  50,
+  61,
+  69
+ ],
+ "holdout": [
+  6,
+  19,
+  37,
+  38,
+  39,
+  40,
+  45,
+  53,
+  54,
+  71
+ ]
+}

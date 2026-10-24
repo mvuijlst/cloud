@@ -1,0 +1,38 @@
+{
+ "id": "64a", "identity": 64, "variant": "a", "name": "Haures/Hauras/Havres/Flauros",
+ "vocab": "1.0", "aspect": 1.007, "stroke": 0.029,
+ "family_by_eye": "bowl",
+ "members": [
+  {"t": "line", "p": [0.505, 0.025, 0.505, 0.92]},
+  {"t": "line", "p": [0.446, 0.025, 0.568, 0.025]},
+  {"t": "cross", "c": [0.507, 0.165], "s": 0.13, "flared": true},
+  {"t": "arc", "c": [0.507, 0.158], "r": 0.328, "a": [0, 180]},
+  {"t": "line", "p": [0.33, 0.788, 0.676, 0.788]},
+  {"t": "ring", "c": [0.4965, 0.94], "r": 0.033},
+  {"t": "mirror", "axis": "x", "at": 0.505, "m": [
+   {"t": "line", "p": [0.179, 0.158, 0.185, 0.06]},
+   {"t": "bez", "p": [[0.185, 0.07], [0.19, 0.0], [0.26, 0.02], [0.305, 0.022]]},
+   {"t": "spiral", "c": [0.305, 0.065], "r": [0.045, 0.012], "a": [-90, 500]},
+   {"t": "line", "p": [0.135, 0.065, 0.10, 0.108]},
+   {"t": "repeat", "n": 5, "d": [-0.0155, 0.079], "m": [
+    {"t": "arc", "c": [0.105, 0.156], "r": 0.036, "a": [90, 270]}
+   ]},
+   {"t": "repeat", "n": 3, "d": [0.0145, 0.0723], "m": [
+    {"t": "arc", "c": [0.033, 0.548], "r": 0.03, "a": [90, 270]}
+   ]},
+   {"t": "line", "p": [0.08, 0.73, 0.08, 0.772]},
+   {"t": "repeat", "n": 3, "d": [0.064, 0], "m": [
+    {"t": "arc", "c": [0.137, 0.775], "r": 0.03, "a": [0, 180]}
+   ]},
+   {"t": "ring", "c": [0.328, 0.786], "r": 0.035},
+   {"t": "line", "p": [0.33, 0.44, 0.183, 0.637]},
+   {"t": "line", "p": [0.166, 0.531, 0.291, 0.619]},
+   {"t": "ring", "c": [0.137, 0.508], "r": 0.038},
+   {"t": "ring", "c": [0.324, 0.637], "r": 0.036},
+   {"t": "ring", "c": [0.158, 0.668], "r": 0.037}
+  ]}
+ ],
+ "escapes": [],
+ "wishes": ["repeat along an arc or path: the eleven wing scallops follow a convex curve, forced here into three straight repeats", "cross with per-arm flare flags: only the two side arms are flared, the top arm is a plain stem under a thin cap"],
+ "notes": "Bilaterally symmetric bowl on a long stem: flared side arms under a capped stem top; the bowl arms rise into clockwise curls; from each curl a scalloped wing runs down the flank and along the base to a ring on the lower crossbar; under the bowl a slanted branch to a ring, crossed by a bar with rings at both ends; ring at the stem foot."
+}

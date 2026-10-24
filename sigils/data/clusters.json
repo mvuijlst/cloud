@@ -1,0 +1,341 @@
+{
+ "method": "Ward linkage on standardised features; counts log1p-transformed",
+ "k": 6,
+ "features": [
+  "endpoints",
+  "junctions",
+  "cycle_rank",
+  "rings",
+  "enclosures",
+  "components_t128",
+  "ink_fraction",
+  "aspect",
+  "orient_h",
+  "orient_v",
+  "orient_diag",
+  "branch_straightness",
+  "sym_lr",
+  "sym_tb"
+ ],
+ "eyeball_full_vs_cluster": {
+  "axial": {
+   "3": 8,
+   "6": 6,
+   "2": 1,
+   "5": 1
+  },
+  "bowl": {
+   "3": 7,
+   "6": 1,
+   "1": 5
+  },
+  "cursive": {
+   "3": 1,
+   "6": 4,
+   "1": 5
+  },
+  "compartment": {
+   "1": 8,
+   "3": 9,
+   "6": 3,
+   "4": 3
+  },
+  "comb": {
+   "1": 5,
+   "5": 3,
+   "3": 3,
+   "6": 1
+  },
+  "radial": {
+   "1": 3,
+   "6": 1,
+   "2": 1,
+   "3": 1
+  }
+ },
+ "adjusted_rand_index_full": 0.039,
+ "silhouette_by_k": {
+  "2": 0.116,
+  "3": 0.09,
+  "4": 0.104,
+  "5": 0.111,
+  "6": 0.116,
+  "7": 0.116,
+  "8": 0.127,
+  "9": 0.115,
+  "10": 0.104
+ },
+ "clusters": {
+  "1": [
+   "07a",
+   "09a",
+   "09b",
+   "11a",
+   "15a",
+   "18a",
+   "18b",
+   "23a",
+   "24a",
+   "26a",
+   "28a",
+   "29a",
+   "30a",
+   "32a",
+   "33a",
+   "40a",
+   "42a",
+   "42b",
+   "44a",
+   "45a",
+   "46a",
+   "53a",
+   "55a",
+   "62a",
+   "67a",
+   "69a"
+  ],
+  "2": [
+   "16a",
+   "54a"
+  ],
+  "3": [
+   "01a",
+   "02a",
+   "03a",
+   "04a",
+   "06a",
+   "08a",
+   "12a",
+   "14a",
+   "17a",
+   "22a",
+   "25a",
+   "27a",
+   "31a",
+   "35a",
+   "36a",
+   "39a",
+   "48a",
+   "49a",
+   "50a",
+   "52a",
+   "56a",
+   "57a",
+   "59a",
+   "60a",
+   "63a",
+   "64a",
+   "66a",
+   "68a",
+   "72a"
+  ],
+  "4": [
+   "38a",
+   "47a",
+   "47b"
+  ],
+  "5": [
+   "19a",
+   "26b",
+   "34a",
+   "61a"
+  ],
+  "6": [
+   "05a",
+   "10a",
+   "13a",
+   "13b",
+   "14b",
+   "20a",
+   "21a",
+   "37a",
+   "41a",
+   "43a",
+   "51a",
+   "58a",
+   "65a",
+   "70a",
+   "70b",
+   "71a"
+  ]
+ },
+ "cluster_feature_means": {
+  "3": {
+   "endpoints": 19.897,
+   "junctions": 30.793,
+   "cycle_rank": 10.345,
+   "rings": 8.138,
+   "enclosures": 1.759,
+   "components_t128": 1.345,
+   "ink_fraction": 0.23,
+   "aspect": 1.095,
+   "orient_h": 0.326,
+   "orient_v": 0.375,
+   "orient_diag": 0.295,
+   "branch_straightness": 0.775,
+   "sym_lr": 0.742,
+   "sym_tb": 0.404
+  },
+  "6": {
+   "endpoints": 17.5,
+   "junctions": 28.438,
+   "cycle_rank": 9.688,
+   "rings": 8.062,
+   "enclosures": 1.062,
+   "components_t128": 1.625,
+   "ink_fraction": 0.195,
+   "aspect": 1.271,
+   "orient_h": 0.279,
+   "orient_v": 0.301,
+   "orient_diag": 0.417,
+   "branch_straightness": 0.734,
+   "sym_lr": 0.365,
+   "sym_tb": 0.325
+  },
+  "1": {
+   "endpoints": 20.692,
+   "junctions": 41.577,
+   "cycle_rank": 19.923,
+   "rings": 14.577,
+   "enclosures": 2.808,
+   "components_t128": 3.808,
+   "ink_fraction": 0.262,
+   "aspect": 1.233,
+   "orient_h": 0.293,
+   "orient_v": 0.337,
+   "orient_diag": 0.366,
+   "branch_straightness": 0.728,
+   "sym_lr": 0.583,
+   "sym_tb": 0.592
+  },
+  "2": {
+   "endpoints": 28.0,
+   "junctions": 20.5,
+   "cycle_rank": 1.0,
+   "rings": 0.0,
+   "enclosures": 1.0,
+   "components_t128": 1.5,
+   "ink_fraction": 0.268,
+   "aspect": 1.285,
+   "orient_h": 0.342,
+   "orient_v": 0.266,
+   "orient_diag": 0.382,
+   "branch_straightness": 0.862,
+   "sym_lr": 0.902,
+   "sym_tb": 0.568
+  },
+  "5": {
+   "endpoints": 16.5,
+   "junctions": 24.75,
+   "cycle_rank": 10.0,
+   "rings": 9.0,
+   "enclosures": 0.25,
+   "components_t128": 1.5,
+   "ink_fraction": 0.256,
+   "aspect": 2.101,
+   "orient_h": 0.283,
+   "orient_v": 0.415,
+   "orient_diag": 0.296,
+   "branch_straightness": 0.662,
+   "sym_lr": 0.657,
+   "sym_tb": 0.479
+  },
+  "4": {
+   "endpoints": 15.667,
+   "junctions": 14.667,
+   "cycle_rank": 2.333,
+   "rings": 1.333,
+   "enclosures": 1.0,
+   "components_t128": 1.667,
+   "ink_fraction": 0.18,
+   "aspect": 1.077,
+   "orient_h": 0.297,
+   "orient_v": 0.499,
+   "orient_diag": 0.199,
+   "branch_straightness": 0.474,
+   "sym_lr": 0.348,
+   "sym_tb": 0.333
+  }
+ },
+ "eyeball_examples": {
+  "axial": [
+   1,
+   3,
+   5,
+   22,
+   59
+  ],
+  "comb": [
+   9,
+   11,
+   19,
+   50,
+   72
+  ],
+  "bowl": [
+   2,
+   12,
+   14,
+   45,
+   49
+  ],
+  "compartment": [
+   17,
+   30,
+   36,
+   37,
+   38,
+   39,
+   40,
+   47,
+   48,
+   52
+  ],
+  "radial": [
+   29,
+   54,
+   57,
+   62,
+   69
+  ],
+  "cursive": [
+   13,
+   26,
+   53,
+   70
+  ]
+ },
+ "eyeball_vs_cluster": {
+  "axial": {
+   "3": 4,
+   "6": 1
+  },
+  "bowl": {
+   "3": 4,
+   "6": 1,
+   "1": 1
+  },
+  "comb": {
+   "1": 3,
+   "5": 1,
+   "3": 2
+  },
+  "cursive": {
+   "6": 4,
+   "1": 2,
+   "5": 1
+  },
+  "compartment": {
+   "3": 5,
+   "1": 2,
+   "6": 1,
+   "4": 3
+  },
+  "radial": {
+   "1": 3,
+   "2": 1,
+   "3": 1
+  }
+ },
+ "adjusted_rand_index": 0.059
+}

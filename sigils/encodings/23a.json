@@ -1,0 +1,194 @@
+{
+ "id": "23a",
+ "identity": 23,
+ "variant": "a",
+ "name": "Aim",
+ "vocab": "1.0",
+ "aspect": 0.98,
+ "stroke": 0.026,
+ "family_by_eye": "bowl",
+ "members": [
+  {
+   "t": "arc",
+   "c": [
+    0.486,
+    0.495
+   ],
+   "r": [
+    0.463,
+    0.455
+   ],
+   "a": [
+    101,
+    259
+   ],
+   "w": 0.045
+  },
+  {
+   "t": "line",
+   "p": [
+    0.315,
+    0.05,
+    0.315,
+    0.935
+   ],
+   "w": 0.033
+  },
+  {
+   "t": "line",
+   "p": [
+    0.02,
+    0.497,
+    0.9,
+    0.497
+   ],
+   "w": 0.03
+  },
+  {
+   "t": "line",
+   "p": [
+    0.52,
+    0.18,
+    0.52,
+    0.82
+   ]
+  },
+  {
+   "t": "arc",
+   "c": [
+    0.52,
+    0.495
+   ],
+   "r": [
+    0.085,
+    0.32
+   ],
+   "a": [
+    -90,
+    90
+   ]
+  },
+  {
+   "t": "line",
+   "p": [
+    0.77,
+    0.36,
+    0.77,
+    0.635
+   ],
+   "w": 0.04
+  },
+  {
+   "t": "arc",
+   "c": [
+    0.86,
+    0.495
+   ],
+   "r": [
+    0.17,
+    0.235
+   ],
+   "a": [
+    110,
+    250
+   ],
+   "w": 0.04
+  },
+  {
+   "t": "ring",
+   "c": [
+    0.94,
+    0.49
+   ],
+   "r": 0.033
+  },
+  {
+   "t": "mirror",
+   "axis": "y",
+   "at": 0.495,
+   "m": [
+    {
+     "t": "ring",
+     "c": [
+      0.435,
+      0.043
+     ],
+     "r": 0.04
+    },
+    {
+     "t": "ring",
+     "c": [
+      0.545,
+      0.135
+     ],
+     "r": 0.04
+    },
+    {
+     "t": "ring",
+     "c": [
+      0.845,
+      0.265
+     ],
+     "r": 0.04
+    },
+    {
+     "t": "ring",
+     "c": [
+      0.18,
+      0.31
+     ],
+     "r": 0.04
+    },
+    {
+     "t": "line",
+     "p": [
+      0.22,
+      0.316,
+      0.4,
+      0.316
+     ]
+    },
+    {
+     "t": "tri",
+     "p": [
+      [
+       0.42,
+       0.275
+      ],
+      [
+       0.42,
+       0.357
+      ],
+      [
+       0.375,
+       0.316
+      ]
+     ],
+     "fill": true
+    },
+    {
+     "t": "ring",
+     "c": [
+      0.67,
+      0.467
+     ],
+     "r": 0.027
+    },
+    {
+     "t": "line",
+     "p": [
+      0.72,
+      0.358,
+      0.8,
+      0.358
+     ]
+    }
+   ]
+  }
+ ],
+ "escapes": [],
+ "wishes": [
+  "a key: ring + bar + wedge tip (bar with one bowtie wedge), used twice"
+ ],
+ "notes": "Mirror-symmetric about the centre bar: a thick D-shaped bowl closed by a vertical stem, a bar through the middle to a small ring at the right; rings at the bowl's ends, a lens (straight left side, bowed right side) between two rings, two keys (ring, bar, wedge tip) hung on the stem, an I-beam inside a C-arc that runs between two rings, and a pair of tiny rings astride the bar."
+}

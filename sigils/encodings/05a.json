@@ -1,0 +1,19 @@
+{
+ "id": "05a", "identity": 5, "variant": "a", "name": "Marbas",
+ "vocab": "1.0", "aspect": 1.191, "stroke": 0.041,
+ "family_by_eye": "axial",
+ "members": [
+  {"t": "ring", "c": [0.587, 0.212], "r": 0.08},
+  {"t": "line", "p": [0.582, 0.29, 0.582, 0.825], "w": 0.06},
+  {"t": "ring", "c": [0.58, 0.905], "r": 0.08},
+  {"t": "mirror", "axis": "x", "at": 0.585, "m": [
+   {"t": "line", "p": [0.545, 0.28, 0.219, 0.815], "w": 0.045},
+   {"t": "ring", "c": [0.178, 0.882], "r": 0.078},
+   {"t": "cross", "c": [0.225, 0.22], "s": 0.19, "rot": 37, "flared": true},
+   {"t": "line", "p": [0.26, 0.245, 0.47, 0.405], "w": 0.045}
+  ]}
+ ],
+ "escapes": [],
+ "wishes": ["cross with per-arm shape: these corner crosses have three straight-sided flared arms and the fourth arm runs on as a plain bar"],
+ "notes": "Central ring with a thick stem down to a ring and two diagonals down to rings; in each upper corner a cross pattee rotated about 37 degrees whose inner arm continues as a bar to meet the diagonal."
+}

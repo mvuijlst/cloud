@@ -1,0 +1,21 @@
+{
+ "id": "61a", "identity": 61, "variant": "a", "name": "Zagan",
+ "vocab": "1.0", "aspect": 2.694, "stroke": 0.065,
+ "family_by_eye": "comb",
+ "members": [
+  {"t": "ring", "c": [0.11, 0.39], "r": 0.088},
+  {"t": "pline", "p": [[0.20, 0.40], [0.47, 0.40], [0.47, 0.05], [0.76, 0.05], [0.76, 0.40], [1.00, 0.40], [1.00, 0.05], [1.20, 0.05], [1.20, 0.40]]},
+  {"t": "line", "p": [1.03, 0.40, 1.33, 0.06]},
+  {"t": "line", "p": [1.35, 0.03, 1.35, 0.42]},
+  {"t": "line", "p": [1.20, 0.40, 1.20, 0.62]},
+  {"t": "cross", "c": [1.21, 0.80], "s": 0.20, "flared": true},
+  {"t": "line", "p": [1.20, 0.40, 1.99, 0.40]},
+  {"t": "cross", "c": [1.80, 0.21], "s": 0.16, "flared": true},
+  {"t": "line", "p": [1.80, 0.40, 1.80, 0.78]},
+  {"t": "ring", "c": [1.79, 0.87], "r": 0.091},
+  {"t": "pline", "p": [[1.99, 0.40], [1.99, 0.05], [2.27, 0.05], [2.27, 0.42], [2.45, 0.42]]},
+  {"t": "cross", "c": [2.53, 0.42], "s": 0.16, "flared": true}
+ ],
+ "escapes": [],
+ "notes": "Ring, stepped rail with two raised bays, an N-like letterform whose stem carries a flared cross below, a flared cross standing on the rail with a ring hung beneath, a third raised bay, flared cross at the right end."
+}

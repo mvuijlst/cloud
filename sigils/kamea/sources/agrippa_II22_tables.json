@@ -1,0 +1,972 @@
+{
+  "title": "Agrippa, De occulta philosophia II.22 - planetary squares, names and values as printed in the 1533 Cologne edition",
+  "source": {
+    "edition": "Henrici Cornelii Agrippae ab Nettesheym ... De occulta philosophia libri tres, [Cologne: Johann Soter], [July] 1533 (VD16 ZV 269), pp. CXLV-CLIII",
+    "copy_transcribed": "Wellcome Collection, London (Sierra b21416412), via Internet Archive item hin-wel-all-00001912-001, leaves 167-175 (600 ppi)",
+    "copy_cross_read": "BSB/MDZ bsb11193457 (Augsburg, Staats- und Stadtbibliothek, 2 Alt 3) OCR, scans 159-167",
+    "english_cross_check": "J. F[reake] 1651 translation, Joseph H. Peterson's digital edition, https://www.esotericarchives.com/agrippa/agripp2b.htm (local copy agrippa_II22_freake.html)",
+    "fetched": "2026-10-24",
+    "transcribed_by": "read by eye from full-resolution crops of the Wellcome scan; every row and column sum recomputed"
+  },
+  "conventions": {
+    "square_arabic": "rows top to bottom, cells left to right, exactly as printed in the 'Tabula ... in abaco'.",
+    "square_hebrew": "the Hebrew table ('in notis Hebraicis') has exactly the same layout as the Arabic one, cell for cell (it is NOT a mirror image: the printed cell positions are identical, so reading the Hebrew table left to right reproduces the Arabic rows, and reading it right to left, as Hebrew, gives each row reversed). Rows are given top to bottom and cells LEFT to RIGHT as printed, in the same order as square_arabic. Each cell gives the letters as printed and their value.",
+    "hebrew_numerals": "15 is written יה (yod-he) in the Mars, Sun, Venus, Mercury and Moon tables but טו in the Jupiter table; 16 is written יו (yod-vav) throughout, not טז. Letters above 10 are simple additive compounds (e.g. 54 = נד).",
+    "names": "value_printed, latin and hebrew are exactly as printed; gematria is my own recount of the printed Hebrew with the usual values (final letters counted as the ordinary letter unless stated); role is the printed label (nomen divinum, Intelligentia, Daemonium).",
+    "uncertain": "anything I could not settle from the scan is listed under 'uncertain' or 'notes' for the planet concerned."
+  },
+  "planets": [
+    {
+      "planet": "Saturn",
+      "latin": "Saturnus",
+      "order": 3,
+      "page_names": "CXLVIII",
+      "page_square": "CXLIX",
+      "woodcut_file": "woodcuts/saturn_jupiter_p149_CXLIX_leaf171.jpg",
+      "stated_in_text": {
+        "cells": 9,
+        "row_sum": 15,
+        "total": 45
+      },
+      "square_arabic": [
+        [4, 9, 2],
+        [3, 5, 7],
+        [8, 1, 6]
+      ],
+      "square_hebrew": [
+        [
+          {"heb": "ד", "val": 4},
+          {"heb": "ט", "val": 9},
+          {"heb": "ב", "val": 2}
+        ],
+        [
+          {"heb": "ג", "val": 3},
+          {"heb": "ה", "val": 5},
+          {"heb": "ז", "val": 7}
+        ],
+        [
+          {"heb": "ח", "val": 8},
+          {"heb": "א", "val": 1},
+          {"heb": "ו", "val": 6}
+        ]
+      ],
+      "computed": {
+        "row_sums": [15, 15, 15],
+        "col_sums": [15, 15, 15],
+        "diagonals": [15, 15],
+        "total": 45
+      },
+      "hebrew_matches_arabic": true,
+      "names": [
+        {
+          "value_printed": 3,
+          "latin": "Ab",
+          "hebrew": "אב",
+          "role": "nomen divinum",
+          "gematria": 3
+        },
+        {
+          "value_printed": 9,
+          "latin": "Hod",
+          "hebrew": "הד",
+          "role": "nomen divinum",
+          "gematria": 9
+        },
+        {
+          "value_printed": 15,
+          "latin": "Iah",
+          "hebrew": "יה",
+          "role": "nomen divinum",
+          "gematria": 15
+        },
+        {
+          "value_printed": 15,
+          "latin": "Hod",
+          "hebrew": "הוד",
+          "role": "nomen divinum",
+          "gematria": 15
+        },
+        {
+          "value_printed": 45,
+          "latin": "Tetragrammaton extensum",
+          "hebrew": "יוד הא ואו הא",
+          "role": "nomen divinum",
+          "gematria": 45
+        },
+        {
+          "value_printed": 45,
+          "latin": "Agiel",
+          "hebrew": "אגיאל",
+          "role": "Intelligentia Saturni",
+          "gematria": 45
+        },
+        {
+          "value_printed": 45,
+          "latin": "Zazel",
+          "hebrew": "זאזל",
+          "role": "Daemonium Saturni",
+          "gematria": 45
+        }
+      ],
+      "seals_printed": [
+        "Saturni (seal of the planet)",
+        "Intelligentiae Saturni",
+        "Daemonij Saturni"
+      ],
+      "notes": []
+    },
+    {
+      "planet": "Jupiter",
+      "latin": "Iuppiter (Iouis)",
+      "order": 4,
+      "page_names": "CXLVIII",
+      "page_square": "CXLIX",
+      "woodcut_file": "woodcuts/saturn_jupiter_p149_CXLIX_leaf171.jpg",
+      "stated_in_text": {
+        "cells": 16,
+        "row_sum": 34,
+        "total": 136
+      },
+      "square_arabic": [
+        [4, 14, 15, 1],
+        [9, 7, 6, 12],
+        [5, 11, 10, 8],
+        [16, 2, 3, 13]
+      ],
+      "square_hebrew": [
+        [
+          {"heb": "ד", "val": 4},
+          {"heb": "יד", "val": 14},
+          {"heb": "טו", "val": 15},
+          {"heb": "א", "val": 1}
+        ],
+        [
+          {"heb": "ט", "val": 9},
+          {"heb": "ז", "val": 7},
+          {"heb": "ו", "val": 6},
+          {"heb": "יב", "val": 12}
+        ],
+        [
+          {"heb": "ה", "val": 5},
+          {"heb": "יא", "val": 11},
+          {"heb": "י", "val": 10},
+          {"heb": "ח", "val": 8}
+        ],
+        [
+          {"heb": "יו", "val": 16},
+          {"heb": "ב", "val": 2},
+          {"heb": "ג", "val": 3},
+          {"heb": "יג", "val": 13}
+        ]
+      ],
+      "computed": {
+        "row_sums": [34, 34, 34, 34],
+        "col_sums": [34, 34, 34, 34],
+        "diagonals": [34, 34],
+        "total": 136
+      },
+      "hebrew_matches_arabic": true,
+      "names": [
+        {
+          "value_printed": 4,
+          "latin": "Abba",
+          "hebrew": "אבא",
+          "role": "nomen divinum",
+          "gematria": 4
+        },
+        {
+          "value_printed": 16,
+          "latin": null,
+          "hebrew": "הוה",
+          "role": "nomen divinum",
+          "gematria": 16
+        },
+        {
+          "value_printed": 16,
+          "latin": null,
+          "hebrew": "אהי",
+          "role": "nomen divinum",
+          "gematria": 16
+        },
+        {
+          "value_printed": 34,
+          "latin": "El Ab",
+          "hebrew": "אל אב",
+          "role": "nomen divinum",
+          "gematria": 34
+        },
+        {
+          "value_printed": 136,
+          "latin": "Iohphiel",
+          "hebrew": "יהפיאל",
+          "role": "Intelligentia Iouis",
+          "gematria": 136
+        },
+        {
+          "value_printed": 136,
+          "latin": "Hismael",
+          "hebrew": "הסמאל",
+          "role": "Daemonium Iouis",
+          "gematria": 136
+        }
+      ],
+      "seals_printed": [
+        "Iouis (seal of the planet)",
+        "Intelligentiae Iouis",
+        "Daemonij Iouis"
+      ],
+      "notes": [
+        "15 is written טו here but יה in all the larger tables.",
+        "Freake 1651 prints 'Abab' for Abba (Peterson flags it as *Abba)."
+      ]
+    },
+    {
+      "planet": "Mars",
+      "latin": "Mars",
+      "order": 5,
+      "page_names": "CXLVIII",
+      "page_square": "CL",
+      "woodcut_file": "woodcuts/mars_sol_p150_CL_leaf172.jpg",
+      "stated_in_text": {
+        "cells": 25,
+        "row_sum": 65,
+        "total": 325
+      },
+      "square_arabic": [
+        [11, 24, 7, 20, 3],
+        [4, 12, 25, 8, 16],
+        [17, 5, 13, 21, 9],
+        [10, 18, 1, 14, 22],
+        [23, 6, 19, 2, 15]
+      ],
+      "square_hebrew": [
+        [
+          {"heb": "יא", "val": 11},
+          {"heb": "כד", "val": 24},
+          {"heb": "ז", "val": 7},
+          {"heb": "כ", "val": 20},
+          {"heb": "ג", "val": 3}
+        ],
+        [
+          {"heb": "ד", "val": 4},
+          {"heb": "יב", "val": 12},
+          {"heb": "כה", "val": 25},
+          {"heb": "ח", "val": 8},
+          {"heb": "יו", "val": 16}
+        ],
+        [
+          {"heb": "יז", "val": 17},
+          {"heb": "ה", "val": 5},
+          {"heb": "יג", "val": 13},
+          {"heb": "כא", "val": 21},
+          {"heb": "ט", "val": 9}
+        ],
+        [
+          {"heb": "י", "val": 10},
+          {"heb": "יח", "val": 18},
+          {"heb": "א", "val": 1},
+          {"heb": "יד", "val": 14},
+          {"heb": "כב", "val": 22}
+        ],
+        [
+          {"heb": "כג", "val": 23},
+          {"heb": "ו", "val": 6},
+          {"heb": "יט", "val": 19},
+          {"heb": "ב", "val": 2},
+          {"heb": "יה", "val": 15}
+        ]
+      ],
+      "computed": {
+        "row_sums": [65, 65, 65, 65, 65],
+        "col_sums": [65, 65, 65, 65, 65],
+        "diagonals": [65, 65],
+        "total": 325
+      },
+      "hebrew_matches_arabic": true,
+      "names": [
+        {
+          "value_printed": 5,
+          "latin": "He litera nominis sancti",
+          "hebrew": "ה",
+          "role": "nomen divinum",
+          "gematria": 5
+        },
+        {
+          "value_printed": 25,
+          "latin": null,
+          "hebrew": "יהי",
+          "role": "nomen divinum",
+          "gematria": 25
+        },
+        {
+          "value_printed": 65,
+          "latin": "Adonai",
+          "hebrew": "אדני",
+          "role": "nomen divinum",
+          "gematria": 65
+        },
+        {
+          "value_printed": 325,
+          "latin": "Graphiel",
+          "hebrew": "גראפיאל",
+          "role": "Intelligentia Martis",
+          "gematria": 325
+        },
+        {
+          "value_printed": 325,
+          "latin": "Barzabel",
+          "hebrew": "ברצאבאל",
+          "role": "Daemonium Martis",
+          "gematria": 326
+        }
+      ],
+      "seals_printed": [
+        "Martis (seal of the planet)",
+        "Intelligentiae Martis",
+        "Daemonij Martis"
+      ],
+      "notes": [
+        "Barzabel is printed with seven letters ברצאבאל (b-r-ts-a-b-a-l), which sum to 326, not the printed 325; the six-letter form ברצבאל gives 325. Checked on a 3x zoom of the Wellcome scan."
+      ]
+    },
+    {
+      "planet": "Sol",
+      "latin": "Sol",
+      "order": 6,
+      "page_names": "CXLVIII",
+      "page_square": "CL",
+      "woodcut_file": "woodcuts/mars_sol_p150_CL_leaf172.jpg",
+      "stated_in_text": {
+        "cells": 36,
+        "row_sum": 111,
+        "total": 666
+      },
+      "square_arabic": [
+        [6, 32, 3, 34, 35, 1],
+        [7, 11, 27, 28, 8, 30],
+        [19, 14, 16, 15, 23, 24],
+        [18, 20, 22, 21, 17, 13],
+        [25, 29, 10, 9, 26, 12],
+        [36, 5, 33, 4, 2, 31]
+      ],
+      "square_hebrew": [
+        [
+          {"heb": "ו", "val": 6},
+          {"heb": "לב", "val": 32},
+          {"heb": "ג", "val": 3},
+          {"heb": "לד", "val": 34},
+          {"heb": "לה", "val": 35},
+          {"heb": "א", "val": 1}
+        ],
+        [
+          {"heb": "ז", "val": 7},
+          {"heb": "יא", "val": 11},
+          {"heb": "כז", "val": 27},
+          {"heb": "כח", "val": 28},
+          {"heb": "ח", "val": 8},
+          {"heb": "ל", "val": 30}
+        ],
+        [
+          {"heb": "יט", "val": 19},
+          {"heb": "יד", "val": 14},
+          {"heb": "יו", "val": 16},
+          {"heb": "יה", "val": 15},
+          {"heb": "כג", "val": 23},
+          {"heb": "כד", "val": 24}
+        ],
+        [
+          {"heb": "יח", "val": 18},
+          {"heb": "כ", "val": 20},
+          {"heb": "כב", "val": 22},
+          {"heb": "כא", "val": 21},
+          {"heb": "יז", "val": 17},
+          {"heb": "יג", "val": 13}
+        ],
+        [
+          {"heb": "כה", "val": 25},
+          {"heb": "כט", "val": 29},
+          {"heb": "י", "val": 10},
+          {"heb": "ט", "val": 9},
+          {"heb": "כו", "val": 26},
+          {"heb": "יב", "val": 12}
+        ],
+        [
+          {"heb": "לו", "val": 36},
+          {"heb": "ה", "val": 5},
+          {"heb": "לג", "val": 33},
+          {"heb": "ד", "val": 4},
+          {"heb": "ב", "val": 2},
+          {"heb": "לא", "val": 31}
+        ]
+      ],
+      "computed": {
+        "row_sums": [111, 111, 111, 111, 111, 111],
+        "col_sums": [111, 111, 111, 111, 111, 111],
+        "diagonals": [111, 111],
+        "total": 666
+      },
+      "hebrew_matches_arabic": true,
+      "names": [
+        {
+          "value_printed": 6,
+          "latin": "Vau, litera nominis sancti",
+          "hebrew": "ו",
+          "role": "nomen divinum",
+          "gematria": 6
+        },
+        {
+          "value_printed": 6,
+          "latin": "He extensum, litera nominis sancti",
+          "hebrew": "הא",
+          "role": "nomen divinum",
+          "gematria": 6
+        },
+        {
+          "value_printed": 36,
+          "latin": "Eloh",
+          "hebrew": "אלה",
+          "role": "nomen divinum",
+          "gematria": 36
+        },
+        {
+          "value_printed": 111,
+          "latin": "Nachiel",
+          "hebrew": "נכיאל",
+          "role": "Intelligentia Solis",
+          "gematria": 111
+        },
+        {
+          "value_printed": 666,
+          "latin": "Sorath",
+          "hebrew": "סורת",
+          "role": "Daemonium Solis",
+          "gematria": 666
+        }
+      ],
+      "seals_printed": [
+        "Solis (seal of the planet)",
+        "Intelligentiae Solis",
+        "Daemonij Solis"
+      ],
+      "notes": []
+    },
+    {
+      "planet": "Venus",
+      "latin": "Venus",
+      "order": 7,
+      "page_names": "CXLVIII",
+      "page_square": "CLI",
+      "woodcut_file": "woodcuts/venus_p151_CLI_leaf173.jpg",
+      "stated_in_text": {
+        "cells": 49,
+        "row_sum": 175,
+        "total": 1225
+      },
+      "square_arabic": [
+        [22, 47, 16, 41, 10, 35, 4],
+        [5, 23, 48, 17, 42, 11, 29],
+        [30, 6, 24, 49, 18, 36, 12],
+        [13, 31, 7, 25, 43, 19, 37],
+        [38, 14, 32, 1, 26, 44, 20],
+        [21, 39, 8, 33, 2, 27, 45],
+        [46, 15, 40, 9, 34, 3, 28]
+      ],
+      "square_hebrew": [
+        [
+          {"heb": "כב", "val": 22},
+          {"heb": "מז", "val": 47},
+          {"heb": "יו", "val": 16},
+          {"heb": "מא", "val": 41},
+          {"heb": "י", "val": 10},
+          {"heb": "לה", "val": 35},
+          {"heb": "ד", "val": 4}
+        ],
+        [
+          {"heb": "ה", "val": 5},
+          {"heb": "כג", "val": 23},
+          {"heb": "מח", "val": 48},
+          {"heb": "יז", "val": 17},
+          {"heb": "מב", "val": 42},
+          {"heb": "יא", "val": 11},
+          {"heb": "כט", "val": 29}
+        ],
+        [
+          {"heb": "ל", "val": 30},
+          {"heb": "ו", "val": 6},
+          {"heb": "כד", "val": 24},
+          {"heb": "מט", "val": 49},
+          {"heb": "יח", "val": 18},
+          {"heb": "לו", "val": 36},
+          {"heb": "יב", "val": 12}
+        ],
+        [
+          {"heb": "יג", "val": 13},
+          {"heb": "לא", "val": 31},
+          {"heb": "ז", "val": 7},
+          {"heb": "כה", "val": 25},
+          {"heb": "מג", "val": 43},
+          {"heb": "יט", "val": 19},
+          {"heb": "לז", "val": 37}
+        ],
+        [
+          {"heb": "לח", "val": 38},
+          {"heb": "יד", "val": 14},
+          {"heb": "לב", "val": 32},
+          {"heb": "א", "val": 1},
+          {"heb": "כו", "val": 26},
+          {"heb": "מד", "val": 44},
+          {"heb": "כ", "val": 20}
+        ],
+        [
+          {"heb": "כא", "val": 21},
+          {"heb": "לט", "val": 39},
+          {"heb": "ח", "val": 8},
+          {"heb": "לג", "val": 33},
+          {"heb": "ב", "val": 2},
+          {"heb": "כז", "val": 27},
+          {"heb": "מה", "val": 45}
+        ],
+        [
+          {"heb": "מו", "val": 46},
+          {"heb": "יה", "val": 15},
+          {"heb": "מ", "val": 40},
+          {"heb": "ט", "val": 9},
+          {"heb": "לד", "val": 34},
+          {"heb": "ג", "val": 3},
+          {"heb": "כח", "val": 28}
+        ]
+      ],
+      "computed": {
+        "row_sums": [175, 175, 175, 175, 175, 175, 175],
+        "col_sums": [175, 175, 175, 175, 175, 175, 175],
+        "diagonals": [175, 175],
+        "total": 1225
+      },
+      "hebrew_matches_arabic": true,
+      "names": [
+        {
+          "value_printed": 7,
+          "latin": null,
+          "hebrew": "אהא",
+          "role": "nomen divinum",
+          "gematria": 7
+        },
+        {
+          "value_printed": 49,
+          "latin": "Hagiel",
+          "hebrew": "הגיאל",
+          "role": "Intelligentia Veneris",
+          "gematria": 49
+        },
+        {
+          "value_printed": 157,
+          "latin": "Kedemel",
+          "hebrew": "קדמאל",
+          "role": "Daemonium Veneris",
+          "gematria": 175
+        },
+        {
+          "value_printed": 1252,
+          "latin": "Bne Seraphim",
+          "hebrew": "בני שרפים",
+          "role": "Intelligentiae Veneris",
+          "gematria": 1252,
+          "gematria_note": "1252 only with final mem = 600 (בני 62 + שרפים 1190); with mem = 40 the name sums to 692"
+        }
+      ],
+      "seals_printed": [
+        "Signacula siue characteres Veneris (seal of the planet)",
+        "Intelligentiae Veneris",
+        "Daemonij Veneris",
+        "Intelligentiarum Veneris"
+      ],
+      "notes": [
+        "Kedemel is printed 157; the Hebrew קדמאל sums to 175, the row sum of the square. 157 is a transposition in the 1533 print, reproduced by Freake 1651.",
+        "1252 for Bne Seraphim is not a misprint of 1225 (the square's total): it is the gematria of בני שרפים with final mem counted as 600. Freake 1651 also prints 1252."
+      ]
+    },
+    {
+      "planet": "Mercury",
+      "latin": "Mercurius",
+      "order": 8,
+      "page_names": "CXLVIII",
+      "page_square": "CLII",
+      "woodcut_file": "woodcuts/mercury_p152_CLII_leaf174.jpg",
+      "stated_in_text": {
+        "cells": 64,
+        "row_sum": 260,
+        "total": 2080
+      },
+      "square_arabic": [
+        [8, 58, 59, 5, 4, 62, 63, 1],
+        [49, 15, 14, 52, 53, 11, 10, 56],
+        [41, 23, 22, 44, 45, 19, 18, 48],
+        [32, 34, 35, 29, 28, 38, 39, 25],
+        [40, 26, 27, 37, 36, 30, 31, 33],
+        [17, 47, 46, 20, 21, 43, 42, 24],
+        [9, 55, 54, 12, 13, 51, 50, 16],
+        [64, 2, 3, 61, 60, 6, 7, 57]
+      ],
+      "square_hebrew": [
+        [
+          {"heb": "ח", "val": 8},
+          {"heb": "נח", "val": 58},
+          {"heb": "נט", "val": 59},
+          {"heb": "ה", "val": 5},
+          {"heb": "ד", "val": 4},
+          {"heb": "סב", "val": 62},
+          {"heb": "סג", "val": 63},
+          {"heb": "א", "val": 1}
+        ],
+        [
+          {"heb": "מט", "val": 49},
+          {"heb": "יה", "val": 15},
+          {"heb": "יד", "val": 14},
+          {"heb": "נב", "val": 52},
+          {"heb": "נג", "val": 53},
+          {"heb": "יא", "val": 11},
+          {"heb": "י", "val": 10},
+          {"heb": "נו", "val": 56}
+        ],
+        [
+          {"heb": "מא", "val": 41},
+          {"heb": "כג", "val": 23},
+          {"heb": "כב", "val": 22},
+          {"heb": "מד", "val": 44},
+          {"heb": "מה", "val": 45},
+          {"heb": "יט", "val": 19},
+          {"heb": "יח", "val": 18},
+          {"heb": "מח", "val": 48}
+        ],
+        [
+          {"heb": "לב", "val": 32},
+          {"heb": "לד", "val": 34},
+          {"heb": "לה", "val": 35},
+          {"heb": "כט", "val": 29},
+          {"heb": "כח", "val": 28},
+          {"heb": "לח", "val": 38},
+          {"heb": "לט", "val": 39},
+          {"heb": "כה", "val": 25}
+        ],
+        [
+          {"heb": "מ", "val": 40},
+          {"heb": "כו", "val": 26},
+          {"heb": "כז", "val": 27},
+          {"heb": "לז", "val": 37},
+          {"heb": "לו", "val": 36},
+          {"heb": "ל", "val": 30},
+          {"heb": "לא", "val": 31},
+          {"heb": "לג", "val": 33}
+        ],
+        [
+          {"heb": "יז", "val": 17},
+          {"heb": "מז", "val": 47},
+          {"heb": "מו", "val": 46},
+          {"heb": "כ", "val": 20},
+          {"heb": "כא", "val": 21},
+          {"heb": "מג", "val": 43},
+          {"heb": "מב", "val": 42},
+          {"heb": "כד", "val": 24}
+        ],
+        [
+          {"heb": "ט", "val": 9},
+          {"heb": "נה", "val": 55},
+          {"heb": "נד", "val": 54},
+          {"heb": "יב", "val": 12},
+          {"heb": "יג", "val": 13},
+          {"heb": "נא", "val": 51},
+          {"heb": "נ", "val": 50},
+          {"heb": "יו", "val": 16}
+        ],
+        [
+          {"heb": "סד", "val": 64},
+          {"heb": "ב", "val": 2},
+          {"heb": "ג", "val": 3},
+          {"heb": "סא", "val": 61},
+          {"heb": "ס", "val": 60},
+          {"heb": "ו", "val": 6},
+          {"heb": "ז", "val": 7},
+          {"heb": "נז", "val": 57}
+        ]
+      ],
+      "computed": {
+        "row_sums": [260, 260, 260, 260, 260, 260, 260, 260],
+        "col_sums": [260, 260, 260, 260, 260, 260, 260, 260],
+        "diagonals": [260, 260],
+        "total": 2080
+      },
+      "hebrew_matches_arabic": true,
+      "names": [
+        {
+          "value_printed": 8,
+          "latin": "Asboga. Octonarius extensus",
+          "hebrew": "אזבוגה",
+          "role": "nomen divinum",
+          "gematria": 24,
+          "gematria_note": "Peterson: 'eight extended' = the pairs A1+Z7, B2+V6, G3+H5, each 8; the letters sum to 24"
+        },
+        {
+          "value_printed": 64,
+          "latin": "Din",
+          "hebrew": "דין",
+          "role": "nomen divinum",
+          "gematria": 64
+        },
+        {
+          "value_printed": 64,
+          "latin": "Doni",
+          "hebrew": "דני",
+          "role": "nomen divinum",
+          "gematria": 64
+        },
+        {
+          "value_printed": 260,
+          "latin": "Tiriel",
+          "hebrew": "טיריאל",
+          "role": "Intelligentia Mercurij",
+          "gematria": 260
+        },
+        {
+          "value_printed": 2080,
+          "latin": "Taphthartharath",
+          "hebrew": "תפתרתרת",
+          "role": "Daemonium Mercurij",
+          "gematria": 2080
+        }
+      ],
+      "seals_printed": [
+        "Signacula siue characteres Mercurij (seal of the planet)",
+        "Intelligentiae Mercurij",
+        "Daemonij Mercurij"
+      ],
+      "notes": [
+        "Both 1533 Mercury tables are correct and agree with each other (every cell checked). Peterson records that the 1651 English printing had errors in this table, which he corrected in 2004 (op2.htm history note 'Corrected table of Mercury (p. 243)')."
+      ]
+    },
+    {
+      "planet": "Luna",
+      "latin": "Luna",
+      "order": 9,
+      "page_names": "CXLIX",
+      "page_square": "CLIII",
+      "woodcut_file": "woodcuts/luna_p153_CLIII_leaf175.jpg",
+      "stated_in_text": {
+        "cells": 81,
+        "row_sum": 369,
+        "total": 3321
+      },
+      "square_arabic": [
+        [37, 78, 29, 70, 21, 62, 13, 54, 5],
+        [6, 38, 79, 30, 71, 22, 63, 14, 46],
+        [47, 7, 39, 80, 31, 72, 23, 55, 15],
+        [16, 48, 8, 40, 81, 32, 64, 24, 56],
+        [57, 17, 49, 9, 41, 73, 33, 65, 25],
+        [26, 58, 18, 50, 1, 42, 74, 34, 66],
+        [67, 27, 59, 10, 51, 2, 43, 75, 35],
+        [36, 68, 19, 60, 11, 52, 3, 44, 76],
+        [77, 28, 69, 20, 61, 12, 53, 4, 45]
+      ],
+      "square_hebrew": [
+        [
+          {"heb": "לז", "val": 37},
+          {"heb": "עח", "val": 78},
+          {"heb": "כט", "val": 29},
+          {"heb": "ע", "val": 70},
+          {"heb": "כא", "val": 21},
+          {"heb": "סב", "val": 62},
+          {"heb": "יג", "val": 13},
+          {"heb": "מה", "val": 45, "printing_error": "should be נד = 54"},
+          {"heb": "ה", "val": 5}
+        ],
+        [
+          {"heb": "ו", "val": 6},
+          {"heb": "לח", "val": 38},
+          {"heb": "עט", "val": 79},
+          {"heb": "ל", "val": 30},
+          {"heb": "עא", "val": 71},
+          {"heb": "כב", "val": 22},
+          {"heb": "סג", "val": 63},
+          {"heb": "יד", "val": 14},
+          {"heb": "מו", "val": 46}
+        ],
+        [
+          {"heb": "מז", "val": 47},
+          {"heb": "ז", "val": 7},
+          {"heb": "לט", "val": 39},
+          {"heb": "פ", "val": 80},
+          {"heb": "לא", "val": 31},
+          {"heb": "עב", "val": 72},
+          {"heb": "כג", "val": 23},
+          {"heb": "נה", "val": 55},
+          {"heb": "יה", "val": 15}
+        ],
+        [
+          {"heb": "יו", "val": 16},
+          {"heb": "מח", "val": 48},
+          {"heb": "ח", "val": 8},
+          {"heb": "מ", "val": 40},
+          {"heb": "פא", "val": 81},
+          {"heb": "לב", "val": 32},
+          {"heb": "סד", "val": 64},
+          {"heb": "כד", "val": 24},
+          {"heb": "נו", "val": 56}
+        ],
+        [
+          {"heb": "נז", "val": 57},
+          {"heb": "יז", "val": 17},
+          {"heb": "מט", "val": 49},
+          {"heb": "ט", "val": 9},
+          {"heb": "מא", "val": 41},
+          {"heb": "עג", "val": 73},
+          {"heb": "לג", "val": 33},
+          {"heb": "סה", "val": 65},
+          {"heb": "כה", "val": 25}
+        ],
+        [
+          {"heb": "כו", "val": 26},
+          {"heb": "נח", "val": 58},
+          {"heb": "יח", "val": 18},
+          {"heb": "נ", "val": 50},
+          {"heb": "א", "val": 1},
+          {"heb": "מב", "val": 42},
+          {"heb": "עד", "val": 74},
+          {"heb": "לד", "val": 34},
+          {"heb": "סו", "val": 66}
+        ],
+        [
+          {"heb": "סז", "val": 67},
+          {"heb": "כז", "val": 27},
+          {"heb": "נט", "val": 59},
+          {"heb": "י", "val": 10},
+          {"heb": "נא", "val": 51},
+          {"heb": "ב", "val": 2},
+          {"heb": "מג", "val": 43},
+          {"heb": "עה", "val": 75},
+          {"heb": "לה", "val": 35}
+        ],
+        [
+          {"heb": "לו", "val": 36},
+          {"heb": "סח", "val": 68},
+          {"heb": "יט", "val": 19},
+          {"heb": "ס", "val": 60},
+          {"heb": "יא", "val": 11},
+          {"heb": "נב", "val": 52},
+          {"heb": "ג", "val": 3},
+          {"heb": "מד", "val": 44},
+          {"heb": "עו", "val": 76}
+        ],
+        [
+          {"heb": "עז", "val": 77},
+          {"heb": "כח", "val": 28},
+          {"heb": "סט", "val": 69},
+          {"heb": "כ", "val": 20},
+          {"heb": "סא", "val": 61},
+          {"heb": "יב", "val": 12},
+          {"heb": "נג", "val": 53},
+          {"heb": "ד", "val": 4},
+          {"heb": "מה", "val": 45}
+        ]
+      ],
+      "computed": {
+        "row_sums": [369, 369, 369, 369, 369, 369, 369, 369, 369],
+        "col_sums": [369, 369, 369, 369, 369, 369, 369, 369, 369],
+        "diagonals": [369, 369],
+        "total": 3321
+      },
+      "hebrew_matches_arabic": false,
+      "hebrew_discrepancies": [
+        {
+          "row": 1,
+          "cell_from_left": 8,
+          "cell_from_right": 2,
+          "arabic": 54,
+          "hebrew_printed": "מה",
+          "hebrew_value": 45,
+          "comment": "misprint for נד; 45 (מה) correctly appears in the bottom-right cell. Checked on a 3x zoom. With this cell the Hebrew row 1 sums to 360 and 45 occurs twice."
+        }
+      ],
+      "names": [
+        {
+          "value_printed": 9,
+          "latin": "Hod",
+          "hebrew": "הד",
+          "role": "nomen divinum",
+          "gematria": 9
+        },
+        {
+          "value_printed": 81,
+          "latin": "Elim",
+          "hebrew": "אלים",
+          "role": "nomen divinum",
+          "gematria": 81
+        },
+        {
+          "value_printed": 369,
+          "latin": "Hasmodai",
+          "hebrew": "השמודאי",
+          "role": "Daemonium Lunae",
+          "gematria": 366,
+          "gematria_note": "printed with initial ה (he), which gives 366; the usual חשמודאי with initial ח (cheth) gives 369. The 3x zoom shows a he (open at the top left), so the print has ה."
+        },
+        {
+          "value_printed": 3321,
+          "latin": "Schedbarschemoth Schartathan",
+          "hebrew": "שדברשהמעת שרתתן",
+          "role": "Daemonium daemoniorum Lunae",
+          "gematria": 3321,
+          "gematria_note": "3321 only with final nun = 700 (1321 + 2000); with nun = 50 the name sums to 2671"
+        },
+        {
+          "value_printed": 3321,
+          "latin": "Malcha betharsisim hed beruah schehakim",
+          "hebrew": "מלכא בתרשיתים עד ברוח שחקים",
+          "role": "Intelligentia intelligentiarum Lunae",
+          "gematria": 3321,
+          "gematria_note": "3321 only with the two final mems = 600 each (91 + 1922 + 74 + 216 + 1018); with mem = 40 the name sums to 2201"
+        }
+      ],
+      "seals_printed": [
+        "Signacula siue characteres Lunae (seal of the planet)",
+        "Daemonij Lunae",
+        "Daemonij daemoniorum Lunae",
+        "Intelligentiae Intelligentiarum Lunae"
+      ],
+      "notes": [
+        "The names of the Moon are printed at the top of p. CXLIX, before the Saturn tables, not on p. CXLVIII with the other six.",
+        "Freake 1651 (Peterson) prints 'Scharthathan' and 'Malcha betharsism hed beruah schehalim' where 1533 has 'Schartathan' and 'betharsisim ... schehakim'.",
+        "In the Hebrew table, 15 = יה and 16 = יו."
+      ]
+    }
+  ],
+  "summary": {
+    "magic_constants": {
+      "Saturn": 15,
+      "Jupiter": 34,
+      "Mars": 65,
+      "Sol": 111,
+      "Venus": 175,
+      "Mercury": 260,
+      "Luna": 369
+    },
+    "totals": {
+      "Saturn": 45,
+      "Jupiter": 136,
+      "Mars": 325,
+      "Sol": 666,
+      "Venus": 1225,
+      "Mercury": 2080,
+      "Luna": 3321
+    },
+    "all_arabic_squares_verified_magic": true,
+    "printing_errors_found_in_1533": [
+      "Venus: Kedemel valued 157 (Hebrew = 175).",
+      "Mars: Barzabel spelt ברצאבאל (= 326) against the printed 325.",
+      "Luna: Hasmodai spelt with initial ה (= 366) against the printed 369.",
+      "Luna, Hebrew table: cell row 1 / 8th from the left (2nd from the right) reads מה (45) for נד (54).",
+      "Wellcome copy: running head of p. CXLIX misprinted CLXIX."
+    ],
+    "uncertain": [
+      "Nothing in the squares or names remained unreadable at 600 ppi; the items above are confident readings of what is printed, not guesses."
+    ]
+  }
+}

@@ -1,0 +1,29 @@
+{
+ "id": "10a", "identity": 10, "variant": "a", "name": "Buer",
+ "vocab": "1.0", "aspect": 1.131, "stroke": 0.033,
+ "family_by_eye": "axial",
+ "members": [
+  {"t": "ring", "c": [0.338, 0.256], "r": 0.203},
+  {"t": "line", "p": [0.344, 0.03, 0.336, 0.89]},
+  {"t": "line", "p": [0.14, 0.268, 1.06, 0.292]},
+  {"t": "mirror", "axis": "x", "at": 0.34, "m": [
+   {"t": "ring", "c": [0.256, 0.18], "r": 0.055},
+   {"t": "ring", "c": [0.25, 0.34], "r": 0.054}
+  ]},
+  {"t": "ring", "c": [0.155, 0.08], "r": 0.072},
+  {"t": "ring", "c": [0.075, 0.268], "r": 0.068},
+  {"t": "ring", "c": [0.141, 0.45], "r": 0.07},
+  {"t": "line", "p": [0.12, 0.648, 0.55, 0.648]},
+  {"t": "line", "p": [0.12, 0.762, 0.55, 0.762]},
+  {"t": "mirror", "axis": "x", "at": 0.32, "m": [
+   {"t": "tri", "p": [[0.065, 0.53], [0.065, 0.885], [0.16, 0.705]], "fill": true}
+  ]},
+  {"t": "tri", "p": [[0.21, 0.99], [0.47, 0.99], [0.34, 0.885]], "fill": true},
+  {"t": "arc", "c": [1.05, 0.235], "r": 0.06, "a": [150, 470]},
+  {"t": "spiral", "c": [1.045, 0.385], "r": [0.065, 0.015], "a": [-50, 450]},
+  {"t": "pline", "p": [[0.65, 0.02], [0.865, 0.02], [0.865, 0.04], [0.80, 0.08], [0.78, 0.12], [0.78, 0.40], [0.80, 0.44], [0.865, 0.47], [0.865, 0.49], [0.65, 0.49], [0.65, 0.47], [0.715, 0.44], [0.735, 0.40], [0.735, 0.12], [0.715, 0.08], [0.65, 0.04]], "closed": true, "fill": true}
+ ],
+ "escapes": [],
+ "wishes": ["a flared bar (cross with only two arms) for the double-lined band with concave filled ends"],
+ "notes": "Large ring quartered by a stem and a rail, a small ring in each quarter and three rings on its outside; the stem runs down through a double-lined band with filled flared ends to a triangular foot; the rail runs right past a filled I-bar to a loop-and-spiral terminal."
+}

@@ -1,0 +1,31 @@
+{
+ "id": "27a", "identity": 27, "variant": "a", "name": "Ronové",
+ "vocab": "1.0", "aspect": 1.224, "stroke": 0.030,
+ "family_by_eye": "comb",
+ "members": [
+  {"t": "tri", "p": [[0.075, 0.005], [0.23, 0.16], [0.08, 0.295]], "fill": true},
+  {"t": "line", "p": [0.20, 0.165, 1.21, 0.165]},
+  {"t": "pline", "p": [[0.90, 0.165], [0.90, 0.70], [1.195, 0.70], [1.195, 0.165]]},
+  {"t": "line", "p": [0.98, 0.29, 1.12, 0.29]},
+  {"t": "line", "p": [0.98, 0.59, 1.12, 0.59]},
+  {"t": "line", "p": [1.05, 0.29, 1.05, 0.59], "w": 0.045},
+  {"t": "line", "p": [0.41, 0.44, 1.195, 0.46]},
+  {"t": "repeat", "n": 2, "d": [0.27, 0], "m": [
+   {"t": "line", "p": [0.41, 0.165, 0.41, 0.65]},
+   {"t": "ring", "c": [0.405, 0.72], "r": 0.07}
+  ]},
+  {"t": "repeat", "n": 2, "d": [0.24, 0], "m": [
+   {"t": "ring", "c": [0.545, 0.31], "r": 0.05},
+   {"t": "ring", "c": [0.545, 0.57], "r": 0.055},
+   {"t": "line", "p": [0.545, 0.36, 0.545, 0.515]}
+  ]},
+  {"t": "line", "p": [0.41, 0.44, 0.17, 0.44]},
+  {"t": "spiral", "c": [0.17, 0.60], "r": [0.16, 0.08], "a": [-90, -240]},
+  {"t": "ring", "c": [0.18, 0.61], "r": 0.048},
+  {"t": "line", "p": [0.90, 0.70, 0.786, 0.80]},
+  {"t": "arc", "c": [0.875, 0.875], "r": [0.12, 0.11], "a": [20, 222]},
+  {"t": "ring", "c": [1.02, 0.86], "r": 0.063}
+ ],
+ "escapes": [],
+ "notes": "Filled pennant at the left end of a long rail; two stems from the rail ending in large rings; two ring-stem-ring lollipops crossed by a middle bar; a box at the right holding an I-beam, the middle bar running on through the box; the middle bar runs out left into a curl ending in a ring, and the box's foot runs out into a second curl with a ring."
+}

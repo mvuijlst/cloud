@@ -1,0 +1,43 @@
+{
+ "id": "62a", "identity": 62, "variant": "a", "name": "Volac/Valak/Valu/Ualac/Valac",
+ "vocab": "1.0", "aspect": 1.437, "stroke": 0.034,
+ "family_by_eye": "radial",
+ "members": [
+  {"t": "mirror", "axis": "x", "at": 0.5, "m": [
+   {"t": "mirror", "axis": "y", "at": 0.496, "m": [
+    {"t": "line", "p": [0.5, 0.496, 0.265, 0.252]},
+    {"t": "cross", "c": [0.265, 0.252], "s": 0.12, "rot": 45, "flared": true},
+    {"t": "ring", "c": [0.4169, 0.4616], "r": 0.037, "w": 0.04},
+    {"t": "ring", "c": [0.4656, 0.4129], "r": 0.037, "w": 0.04}
+   ]},
+   {"t": "ring", "c": [0.08, 0.494], "r": 0.066}
+  ]},
+  {"t": "mirror", "axis": "y", "at": 0.496, "m": [
+   {"t": "ring", "c": [0.5, 0.07], "r": 0.064}
+  ]},
+  {"t": "dot", "c": [0.5, 0.496], "r": 0.045},
+  {"t": "line", "p": [0.5, 0.13, 0.5, 0.862]},
+  {"t": "line", "p": [0.13, 0.496, 0.86, 0.496]},
+  {"t": "arc", "c": [1.429, 0.504], "r": 0.454, "a": [149, 211]},
+  {"t": "line", "p": [0.975, 0.504, 1.365, 0.504]},
+  {"t": "mirror", "axis": "y", "at": 0.504, "m": [
+   {"t": "line", "p": [1.04, 0.24, 1.30, 0.262]},
+   {"t": "bez", "p": [[1.30, 0.262], [1.36, 0.27], [1.41, 0.33], [1.415, 0.40]]},
+   {"t": "line", "p": [1.415, 0.40, 1.42, 0.504]},
+   {"t": "line", "p": [1.365, 0.39, 1.365, 0.504]},
+   {"t": "line", "p": [1.365, 0.39, 1.388, 0.343]},
+   {"t": "tri", "p": [[1.30, 0.50], [1.365, 0.50], [1.365, 0.43]], "fill": true},
+   {"t": "ring", "c": [1.164, 0.378], "r": 0.046},
+   {"t": "tri", "p": [[1.164, 0.49], [1.11, 0.42], [1.218, 0.42]], "fill": true},
+   {"t": "line", "p": [1.164, 0.42, 1.164, 0.504]},
+   {"t": "arc", "c": [0.99, 0.135], "r": 0.047, "a": [90, 300]},
+   {"t": "line", "p": [1.025, 0.095, 1.034, 0.18]},
+   {"t": "arc", "c": [1.085, 0.135], "r": 0.05, "a": [-150, 110]},
+   {"t": "line", "p": [1.065, 0.18, 1.06, 0.237]},
+   {"t": "spiral", "c": [0.95, 0.245], "r": [0.065, 0.02], "a": [-58, -480]}
+  ]}
+ ],
+ "escapes": [],
+ "wishes": ["cross with a wider tip spread: the diagonal pattee ornaments flare to about 0.85 s, the renderer's 0.55 s leaves the tip corners uncovered", "a single flared arm / fillet primitive: the T-junction inside the bowl and the ring pedestals are concave fillets, approximated by filled tri"],
+ "notes": "Eight-spoked wheel: solid hub of eight overlapping small rings, orthogonal spokes ending in big rings, diagonal spokes ending in 45-degree flared crosses. To the right a squarish bowl touching the right ring, with a horizontal bar, two rings on flared pedestals, a T-bar with fillets, and a fleur (two C-arcs on a stem and a counter-clockwise curl) at each left corner."
+}

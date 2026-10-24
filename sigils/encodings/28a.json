@@ -1,0 +1,59 @@
+{
+ "id": "28a", "identity": 28, "variant": "a", "name": "Berith/Beale/Beal/Bofry/Bolfry",
+ "vocab": "1.0", "aspect": 1.007, "stroke": 0.019,
+ "family_by_eye": "compartment",
+ "members": [
+  {"t": "mirror", "axis": "x", "at": 0.465, "m": [
+   {"t": "cross", "c": [0.136, 0.13], "s": 0.095, "rot": -25, "flared": true},
+   {"t": "ring", "c": [0.35, 0.17], "r": 0.044},
+   {"t": "line", "p": [0.349, 0.215, 0.349, 0.62]}
+  ]},
+  {"t": "line", "p": [0.136, 0.11, 0.168, 0.21]},
+  {"t": "line", "p": [0.79, 0.15, 0.73, 0.236]},
+  {"t": "line", "p": [0.16, 0.215, 0.60, 0.215]},
+  {"t": "arc", "c": [0.165, 0.385], "r": [0.14, 0.175], "a": [90, 270]},
+  {"t": "arc", "c": [0.60, 0.415], "r": [0.215, 0.205], "a": [-90, 90]},
+  {"t": "arc", "c": [0.59, 0.53], "r": 0.092, "a": [88, 195]},
+  {"t": "line", "p": [0.11, 0.548, 0.585, 0.548]},
+  {"t": "line", "p": [0.13, 0.548, 0.0, 0.657]},
+  {"t": "line", "p": [0.35, 0.392, 0.86, 0.392]},
+  {"t": "cross", "c": [0.193, 0.405], "s": 0.10, "flared": true},
+  {"t": "line", "p": [0.193, 0.405, 0.193, 0.548]},
+  {"t": "repeat", "n": 2, "d": [0.24, 0.005], "m": [
+   {"t": "ring", "c": [0.46, 0.342], "r": 0.044},
+   {"t": "line", "p": [0.46, 0.386, 0.46, 0.44]},
+   {"t": "ring", "c": [0.46, 0.483], "r": 0.043}
+  ]},
+  {"t": "tri", "p": [[0.865, 0.275], [1.005, 0.393], [0.865, 0.505]], "fill": true},
+  {"t": "cross", "c": [0.836, 0.581], "s": 0.05, "rot": 5, "flared": true},
+  {"t": "line", "p": [0.0, 0.657, 0.868, 0.668]},
+  {"t": "ring", "c": [0.912, 0.672], "r": 0.043},
+  {"t": "repeat", "n": 2, "d": [0.225, 0], "m": [
+   {"t": "arc", "c": [0.185, 0.59], "r": 0.034, "a": [120, 405]},
+   {"t": "line", "p": [0.168, 0.619, 0.208, 0.686]},
+   {"t": "arc", "c": [0.192, 0.714], "r": 0.032, "a": [-60, 230]}
+  ]},
+  {"t": "bez", "p": [[0.449, 0.722], [0.46, 0.705], [0.50, 0.703], [0.572, 0.705]]},
+  {"t": "pline", "p": [[0.349, 0.62], [0.349, 0.80], [0.826, 0.812]]},
+  {"t": "line", "p": [0.581, 0.62, 0.568, 0.831]},
+  {"t": "ring", "c": [0.57, 0.873], "r": 0.042},
+  {"t": "arc", "c": [0.56, 0.752], "r": [0.06, 0.047], "a": [90, 270]},
+  {"t": "line", "p": [0.575, 0.707, 0.757, 0.736]},
+  {"t": "line", "p": [0.572, 0.745, 0.736, 0.785]},
+  {"t": "crescent", "c": [0.745, 0.735], "r": 0.045, "ri": 0.04, "k": 0.5, "rot": 180},
+  {"t": "line", "p": [0.737, 0.80, 0.655, 0.95]},
+  {"t": "arc", "c": [0.59, 0.87], "r": [0.085, 0.087], "a": [-60, 128]},
+  {"t": "line", "p": [0.403, 0.80, 0.403, 0.855]},
+  {"t": "line", "p": [0.403, 0.855, 0.46, 0.855]},
+  {"t": "arc", "c": [0.46, 0.912], "r": 0.06, "a": [-90, 130]},
+  {"t": "ring", "c": [0.436, 0.97], "r": 0.018},
+  {"t": "arc", "c": [0.856, 0.775], "r": 0.028, "a": [120, 405]},
+  {"t": "line", "p": [0.842, 0.799, 0.844, 0.836]},
+  {"t": "arc", "c": [0.83, 0.86], "r": 0.028, "a": [-60, 230]}
+ ],
+ "escapes": [],
+ "wishes": [
+  "cross with per-arm flare (the big cross inside the oval has three pattee arms and a plain stem as its fourth)"
+ ],
+ "notes": "Stadium-shaped compartment (top rail, semicircular left end, semi-elliptical right end whose bottom curls back up to a ring) divided by a mid bar and a floor; a big flared cross left, two ring-bar-ring lollipops, a filled arrowhead at the right end and a small flared cross under it; two tilted flared crosses mirrored above on stems; two hanging stems with rail rings; a baseline with a ring terminal crossed by two S-scrolls; below, a cursive flourish of bowls, a crescent claw, a ring and a small S-scroll."
+}

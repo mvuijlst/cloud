@@ -1,0 +1,51 @@
+{
+ "id": "42b", "identity": 42, "variant": "b", "name": "Vepar/Vephar",
+ "vocab": "1.0", "aspect": 1.175, "stroke": 0.029,
+ "family_by_eye": "bowl",
+ "members": [
+  {"t": "ring", "c": [0.082, 0.40], "r": 0.045},
+  {"t": "line", "p": [0.125, 0.405, 1.18, 0.405]},
+  {"t": "repeat", "n": 3, "d": [0.202, 0], "m": [
+   {"t": "arc", "c": [0.238, 0.195], "r": [0.045, 0.05], "a": [180, 360]},
+   {"t": "line", "p": [0.193, 0.195, 0.125, 0.405]},
+   {"t": "line", "p": [0.283, 0.195, 0.29, 0.405]}
+  ]},
+  {"t": "repeat", "n": 3, "d": [0.20, 0], "m": [
+   {"t": "cross", "c": [0.333, 0.073], "s": 0.055, "flared": true},
+   {"t": "line", "p": [0.333, 0.12, 0.333, 0.405]}
+  ]},
+  {"t": "arc", "c": [0.858, 0.19], "r": 0.06, "a": [180, 360]},
+  {"t": "line", "p": [0.798, 0.19, 0.785, 0.405]},
+  {"t": "line", "p": [0.918, 0.19, 0.84, 0.38]},
+  {"t": "repeat", "n": 3, "d": [0.19, 0], "m": [
+   {"t": "ring", "c": [0.30, 0.425], "r": 0.04}
+  ]},
+  {"t": "ring", "c": [0.91, 0.43], "r": 0.045, "w": 0.04},
+  {"t": "ring", "c": [1.025, 0.287], "r": 0.04},
+  {"t": "ring", "c": [1.103, 0.29], "r": 0.04},
+  {"t": "ring", "c": [1.06, 0.364], "r": 0.04, "w": 0.035},
+  {"t": "ring", "c": [1.06, 0.446], "r": 0.034, "w": 0.035},
+  {"t": "line", "p": [1.14, 0.405, 1.14, 0.62]},
+  {"t": "arc", "c": [1.14, 0.485], "r": [0.03, 0.05], "a": [0, 360]},
+  {"t": "line", "p": [0.21, 0.405, 0.21, 0.63]},
+  {"t": "arc", "c": [0.60, 0.63], "r": [0.39, 0.37], "a": [-25, 180]},
+  {"t": "tri", "p": [[0.005, 0.575], [0.085, 0.505], [0.07, 0.60]], "fill": true},
+  {"t": "line", "p": [0.05, 0.59, 0.033, 0.611]},
+  {"t": "arc", "c": [0.085, 0.63], "r": 0.055, "a": [0, 200]},
+  {"t": "ring", "c": [0.13, 0.575], "r": 0.04},
+  {"t": "repeat", "n": 2, "d": [0.317, 0], "m": [
+   {"t": "line", "p": [0.463, 0.405, 0.463, 0.795]},
+   {"t": "ring", "c": [0.463, 0.60], "r": 0.045},
+   {"t": "ring", "c": [0.427, 0.834], "r": 0.035},
+   {"t": "ring", "c": [0.48, 0.834], "r": 0.035}
+  ]},
+  {"t": "line", "p": [0.615, 0.405, 0.615, 0.77]},
+  {"t": "ring", "c": [0.615, 0.60], "r": 0.05},
+  {"t": "cross", "c": [0.615, 0.82], "s": 0.06, "flared": true},
+  {"t": "line", "p": [0.37, 0.652, 0.85, 0.655]},
+  {"t": "ring", "c": [0.33, 0.65], "r": 0.04},
+  {"t": "ring", "c": [0.89, 0.657], "r": 0.04}
+ ],
+ "escapes": [],
+ "notes": "Bowl variant b, same plan as 42a: bar with a ring at the left end, three cursive loops (shorter, leaning) with three flared crosses on tall stems rising above them, a fourth slanted loop, three rings on the bar, a ring cluster and an oval at the right; a hooked arrow at the left; an elliptical bowl below holding a lower bar with ring ends, three stems with rings, two pairs of rings at the outer stems' feet and a flared cross at the middle stem's foot."
+}

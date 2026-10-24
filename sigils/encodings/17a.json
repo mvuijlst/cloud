@@ -1,0 +1,252 @@
+{
+ "id": "17a",
+ "identity": 17,
+ "variant": "a",
+ "name": "Botis",
+ "vocab": "1.0",
+ "aspect": 0.911,
+ "stroke": 0.044,
+ "family_by_eye": "compartment",
+ "members": [
+  {
+   "t": "ring",
+   "c": [
+    0.07,
+    0.062
+   ],
+   "r": 0.055
+  },
+  {
+   "t": "ring",
+   "c": [
+    0.835,
+    0.067
+   ],
+   "r": 0.055
+  },
+  {
+   "t": "ring",
+   "c": [
+    0.09,
+    0.8
+   ],
+   "r": 0.05
+  },
+  {
+   "t": "ring",
+   "c": [
+    0.78,
+    0.8
+   ],
+   "r": 0.05
+  },
+  {
+   "t": "ring",
+   "c": [
+    0.71,
+    0.507
+   ],
+   "r": 0.048
+  },
+  {
+   "t": "ring",
+   "c": [
+    0.45,
+    0.735
+   ],
+   "r": 0.05
+  },
+  {
+   "t": "line",
+   "p": [
+    0.12,
+    0.119,
+    0.79,
+    0.119
+   ]
+  },
+  {
+   "t": "line",
+   "p": [
+    0.085,
+    0.119,
+    0.085,
+    0.75
+   ]
+  },
+  {
+   "t": "line",
+   "p": [
+    0.8,
+    0.119,
+    0.8,
+    0.745
+   ]
+  },
+  {
+   "t": "line",
+   "p": [
+    0.452,
+    0.119,
+    0.452,
+    0.68
+   ]
+  },
+  {
+   "t": "line",
+   "p": [
+    0.13,
+    0.504,
+    0.66,
+    0.504
+   ]
+  },
+  {
+   "t": "repeat",
+   "n": 2,
+   "d": [
+    0.31,
+    0
+   ],
+   "m": [
+    {
+     "t": "line",
+     "p": [
+      0.163,
+      0.29,
+      0.42,
+      0.29
+     ]
+    },
+    {
+     "t": "line",
+     "p": [
+      0.293,
+      0.29,
+      0.293,
+      0.5
+     ]
+    },
+    {
+     "t": "tri",
+     "p": [
+      [
+       0.163,
+       0.3
+      ],
+      [
+       0.27,
+       0.3
+      ],
+      [
+       0.163,
+       0.4
+      ]
+     ],
+     "fill": true
+    },
+    {
+     "t": "tri",
+     "p": [
+      [
+       0.335,
+       0.3
+      ],
+      [
+       0.42,
+       0.3
+      ],
+      [
+       0.42,
+       0.415
+      ]
+     ],
+     "fill": true
+    }
+   ]
+  },
+  {
+   "t": "line",
+   "p": [
+    0.315,
+    0.63,
+    0.58,
+    0.63
+   ]
+  },
+  {
+   "t": "tri",
+   "p": [
+    [
+     0.315,
+     0.555
+    ],
+    [
+     0.315,
+     0.72
+    ],
+    [
+     0.4,
+     0.63
+    ]
+   ],
+   "fill": true
+  },
+  {
+   "t": "tri",
+   "p": [
+    [
+     0.585,
+     0.555
+    ],
+    [
+     0.585,
+     0.72
+    ],
+    [
+     0.5,
+     0.63
+    ]
+   ],
+   "fill": true
+  },
+  {
+   "t": "line",
+   "p": [
+    0.72,
+    0.775,
+    0.271,
+    0.85
+   ]
+  },
+  {
+   "t": "spiral",
+   "c": [
+    0.32,
+    0.92
+   ],
+   "r": [
+    0.085,
+    0.03
+   ],
+   "a": [
+    235,
+    -330
+   ]
+  },
+  {
+   "t": "dot",
+   "c": [
+    0.345,
+    0.91
+   ],
+   "r": 0.04
+  }
+ ],
+ "escapes": [],
+ "wishes": [
+  "bowtie: a bar with a triangular wedge at each end on a stem (line + 2 tri here)",
+  "T with hanging wedges: a bar whose ends carry downward right-triangle wedges, repeated twice"
+ ],
+ "notes": "Rectangular frame with rings at the four corners, a central stem from the top rail to a ring, a middle rail ending in a ring; two T-shaped elements with wedges hanging from the bar ends stand on the middle rail; a bowtie on the stem below it; from the bottom-right ring a shallow diagonal runs down-left into a spiral with a filled centre."
+}

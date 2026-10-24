@@ -1,0 +1,30 @@
+{
+ "id": "02a", "identity": 2, "variant": "a", "name": "Agares/Agreas",
+ "vocab": "1.0", "aspect": 1.065, "stroke": 0.033,
+ "family_by_eye": "bowl",
+ "members": [
+  {"t": "line", "p": [0.146, 0.118, 0.917, 0.118]},
+  {"t": "repeat", "n": 3, "d": [0.295, 0], "m": [
+   {"t": "ring", "c": [0.24, 0.068], "r": 0.056}
+  ]},
+  {"t": "line", "p": [0.531, 0.118, 0.531, 0.31], "w": 0.055},
+  {"t": "cross", "c": [0.531, 0.31], "s": 0.19, "flared": true},
+  {"t": "mirror", "axis": "x", "at": 0.531, "m": [
+   {"t": "line", "p": [0.146, 0.118, 0.146, 0.295]},
+   {"t": "line", "p": [0.146, 0.203, 0.27, 0.203]},
+   {"t": "line", "p": [0.146, 0.295, 0.25, 0.295]},
+   {"t": "arc", "c": [0.17, 0.375], "r": 0.11, "a": [-45, 75]},
+   {"t": "line", "p": [0.19, 0.46, 0.19, 0.69], "w": 0.05},
+   {"t": "tri", "p": [[0.20, 0.56], [0.19, 0.725], [0.305, 0.705]], "fill": true},
+   {"t": "ring", "c": [0.15, 0.72], "r": 0.039},
+   {"t": "arc", "c": [0.17, 0.625], "r": 0.17, "a": [90, 275]},
+   {"t": "arc", "c": [0.17, 0.62], "r": [0.125, 0.16], "a": [135, 275]}
+  ]},
+  {"t": "repeat", "n": 4, "d": [0, 0.114], "m": [
+   {"t": "arc", "c": [0.531, 0.204], "r": 0.43, "a": [40, 140]}
+  ]}
+ ],
+ "escapes": [],
+ "wishes": [],
+ "notes": "Three rings on a rail; slotted head whose sides step in to a waisted neck; flared cross hung from the rail on a thick stem; two bars drop from the shoulders to rings, each with a filled wedge; double-outlined ears outside the bars; four nested bowls evenly spaced below."
+}

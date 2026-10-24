@@ -1,0 +1,2012 @@
+{
+ "source": "72_Goeta_sigils.png",
+ "source_size": [
+  2048,
+  1519
+ ],
+ "threshold": 128,
+ "sha256": "6a6df81aef47ef7292df3bf6918e3b004a0876093f6398031cc5ba5accc20995",
+ "method": "label lines from small-glyph clusters; cell = band below label between label x-starts; rect = union of non-label components with centre in cell",
+ "cells": [
+  {
+   "id": "01a",
+   "identity": 1,
+   "variant": "a",
+   "sheet_label": "1. Bael",
+   "row": 1,
+   "col": 1,
+   "rect": [
+    98,
+    75,
+    221,
+    197
+   ],
+   "width": 123,
+   "height": 122,
+   "crop_file": "crops/01a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    76,
+    29,
+    117,
+    52
+   ],
+   "components": 1
+  },
+  {
+   "id": "02a",
+   "identity": 2,
+   "variant": "a",
+   "sheet_label": "2. Agares/Agreas",
+   "row": 1,
+   "col": 2,
+   "rect": [
+    292,
+    76,
+    423,
+    199
+   ],
+   "width": 131,
+   "height": 123,
+   "crop_file": "crops/02a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    273,
+    29,
+    359,
+    52
+   ],
+   "components": 1
+  },
+  {
+   "id": "03a",
+   "identity": 3,
+   "variant": "a",
+   "sheet_label": "3. Vassago",
+   "row": 1,
+   "col": 3,
+   "rect": [
+    492,
+    70,
+    599,
+    205
+   ],
+   "width": 107,
+   "height": 135,
+   "crop_file": "crops/03a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    471,
+    29,
+    528,
+    52
+   ],
+   "components": 1
+  },
+  {
+   "id": "04a",
+   "identity": 4,
+   "variant": "a",
+   "sheet_label": "4. Samigina/Gamigin",
+   "row": 1,
+   "col": 4,
+   "rect": [
+    698,
+    69,
+    797,
+    198
+   ],
+   "width": 99,
+   "height": 129,
+   "crop_file": "crops/04a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    665,
+    29,
+    760,
+    52
+   ],
+   "components": 1
+  },
+  {
+   "id": "05a",
+   "identity": 5,
+   "variant": "a",
+   "sheet_label": "5. Marbas",
+   "row": 1,
+   "col": 5,
+   "rect": [
+    865,
+    81,
+    996,
+    191
+   ],
+   "width": 131,
+   "height": 110,
+   "crop_file": "crops/05a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    850,
+    29,
+    907,
+    52
+   ],
+   "components": 1
+  },
+  {
+   "id": "06a",
+   "identity": 6,
+   "variant": "a",
+   "sheet_label": "6. Valefor",
+   "row": 1,
+   "col": 6,
+   "rect": [
+    1053,
+    75,
+    1196,
+    190
+   ],
+   "width": 143,
+   "height": 115,
+   "crop_file": "crops/06a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    1041,
+    29,
+    1111,
+    52
+   ],
+   "components": 1
+  },
+  {
+   "id": "07a",
+   "identity": 7,
+   "variant": "a",
+   "sheet_label": "7. Amon",
+   "row": 1,
+   "col": 7,
+   "rect": [
+    1240,
+    61,
+    1379,
+    194
+   ],
+   "width": 139,
+   "height": 133,
+   "crop_file": "crops/07a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    1223,
+    29,
+    1272,
+    52
+   ],
+   "components": 7
+  },
+  {
+   "id": "08a",
+   "identity": 8,
+   "variant": "a",
+   "sheet_label": "8. Barbatos",
+   "row": 1,
+   "col": 8,
+   "rect": [
+    1414,
+    65,
+    1571,
+    189
+   ],
+   "width": 157,
+   "height": 124,
+   "crop_file": "crops/08a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    1416,
+    29,
+    1475,
+    52
+   ],
+   "components": 4
+  },
+  {
+   "id": "09a",
+   "identity": 9,
+   "variant": "a",
+   "sheet_label": "9. Paimon",
+   "row": 1,
+   "col": 9,
+   "rect": [
+    1612,
+    72,
+    1759,
+    189
+   ],
+   "width": 147,
+   "height": 117,
+   "crop_file": "crops/09a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    1606,
+    29,
+    1662,
+    52
+   ],
+   "components": 2
+  },
+  {
+   "id": "09b",
+   "identity": 9,
+   "variant": "b",
+   "sheet_label": "9b. Paimon",
+   "row": 1,
+   "col": 10,
+   "rect": [
+    1806,
+    84,
+    1963,
+    194
+   ],
+   "width": 157,
+   "height": 110,
+   "crop_file": "crops/09b.png",
+   "crop_pad": 4,
+   "label_rect": [
+    1800,
+    29,
+    1863,
+    52
+   ],
+   "components": 1
+  },
+  {
+   "id": "10a",
+   "identity": 10,
+   "variant": "a",
+   "sheet_label": "10. Buer",
+   "row": 2,
+   "col": 1,
+   "rect": [
+    108,
+    251,
+    246,
+    373
+   ],
+   "width": 138,
+   "height": 122,
+   "crop_file": "crops/10a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    86,
+    198,
+    137,
+    223
+   ],
+   "components": 5
+  },
+  {
+   "id": "11a",
+   "identity": 11,
+   "variant": "a",
+   "sheet_label": "11. Gusion",
+   "row": 2,
+   "col": 2,
+   "rect": [
+    269,
+    264,
+    443,
+    378
+   ],
+   "width": 174,
+   "height": 114,
+   "crop_file": "crops/11a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    269,
+    198,
+    331,
+    223
+   ],
+   "components": 1
+  },
+  {
+   "id": "12a",
+   "identity": 12,
+   "variant": "a",
+   "sheet_label": "12. Sitri",
+   "row": 2,
+   "col": 3,
+   "rect": [
+    479,
+    254,
+    636,
+    386
+   ],
+   "width": 157,
+   "height": 132,
+   "crop_file": "crops/12a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    469,
+    198,
+    509,
+    223
+   ],
+   "components": 1
+  },
+  {
+   "id": "13a",
+   "identity": 13,
+   "variant": "a",
+   "sheet_label": "13. Beleth/Bileth/Bilet",
+   "row": 2,
+   "col": 4,
+   "rect": [
+    678,
+    253,
+    833,
+    376
+   ],
+   "width": 155,
+   "height": 123,
+   "crop_file": "crops/13a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    665,
+    198,
+    774,
+    223
+   ],
+   "components": 2
+  },
+  {
+   "id": "13b",
+   "identity": 13,
+   "variant": "b",
+   "sheet_label": "13b. Beleth/Bileth/Bilet",
+   "row": 2,
+   "col": 5,
+   "rect": [
+    854,
+    243,
+    1016,
+    376
+   ],
+   "width": 162,
+   "height": 133,
+   "crop_file": "crops/13b.png",
+   "crop_pad": 4,
+   "label_rect": [
+    847,
+    198,
+    969,
+    223
+   ],
+   "components": 1
+  },
+  {
+   "id": "14a",
+   "identity": 14,
+   "variant": "a",
+   "sheet_label": "14. Leraje/Leraie/Leraikha",
+   "row": 2,
+   "col": 6,
+   "rect": [
+    1055,
+    258,
+    1215,
+    373
+   ],
+   "width": 160,
+   "height": 115,
+   "crop_file": "crops/14a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    1043,
+    198,
+    1179,
+    223
+   ],
+   "components": 1
+  },
+  {
+   "id": "14b",
+   "identity": 14,
+   "variant": "b",
+   "sheet_label": "14b. Leraje/Leraie/Leraikha",
+   "row": 2,
+   "col": 7,
+   "rect": [
+    1228,
+    256,
+    1400,
+    360
+   ],
+   "width": 172,
+   "height": 104,
+   "crop_file": "crops/14b.png",
+   "crop_pad": 4,
+   "label_rect": [
+    1224,
+    198,
+    1361,
+    223
+   ],
+   "components": 1
+  },
+  {
+   "id": "15a",
+   "identity": 15,
+   "variant": "a",
+   "sheet_label": "15. Eligos",
+   "row": 2,
+   "col": 8,
+   "rect": [
+    1411,
+    240,
+    1585,
+    352
+   ],
+   "width": 174,
+   "height": 112,
+   "crop_file": "crops/15a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    1409,
+    198,
+    1464,
+    223
+   ],
+   "components": 1
+  },
+  {
+   "id": "16a",
+   "identity": 16,
+   "variant": "a",
+   "sheet_label": "16. Zepar",
+   "row": 2,
+   "col": 9,
+   "rect": [
+    1610,
+    245,
+    1762,
+    373
+   ],
+   "width": 152,
+   "height": 128,
+   "crop_file": "crops/16a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    1597,
+    198,
+    1649,
+    223
+   ],
+   "components": 1
+  },
+  {
+   "id": "17a",
+   "identity": 17,
+   "variant": "a",
+   "sheet_label": "17. Botis",
+   "row": 2,
+   "col": 10,
+   "rect": [
+    1826,
+    242,
+    1949,
+    377
+   ],
+   "width": 123,
+   "height": 135,
+   "crop_file": "crops/17a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    1796,
+    198,
+    1844,
+    223
+   ],
+   "components": 1
+  },
+  {
+   "id": "18a",
+   "identity": 18,
+   "variant": "a",
+   "sheet_label": "18. Bathin",
+   "row": 3,
+   "col": 1,
+   "rect": [
+    87,
+    436,
+    264,
+    561
+   ],
+   "width": 177,
+   "height": 125,
+   "crop_file": "crops/18a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    86,
+    381,
+    156,
+    402
+   ],
+   "components": 1
+  },
+  {
+   "id": "18b",
+   "identity": 18,
+   "variant": "b",
+   "sheet_label": "18b. Bathin",
+   "row": 3,
+   "col": 2,
+   "rect": [
+    280,
+    443,
+    439,
+    572
+   ],
+   "width": 159,
+   "height": 129,
+   "crop_file": "crops/18b.png",
+   "crop_pad": 4,
+   "label_rect": [
+    331,
+    381,
+    332,
+    402
+   ],
+   "components": 1
+  },
+  {
+   "id": "19a",
+   "identity": 19,
+   "variant": "a",
+   "sheet_label": "19. Sallos/Saleos",
+   "row": 3,
+   "col": 3,
+   "rect": [
+    468,
+    452,
+    642,
+    547
+   ],
+   "width": 174,
+   "height": 95,
+   "crop_file": "crops/19a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    496,
+    381,
+    497,
+    402
+   ],
+   "components": 1
+  },
+  {
+   "id": "20a",
+   "identity": 20,
+   "variant": "a",
+   "sheet_label": "20. Purson",
+   "row": 3,
+   "col": 4,
+   "rect": [
+    674,
+    426,
+    831,
+    564
+   ],
+   "width": 157,
+   "height": 138,
+   "crop_file": "crops/20a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    662,
+    381,
+    721,
+    402
+   ],
+   "components": 1
+  },
+  {
+   "id": "21a",
+   "identity": 21,
+   "variant": "a",
+   "sheet_label": "21. Marax/Morax",
+   "row": 3,
+   "col": 5,
+   "rect": [
+    850,
+    437,
+    1015,
+    552
+   ],
+   "width": 165,
+   "height": 115,
+   "crop_file": "crops/21a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    845,
+    381,
+    941,
+    402
+   ],
+   "components": 1
+  },
+  {
+   "id": "22a",
+   "identity": 22,
+   "variant": "a",
+   "sheet_label": "22. Ipos",
+   "row": 3,
+   "col": 6,
+   "rect": [
+    1057,
+    418,
+    1211,
+    557
+   ],
+   "width": 154,
+   "height": 139,
+   "crop_file": "crops/22a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    1044,
+    381,
+    1095,
+    402
+   ],
+   "components": 1
+  },
+  {
+   "id": "23a",
+   "identity": 23,
+   "variant": "a",
+   "sheet_label": "23. Aim",
+   "row": 3,
+   "col": 7,
+   "rect": [
+    1240,
+    406,
+    1389,
+    558
+   ],
+   "width": 149,
+   "height": 152,
+   "crop_file": "crops/23a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    1229,
+    381,
+    1275,
+    402
+   ],
+   "components": 1
+  },
+  {
+   "id": "24a",
+   "identity": 24,
+   "variant": "a",
+   "sheet_label": "24. Naberius",
+   "row": 3,
+   "col": 8,
+   "rect": [
+    1419,
+    413,
+    1582,
+    561
+   ],
+   "width": 163,
+   "height": 148,
+   "crop_file": "crops/24a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    1411,
+    381,
+    1485,
+    402
+   ],
+   "components": 4
+  },
+  {
+   "id": "25a",
+   "identity": 25,
+   "variant": "a",
+   "sheet_label": "25. Glasya-Labolas",
+   "row": 3,
+   "col": 9,
+   "rect": [
+    1624,
+    414,
+    1755,
+    563
+   ],
+   "width": 131,
+   "height": 149,
+   "crop_file": "crops/25a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    1605,
+    381,
+    1696,
+    402
+   ],
+   "components": 2
+  },
+  {
+   "id": "26a",
+   "identity": 26,
+   "variant": "a",
+   "sheet_label": "26. Bune/Bimé/Buné/Bim",
+   "row": 3,
+   "col": 10,
+   "rect": [
+    1802,
+    436,
+    1962,
+    554
+   ],
+   "width": 160,
+   "height": 118,
+   "crop_file": "crops/26a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    1793,
+    381,
+    1925,
+    402
+   ],
+   "components": 7
+  },
+  {
+   "id": "26b",
+   "identity": 26,
+   "variant": "b",
+   "sheet_label": "26b. Bune/Bimé/Buné/Bim",
+   "row": 4,
+   "col": 1,
+   "rect": [
+    97,
+    632,
+    265,
+    706
+   ],
+   "width": 168,
+   "height": 74,
+   "crop_file": "crops/26b.png",
+   "crop_pad": 4,
+   "label_rect": [
+    96,
+    564,
+    229,
+    588
+   ],
+   "components": 1
+  },
+  {
+   "id": "27a",
+   "identity": 27,
+   "variant": "a",
+   "sheet_label": "27. Ronové",
+   "row": 4,
+   "col": 2,
+   "rect": [
+    286,
+    617,
+    450,
+    751
+   ],
+   "width": 164,
+   "height": 134,
+   "crop_file": "crops/27a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    280,
+    564,
+    340,
+    588
+   ],
+   "components": 1
+  },
+  {
+   "id": "28a",
+   "identity": 28,
+   "variant": "a",
+   "sheet_label": "28. Berith/Beale/Beal/Bofry/Bolfry",
+   "row": 4,
+   "col": 3,
+   "rect": [
+    483,
+    599,
+    635,
+    750
+   ],
+   "width": 152,
+   "height": 151,
+   "crop_file": "crops/28a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    466,
+    564,
+    620,
+    588
+   ],
+   "components": 1
+  },
+  {
+   "id": "29a",
+   "identity": 29,
+   "variant": "a",
+   "sheet_label": "29. Astaroth",
+   "row": 4,
+   "col": 4,
+   "rect": [
+    672,
+    594,
+    822,
+    749
+   ],
+   "width": 150,
+   "height": 155,
+   "crop_file": "crops/29a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    655,
+    564,
+    711,
+    588
+   ],
+   "components": 16
+  },
+  {
+   "id": "30a",
+   "identity": 30,
+   "variant": "a",
+   "sheet_label": "30. Forneus",
+   "row": 4,
+   "col": 5,
+   "rect": [
+    853,
+    603,
+    1001,
+    744
+   ],
+   "width": 148,
+   "height": 141,
+   "crop_file": "crops/30a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    839,
+    564,
+    901,
+    588
+   ],
+   "components": 12
+  },
+  {
+   "id": "31a",
+   "identity": 31,
+   "variant": "a",
+   "sheet_label": "31. Foras",
+   "row": 4,
+   "col": 6,
+   "rect": [
+    1048,
+    600,
+    1204,
+    734
+   ],
+   "width": 156,
+   "height": 134,
+   "crop_file": "crops/31a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    1042,
+    564,
+    1087,
+    588
+   ],
+   "components": 1
+  },
+  {
+   "id": "32a",
+   "identity": 32,
+   "variant": "a",
+   "sheet_label": "32. Asmoday/Asmodai",
+   "row": 4,
+   "col": 7,
+   "rect": [
+    1237,
+    596,
+    1373,
+    745
+   ],
+   "width": 136,
+   "height": 149,
+   "crop_file": "crops/32a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    1222,
+    564,
+    1325,
+    588
+   ],
+   "components": 3
+  },
+  {
+   "id": "33a",
+   "identity": 33,
+   "variant": "a",
+   "sheet_label": "33. Gaap/Gäap",
+   "row": 4,
+   "col": 8,
+   "rect": [
+    1423,
+    598,
+    1572,
+    740
+   ],
+   "width": 149,
+   "height": 142,
+   "crop_file": "crops/33a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    1415,
+    564,
+    1488,
+    588
+   ],
+   "components": 5
+  },
+  {
+   "id": "34a",
+   "identity": 34,
+   "variant": "a",
+   "sheet_label": "34. Furfur",
+   "row": 4,
+   "col": 9,
+   "rect": [
+    1605,
+    617,
+    1774,
+    722
+   ],
+   "width": 169,
+   "height": 105,
+   "crop_file": "crops/34a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    1601,
+    564,
+    1653,
+    588
+   ],
+   "components": 3
+  },
+  {
+   "id": "35a",
+   "identity": 35,
+   "variant": "a",
+   "sheet_label": "35. Marchosias",
+   "row": 4,
+   "col": 10,
+   "rect": [
+    1788,
+    610,
+    1960,
+    739
+   ],
+   "width": 172,
+   "height": 129,
+   "crop_file": "crops/35a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    1787,
+    564,
+    1861,
+    588
+   ],
+   "components": 1
+  },
+  {
+   "id": "36a",
+   "identity": 36,
+   "variant": "a",
+   "sheet_label": "36. Stolas/Stolos",
+   "row": 5,
+   "col": 1,
+   "rect": [
+    97,
+    786,
+    266,
+    928
+   ],
+   "width": 169,
+   "height": 142,
+   "crop_file": "crops/36a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    96,
+    748,
+    182,
+    768
+   ],
+   "components": 1
+  },
+  {
+   "id": "37a",
+   "identity": 37,
+   "variant": "a",
+   "sheet_label": "37. Phenex/Pheynix",
+   "row": 5,
+   "col": 2,
+   "rect": [
+    288,
+    796,
+    449,
+    931
+   ],
+   "width": 161,
+   "height": 135,
+   "crop_file": "crops/37a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    279,
+    748,
+    376,
+    768
+   ],
+   "components": 1
+  },
+  {
+   "id": "38a",
+   "identity": 38,
+   "variant": "a",
+   "sheet_label": "38. Halphas/Malthus/Malthous/Malthas",
+   "row": 5,
+   "col": 3,
+   "rect": [
+    477,
+    794,
+    617,
+    936
+   ],
+   "width": 140,
+   "height": 142,
+   "crop_file": "crops/38a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    460,
+    748,
+    633,
+    768
+   ],
+   "components": 3
+  },
+  {
+   "id": "39a",
+   "identity": 39,
+   "variant": "a",
+   "sheet_label": "39. Malphas",
+   "row": 5,
+   "col": 4,
+   "rect": [
+    655,
+    792,
+    817,
+    932
+   ],
+   "width": 162,
+   "height": 140,
+   "crop_file": "crops/39a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    649,
+    748,
+    706,
+    768
+   ],
+   "components": 3
+  },
+  {
+   "id": "40a",
+   "identity": 40,
+   "variant": "a",
+   "sheet_label": "40. Raum/Räum",
+   "row": 5,
+   "col": 5,
+   "rect": [
+    838,
+    816,
+    1012,
+    914
+   ],
+   "width": 174,
+   "height": 98,
+   "crop_file": "crops/40a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    836,
+    748,
+    921,
+    768
+   ],
+   "components": 3
+  },
+  {
+   "id": "41a",
+   "identity": 41,
+   "variant": "a",
+   "sheet_label": "41. Focalor/Forcalor/Furcalor",
+   "row": 5,
+   "col": 6,
+   "rect": [
+    1033,
+    801,
+    1197,
+    913
+   ],
+   "width": 164,
+   "height": 112,
+   "crop_file": "crops/41a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    1028,
+    748,
+    1150,
+    768
+   ],
+   "components": 1
+  },
+  {
+   "id": "42a",
+   "identity": 42,
+   "variant": "a",
+   "sheet_label": "42. Vepar/Vephar",
+   "row": 5,
+   "col": 7,
+   "rect": [
+    1223,
+    786,
+    1392,
+    923
+   ],
+   "width": 169,
+   "height": 137,
+   "crop_file": "crops/42a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    1220,
+    748,
+    1302,
+    768
+   ],
+   "components": 2
+  },
+  {
+   "id": "42b",
+   "identity": 42,
+   "variant": "b",
+   "sheet_label": "42b. Vepar/Vephar",
+   "row": 5,
+   "col": 8,
+   "rect": [
+    1419,
+    784,
+    1580,
+    921
+   ],
+   "width": 161,
+   "height": 137,
+   "crop_file": "crops/42b.png",
+   "crop_pad": 4,
+   "label_rect": [
+    1412,
+    748,
+    1514,
+    768
+   ],
+   "components": 1
+  },
+  {
+   "id": "43a",
+   "identity": 43,
+   "variant": "a",
+   "sheet_label": "43. Sabnock/Savnok",
+   "row": 5,
+   "col": 9,
+   "rect": [
+    1603,
+    793,
+    1772,
+    913
+   ],
+   "width": 169,
+   "height": 120,
+   "crop_file": "crops/43a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    1599,
+    748,
+    1695,
+    768
+   ],
+   "components": 2
+  },
+  {
+   "id": "44a",
+   "identity": 44,
+   "variant": "a",
+   "sheet_label": "44. Shan/Shax/Shaz/Shass",
+   "row": 5,
+   "col": 10,
+   "rect": [
+    1786,
+    798,
+    1961,
+    910
+   ],
+   "width": 175,
+   "height": 112,
+   "crop_file": "crops/44a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    1786,
+    748,
+    1910,
+    768
+   ],
+   "components": 2
+  },
+  {
+   "id": "45a",
+   "identity": 45,
+   "variant": "a",
+   "sheet_label": "45. Viné/Vinea",
+   "row": 6,
+   "col": 1,
+   "rect": [
+    121,
+    973,
+    251,
+    1106
+   ],
+   "width": 130,
+   "height": 133,
+   "crop_file": "crops/45a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    99,
+    932,
+    178,
+    950
+   ],
+   "components": 5
+  },
+  {
+   "id": "46a",
+   "identity": 46,
+   "variant": "a",
+   "sheet_label": "46. Bifrons/Bifröus/Bifrovs",
+   "row": 6,
+   "col": 2,
+   "rect": [
+    288,
+    977,
+    451,
+    1110
+   ],
+   "width": 163,
+   "height": 133,
+   "crop_file": "crops/46a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    281,
+    932,
+    398,
+    950
+   ],
+   "components": 4
+  },
+  {
+   "id": "47a",
+   "identity": 47,
+   "variant": "a",
+   "sheet_label": "47. Uvall/Vual/Voval",
+   "row": 6,
+   "col": 3,
+   "rect": [
+    466,
+    980,
+    629,
+    1114
+   ],
+   "width": 163,
+   "height": 134,
+   "crop_file": "crops/47a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    462,
+    932,
+    553,
+    950
+   ],
+   "components": 1
+  },
+  {
+   "id": "47b",
+   "identity": 47,
+   "variant": "b",
+   "sheet_label": "47b. Uvall/Vual/Voval",
+   "row": 6,
+   "col": 4,
+   "rect": [
+    660,
+    966,
+    805,
+    1107
+   ],
+   "width": 145,
+   "height": 141,
+   "crop_file": "crops/47b.png",
+   "crop_pad": 4,
+   "label_rect": [
+    651,
+    932,
+    749,
+    950
+   ],
+   "components": 1
+  },
+  {
+   "id": "48a",
+   "identity": 48,
+   "variant": "a",
+   "sheet_label": "48. Haagenti",
+   "row": 6,
+   "col": 5,
+   "rect": [
+    841,
+    977,
+    1010,
+    1104
+   ],
+   "width": 169,
+   "height": 127,
+   "crop_file": "crops/48a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    841,
+    932,
+    904,
+    950
+   ],
+   "components": 1
+  },
+  {
+   "id": "49a",
+   "identity": 49,
+   "variant": "a",
+   "sheet_label": "49. Crocell/Crokel",
+   "row": 6,
+   "col": 6,
+   "rect": [
+    1054,
+    964,
+    1178,
+    1107
+   ],
+   "width": 124,
+   "height": 143,
+   "crop_file": "crops/49a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    1028,
+    932,
+    1109,
+    950
+   ],
+   "components": 1
+  },
+  {
+   "id": "50a",
+   "identity": 50,
+   "variant": "a",
+   "sheet_label": "50. Furcas",
+   "row": 6,
+   "col": 7,
+   "rect": [
+    1257,
+    966,
+    1370,
+    1104
+   ],
+   "width": 113,
+   "height": 138,
+   "crop_file": "crops/50a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    1224,
+    932,
+    1274,
+    950
+   ],
+   "components": 4
+  },
+  {
+   "id": "51a",
+   "identity": 51,
+   "variant": "a",
+   "sheet_label": "51. Balam/Balaam",
+   "row": 6,
+   "col": 8,
+   "rect": [
+    1418,
+    972,
+    1580,
+    1100
+   ],
+   "width": 162,
+   "height": 128,
+   "crop_file": "crops/51a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    1409,
+    932,
+    1501,
+    950
+   ],
+   "components": 1
+  },
+  {
+   "id": "52a",
+   "identity": 52,
+   "variant": "a",
+   "sheet_label": "52. Alloces/Alocas",
+   "row": 6,
+   "col": 9,
+   "rect": [
+    1612,
+    962,
+    1758,
+    1107
+   ],
+   "width": 146,
+   "height": 145,
+   "crop_file": "crops/52a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    1598,
+    932,
+    1684,
+    950
+   ],
+   "components": 1
+  },
+  {
+   "id": "53a",
+   "identity": 53,
+   "variant": "a",
+   "sheet_label": "53. Camio/Caim",
+   "row": 6,
+   "col": 10,
+   "rect": [
+    1791,
+    967,
+    1951,
+    1100
+   ],
+   "width": 160,
+   "height": 133,
+   "crop_file": "crops/53a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    1787,
+    932,
+    1856,
+    950
+   ],
+   "components": 6
+  },
+  {
+   "id": "54a",
+   "identity": 54,
+   "variant": "a",
+   "sheet_label": "54. Murmur/Murmus/Murmux",
+   "row": 7,
+   "col": 1,
+   "rect": [
+    103,
+    1163,
+    262,
+    1278
+   ],
+   "width": 159,
+   "height": 115,
+   "crop_file": "crops/54a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    96,
+    1117,
+    227,
+    1137
+   ],
+   "components": 2
+  },
+  {
+   "id": "55a",
+   "identity": 55,
+   "variant": "a",
+   "sheet_label": "55. Orobas",
+   "row": 7,
+   "col": 2,
+   "rect": [
+    288,
+    1154,
+    456,
+    1286
+   ],
+   "width": 168,
+   "height": 132,
+   "crop_file": "crops/55a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    283,
+    1117,
+    339,
+    1137
+   ],
+   "components": 3
+  },
+  {
+   "id": "56a",
+   "identity": 56,
+   "variant": "a",
+   "sheet_label": "56. Gremory/Gamori",
+   "row": 7,
+   "col": 3,
+   "rect": [
+    494,
+    1155,
+    618,
+    1299
+   ],
+   "width": 124,
+   "height": 144,
+   "crop_file": "crops/56a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    467,
+    1117,
+    560,
+    1137
+   ],
+   "components": 1
+  },
+  {
+   "id": "57a",
+   "identity": 57,
+   "variant": "a",
+   "sheet_label": "57. Osé/Voso/Oso",
+   "row": 7,
+   "col": 4,
+   "rect": [
+    673,
+    1151,
+    808,
+    1299
+   ],
+   "width": 135,
+   "height": 148,
+   "crop_file": "crops/57a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    651,
+    1117,
+    739,
+    1137
+   ],
+   "components": 2
+  },
+  {
+   "id": "58a",
+   "identity": 58,
+   "variant": "a",
+   "sheet_label": "58. Amy/Avnas",
+   "row": 7,
+   "col": 5,
+   "rect": [
+    838,
+    1156,
+    1012,
+    1290
+   ],
+   "width": 174,
+   "height": 134,
+   "crop_file": "crops/58a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    838,
+    1117,
+    913,
+    1137
+   ],
+   "components": 1
+  },
+  {
+   "id": "59a",
+   "identity": 59,
+   "variant": "a",
+   "sheet_label": "59. Oriax/Orias",
+   "row": 7,
+   "col": 6,
+   "rect": [
+    1032,
+    1150,
+    1197,
+    1296
+   ],
+   "width": 165,
+   "height": 146,
+   "crop_file": "crops/59a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    1026,
+    1117,
+    1098,
+    1137
+   ],
+   "components": 1
+  },
+  {
+   "id": "60a",
+   "identity": 60,
+   "variant": "a",
+   "sheet_label": "60. Vapula/Naphula",
+   "row": 7,
+   "col": 7,
+   "rect": [
+    1225,
+    1151,
+    1377,
+    1297
+   ],
+   "width": 152,
+   "height": 146,
+   "crop_file": "crops/60a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    1210,
+    1117,
+    1295,
+    1137
+   ],
+   "components": 1
+  },
+  {
+   "id": "61a",
+   "identity": 61,
+   "variant": "a",
+   "sheet_label": "61. Zagan",
+   "row": 7,
+   "col": 8,
+   "rect": [
+    1402,
+    1191,
+    1569,
+    1253
+   ],
+   "width": 167,
+   "height": 62,
+   "crop_file": "crops/61a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    1400,
+    1117,
+    1448,
+    1137
+   ],
+   "components": 1
+  },
+  {
+   "id": "62a",
+   "identity": 62,
+   "variant": "a",
+   "sheet_label": "62. Volac/Valak/Valu/Ualac/Valac",
+   "row": 7,
+   "col": 9,
+   "rect": [
+    1590,
+    1158,
+    1761,
+    1277
+   ],
+   "width": 171,
+   "height": 119,
+   "crop_file": "crops/62a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    1589,
+    1117,
+    1741,
+    1137
+   ],
+   "components": 1
+  },
+  {
+   "id": "63a",
+   "identity": 63,
+   "variant": "a",
+   "sheet_label": "63. Andras",
+   "row": 7,
+   "col": 10,
+   "rect": [
+    1792,
+    1149,
+    1943,
+    1287
+   ],
+   "width": 151,
+   "height": 138,
+   "crop_file": "crops/63a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    1780,
+    1117,
+    1836,
+    1137
+   ],
+   "components": 1
+  },
+  {
+   "id": "64a",
+   "identity": 64,
+   "variant": "a",
+   "sheet_label": "64. Haures/Hauras/Havres/Flauros",
+   "row": 8,
+   "col": 1,
+   "rect": [
+    103,
+    1333,
+    243,
+    1472
+   ],
+   "width": 140,
+   "height": 139,
+   "crop_file": "crops/64a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    88,
+    1300,
+    236,
+    1326
+   ],
+   "components": 1
+  },
+  {
+   "id": "65a",
+   "identity": 65,
+   "variant": "a",
+   "sheet_label": "65. Andrealphus",
+   "row": 8,
+   "col": 2,
+   "rect": [
+    279,
+    1336,
+    443,
+    1474
+   ],
+   "width": 164,
+   "height": 138,
+   "crop_file": "crops/65a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    271,
+    1300,
+    352,
+    1326
+   ],
+   "components": 1
+  },
+  {
+   "id": "66a",
+   "identity": 66,
+   "variant": "a",
+   "sheet_label": "66. Cimejes/Cimeies/Kimaris",
+   "row": 8,
+   "col": 3,
+   "rect": [
+    466,
+    1361,
+    633,
+    1461
+   ],
+   "width": 167,
+   "height": 100,
+   "crop_file": "crops/66a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    458,
+    1300,
+    588,
+    1326
+   ],
+   "components": 1
+  },
+  {
+   "id": "67a",
+   "identity": 67,
+   "variant": "a",
+   "sheet_label": "67. Amdusias/Amdukias",
+   "row": 8,
+   "col": 4,
+   "rect": [
+    651,
+    1344,
+    818,
+    1478
+   ],
+   "width": 167,
+   "height": 134,
+   "crop_file": "crops/67a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    648,
+    1300,
+    756,
+    1326
+   ],
+   "components": 4
+  },
+  {
+   "id": "68a",
+   "identity": 68,
+   "variant": "a",
+   "sheet_label": "68. Belial",
+   "row": 8,
+   "col": 5,
+   "rect": [
+    845,
+    1349,
+    1006,
+    1482
+   ],
+   "width": 161,
+   "height": 133,
+   "crop_file": "crops/68a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    838,
+    1300,
+    882,
+    1326
+   ],
+   "components": 1
+  },
+  {
+   "id": "69a",
+   "identity": 69,
+   "variant": "a",
+   "sheet_label": "69. Decarabia",
+   "row": 8,
+   "col": 6,
+   "rect": [
+    1032,
+    1340,
+    1187,
+    1485
+   ],
+   "width": 155,
+   "height": 145,
+   "crop_file": "crops/69a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    1023,
+    1300,
+    1085,
+    1326
+   ],
+   "components": 5
+  },
+  {
+   "id": "70a",
+   "identity": 70,
+   "variant": "a",
+   "sheet_label": "70. Seere/Sear/Seir",
+   "row": 8,
+   "col": 7,
+   "rect": [
+    1217,
+    1340,
+    1380,
+    1486
+   ],
+   "width": 163,
+   "height": 146,
+   "crop_file": "crops/70a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    1213,
+    1300,
+    1300,
+    1326
+   ],
+   "components": 1
+  },
+  {
+   "id": "70b",
+   "identity": 70,
+   "variant": "b",
+   "sheet_label": "70b. Seere/Sear/Seir",
+   "row": 8,
+   "col": 8,
+   "rect": [
+    1407,
+    1340,
+    1571,
+    1487
+   ],
+   "width": 164,
+   "height": 147,
+   "crop_file": "crops/70b.png",
+   "crop_pad": 4,
+   "label_rect": [
+    1402,
+    1300,
+    1502,
+    1326
+   ],
+   "components": 1
+  },
+  {
+   "id": "71a",
+   "identity": 71,
+   "variant": "a",
+   "sheet_label": "71. Dantalion",
+   "row": 8,
+   "col": 9,
+   "rect": [
+    1601,
+    1350,
+    1767,
+    1481
+   ],
+   "width": 166,
+   "height": 131,
+   "crop_file": "crops/71a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    1593,
+    1300,
+    1658,
+    1326
+   ],
+   "components": 5
+  },
+  {
+   "id": "72a",
+   "identity": 72,
+   "variant": "a",
+   "sheet_label": "72. Andromalius",
+   "row": 8,
+   "col": 10,
+   "rect": [
+    1789,
+    1346,
+    1945,
+    1486
+   ],
+   "width": 156,
+   "height": 140,
+   "crop_file": "crops/72a.png",
+   "crop_pad": 4,
+   "label_rect": [
+    1781,
+    1300,
+    1853,
+    1326
+   ],
+   "components": 1
+  }
+ ]
+}

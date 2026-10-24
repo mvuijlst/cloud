@@ -1,0 +1,219 @@
+Heinrich Cornelius Agrippa, De occulta philosophia libri tres, Liber II, Cap. XXII
+"De Planetarum mensulis, earumque uirtutibus & formulis, & quae illis praeficiantur
+diuina nomina, intelligentiae & daemonia."
+
+SOURCE AND METHOD
+  Edition : [Cologne : Johann Soter], [July] 1533 (first complete edition; VD16 ZV 269),
+            pp. CXLV (bottom) - CLIII.
+  Copy    : Wellcome Collection, London (Sierra b21416412), scanned at 600 ppi by
+            ProQuest "Early European Books"; Internet Archive item hin-wel-all-00001912-001,
+            leaves 167-175 (0-based file numbers _0167 .. _0175).
+            https://archive.org/details/hin-wel-all-00001912-001
+  Text    : no clean Latin transcription of Book II chapter 22 was found online (see
+            SOURCES.md). The text below was built from the OCR of the BSB/MDZ copy
+            (bsb11193457, Augsburg SuStB 2 Alt 3, hOCR from
+            https://api.digitale-sammlungen.de/ocr/bsb11193457/159 .. /167) and the OCR of
+            the Wellcome copy, and then corrected word by word against the page images of
+            the Wellcome copy (woodcuts/text_p145..p148*.jpg, names_*.jpg etc.). It is a
+            reading transcription, not a diplomatic one:
+              - long s printed as s; u/v and i/j left as printed (uirtutibus, Iouis);
+              - ae/oe ligatures and e-caudata printed as ae/oe;
+              - tildes, macrons and the -que / per / prae / -us abbreviations expanded
+                silently; "&" kept;
+              - punctuation and capitals follow the print, lightly regularised;
+              - original page breaks marked [CXLVI] etc.; printed marginal notes in
+                {braces}; the woodcut initial T of "Traduntur" is supplied.
+  Fetched : 2026-10-24.
+
+------------------------------------------------------------------------------------------
+
+[CXLV]
+
+De Planetarum mensulis, earumque uirtutibus & formulis, &
+quae illis praeficiantur diuina nomina, intelligentiae
+& daemonia.                                  Cap. XXII.
+
+Traduntur insuper a magis quaedam numerorum mensulae, planetis septem distributae, quas
+planetarum sacras tabulas uocant, multis admodum magnisque coelestium uirtutibus
+insignitas, quatenus repraesentant diuinam illam coelestium numerorum ratio-[CXLVI]nem
+a diuinae mentis ideis per rationem animae mundi coelestibus impressam, illorumque
+suauissimam coelestium radiorum harmoniam, secundum effigierum proportionem,
+intelligentias supramundanas consignificantium, quae aliter exprimi non possunt, quam
+per notas numerorum & characterum: nihil enim materiales numeri & figurae possunt in
+mysteriis rerum abditarum, nisi repraesentatiue per numeros & figuras formales, quatenus
+reguntur & informantur ab intelligentiis & numerationibus diuinis, quae nectunt extrema
+materiae atque spiritus ad uoluntatem animae eleuatae, per magnum affectum operantis
+coelesti uirtute, potestatem accipiens a deo, per animam uniuersi & coelestium
+constellationum obseruationes in materiam applicatam ad formam conuenientem, dispositis
+mediis solertia & scientia magicali: sed nunc ad tabulas singulatim explicandas
+properemus.
+
+{Saturni tabula.} Harum prima Saturno adsignata, ex quadrato ternario constat, continens
+numeros particulares nouem, & in qualibet linea tres quaquauersum, & per utramque
+diametrum constituentes quindecim: tota autem numerorum summa, quadragintaquinque. Huic
+ex diuinis nominibus praeficiuntur, praedictos numeros implentia nomina, cum
+intelligentia ad bonum & daemonio ad malum: eliciturque ex eisdem numeris signaculum
+siue character Saturni & spirituum eius, quales inferius suae tabulae adscribemus. Dicunt
+hanc tabulam fortunato Saturno in lamina plumbea sculptam, adiuuare partum, reddere
+hominem tutum & potentem, atque praestare successus petitionum apud principes &
+potestates: si uero infortunato Saturno fiat, impedire aedificia & plantationes &
+consimilia, hominem deiicere ab honoribus & dignitatibus, gignere rixas & discordias, &
+dispergere exercitus.
+
+{Iouis tabula.} Secunda dicitur tabula Iouis, quae constat quaternario in se ducto,
+continens numeros particulares sexdecim, & in quauis linea atque diametro quatuor,
+constituentes trigintaquatuor: omnium autem summa centum trigintasex. Et praesunt illi
+nomina diuina cum intelligentia ad bonum, cum daemonio ad malum, & elicitur ex ea
+character Iouis & spirituum eius. Ferunt illam si Ioue potente dominanteque argenteae
+laminae fuerit impressa, conferre lucrum & diuitias, gratiam & amorem, pacem &
+concordiam hominum, & placare inimicos, confirmare honores & dignitates & consilia: &
+dissoluere maleficia, si in corallio insculpta fuerit.
+
+{Martis tabula.} Tertia tabula ad Martem spectat, quae quinario quadrato constituitur,
+complectens numeros XXV. & ex his in quouis latere & diametro quinque, qui faciunt
+sexagintaquinque: & omnium summa est CCCXXV. Et praesunt illi nomina diuina cum
+intelligentia ad bonum, & daemonio ad malum, & elicitur ex ea character Martis &
+spirituum eius. Haec fortunato Marte in lamina ferrea aut ense sculpta, potentem facit
+in bello & iudiciis, & petitionibus, & terribilem aduersariis suis, & uictoriam praestat
+aduersus hostes: & si in lapide corneola sculpta sit, stringit sanguinem & menstrua: si
+uero infortunato Marte sculpatur in lamina aeris rubri, impedit aedificia, deiicit
+potentes a dignitatibus & honoribus & diuitiis, generat discordiam & lites & odia
+hominum & bestiarum, fugat apes & columbas & pisces, & impedit molendina, & infortunat
+euntes ad uenati-[CXLVII]ones & praelia, & generat sterilitatem in uiris & mulieribus &
+caeteris animantibus, aduersariisque omnibus timorem incutit, & ad reuerentiam
+exhibendam compellit.
+
+{Solis tabula.} Quarta tabula solis, ex quadrato senario constituta est, & continet
+numeros triginta sex, quorum sex in quolibet latere & diametro, producunt centum &
+undecim, & summa omnium sexcentum sexaginta sex. Praesunt illi nomina diuina cum
+intelligentia ad bonum, & daemonio ad malum, & eliciuntur ex ea characteres solis &
+spirituum eius. Haec fortunato sole in lamina aurea sculpta, reddit gestantem gloriosum,
+amabilem, gratum, potentem in omnibus operibus, & comparat hominem regibus &
+principibus, eleuans eum ad sublimia fortunae fastigia, impetrare faciens quicquid
+uoluerit: sole autem infortunato, facit tyrannum, superbum, ambitiosum, inexplebilem, &
+malo fine terminantem.
+
+{Veneris tabula.} Quinta tabula Veneris est, constans septenario in se ducto, numeris
+uidelicet quadragintanouem, quorum septem in omni latere & diametro constituunt centum &
+septuagintaquinque: & summa omnium mille ducenta uiginti quinque. Et praesunt illi
+nomina diuina cum intelligentia ad bonum & daemonio ad malum, & elicitur ex ea character
+Veneris & spirituum eius. Haec fortunata Venere in lamina argenti sculpta, conciliat
+concordiam, dirimit lites, largitur amores mulierum, confert ad conceptum, pellit
+sterilitatem, reddit potentes in coitu, & dissoluit maleficia, & pacem generat inter
+uirum & mulierem, & quorumcunque animalium & pecorum greges copioso partu foecundat: &
+posita in columbari, multiplicat columbas. Confert aduersus omnes aegritudines
+melancholicas, & generat laetitiam, & gestata fortunat itinerantes: quod si infortunata
+Venere in aere formetur, omnibus praedictis contraria facit.
+
+{Mercurij tabula.} Sexta tabula Mercurii est, ex octonario in se ducto resultans, numeros
+continens sexagintaquatuor, quorum octo in quouis latere & per utranque diametrum
+faciunt ducenta & sexaginta: & summa omnium duo milia octoginta. Et praesunt illi nomina
+diuina cum intelligentia ad bonum, & daemonio ad malum, & elicitur ex ea character
+Mercurii & spirituum eius: & si fuerit Mercurio fortunato sculpta in argento uel stanno,
+uel aere citrino, uel inscripta in pergameno uirgineo, reddit gestantem gratum,
+fortunatum ad impetrandum quicquid uoluerit: confert lucrum & pellit inopiam, confert
+memoriam & intellectum, & diuinationem, & notitiam occultorum per somnia: & si fuerit
+Mercurius infortunatus, facit his omnibus contraria.
+
+{Lunae tabula.} Septima tabula Lunae est, constans ex nouenario in se multiplicato,
+habens numeros octoginta & unum, in quolibet latere & diametro nouem, producentes
+tercentum sexaginta nouem: & omnium summa est, tria milia trecenta & uigintiunum. Et
+praesunt illi nomina diuina cum intelligentia ad bonum, & daemonio ad malum: &
+eliciuntur ex ea characteres Lunae & spirituum eius. Haec fortunata Luna in argento
+sculpta, facit gestantem gratum, amabilem, iucundum, alacrem, honoratum, auferens omnem
+malitiam & malam uoluntatem: praestat securitatem in itinere, & [CXLVIII] profectum
+diuitiarum, & corporis sanitatem, & pellit inimicos & alias res nociuas de quocunque
+loco uolueris: & si Luna infortunata fiat in lamina plumbea, ubicunque fuerit
+subhumata, infortunat locum illum, & habitantes & conuersantes in eo: similiter naues,
+fontes, flumina, molendina: & infortunat omnem hominem, aduersus quem rite facta fuerit,
+faciens illum profugum de terra & patria sua, & e loco mansionis suae ubi subhumata
+fuerit: & impedit medicos & oratores, & quoscunque homines in officio suo contra quos
+fuerit fabricata. Qualiter autem eliciantur signacula & characteres cum stellarum tum
+spirituum ex istis mensulis, sagax scrutator, & qui harum mensularum uerificationem
+intellexerit, facile inuenire poterit.
+
+------------------------------------------------------------------------------------------
+TABLES OF NAMES (p. CXLVIII - CXLIX), as printed: number . Latin transliteration . role .
+Hebrew (the Hebrew stands in the right-hand margin of the page). Where no Latin
+transliteration is printed the cell is left empty.
+
+                Nomina diuina respondentia numeris Saturni.
+  3.    Ab.                                                        אב
+  9.    Hod.                                                       הד
+  15.   Iah.                                                       יה
+  15.   Hod.                                                       הוד
+  45.   Tetragrammaton extensum.                                   יוד הא ואו הא
+  45.   Agiel.                 Intelligentia Saturni.              אגיאל
+  45.   Zazel.                 Daemonium Saturni.                  זאזל
+
+                Nomina diuina respondentia numeris Iouis.
+  4.    Abba.                                                      אבא
+  16.   -                                                          הוה
+  16.   -                                                          אהי
+  34.   El Ab.                                                     אל אב
+  136.  Iohphiel.              Intelligentia Iouis.                יהפיאל
+  136.  Hismael.               Daemonium Iouis.                    הסמאל
+
+                Nomina respondentia numeris Martis.
+  5.    He litera nominis sancti.                                  ה
+  25.   -                                                          יהי
+  65.   Adonai.                                                    אדני
+  325.  Graphiel.              Intelligentia Martis.               גראפיאל
+  325.  Barzabel.              Daemonium Martis.                   ברצאבאל
+
+                Nomina respondentia numeris Solis.
+  6.    Vau, litera nominis sancti.                                ו
+  6.    He extensum, litera nominis sancti.                        הא
+  36.   Eloh.                                                      אלה
+  111.  Nachiel.               Intelligentia Solis.                נכיאל
+  666.  Sorath.                Daemonium Solis.                    סורת
+
+                Nomina respondentia numeris Veneris.
+  7.    -                                                          אהא
+  49.   Hagiel.                Intelligentia Veneris.              הגיאל
+  157.  Kedemel.               Daemonium Veneris.                  קדמאל
+  1252. Bne Seraphim.          Intelligentiae Veneris.             בני שרפים
+
+                Nomina respondentia numeris Mercurii.
+  8.    Asboga. Octonarius extensus.                               אזבוגה
+  64.   Din.                                                       דין
+  64.   Doni.                                                      דני
+  260.  Tiriel.                Intelligentia Mercurij.             טיריאל
+  2080. Taphthartharath.       Daemonium Mercurij.                 תפתרתרת
+
+[CXLIX]         Nomina respondentia numeris Lunae.
+  9     Hod                                                        הד
+  81    Elim                                                       אלים
+  369   Hasmodai,              Daemonium Lunae.                    השמודאי
+  3321  Schedbarschemoth Schartathan, Daemonium daemoniorum Lunae. שדברשהמעת שרתתן
+  3321  Malcha betharsisim hed beruah schehakim.
+                               Intelligentia intelligentiarum Lunae.
+                                                                   מלכא בתרשיתים עד ברוח שחקים
+
+------------------------------------------------------------------------------------------
+WOODCUT CAPTIONS (pp. CXLIX - CLIII); each caption stands above its figure. The squares
+themselves are transcribed in agrippa_II22_tables.json.
+
+[CXLIX]  Tabula Saturni in abaco.            In notis Hebraicis.
+         Signacula siue characteres, / Saturni, / Intelligentiae Saturni, / Daemonij Saturni.
+         Tabula Iouis in abaco.              In notis Hebraicis.
+         Signacula siue characteres / Iouis, / Intelligentiae Iouis, / Daemonij Iouis.
+[CL]     Tabula Martis in abaco.             In notis Hebraicis.
+         Signacula siue characteres / Martis. / Intelligentiae Martis. / Daemonij Martis.
+         Tabula Solis in abaco.              In notis Hebraicis.
+         Signacula siue characteres / Solis, / Intelligentiae Solis, / Daemonij Solis.
+[CLI]    Tabula Veneris in abaco.            Signacula siue characteres Veneris.
+         Intelligentiae Veneris.
+         Tabula Veneris in notis Hebraicis.  Daemonij Veneris.
+         Intelligentiarum Veneris.
+[CLII]   Tabula Mercurij in abaco.           Signacula siue characteres Mercurij.
+         Intelligentiae Mercurij.
+         Tabula Mercurij in notis Hebraicis. Daemonij Mercurij.
+[CLIII]  Tabula Lunae in abaco.              Signacula siue characteres Lunae.
+         Daemonij Lunae.
+         Tabula Lunae in notis Hebraicis.    Daemonij daemoniorum Lunae.
+         Intelligentiae Intelligentiarum Lunae.
+
+(Chapter XXIII, "De Geometricis figuris atque corporibus ...", begins on p. CLIIII.)
+
+Note on the Wellcome copy: the running head of p. CXLIX is misprinted "CLXIX".

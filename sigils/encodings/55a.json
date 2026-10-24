@@ -1,0 +1,49 @@
+{
+ "id": "55a", "identity": 55, "variant": "a", "name": "Orobas",
+ "vocab": "1.0", "aspect": 1.273, "stroke": 0.030,
+ "family_by_eye": "compartment",
+ "members": [
+  {"t": "mirror", "axis": "x", "at": 0.44, "m": [
+   {"t": "line", "p": [0.115, 0.21, 0.115, 0.805]},
+   {"t": "ring", "c": [0.05, 0.78], "r": 0.046},
+   {"t": "ring", "c": [0.12, 0.845], "r": 0.047}
+  ]},
+  {"t": "line", "p": [0.115, 0.21, 0.772, 0.21]},
+  {"t": "line", "p": [0.115, 0.805, 0.772, 0.805]},
+  {"t": "repeat", "n": 3, "d": [0.34, 0], "m": [
+   {"t": "tri", "p": [[0.12, 0.07], [0.01, 0.21], [0.23, 0.21]], "fill": false},
+   {"t": "ring", "c": [0.12, 0.16], "r": 0.045}
+  ]},
+  {"t": "repeat", "n": 2, "d": [0.35, 0], "m": [
+   {"t": "ring", "c": [0.28, 0.145], "r": 0.037}
+  ]},
+  {"t": "mirror", "axis": "x", "at": 0.465, "m": [
+   {"t": "cross", "c": [0.303, 0.65], "s": 0.093, "flared": true},
+   {"t": "line", "p": [0.25, 0.28, 0.25, 0.46]}
+  ]},
+  {"t": "line", "p": [0.25, 0.37, 0.69, 0.37]},
+  {"t": "line", "p": [0.465, 0.21, 0.465, 0.69]},
+  {"t": "ring", "c": [0.465, 0.73], "r": 0.041},
+  {"t": "repeat", "n": 3, "d": [0, 0.0545], "m": [
+   {"t": "line", "p": [0.78, 0.456, 1.03, 0.456]}
+  ]},
+  {"t": "line", "p": [1.03, 0.51, 1.17, 0.51]},
+  {"t": "mirror", "axis": "y", "at": 0.495, "m": [
+   {"t": "bez", "p": [[0.78, 0.35], [0.92, 0.31], [1.03, 0.24], [1.06, 0.13]]},
+   {"t": "bez", "p": [[1.063, 0.12], [1.11, 0.25], [1.0, 0.38], [1.012, 0.495]]},
+   {"t": "spiral", "c": [0.988, 0.075], "r": [0.08, 0.012], "a": [30, -500]},
+   {"t": "line", "p": [1.065, 0.28, 1.112, 0.30]},
+   {"t": "spiral", "c": [1.16, 0.275], "r": [0.055, 0.01], "a": [150, -480]}
+  ]},
+  {"t": "pline", "p": [[1.134, 0.38], [1.21, 0.38]]},
+  {"t": "arc", "c": [1.21, 0.50], "r": [0.06, 0.118], "a": [270, 450]},
+  {"t": "pline", "p": [[1.21, 0.617], [1.134, 0.617]]},
+  {"t": "line", "p": [1.172, 0.41, 1.172, 0.59]}
+ ],
+ "escapes": [],
+ "wishes": [
+  "a brace or bracket (bowed spine with curled ends) as one member",
+  "a serifed key (bar with flared ends) as one member"
+ ],
+ "notes": "Square frame with paired rings at the two bottom corners; three outlined triangles each holding a ring stand on the top rail with a plain ring between each pair. Inside: a serifed T whose stem runs from the top rail to a ring near the bottom, and two flared crosses mirrored about it. To the right a large brace: two arms from the frame wall sweep into curls at top and bottom, a bowed spine joins them with a small curl inside each half, three bars cross from the wall to the spine, and the middle bar runs on to a D-shaped loop."
+}

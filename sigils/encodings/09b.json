@@ -1,0 +1,39 @@
+{
+ "id": "09b", "identity": 9, "variant": "b", "name": "Paimon",
+ "vocab": "1.0", "aspect": 1.427, "stroke": 0.041,
+ "family_by_eye": "comb",
+ "members": [
+  {"t": "repeat", "n": 4, "d": [0.263, 0], "m": [
+   {"t": "ring", "c": [0.28, 0.09], "r": 0.075},
+   {"t": "line", "p": [0.28, 0.16, 0.28, 0.22]}
+  ]},
+  {"t": "repeat", "n": 3, "d": [0.245, 0], "m": [
+   {"t": "arc", "c": [0.275, 0.33], "r": [0.125, 0.12], "a": [180, 360]},
+   {"t": "line", "p": [0.15, 0.33, 0.15, 0.478]}
+  ]},
+  {"t": "line", "p": [0.886, 0.35, 0.886, 0.478]},
+  {"t": "arc", "c": [1.045, 0.35], "r": [0.16, 0.14], "a": [180, 360]},
+  {"t": "line", "p": [1.205, 0.35, 1.205, 0.478]},
+  {"t": "repeat", "n": 4, "d": [0.235, 0], "m": [
+   {"t": "spiral", "c": [0.27, 0.385], "r": [0.075, 0.015], "a": [130, 600]}
+  ]},
+  {"t": "line", "p": [0.09, 0.478, 1.31, 0.478], "w": 0.05},
+  {"t": "ring", "c": [0.058, 0.39], "r": 0.062},
+  {"t": "ring", "c": [1.352, 0.432], "r": 0.058},
+  {"t": "repeat", "n": 3, "d": [0.245, 0], "m": [
+   {"t": "ring", "c": [0.48, 0.555], "r": 0.073}
+  ]},
+  {"t": "line", "p": [0.242, 0.478, 0.242, 0.73]},
+  {"t": "line", "p": [1.20, 0.478, 1.20, 0.73]},
+  {"t": "line", "p": [0.17, 0.727, 1.23, 0.727], "w": 0.05},
+  {"t": "ring", "c": [0.109, 0.71], "r": 0.068},
+  {"t": "ring", "c": [1.285, 0.725], "r": 0.064},
+  {"t": "line", "p": [0.242, 0.73, 0.205, 0.82]},
+  {"t": "spiral", "c": [0.30, 0.885], "r": [0.11, 0.015], "a": [210, -570]},
+  {"t": "line", "p": [1.20, 0.73, 1.14, 0.82]},
+  {"t": "spiral", "c": [1.035, 0.885], "r": [0.11, 0.015], "a": [-30, 570]}
+ ],
+ "escapes": [],
+ "wishes": [],
+ "notes": "Comb variant of Paimon: four rings on necks over four arches sharing legs (three equal, the fourth wider), a curl hanging in each arch, two thick rails with ring terminals, three rings hung from the upper rail, two uprights that run on below the lower rail into large inward spirals."
+}

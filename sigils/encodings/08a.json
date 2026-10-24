@@ -1,0 +1,25 @@
+{
+ "id": "08a", "identity": 8, "variant": "a", "name": "Barbatos",
+ "vocab": "1.0", "aspect": 1.266, "stroke": 0.032,
+ "family_by_eye": "compartment",
+ "members": [
+  {"t": "arc", "c": [0.633, 0.16], "r": [0.165, 0.152], "a": [180, 360]},
+  {"t": "cross", "c": [0.62, 0.456], "s": 0.235, "flared": true},
+  {"t": "line", "p": [0.045, 0.77, 1.215, 0.77]},
+  {"t": "line", "p": [0.097, 0.867, 1.163, 0.867]},
+  {"t": "mirror", "axis": "x", "at": 0.63, "m": [
+   {"t": "arc", "c": [0.35, 0.16], "r": 0.115, "a": [180, 360]},
+   {"t": "line", "p": [0.222, 0.16, 0.222, 0.96]},
+   {"t": "cross", "c": [0.3445, 0.218], "s": 0.07, "flared": true},
+   {"t": "line", "p": [0.097, 0.77, 0.097, 0.96]},
+   {"t": "line", "p": [0.468, 0.77, 0.468, 0.90]},
+   {"t": "tri", "p": [[0.045, 0.99], [0.15, 0.99], [0.097, 0.945]], "fill": true},
+   {"t": "tri", "p": [[0.165, 0.99], [0.275, 0.99], [0.22, 0.945]], "fill": true},
+   {"t": "tri", "p": [[0.39, 0.99], [0.55, 0.99], [0.468, 0.895]], "fill": true},
+   {"t": "spiral", "c": [0.08, 0.68], "r": [0.075, 0.015], "a": [120, 560]}
+  ]}
+ ],
+ "escapes": [],
+ "wishes": ["cross with per-arm lengths: the large cross's left arm is a third longer than its right arm"],
+ "notes": "Bilateral: a frame with a small arch each side of a large central arch, a small flared cross under each small arch, a large flared cross in the middle; below, a two-rail band on six posts with triangular feet, the top rail ending in an inward spiral at each side."
+}

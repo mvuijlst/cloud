@@ -1,0 +1,73 @@
+{
+ "features": [
+  "endpoints",
+  "junctions",
+  "cycle_rank",
+  "rings",
+  "enclosures",
+  "components_t128",
+  "ink_fraction",
+  "aspect",
+  "orient_h",
+  "orient_v",
+  "orient_diag",
+  "branch_straightness",
+  "sym_lr",
+  "sym_tb"
+ ],
+ "standardisation": {
+  "mean": [
+   2.8752654743734913,
+   3.4414141726868053,
+   2.4417351952265216,
+   2.192156539056917,
+   0.8992096279512678,
+   1.012076419085812,
+   0.23375874999999996,
+   1.2295287499999998,
+   0.3030112500000001,
+   0.3516450000000001,
+   0.34105250000000004,
+   0.73646625,
+   0.5999937500000002,
+   0.45452125
+  ],
+  "std": [
+   0.5792957421387883,
+   0.39119273008773575,
+   0.6522000091740877,
+   0.6711121840736478,
+   0.5525170596662127,
+   0.49736705673636483,
+   0.044838382142024964,
+   0.29873080841436345,
+   0.07069083490679091,
+   0.08016798697320505,
+   0.09967029368417946,
+   0.09275315720472169,
+   0.23068499419621444,
+   0.15904099626045953
+  ],
+  "log1p": [
+   "components_t128",
+   "cycle_rank",
+   "enclosures",
+   "endpoints",
+   "junctions",
+   "rings"
+  ]
+ },
+ "splits": 500,
+ "seed": 20261024,
+ "energy_distance": {
+  "median": 0.2657588513288158,
+  "p90": 0.3620396267197052,
+  "p95": 0.40883745049008663,
+  "max": 0.6108099337461912
+ },
+ "max_per_feature_ks": {
+  "median": 0.2836147592245153,
+  "p95": 0.38473822925042434
+ },
+ "rule": "A set of 80 generated drawings passes the distribution test if its energy distance to the 80 real drawings, on these standardised features, is at most the p95 value above, and no single feature has a two-sample KS statistic above the p95 value above."
+}

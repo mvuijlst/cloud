@@ -1,0 +1,36 @@
+{
+ "id": "63a", "identity": 63, "variant": "a", "name": "Andras",
+ "vocab": "1.0", "aspect": 1.094, "stroke": 0.029,
+ "family_by_eye": "comb",
+ "members": [
+  {"t": "mirror", "axis": "x", "at": 0.565, "m": [
+   {"t": "line", "p": [0.105, 0.13, 0.475, 0.13]},
+   {"t": "line", "p": [0.475, 0.13, 0.475, 0.007]},
+   {"t": "ring", "c": [0.19, 0.069], "r": 0.047},
+   {"t": "ring", "c": [0.088, 0.13], "r": 0.033},
+   {"t": "line", "p": [0.167, 0.13, 0.167, 0.70]},
+   {"t": "arc", "c": [0.265, 0.70], "r": 0.10, "a": [0, 180]},
+   {"t": "line", "p": [0.362, 0.632, 0.365, 0.70]},
+   {"t": "pline", "p": [[0.342, 0.49], [0.312, 0.56], [0.292, 0.675], [0.362, 0.632], [0.43, 0.675], [0.39, 0.57]], "closed": true, "fill": true},
+   {"t": "line", "p": [0.257, 0.335, 0.257, 0.498]},
+   {"t": "line", "p": [0.215, 0.335, 0.30, 0.335]},
+   {"t": "line", "p": [0.21, 0.498, 0.30, 0.498]},
+   {"t": "cross", "c": [0.406, 0.348], "s": 0.062, "flared": true},
+   {"t": "ring", "c": [0.406, 0.20], "r": 0.051},
+   {"t": "line", "p": [0.406, 0.22, 0.406, 0.25]}
+  ]},
+  {"t": "line", "p": [0.475, 0.007, 0.663, 0.007]},
+  {"t": "line", "p": [0.08, 0.272, 1.022, 0.272]},
+  {"t": "line", "p": [0.072, 0.44, 1.036, 0.44]},
+  {"t": "ring", "c": [0.052, 0.268], "r": 0.041},
+  {"t": "ring", "c": [0.05, 0.435], "r": 0.04},
+  {"t": "arc", "c": [0.99, 0.356], "r": 0.07, "a": [-90, 90]},
+  {"t": "ring", "c": [0.5635, 0.397], "r": 0.046},
+  {"t": "line", "p": [0.562, 0.44, 0.562, 0.84]},
+  {"t": "cross", "c": [0.562, 0.565], "s": 0.115, "flared": true},
+  {"t": "pline", "p": [[0.558, 0.84], [0.40, 0.986], [0.716, 0.986]], "closed": true}
+ ],
+ "escapes": [],
+ "wishes": ["cross with per-arm flare flags: the big central cross has a plain stem above instead of a flared top arm", "arrowhead with a notched base: encoded as a filled pline"],
+ "notes": "Three-rail comb, bilaterally symmetric: top rail with a raised bay in the middle, rings on and at the ends of the rails, posts descending into J hooks whose tails carry notched arrowheads; bay 2 holds serifed I-posts and flared crosses under rings; ring on the lowest rail feeds a stem through a big flared cross to an outlined triangle; a D-loop closes the right end."
+}

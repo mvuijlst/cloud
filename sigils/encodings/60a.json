@@ -1,0 +1,31 @@
+{
+ "id": "60a", "identity": 60, "variant": "a", "name": "Vapula/Naphula",
+ "vocab": "1.0", "aspect": 1.041, "stroke": 0.027,
+ "family_by_eye": "bowl",
+ "members": [
+  {"t": "mirror", "axis": "x", "at": 0.517, "m": [
+   {"t": "line", "p": [0.22, 0.168, 0.22, 0.715]},
+   {"t": "line", "p": [0.22, 0.168, 0.37, 0.168]},
+   {"t": "line", "p": [0.215, 0.709, 0.517, 0.709]},
+   {"t": "line", "p": [0.37, 0.168, 0.37, 0.45]},
+   {"t": "tri", "p": [[0.37, 0.43], [0.298, 0.495], [0.445, 0.495]], "fill": true},
+   {"t": "line", "p": [0.37, 0.356, 0.517, 0.356]},
+   {"t": "arc", "c": [0.462, 0.075], "r": 0.055, "a": [180, 360]},
+   {"t": "bez", "p": [[0.407, 0.075], [0.405, 0.16], [0.455, 0.235], [0.517, 0.26]]},
+   {"t": "ring", "c": [0.322, 0.752], "r": 0.045},
+   {"t": "arc", "c": [0.127, 0.195], "r": [0.093, 0.088], "a": [180, 360]},
+   {"t": "line", "p": [0.034, 0.19, 0.07, 0.232]},
+   {"t": "repeat", "n": 7, "d": [0, 0.079], "m": [
+    {"t": "arc", "c": [0.062, 0.2695], "r": 0.042, "a": [71, 289]}
+   ]},
+   {"t": "line", "p": [0.215, 0.715, 0.172, 0.746]},
+   {"t": "spiral", "c": [0.142, 0.807], "r": [0.07, 0.021], "a": [-60, 563]}
+  ]},
+  {"t": "line", "p": [0.517, 0.25, 0.517, 0.356]},
+  {"t": "line", "p": [0.512, 0.71, 0.512, 0.76]},
+  {"t": "cross", "c": [0.512, 0.853], "s": 0.12, "flared": true}
+ ],
+ "escapes": [],
+ "wishes": ["cross with per-arm flare flags: the bottom cross has a plain stem up to the rail instead of a flared top arm", "a single flared arm or serif-foot primitive: the inner posts end in cross-pattee feet, approximated here by filled tri"],
+ "notes": "Symmetric frame with two inner posts on flared feet and a crossbar; a heart (two lobe arcs plus convex cheeks) hangs on a stem into the crossbar; rings under the sill and a flared cross below on a stem; each flank is an arch descending into seven repeated scallops that run into a clockwise curl joined to the frame's foot."
+}

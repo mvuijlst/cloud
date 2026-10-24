@@ -1,0 +1,21 @@
+{
+ "id": "12a", "identity": 12, "variant": "a", "name": "Sitri",
+ "vocab": "1.0", "aspect": 1.189, "stroke": 0.030,
+ "family_by_eye": "bowl",
+ "members": [
+  {"t": "line", "p": [0.10, 0.39, 1.08, 0.39]},
+  {"t": "repeat", "n": 3, "d": [0.34, 0], "m": [
+   {"t": "cross", "c": [0.25, 0.15], "s": 0.15, "flared": true},
+   {"t": "line", "p": [0.25, 0.28, 0.25, 0.40]}
+  ]},
+  {"t": "mirror", "axis": "x", "at": 0.59, "m": [
+   {"t": "ring", "c": [0.05, 0.39], "r": 0.051},
+   {"t": "ring", "c": [0.43, 0.455], "r": 0.066},
+   {"t": "line", "p": [0.24, 0.40, 0.24, 0.62]}
+  ]},
+  {"t": "arc", "c": [0.59, 0.62], "r": [0.35, 0.24], "a": [0, 180]},
+  {"t": "ring", "c": [0.59, 0.92], "r": 0.067}
+ ],
+ "escapes": [],
+ "notes": "Rail with ring ends, three flared crosses on stems above, two rings under the rail, U-shaped bowl with a ring at its foot."
+}

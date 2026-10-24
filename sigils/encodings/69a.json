@@ -1,0 +1,133 @@
+{
+ "id": "69a",
+ "identity": 69,
+ "variant": "a",
+ "name": "Decarabia",
+ "vocab": "1.0",
+ "aspect": 1.069,
+ "stroke": 0.028,
+ "family_by_eye": "radial",
+ "members": [
+  {
+   "t": "line",
+   "p": [
+    0.226,
+    0.148,
+    0.894,
+    0.852
+   ]
+  },
+  {
+   "t": "line",
+   "p": [
+    0.216,
+    0.826,
+    0.924,
+    0.156
+   ]
+  },
+  {
+   "t": "ring",
+   "c": [
+    0.18,
+    0.1
+   ],
+   "r": 0.062
+  },
+  {
+   "t": "ring",
+   "c": [
+    0.97,
+    0.1
+   ],
+   "r": 0.065
+  },
+  {
+   "t": "ring",
+   "c": [
+    0.17,
+    0.87
+   ],
+   "r": 0.062
+  },
+  {
+   "t": "ring",
+   "c": [
+    0.94,
+    0.9
+   ],
+   "r": 0.072
+  },
+  {
+   "t": "crescent",
+   "c": [
+    0.585,
+    0.195
+   ],
+   "r": 0.165,
+   "ri": 0.142,
+   "k": 0.216,
+   "rot": -45
+  },
+  {
+   "t": "crescent",
+   "c": [
+    0.165,
+    0.49
+   ],
+   "r": 0.165,
+   "ri": 0.142,
+   "k": 0.216,
+   "rot": 0
+  },
+  {
+   "t": "crescent",
+   "c": [
+    0.55,
+    0.825
+   ],
+   "r": 0.165,
+   "ri": 0.142,
+   "k": 0.216,
+   "rot": -50
+  },
+  {
+   "t": "cross",
+   "c": [
+    0.835,
+    0.515
+   ],
+   "s": 0.23,
+   "flared": true
+  },
+  {
+   "t": "line",
+   "p": [
+    0.22,
+    0.5,
+    0.4,
+    0.5
+   ]
+  },
+  {
+   "t": "tri",
+   "p": [
+    [
+     0.36,
+     0.5
+    ],
+    [
+     0.44,
+     0.39
+    ],
+    [
+     0.44,
+     0.61
+    ]
+   ],
+   "fill": true
+  }
+ ],
+ "escapes": [],
+ "notes": "Saltire between four rings; three thin crescents with long horns (near-annular, gap about 50 degrees) and one large flared cross in the quadrants; a flared key from the left crescent. Five rounds were spent here because the crescent primitive itself was being developed."
+}

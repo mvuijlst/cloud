@@ -1,0 +1,16 @@
+{
+ "chosen_on": "2026-10-24, from the 80 thumbnails, before the encodings were scored against clusters",
+ "families": ["axial", "comb", "bowl", "compartment", "radial", "cursive"],
+ "by_identity": {
+  "1": "axial", "2": "bowl", "3": "axial", "4": "axial", "5": "axial", "6": "cursive", "7": "compartment", "8": "compartment",
+  "9": "comb", "10": "axial", "11": "comb", "12": "bowl", "13": "cursive", "14": "bowl", "15": "comb", "16": "axial",
+  "17": "compartment", "18": "cursive", "19": "comb", "20": "axial", "21": "axial", "22": "axial", "23": "bowl", "24": "comb",
+  "25": "compartment", "26": "cursive", "27": "comb", "28": "compartment", "29": "radial", "30": "compartment", "31": "axial", "32": "cursive",
+  "33": "compartment", "34": "axial", "35": "axial", "36": "compartment", "37": "compartment", "38": "compartment", "39": "compartment", "40": "compartment",
+  "41": "radial", "42": "bowl", "43": "axial", "44": "compartment", "45": "bowl", "46": "bowl", "47": "compartment", "48": "compartment",
+  "49": "bowl", "50": "comb", "51": "axial", "52": "compartment", "53": "cursive", "54": "radial", "55": "compartment", "56": "bowl",
+  "57": "radial", "58": "compartment", "59": "axial", "60": "bowl", "61": "comb", "62": "radial", "63": "comb", "64": "bowl",
+  "65": "compartment", "66": "compartment", "67": "compartment", "68": "compartment", "69": "radial", "70": "cursive", "71": "comb", "72": "axial"
+ },
+ "variant_overrides": {"26b": "comb"}
+}

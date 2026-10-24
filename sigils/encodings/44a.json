@@ -1,0 +1,51 @@
+{
+ "id": "44a", "identity": 44, "variant": "a", "name": "Shan",
+ "vocab": "1.0", "aspect": 1.562, "stroke": 0.036,
+ "family_by_eye": "compartment",
+ "members": [
+  {"t": "line", "p": [0.17, 0.21, 1.0, 0.22]},
+  {"t": "line", "p": [0.17, 0.54, 0.905, 0.54]},
+  {"t": "arc", "c": [0.17, 0.375], "r": [0.14, 0.165], "a": [90, 270]},
+  {"t": "arc", "c": [1.12, 0.415], "r": [0.30, 0.39], "a": [250, 470]},
+  {"t": "pline", "p": [[1.02, 0.80], [0.905, 0.69], [0.905, 0.47]]},
+  {"t": "line", "p": [0.885, 0.215, 1.02, 0.04]},
+  {"t": "bez", "p": [[0.19, 0.54], [0.11, 0.74], [0.14, 0.91], [0.33, 0.93], [0.41, 0.94], [0.47, 0.905], [0.51, 0.875]]},
+  {"t": "line", "p": [0.51, 0.875, 0.885, 0.565]},
+  {"t": "cross", "c": [0.38, 0.715], "s": 0.13, "flared": true},
+  {"t": "ring", "c": [0.11, 0.375], "r": 0.057},
+  {"t": "line", "p": [0.167, 0.395, 0.37, 0.395]},
+  {"t": "line", "p": [0.235, 0.27, 0.235, 0.53]},
+  {"t": "pline", "p": [[0.515, 0.285], [0.37, 0.285], [0.37, 0.455], [0.515, 0.455]]},
+  {"t": "line", "p": [0.515, 0.245, 0.515, 0.355]},
+  {"t": "line", "p": [0.515, 0.41, 0.515, 0.50]},
+  {"t": "repeat", "n": 3, "d": [0, 0.115], "m": [
+   {"t": "ring", "c": [0.71, 0.265], "r": 0.045}
+  ]},
+  {"t": "mirror", "axis": "y", "at": 0.38, "m": [
+   {"t": "pline", "p": [[0.75, 0.285], [0.845, 0.335], [0.81, 0.365]]},
+   {"t": "ring", "c": [0.89, 0.33], "r": 0.043}
+  ]},
+  {"t": "ring", "c": [0.79, 0.38], "r": 0.03},
+  {"t": "repeat", "n": 3, "d": [0, 0.22], "m": [
+   {"t": "line", "p": [1.0, 0.13, 1.0, 0.25]},
+   {"t": "line", "p": [1.0, 0.19, 1.143, 0.19]},
+   {"t": "ring", "c": [1.19, 0.19], "r": 0.047}
+  ]},
+  {"t": "mirror", "axis": "y", "at": 0.41, "m": [
+   {"t": "ring", "c": [1.29, 0.25], "r": 0.048},
+   {"t": "line", "p": [1.29, 0.298, 1.29, 0.41]}
+  ]},
+  {"t": "line", "p": [1.237, 0.41, 1.45, 0.41]},
+  {"t": "ring", "c": [1.50, 0.41], "r": 0.049},
+  {"t": "bez", "p": [[0.58, 0.90], [0.59, 0.955], [0.64, 0.965], [0.68, 0.915]]},
+  {"t": "line", "p": [0.68, 0.915, 0.90, 0.63]},
+  {"t": "line", "p": [0.905, 0.70, 0.853, 0.92]},
+  {"t": "line", "p": [1.0, 0.81, 0.82, 0.945]},
+  {"t": "bez", "p": [[0.82, 0.945], [0.78, 0.975], [0.74, 0.995], [0.685, 0.975]]}
+ ],
+ "escapes": [],
+ "wishes": [
+  "a closed rounded-compartment outline (pill, D, pouch) as one member; each here costs two to four lines and arcs"
+ ],
+ "notes": "Three compartments: a left pill holding a ring, a rail, a divider and a serifed E; a lower pouch holding a large flared cross; a right D (ellipse arc plus straight left side and top chamfer) holding three T-keys with rings in a column, a mirrored pair of rings on a vertical above and below the middle rail, which runs out through the wall to a ring. Between the pill and the D a cluster of three stacked rings, a zigzag through a small ring and two rings on the wall. Under the D a cursive N: two hooked diagonals and a short steep stroke."
+}

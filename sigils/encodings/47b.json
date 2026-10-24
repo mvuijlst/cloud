@@ -1,0 +1,23 @@
+{
+ "id": "47b", "identity": 47, "variant": "b", "name": "Uvall",
+ "vocab": "1.0", "aspect": 1.028, "stroke": 0.028,
+ "family_by_eye": "compartment",
+ "members": [
+  {"t": "ring", "c": [0.05, 0.04], "r": 0.040},
+  {"t": "line", "p": [0.09, 0.045, 0.258, 0.045]},
+  {"t": "pline", "p": [[0.15, 0.045], [0.15, 0.547], [0.313, 0.547], [0.313, 0.64], [0.39, 0.64], [0.39, 0.547], [0.465, 0.547]]},
+  {"t": "pline", "p": [[0.258, 0.045], [0.258, 0.372], [0.40, 0.372], [0.40, 0.13], [0.71, 0.13], [0.71, 0.372], [0.835, 0.372], [0.835, 0.254], [1.0, 0.254], [1.0, 0.515], [0.924, 0.515], [0.924, 0.603], [0.818, 0.603]]},
+  {"t": "cross", "c": [0.566, 0.265], "s": 0.09, "flared": true},
+  {"t": "pline", "p": [[0.465, 0.397], [0.53, 0.397], [0.53, 0.748], [0.59, 0.748], [0.59, 0.397], [0.652, 0.397], [0.652, 0.748], [0.71, 0.748], [0.71, 0.372]]},
+  {"t": "line", "p": [0.465, 0.397, 0.465, 0.95]},
+  {"t": "cross", "c": [0.458, 0.862], "s": 0.098, "flared": true},
+  {"t": "tri", "p": [[0.458, 0.90], [0.39, 1.0], [0.527, 1.0]], "fill": true},
+  {"t": "line", "p": [0.845, 0.603, 0.845, 0.74]},
+  {"t": "cross", "c": [0.853, 0.80], "s": 0.066, "flared": true}
+ ],
+ "escapes": [],
+ "wishes": [
+  "a flared cross whose top arm is the entering stem (three flared arms) and whose foot is a bell; rendered here as cross plus tri"
+ ],
+ "notes": "Same plan as 47a, narrower: ring at the top-left of a short rail; a left post with a cross-bar carrying a square bay; one box hanging from the rail around a flared cross; a five-bar meander whose first bar is the stem down to a wide flared cross on a bell foot; a stepped right outline ending in a stem with a small flared cross instead of the diagonal cross."
+}

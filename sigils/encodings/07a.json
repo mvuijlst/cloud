@@ -1,0 +1,32 @@
+{
+ "id": "07a", "identity": 7, "variant": "a", "name": "Amon",
+ "vocab": "1.0", "aspect": 1.045, "stroke": 0.030,
+ "family_by_eye": "compartment",
+ "members": [
+  {"t": "line", "p": [0.02, 0.495, 1.015, 0.495]},
+  {"t": "pline", "p": [[0.455, 0.365], [0.595, 0.365], [0.595, 0.385], [0.565, 0.425], [0.565, 0.575], [0.59, 0.625], [0.59, 0.645], [0.46, 0.645], [0.46, 0.625], [0.485, 0.575], [0.485, 0.425], [0.455, 0.385]], "closed": true, "fill": true},
+  {"t": "mirror", "axis": "y", "at": 0.4975, "m": [
+   {"t": "repeat", "n": 3, "d": [0.205, 0], "m": [
+    {"t": "arc", "c": [0.315, 0.12], "r": 0.103, "a": [190, 350]}
+   ]},
+   {"t": "mirror", "axis": "x", "at": 0.517, "m": [
+    {"t": "line", "p": [0.22, 0.11, 0.22, 0.495]}
+   ]}
+  ]},
+  {"t": "repeat", "n": 2, "d": [0, 0.70], "m": [
+   {"t": "repeat", "n": 3, "d": [0.205, 0], "m": [
+    {"t": "spiral", "c": [0.325, 0.105], "r": [0.042, 0.012], "a": [45, -380]},
+    {"t": "line", "p": [0.355, 0.135, 0.272, 0.157]},
+    {"t": "spiral", "c": [0.30, 0.185], "r": [0.04, 0.012], "a": [225, -380]}
+   ]}
+  ]},
+  {"t": "mirror", "axis": "x", "at": 0.517, "m": [
+   {"t": "spiral", "c": [0.078, 0.395], "r": [0.047, 0.012], "a": [30, -400]},
+   {"t": "line", "p": [0.12, 0.42, 0.03, 0.495]},
+   {"t": "spiral", "c": [0.07, 0.555], "r": [0.05, 0.012], "a": [180, -400]}
+  ]}
+ ],
+ "escapes": [],
+ "wishes": ["an S-curl primitive (two opposed spirals joined by a diagonal) would replace three members per copy"],
+ "notes": "Rectangular frame whose top and bottom are three-arch scallops (vertical mirror); a rail crosses the whole width with a 2-and-C curl ornament at each end; a filled hourglass I-bar sits on the rail; two rows of three S-curls inside the frame."
+}

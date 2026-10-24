@@ -1,0 +1,216 @@
+{
+ "id": "22a",
+ "identity": 22,
+ "variant": "a",
+ "name": "Ipos",
+ "vocab": "1.0",
+ "aspect": 1.108,
+ "stroke": 0.041,
+ "family_by_eye": "axial",
+ "members": [
+  {
+   "t": "mirror",
+   "axis": "x",
+   "at": 0.53,
+   "m": [
+    {
+     "t": "line",
+     "p": [
+      0.325,
+      0.015,
+      0.475,
+      0.015
+     ]
+    },
+    {
+     "t": "ring",
+     "c": [
+      0.34,
+      0.08
+     ],
+     "r": 0.055
+    },
+    {
+     "t": "ring",
+     "c": [
+      0.32,
+      0.18
+     ],
+     "r": 0.05
+    },
+    {
+     "t": "line",
+     "p": [
+      0.405,
+      0.03,
+      0.17,
+      0.9
+     ]
+    },
+    {
+     "t": "ring",
+     "c": [
+      0.155,
+      0.92
+     ],
+     "r": 0.055
+    },
+    {
+     "t": "tri",
+     "p": [
+      [
+       0.115,
+       0.4
+      ],
+      [
+       0.115,
+       0.59
+      ],
+      [
+       0.19,
+       0.5
+      ]
+     ],
+     "fill": true
+    },
+    {
+     "t": "tri",
+     "p": [
+      [
+       0.28,
+       0.6
+      ],
+      [
+       0.28,
+       0.745
+      ],
+      [
+       0.34,
+       0.67
+      ]
+     ],
+     "fill": true
+    },
+    {
+     "t": "tri",
+     "p": [
+      [
+       0.335,
+       0.72
+      ],
+      [
+       0.335,
+       0.84
+      ],
+      [
+       0.39,
+       0.78
+      ]
+     ],
+     "fill": true
+    },
+    {
+     "t": "tri",
+     "p": [
+      [
+       0.37,
+       0.85
+      ],
+      [
+       0.37,
+       0.965
+      ],
+      [
+       0.41,
+       0.905
+      ]
+     ],
+     "fill": true
+    }
+   ]
+  },
+  {
+   "t": "ring",
+   "c": [
+    0.06,
+    0.24
+   ],
+   "r": 0.05
+  },
+  {
+   "t": "ring",
+   "c": [
+    1.03,
+    0.25
+   ],
+   "r": 0.05
+  },
+  {
+   "t": "line",
+   "p": [
+    0.1,
+    0.238,
+    0.99,
+    0.238
+   ]
+  },
+  {
+   "t": "ring",
+   "c": [
+    0.53,
+    0.42
+   ],
+   "r": 0.055
+  },
+  {
+   "t": "line",
+   "p": [
+    0.53,
+    0.47,
+    0.53,
+    0.93
+   ]
+  },
+  {
+   "t": "line",
+   "p": [
+    0.115,
+    0.5,
+    0.945,
+    0.5
+   ]
+  },
+  {
+   "t": "line",
+   "p": [
+    0.28,
+    0.67,
+    0.78,
+    0.67
+   ]
+  },
+  {
+   "t": "line",
+   "p": [
+    0.335,
+    0.78,
+    0.725,
+    0.78
+   ]
+  },
+  {
+   "t": "line",
+   "p": [
+    0.37,
+    0.905,
+    0.69,
+    0.905
+   ]
+  }
+ ],
+ "escapes": [],
+ "wishes": [
+  "bowtie bar (bar with triangular wedge tips), four of them of decreasing width: a bowtie member with a width would record this as a repeat"
+ ],
+ "notes": "Bilaterally symmetric: two splayed legs, each starting at a short top bar, passing two stacked rings and ending in a ring; a ringed rail across; a central ring on a stem that carries four bowtie bars of decreasing width."
+}

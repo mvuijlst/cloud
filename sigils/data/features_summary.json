@@ -1,0 +1,202 @@
+{
+ "meta": {
+  "n_drawings": 80,
+  "n_identities": 72,
+  "thresholds": [
+   96,
+   128,
+   160
+  ],
+  "ring_area_max_px2": 400,
+  "connectivity": "8 for ink components and skeleton, 4 for holes",
+  "min_component_area_px": 2,
+  "symmetry": "IoU of mask dilated by half stroke width against its mirror, best over +-3 px shifts",
+  "orientation": "local PCA in 7x7 window on skeleton, bins +-22.5 degrees around 0/45/90/135"
+ },
+ "summary": {
+  "width_px": {
+   "min": 99.0,
+   "q1": 146.75,
+   "median": 159.5,
+   "q3": 166.25,
+   "max": 177.0,
+   "identity_weighted_median": 157.0
+  },
+  "height_px": {
+   "min": 62.0,
+   "q1": 119.75,
+   "median": 133.0,
+   "q3": 140.25,
+   "max": 155.0,
+   "identity_weighted_median": 133.0
+  },
+  "aspect": {
+   "min": 0.7674,
+   "q1": 1.04825,
+   "median": 1.1905000000000001,
+   "q3": 1.33135,
+   "max": 2.6935,
+   "identity_weighted_median": 1.1884
+  },
+  "ink_fraction": {
+   "min": 0.1303,
+   "q1": 0.201775,
+   "median": 0.2306,
+   "q3": 0.261775,
+   "max": 0.3478,
+   "identity_weighted_median": 0.2298
+  },
+  "components_t96": {
+   "min": 1.0,
+   "q1": 1.0,
+   "median": 1.0,
+   "q3": 3.0,
+   "max": 16.0,
+   "identity_weighted_median": 1.0
+  },
+  "components_t128": {
+   "min": 1.0,
+   "q1": 1.0,
+   "median": 1.0,
+   "q3": 3.0,
+   "max": 16.0,
+   "identity_weighted_median": 1.0
+  },
+  "components_t160": {
+   "min": 1.0,
+   "q1": 1.0,
+   "median": 1.0,
+   "q3": 2.0,
+   "max": 16.0,
+   "identity_weighted_median": 1.0
+  },
+  "holes": {
+   "min": 0.0,
+   "q1": 7.0,
+   "median": 12.0,
+   "q3": 15.25,
+   "max": 41.0,
+   "identity_weighted_median": 11.0
+  },
+  "rings": {
+   "min": 0.0,
+   "q1": 6.0,
+   "median": 9.0,
+   "q3": 12.0,
+   "max": 34.0,
+   "identity_weighted_median": 9.0
+  },
+  "enclosures": {
+   "min": 0.0,
+   "q1": 1.0,
+   "median": 1.5,
+   "q3": 3.0,
+   "max": 7.0,
+   "identity_weighted_median": 1.0
+  },
+  "skeleton_len_px": {
+   "min": 620.0,
+   "q1": 1001.75,
+   "median": 1162.0,
+   "q3": 1308.75,
+   "max": 1986.0,
+   "identity_weighted_median": 1161.0
+  },
+  "endpoints": {
+   "min": 2.0,
+   "q1": 12.0,
+   "median": 18.0,
+   "q3": 27.0,
+   "max": 50.0,
+   "identity_weighted_median": 18.0
+  },
+  "junctions": {
+   "min": 8.0,
+   "q1": 23.0,
+   "median": 30.0,
+   "q3": 39.5,
+   "max": 77.0,
+   "identity_weighted_median": 29.0
+  },
+  "cycle_rank": {
+   "min": 0.0,
+   "q1": 7.0,
+   "median": 12.0,
+   "q3": 15.25,
+   "max": 41.0,
+   "identity_weighted_median": 11.0
+  },
+  "orient_h": {
+   "min": 0.1526,
+   "q1": 0.2506,
+   "median": 0.3049,
+   "q3": 0.33945,
+   "max": 0.4879,
+   "identity_weighted_median": 0.3088
+  },
+  "orient_d1": {
+   "min": 0.0822,
+   "q1": 0.1289,
+   "median": 0.15410000000000001,
+   "q3": 0.194,
+   "max": 0.2973,
+   "identity_weighted_median": 0.1527
+  },
+  "orient_v": {
+   "min": 0.2129,
+   "q1": 0.28645,
+   "median": 0.3466,
+   "q3": 0.406325,
+   "max": 0.5615,
+   "identity_weighted_median": 0.3468
+  },
+  "orient_d2": {
+   "min": 0.0817,
+   "q1": 0.134375,
+   "median": 0.175,
+   "q3": 0.212475,
+   "max": 0.3975,
+   "identity_weighted_median": 0.1748
+  },
+  "branch_straightness": {
+   "min": 0.4434,
+   "q1": 0.692825,
+   "median": 0.7375499999999999,
+   "q3": 0.8015,
+   "max": 0.9504,
+   "identity_weighted_median": 0.7469
+  },
+  "stroke_width_px": {
+   "min": 2.83,
+   "q1": 4.0,
+   "median": 4.0,
+   "q3": 4.0,
+   "max": 6.0,
+   "identity_weighted_median": 4.0
+  },
+  "sym_lr": {
+   "min": 0.1927,
+   "q1": 0.38632500000000003,
+   "median": 0.56085,
+   "q3": 0.8512500000000001,
+   "max": 0.9485,
+   "identity_weighted_median": 0.5763
+  },
+  "sym_tb": {
+   "min": 0.2219,
+   "q1": 0.34245,
+   "median": 0.40975,
+   "q3": 0.5298499999999999,
+   "max": 0.9439,
+   "identity_weighted_median": 0.4045
+  },
+  "sym_rot180": {
+   "min": 0.1814,
+   "q1": 0.314875,
+   "median": 0.3812,
+   "q3": 0.47365,
+   "max": 0.8268,
+   "identity_weighted_median": 0.3792
+  }
+ }
+}

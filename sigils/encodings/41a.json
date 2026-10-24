@@ -1,0 +1,31 @@
+{
+ "id": "41a", "identity": 41, "variant": "a", "name": "Focalor/Forcalor/Furcalor",
+ "vocab": "1.0", "aspect": 1.464, "stroke": 0.036,
+ "family_by_eye": "radial",
+ "members": [
+  {"t": "ring", "c": [0.089, 0.05], "r": 0.04},
+  {"t": "repeat", "n": 6, "d": [0, 0.09], "m": [
+   {"t": "line", "p": [0.05, 0.145, 0.13, 0.10]},
+   {"t": "arc", "c": [0.085, 0.125], "r": [0.045, 0.04], "a": [-30, -315]}
+  ]},
+  {"t": "line", "p": [0.12, 0.645, 0.594, 0.027]},
+  {"t": "line", "p": [0.60, 0.03, 0.60, 0.625]},
+  {"t": "tri", "p": [[0.165, 0.03], [0.29, 0.03], [0.235, 0.09]], "fill": true},
+  {"t": "line", "p": [0.23, 0.08, 0.51, 0.60]},
+  {"t": "tri", "p": [[0.45, 0.635], [0.57, 0.635], [0.51, 0.57]], "fill": true},
+  {"t": "line", "p": [0.45, 0.625, 1.37, 0.625]},
+  {"t": "line", "p": [0.612, 0.607, 1.068, 0.027]},
+  {"t": "line", "p": [1.06, 0.03, 1.04, 0.86]},
+  {"t": "ring", "c": [1.03, 0.92], "r": 0.062},
+  {"t": "ring", "c": [0.684, 0.205], "r": 0.05},
+  {"t": "ring", "c": [0.925, 0.446], "r": 0.05},
+  {"t": "line", "p": [0.72, 0.24, 0.89, 0.41]},
+  {"t": "line", "p": [1.353, 0.30, 1.353, 0.625]},
+  {"t": "cross", "c": [1.35, 0.197], "s": 0.105, "flared": true}
+ ],
+ "escapes": [],
+ "wishes": [
+  "coil/helix: the left spring is six stacked e-shaped turns, encoded as a repeat of arc plus bar"
+ ],
+ "notes": "A coil spring with a ring on top at the left; an M/N-like frame of diagonals and verticals (a wedge-capped diagonal, an apex with a vertical, a second apex whose vertical runs down through the baseline to a ring); a baseline with a wedge foot at the left and a flared cross on a stem at the right; a diagonal ring-to-ring dumbbell crossing the second diagonal."
+}

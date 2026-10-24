@@ -1,0 +1,31 @@
+{
+ "id": "14b", "identity": 14, "variant": "b", "name": "Leraje/Leraie/Leraikha",
+ "vocab": "1.0", "aspect": 1.654, "stroke": 0.043,
+ "family_by_eye": "bowl",
+ "members": [
+  {"t": "line", "p": [0.06, 0.283, 1.47, 0.283]},
+  {"t": "ring", "c": [0.089, 0.267], "r": 0.074},
+  {"t": "ring", "c": [0.347, 0.205], "r": 0.07},
+  {"t": "ring", "c": [0.333, 0.345], "r": 0.07},
+  {"t": "ring", "c": [1.25, 0.24], "r": 0.05},
+  {"t": "ring", "c": [1.25, 0.355], "r": 0.05},
+  {"t": "mirror", "axis": "x", "at": 0.70, "m": [
+   {"t": "tri", "p": [[0.44, 0.0], [0.66, 0.0], [0.55, 0.12]], "fill": true},
+   {"t": "line", "p": [0.55, 0.11, 0.61, 0.28]}
+  ]},
+  {"t": "pline", "p": [[0.915, 0.15], [1.085, 0.15], [1.085, 0.17], [1.04, 0.21], [1.025, 0.25], [1.025, 0.33], [1.04, 0.37], [1.085, 0.39], [1.085, 0.41], [0.915, 0.41], [0.915, 0.39], [0.96, 0.37], [0.975, 0.33], [0.975, 0.25], [0.96, 0.21], [0.915, 0.17]], "closed": true, "fill": true},
+  {"t": "pline", "p": [[0.70, 0.31], [0.47, 0.644], [0.91, 0.644]], "closed": true},
+  {"t": "line", "p": [0.702, 0.644, 0.702, 0.90], "w": 0.06},
+  {"t": "tri", "p": [[0.52, 0.975], [0.88, 0.975], [0.70, 0.885]], "fill": true},
+  {"t": "arc", "c": [0.68, 0.40], "r": [0.56, 0.575], "a": [0, 180]},
+  {"t": "line", "p": [0.12, 0.40, 0.095, 0.335]},
+  {"t": "mirror", "axis": "x", "at": 0.675, "m": [
+   {"t": "ring", "c": [0.39, 0.82], "r": 0.082}
+  ]},
+  {"t": "crescent", "c": [1.163, 0.29], "r": 0.307, "ri": 0.61, "k": 1.15, "rot": 180},
+  {"t": "tri", "p": [[1.46, 0.21], [1.65, 0.29], [1.46, 0.37]], "fill": true}
+ ],
+ "escapes": [],
+ "wishes": ["a flared bar (two-armed cross) for the I-bar, as in 14a"],
+ "notes": "Bowl variant of Leraje: a rail with a ring at the left end, a stacked ring pair, two flared pendants whose stems meet the rail over an outlined triangle, a filled I-bar and a small stacked ring pair, ending in a crescent-bladed arrowhead; a thick stem drops to a triangular foot at the bottom of an elliptical bowl that carries a ring on each flank."
+}

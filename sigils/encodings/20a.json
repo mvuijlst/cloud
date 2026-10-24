@@ -1,0 +1,306 @@
+{
+ "id": "20a",
+ "identity": 20,
+ "variant": "a",
+ "name": "Purson",
+ "vocab": "1.0",
+ "aspect": 1.138,
+ "stroke": 0.029,
+ "family_by_eye": "axial",
+ "members": [
+  {
+   "t": "ring",
+   "c": [
+    0.35,
+    0.085
+   ],
+   "r": 0.08
+  },
+  {
+   "t": "line",
+   "p": [
+    0.05,
+    0.185,
+    0.645,
+    0.185
+   ]
+  },
+  {
+   "t": "mirror",
+   "axis": "x",
+   "at": 0.343,
+   "m": [
+    {
+     "t": "ring",
+     "c": [
+      0.075,
+      0.245
+     ],
+     "r": 0.045
+    },
+    {
+     "t": "bez",
+     "p": [
+      [
+       0.09,
+       0.285
+      ],
+      [
+       0.15,
+       0.3
+      ],
+      [
+       0.185,
+       0.31
+      ],
+      [
+       0.185,
+       0.34
+      ]
+     ]
+    },
+    {
+     "t": "pline",
+     "p": [
+      [
+       0.185,
+       0.34
+      ],
+      [
+       0.185,
+       0.375
+      ],
+      [
+       0.15,
+       0.405
+      ],
+      [
+       0.04,
+       0.405
+      ],
+      [
+       0.012,
+       0.44
+      ],
+      [
+       0.012,
+       0.53
+      ],
+      [
+       0.2,
+       0.53
+      ],
+      [
+       0.2,
+       0.7
+      ]
+     ]
+    },
+    {
+     "t": "ring",
+     "c": [
+      0.15,
+      0.72
+     ],
+     "r": 0.055
+    }
+   ]
+  },
+  {
+   "t": "arc",
+   "c": [
+    0.18,
+    0.87
+   ],
+   "r": [
+    0.12,
+    0.055
+   ],
+   "a": [
+    0,
+    360
+   ]
+  },
+  {
+   "t": "arc",
+   "c": [
+    0.506,
+    0.87
+   ],
+   "r": [
+    0.12,
+    0.055
+   ],
+   "a": [
+    0,
+    360
+   ]
+  },
+  {
+   "t": "line",
+   "p": [
+    0.343,
+    0.185,
+    0.343,
+    0.7
+   ]
+  },
+  {
+   "t": "tri",
+   "p": [
+    [
+     0.26,
+     0.505
+    ],
+    [
+     0.42,
+     0.505
+    ],
+    [
+     0.345,
+     0.565
+    ]
+   ],
+   "fill": true
+  },
+  {
+   "t": "line",
+   "p": [
+    0.235,
+    0.62,
+    0.45,
+    0.62
+   ]
+  },
+  {
+   "t": "tri",
+   "p": [
+    [
+     0.235,
+     0.545
+    ],
+    [
+     0.235,
+     0.7
+    ],
+    [
+     0.3,
+     0.62
+    ]
+   ],
+   "fill": true
+  },
+  {
+   "t": "tri",
+   "p": [
+    [
+     0.45,
+     0.545
+    ],
+    [
+     0.45,
+     0.7
+    ],
+    [
+     0.39,
+     0.62
+    ]
+   ],
+   "fill": true
+  },
+  {
+   "t": "tri",
+   "p": [
+    [
+     0.26,
+     0.75
+    ],
+    [
+     0.42,
+     0.75
+    ],
+    [
+     0.345,
+     0.69
+    ]
+   ],
+   "fill": true
+  },
+  {
+   "t": "arc",
+   "c": [
+    0.343,
+    0.7
+   ],
+   "r": [
+    0.143,
+    0.15
+   ],
+   "a": [
+    0,
+    180
+   ]
+  },
+  {
+   "t": "ring",
+   "c": [
+    0.343,
+    0.915
+   ],
+   "r": 0.06
+  },
+  {
+   "t": "line",
+   "p": [
+    0.69,
+    0.535,
+    0.9,
+    0.405
+   ],
+   "w": 0.05
+  },
+  {
+   "t": "line",
+   "p": [
+    0.86,
+    0.3,
+    0.975,
+    0.5
+   ]
+  },
+  {
+   "t": "line",
+   "p": [
+    0.855,
+    0.305,
+    0.955,
+    0.196
+   ]
+  },
+  {
+   "t": "repeat",
+   "n": 4,
+   "d": [
+    0.035,
+    0.055
+   ],
+   "m": [
+    {
+     "t": "line",
+     "p": [
+      0.88,
+      0.34,
+      1.03,
+      0.255
+     ]
+    }
+   ]
+  }
+ ],
+ "escapes": [],
+ "wishes": [
+  "bowtie + foot on a stem (as 16a/17a/18a/18b), here with an inverted-triangle cup above it",
+  "an elliptical ring: the two bottom lobes are stroked ellipses (encoded as 360-degree elliptical arcs; kept outside the mirror because a reflected full-circle arc renders with zero sweep)"
+ ],
+ "notes": "Bilaterally symmetric body: a large ring on top of a bar with small rings at its ends; a bracket-shaped outline each side running in to an inner post, each post with a ring and the two joined below by a U; a central stem carrying an inverted cup, a bowtie and a triangular foot; elliptical lobes and a ring at the bottom. From the body's right a thick handle rises to a comb of four parallel tines on a short bar with a spine."
+}

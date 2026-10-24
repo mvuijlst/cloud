@@ -1,0 +1,28 @@
+{
+ "id": "59a", "identity": 59, "variant": "a", "name": "Oriax/Orias",
+ "vocab": "1.0", "aspect": 1.130, "stroke": 0.027,
+ "family_by_eye": "axial",
+ "members": [
+  {"t": "cross", "c": [0.568, 0.094], "s": 0.09, "flared": true},
+  {"t": "line", "p": [0.566, 0.15, 0.564, 0.33]},
+  {"t": "line", "p": [0.449, 0.764, 0.675, 0.764]},
+  {"t": "mirror", "axis": "x", "at": 0.562, "m": [
+   {"t": "ring", "c": [0.17, 0.09], "r": 0.041},
+   {"t": "pline", "p": [[0.21, 0.106], [0.425, 0.106], [0.562, 0.33]]},
+   {"t": "line", "p": [0.205, 0.106, 0.205, 0.53]},
+   {"t": "line", "p": [0.09, 0.305, 0.205, 0.305]},
+   {"t": "ring", "c": [0.05, 0.305], "r": 0.041},
+   {"t": "ring", "c": [0.16, 0.52], "r": 0.040},
+   {"t": "ring", "c": [0.38, 0.18], "r": 0.039},
+   {"t": "pline", "p": [[0.393, 0.217], [0.514, 0.364], [0.514, 0.764]]},
+   {"t": "pline", "p": [[0.20, 0.486], [0.459, 0.486], [0.459, 0.616], [0.32, 0.616]]},
+   {"t": "ring", "c": [0.28, 0.59], "r": 0.039},
+   {"t": "pline", "p": [[0.298, 0.625], [0.298, 0.89], [0.449, 0.89], [0.449, 0.764]]},
+   {"t": "line", "p": [0.373, 0.765, 0.373, 0.978]},
+   {"t": "line", "p": [0.342, 0.765, 0.404, 0.765]},
+   {"t": "line", "p": [0.33, 0.978, 0.41, 0.978]}
+  ]}
+ ],
+ "escapes": [],
+ "notes": "Bilaterally symmetric frame: flared cross on a stem dropping into the apex of an inverted V formed by the broken top rail's ends; outer arms from two rings under the rail run into a double-line channel closed by a bar; ring-ended side posts with spurs; a crenellated base with two serifed I-posts standing in its bays."
+}

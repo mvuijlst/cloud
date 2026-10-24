@@ -1,0 +1,26 @@
+{
+ "id": "33a", "identity": 33, "variant": "a", "name": "Gaap/Gäap",
+ "vocab": "1.0", "aspect": 1.049, "stroke": 0.042,
+ "family_by_eye": "compartment",
+ "members": [
+  {"t": "line", "p": [0.478, 0.03, 0.478, 0.97]},
+  {"t": "arc", "c": [0.14, 0.50], "r": [0.12, 0.21], "a": [90, 270]},
+  {"t": "line", "p": [0.03, 0.50, 0.74, 0.505]},
+  {"t": "ring", "c": [0.785, 0.505], "r": 0.045},
+  {"t": "line", "p": [0.83, 0.505, 0.926, 0.505]},
+  {"t": "line", "p": [0.996, 0.505, 1.03, 0.505]},
+  {"t": "ring", "c": [0.961, 0.506], "r": 0.035, "w": 0.03},
+  {"t": "pline", "p": [[0.89, 0.41], [1.03, 0.41], [1.03, 0.60], [0.89, 0.60]], "closed": true},
+  {"t": "mirror", "axis": "y", "at": 0.50, "m": [
+   {"t": "cross", "c": [0.478, 0.12], "s": 0.12, "flared": true},
+   {"t": "line", "p": [0.14, 0.29, 0.745, 0.29]},
+   {"t": "ring", "c": [0.743, 0.246], "r": 0.04, "w": 0.03},
+   {"t": "spiral", "c": [0.715, 0.37], "r": [0.06, 0.02], "a": [-70, -330]},
+   {"t": "repeat", "n": 2, "d": [0.247, 0], "m": [
+    {"t": "ring", "c": [0.323, 0.40], "r": 0.044, "w": 0.03}
+   ]}
+  ]}
+ ],
+ "escapes": [],
+ "notes": "A D-shaped compartment (straight top and bottom, semi-elliptical left end) on a tall stem that ends in a flared cross at top and bottom; a mid bar through four rings arranged 2x2, out through a big ring to a small boxed ring at the right; at each right corner of the compartment a ring above and a spiral curling inward. Mirror-symmetric top to bottom."
+}
