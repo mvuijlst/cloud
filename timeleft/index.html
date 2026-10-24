@@ -418,12 +418,13 @@ function parityOf(u, t) {
     return 0;
 }
 
-// Days off besides weekends: the ten Belgian public holidays, everything from
-// Christmas to New Year's Day, and the working week around 21 July (the week
-// before, when 21 July falls in a weekend). Days set in the leave planner
-// override these (weekends excepted).
+// Days off besides weekends: the ten Belgian public holidays, Dies Natalis
+// (penultimate Friday of March), a bridge day next to any public holiday on a
+// Tuesday or Thursday, everything from Christmas to New Year's Day, and the
+// working week around 21 July (the week before, when 21 July falls in a
+// weekend). Days set in the leave planner override these (weekends excepted).
 const holidayCache = {};
-const MANDATORY = new Set(['kerstvakantie', 'week van 21 juli']);
+const MANDATORY = new Set(['kerstvakantie', 'week van 21 juli', 'brugdag']);
 
 const KINDS = {
     werkdag:   { label: 'werkdag',          off: false, color: '#e0e0e0' },
@@ -473,6 +474,15 @@ function holidays(y) {
     add(new Date(y, 10, 1), 'Allerheiligen');
     add(new Date(y, 10, 11), 'Wapenstilstand');
     add(new Date(y, 11, 25), 'Kerstmis');
+    // bridge days: a public holiday on Tuesday frees the Monday, on Thursday the Friday
+    for (const [k, name] of [...map]) {
+        if (MANDATORY.has(name)) continue;
+        const d = new Date(y, Math.floor(k / 100), k % 100), dow = d.getDay();
+        const b = dow === 2 ? plusDays(d, -1) : dow === 4 ? plusDays(d, 1) : null;
+        if (b && b.getFullYear() === y && !map.has(b.getMonth() * 100 + b.getDate())) add(b, 'brugdag');
+    }
+    const mar31 = new Date(y, 2, 31);
+    add(plusDays(mar31, -((mar31.getDay() + 2) % 7) - 7), 'Dies Natalis');   // penultimate Friday of March
     return holidayCache[y] = map;
 }
 
