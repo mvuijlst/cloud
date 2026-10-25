@@ -1,0 +1,2695 @@
+{
+ "source": "Lemegeton book 1 (Goetia), Peterson's transcription of BL Sloane MS 3825, from goetia_entries_raw.json; hand annotation with spelling modernised in phrase fields, archaic grammar kept.",
+ "entries": [
+  {
+   "n": 1,
+   "name": "Bael",
+   "ranks": [
+    "King"
+   ],
+   "rank_adjectives": [],
+   "legions": 66,
+   "legions_note": "of inferior spirits",
+   "location": "ruling in the East",
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "in divers shapes, sometimes like a cat",
+    "sometimes like a toad",
+    "sometimes like a man",
+    "sometimes in all these forms at once"
+   ],
+   "transformation": null,
+   "manner": [
+    "speaketh very hoarsely"
+   ],
+   "offices": [
+    "maketh men go invisible"
+   ],
+   "conditions": [
+    "his character is to be worn as a lamen before him who calleth him forth, or else he will not do you homage"
+   ],
+   "other": [
+    "the first principal spirit"
+   ],
+   "seal_clause": "This is his character, which is to be worn as a lamen before him who calleth him forth, or else he will not do you homage.",
+   "words": 81
+  },
+  {
+   "n": 2,
+   "name": "Agares",
+   "ranks": [
+    "Duke"
+   ],
+   "rank_adjectives": [],
+   "legions": 31,
+   "legions_note": null,
+   "location": "under the power of the East",
+   "order": "of the order of Virtues",
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "in the form of a fair old man riding upon a crocodile, carrying a goshawk on his fist"
+   ],
+   "transformation": null,
+   "manner": [
+    "cometh up very mildly"
+   ],
+   "offices": [
+    "maketh them run that stand still",
+    "fetcheth back the runaways",
+    "teacheth all languages or tongues presently",
+    "destroyeth dignities, both supernatural and temporal",
+    "causeth earthquakes"
+   ],
+   "conditions": [
+    "his seal or character is to be worn as a lamen"
+   ],
+   "other": [],
+   "seal_clause": "This is his seal or character, which is to be worn as a lamen.",
+   "words": 101
+  },
+  {
+   "n": 3,
+   "name": "Vassago",
+   "ranks": [
+    "Prince"
+   ],
+   "rank_adjectives": [
+    "mighty"
+   ],
+   "legions": 26,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [
+    "of the same nature as Agares",
+    "of a good nature"
+   ],
+   "appearance": [],
+   "transformation": null,
+   "manner": [],
+   "offices": [
+    "declareth things past and to come",
+    "discovereth all things hidden or lost"
+   ],
+   "conditions": [],
+   "other": [],
+   "seal_clause": "This is his seal.",
+   "words": 55
+  },
+  {
+   "n": 4,
+   "name": "Gamigin",
+   "ranks": [
+    "Marquis"
+   ],
+   "rank_adjectives": [
+    "great"
+   ],
+   "legions": 30,
+   "legions_note": "of inferiors",
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "in the form of a little horse or ass"
+   ],
+   "transformation": "then into human shape he putteth himself at the request of the master",
+   "manner": [
+    "speaketh with a hoarse voice"
+   ],
+   "offices": [
+    "teacheth all liberal sciences",
+    "giveth an account of the dead souls of them that die in sin"
+   ],
+   "conditions": [
+    "his seal is to be worn by the magician when he invocateth"
+   ],
+   "other": [],
+   "seal_clause": "This is his seal, which is to be worn by the magician when he invocateth.",
+   "words": 83
+  },
+  {
+   "n": 5,
+   "name": "Marbas",
+   "ranks": [
+    "President"
+   ],
+   "rank_adjectives": [
+    "great"
+   ],
+   "legions": 36,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "at first in the form of a great lion"
+   ],
+   "transformation": "afterwards putteth on human shape at the request of the master",
+   "manner": [],
+   "offices": [
+    "answereth truly of things hidden or secret",
+    "causeth diseases",
+    "cureth them again",
+    "giveth great wisdom and knowledge in mechanical arts",
+    "changeth men into other shapes"
+   ],
+   "conditions": [],
+   "other": [],
+   "seal_clause": "His seal is this.",
+   "words": 74
+  },
+  {
+   "n": 6,
+   "name": "Valefar",
+   "ranks": [
+    "Duke"
+   ],
+   "rank_adjectives": [
+    "mighty"
+   ],
+   "legions": 10,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [
+    "is a good familiar",
+    "tempteth those he is familiar with to steal"
+   ],
+   "appearance": [
+    "in the form of a lion with a man's head, lowering"
+   ],
+   "transformation": null,
+   "manner": [],
+   "offices": [],
+   "conditions": [
+    "his seal is to be worn constantly if you have his familiarity, else not"
+   ],
+   "other": [],
+   "seal_clause": "This is his seal, to wear constantly if you have his familiarity, else not.",
+   "words": 57
+  },
+  {
+   "n": 7,
+   "name": "Amon",
+   "ranks": [
+    "Marquis"
+   ],
+   "rank_adjectives": [
+    "great in power",
+    "most strong"
+   ],
+   "legions": 40,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "at first like a wolf with a serpent's tail, vomiting out of his mouth flames of fire"
+   ],
+   "transformation": "at the command of the magician he putteth on the shape of a man, with dog's teeth beset in a head like a raven, or in a raven's head",
+   "manner": [],
+   "offices": [
+    "telleth all things past and to come",
+    "procureth love",
+    "reconcileth controversies between friends and foes"
+   ],
+   "conditions": [
+    "his seal is to be worn as aforesaid"
+   ],
+   "other": [],
+   "seal_clause": "His seal is thus, which is to be worn as aforesaid.",
+   "words": 99
+  },
+  {
+   "n": 8,
+   "name": "Barbatos",
+   "ranks": [
+    "Duke"
+   ],
+   "rank_adjectives": [
+    "great"
+   ],
+   "legions": 30,
+   "legions_note": null,
+   "location": null,
+   "order": "of the order of Virtues",
+   "order_extra": "of which some part beareth rule still",
+   "nature": [],
+   "appearance": [],
+   "transformation": null,
+   "manner": [
+    "appeareth with four noble kings and their companions in great troops"
+   ],
+   "offices": [
+    "giveth the understanding of the singing of birds, the voice of other creatures and the barking of dogs",
+    "breaketh hidden treasures open that have been laid by the enchantment of magicians",
+    "knoweth all things past and to come",
+    "reconcileth friends and those that are in power"
+   ],
+   "conditions": [
+    "his seal of obedience is to be worn before you"
+   ],
+   "other": [
+    "appeareth when the Sun is in [Sagittarius] (sign left blank in the manuscript)"
+   ],
+   "seal_clause": "His seal of obedience is this, which wear before you.",
+   "words": 110
+  },
+  {
+   "n": 9,
+   "name": "Paimon",
+   "ranks": [
+    "King"
+   ],
+   "rank_adjectives": [
+    "great"
+   ],
+   "legions": 200,
+   "legions_note": "one part of them of the order of Angels and the other of Potestates; other spirits of the order of Potestates in his host are 25 legions, not always with him unless the magician compelleth them",
+   "location": "is to be observed towards the North-west",
+   "order": "of the order of Dominions",
+   "order_extra": null,
+   "nature": [
+    "very obedient to Lucifer"
+   ],
+   "appearance": [
+    "in the form of a man sitting on a dromedary, with a crown most glorious on his head"
+   ],
+   "transformation": null,
+   "manner": [
+    "there goeth before him a host of spirits like men with trumpets and well-sounding cymbals and all other sorts of musical instruments",
+    "hath a great voice",
+    "roareth at his first coming",
+    "his speech is such as the magician cannot well understand unless he compelleth him",
+    "if called alone, there will attend him two kings called Bebal and Abalam"
+   ],
+   "offices": [
+    "teacheth all arts and sciences and other secret things",
+    "discovereth what the earth is and what holdeth it up in the waters",
+    "telleth what the wind is or where it is, or any other thing you desire to know",
+    "giveth dignity and confirmeth the same",
+    "bindeth or maketh a man subject to the magician if he desireth it",
+    "giveth good familiars, and such as can teach all arts"
+   ],
+   "conditions": [
+    "if you call this spirit Paimon alone you must make some offering to him",
+    "the magician must compel him before his speech can be understood"
+   ],
+   "other": [],
+   "seal_clause": "This is his character.",
+   "words": 262
+  },
+  {
+   "n": 10,
+   "name": "Buer",
+   "ranks": [
+    "President"
+   ],
+   "rank_adjectives": [
+    "great"
+   ],
+   "legions": 50,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "in [Sagittarius], that is his shape (sign left blank in the manuscript)"
+   ],
+   "transformation": null,
+   "manner": [],
+   "offices": [
+    "teacheth philosophy, both moral and natural",
+    "teacheth the logical arts",
+    "teacheth the virtues of all herbs and plants",
+    "healeth all distempers in man",
+    "giveth good familiars"
+   ],
+   "conditions": [
+    "his seal of obedience you must wear when you call him to appearance"
+   ],
+   "other": [
+    "appeareth when the Sun is there [in Sagittarius] (sign left blank in the manuscript)"
+   ],
+   "seal_clause": "This is his seal of obedience, which you must wear when you call him to appearance.",
+   "words": 72
+  },
+  {
+   "n": 11,
+   "name": "Gusoin",
+   "ranks": [
+    "Duke"
+   ],
+   "rank_adjectives": [
+    "great",
+    "strong"
+   ],
+   "legions": 40,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "like a Xenophilus [zenophali]"
+   ],
+   "transformation": null,
+   "manner": [],
+   "offices": [
+    "telleth of all things past, present and to come",
+    "sheweth the meaning of all questions you can ask",
+    "reconcileth friends",
+    "giveth honour and dignity to any"
+   ],
+   "conditions": [
+    "his seal is to be worn as aforesaid"
+   ],
+   "other": [],
+   "seal_clause": "His seal is this, which wear as aforesaid.",
+   "words": 63
+  },
+  {
+   "n": 12,
+   "name": "Sitri",
+   "ranks": [
+    "Prince"
+   ],
+   "rank_adjectives": [
+    "great"
+   ],
+   "legions": 60,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "at first with a leopard's face and wings as a griffin"
+   ],
+   "transformation": "afterwards at the command of the exorcist he putteth on a human shape very beautiful",
+   "manner": [],
+   "offices": [
+    "inflameth men with women's love and women with men's love",
+    "causeth them to show themselves naked, if it be desired"
+   ],
+   "conditions": [
+    "his seal is to be worn"
+   ],
+   "other": [],
+   "seal_clause": "His seal to be worn is this.",
+   "words": 75
+  },
+  {
+   "n": 13,
+   "name": "Beleth",
+   "ranks": [
+    "King"
+   ],
+   "rank_adjectives": [
+    "mighty",
+    "terrible"
+   ],
+   "legions": 85,
+   "legions_note": null,
+   "location": null,
+   "order": "of the order of Powers",
+   "order_extra": null,
+   "nature": [
+    "very furious at his first appearance"
+   ],
+   "appearance": [
+    "riding on a pale horse"
+   ],
+   "transformation": null,
+   "manner": [
+    "with trumpets and all other kinds of musical instruments playing before him",
+    "kings and princes attend him and do homage to him"
+   ],
+   "offices": [
+    "causeth all the love that possibly may be, both of men and women, till the master exorcist hath had his mind fulfilled"
+   ],
+   "conditions": [
+    "whilst the exorcist allayeth his courage he must hold a hazel stick in his hand, stretched forth towards the South and East quarters",
+    "make a triangle without the circle and command him into it by the virtue of the bonds and chains of spirits hereafter following",
+    "if he do not come into the triangle by your threats, rehearse the bonds and chains before him, and then he will yield obedience and come into it and do what he is commanded",
+    "the exorcist must receive him courteously and do homage to him, because he is a great king, as the kings and princes that attend him do",
+    "you must always have a silver ring on the middle finger of the left hand, held against your face, as they do for Amaymon",
+    "his noble seal is to be worn before you in the time of working"
+   ],
+   "other": [],
+   "seal_clause": "His noble seal is this, which is to be worn before you in the time of working.",
+   "words": 233
+  },
+  {
+   "n": 14,
+   "name": "Leraye",
+   "ranks": [
+    "Marquis"
+   ],
+   "rank_adjectives": [
+    "great in power"
+   ],
+   "legions": 30,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "in the likeness of an archer, clad in green, carrying a bow and quiver"
+   ],
+   "transformation": null,
+   "manner": [],
+   "offices": [
+    "causeth all great battles and contests",
+    "causeth the wounds to putrefy that are made with arrows by archers"
+   ],
+   "conditions": [],
+   "other": [
+    "this belongeth to [Sagittarius] (sign left blank in the manuscript)"
+   ],
+   "seal_clause": "His seal of obedience is this.",
+   "words": 67
+  },
+  {
+   "n": 15,
+   "name": "Eligor",
+   "ranks": [
+    "Duke"
+   ],
+   "rank_adjectives": [
+    "great"
+   ],
+   "legions": 60,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "in the form of a goodly knight carrying a lance, an ensign and a serpent"
+   ],
+   "transformation": null,
+   "manner": [],
+   "offices": [
+    "discovereth hidden things",
+    "knoweth things to come",
+    "knoweth of wars and how the soldiers will and shall meet",
+    "causeth the love of lords and great persons"
+   ],
+   "conditions": [
+    "wear his seal, or else he will not appear nor obey you"
+   ],
+   "other": [],
+   "seal_clause": "His seal is this, which wear, or else he will not appear nor obey you.",
+   "words": 76
+  },
+  {
+   "n": 16,
+   "name": "Zepar",
+   "ranks": [
+    "Duke"
+   ],
+   "rank_adjectives": [
+    "great"
+   ],
+   "legions": 26,
+   "legions_note": "of inferior spirits",
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "in red apparel and armed like a soldier"
+   ],
+   "transformation": null,
+   "manner": [],
+   "offices": [
+    "causeth women to love men and bringeth them together in love",
+    "maketh them barren"
+   ],
+   "conditions": [
+    "he obeyeth his seal when he seeth it"
+   ],
+   "other": [],
+   "seal_clause": "His seal is this, which he obeyeth when he seeth it.",
+   "words": 60
+  },
+  {
+   "n": 17,
+   "name": "Botis",
+   "ranks": [
+    "President",
+    "Earl"
+   ],
+   "rank_adjectives": [
+    "great"
+   ],
+   "legions": 60,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "at the first show in the form of an ugly viper"
+   ],
+   "transformation": "then at the command of the magician he putteth on human shape, with great teeth and two horns, carrying a sharp bright sword in his hand",
+   "manner": [],
+   "offices": [
+    "telleth of all things past and to come",
+    "reconcileth friends and foes"
+   ],
+   "conditions": [
+    "he obeyeth his seal when he seeth it"
+   ],
+   "other": [],
+   "seal_clause": "His seal is this, that he obeyeth when he seeth it.",
+   "words": 80
+  },
+  {
+   "n": 18,
+   "name": "Bathin",
+   "ranks": [
+    "Duke"
+   ],
+   "rank_adjectives": [
+    "mighty",
+    "strong"
+   ],
+   "legions": 30,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "like a strong man with the tail of a serpent, sitting on a pale-coloured horse"
+   ],
+   "transformation": null,
+   "manner": [],
+   "offices": [
+    "knoweth the virtues of herbs and precious stones",
+    "transporteth men suddenly from one country into another"
+   ],
+   "conditions": [
+    "his seal is to be made thus and worn before you"
+   ],
+   "other": [],
+   "seal_clause": "His seal is thus to be made and to be worn before you.",
+   "words": 70
+  },
+  {
+   "n": 19,
+   "name": "Saleos",
+   "ranks": [
+    "Duke"
+   ],
+   "rank_adjectives": [
+    "great",
+    "mighty"
+   ],
+   "legions": 30,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "in the form of a gallant soldier riding on a crocodile, with a duke's crown on his head"
+   ],
+   "transformation": null,
+   "manner": [
+    "appeareth peaceably"
+   ],
+   "offices": [
+    "causeth the love of women to men and men to women"
+   ],
+   "conditions": [
+    "his seal must be worn before you"
+   ],
+   "other": [],
+   "seal_clause": "His seal is this, which must be worn before you.",
+   "words": 61
+  },
+  {
+   "n": 20,
+   "name": "Purson",
+   "ranks": [
+    "King"
+   ],
+   "rank_adjectives": [
+    "great"
+   ],
+   "legions": 22,
+   "legions_note": "partly of the order of Virtues and partly of the order of Thrones",
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "commonly like a man with a lion's face, carrying a cruel viper in his hand and riding on a bear"
+   ],
+   "transformation": "can take a body either human or aerial",
+   "manner": [
+    "going before him are many trumpets sounding"
+   ],
+   "offices": [
+    "knoweth hidden things",
+    "discovereth treasures",
+    "telleth all things present, past and to come",
+    "answereth truly of all earthly things, both secret and divine",
+    "answereth truly of the creation of the world",
+    "bringeth forth good familiars"
+   ],
+   "conditions": [
+    "his mark or seal, which he oweth obedience to, must be worn by the exorcist in the time of action"
+   ],
+   "other": [],
+   "seal_clause": "His mark or seal is this, which he oweth obedience to, and which must be worn by the exorcist in the time of action.",
+   "words": 131
+  },
+  {
+   "n": 21,
+   "name": "Morax",
+   "ranks": [
+    "Earl",
+    "President"
+   ],
+   "rank_adjectives": [
+    "great"
+   ],
+   "legions": 36,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "like a great bull with a man's face"
+   ],
+   "transformation": null,
+   "manner": [],
+   "offices": [
+    "maketh men very knowing in astronomy and all the other liberal sciences",
+    "giveth good familiars, and very wise, which know the virtues of herbs and precious stones"
+   ],
+   "conditions": [
+    "his seal is to be made thus and worn as aforesaid"
+   ],
+   "other": [],
+   "seal_clause": "His seal is to be made thus and worn as aforesaid.",
+   "words": 72
+  },
+  {
+   "n": 22,
+   "name": "Ipos",
+   "ranks": [
+    "Earl",
+    "Prince"
+   ],
+   "rank_adjectives": [
+    "mighty"
+   ],
+   "legions": 36,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "in the form of an angel with a lion's head, goose's feet and a hare's tail"
+   ],
+   "transformation": null,
+   "manner": [],
+   "offices": [
+    "knoweth things past and to come",
+    "maketh men witty and bold"
+   ],
+   "conditions": [
+    "his seal or character must be worn as a lamen before you"
+   ],
+   "other": [],
+   "seal_clause": "His seal or character is this, which must be worn as a lamen before you.",
+   "words": 66
+  },
+  {
+   "n": 23,
+   "name": "Aim",
+   "ranks": [
+    "Duke"
+   ],
+   "rank_adjectives": [
+    "great",
+    "strong"
+   ],
+   "legions": 26,
+   "legions_note": "of infernal spirits",
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "in the form of a very handsome man in body, but with three heads, the first like a serpent, the second like a man with two stars in his forehead, the third like a cat; he rideth on a viper, carrying a firebrand burning in his hand"
+   ],
+   "transformation": null,
+   "manner": [],
+   "offices": [
+    "setteth cities, castles and great places on fire",
+    "maketh one witty in all manner of ways",
+    "giveth true answers to privy matters"
+   ],
+   "conditions": [
+    "his seal is to be made thus and worn as a lamen before you"
+   ],
+   "other": [],
+   "seal_clause": "His seal is thus to be made, and worn as a lamen before you.",
+   "words": 107
+  },
+  {
+   "n": 24,
+   "name": "Naberius",
+   "ranks": [
+    "Marquis"
+   ],
+   "rank_adjectives": [
+    "most valiant"
+   ],
+   "legions": 19,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "in the form of a black crow, fluttering about the circle"
+   ],
+   "transformation": null,
+   "manner": [
+    "when he speaketh it is with a hoarse voice"
+   ],
+   "offices": [
+    "maketh men cunning in all arts and sciences, but especially in the art of rhetoric",
+    "restoreth lost dignity and honours"
+   ],
+   "conditions": [
+    "his seal must be worn"
+   ],
+   "other": [],
+   "seal_clause": "His seal is this, which must be worn.",
+   "words": 70
+  },
+  {
+   "n": 25,
+   "name": "Glasya Labolas",
+   "ranks": [
+    "President"
+   ],
+   "rank_adjectives": [
+    "mighty"
+   ],
+   "legions": 36,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "in the form of a dog with wings like a griffin"
+   ],
+   "transformation": null,
+   "manner": [],
+   "offices": [
+    "teacheth all arts in an instant",
+    "is an author of bloodshed and manslaughter",
+    "telleth all things past and to come, if desired",
+    "causeth love of friends and foes",
+    "maketh a man go invisible"
+   ],
+   "conditions": [
+    "his seal is to be worn as a lamen"
+   ],
+   "other": [],
+   "seal_clause": "His seal is this, the which wear as a lamen.",
+   "words": 86
+  },
+  {
+   "n": 26,
+   "name": "Bune",
+   "ranks": [
+    "Duke"
+   ],
+   "rank_adjectives": [
+    "strong",
+    "great",
+    "mighty"
+   ],
+   "legions": 30,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "in the form of a dragon with three heads, one like a dog, the other like a griffin, the third like a man"
+   ],
+   "transformation": null,
+   "manner": [
+    "speaketh with a high and comely voice"
+   ],
+   "offices": [
+    "changeth the places of the dead",
+    "causeth those spirits that are under him to gather together upon their sepulchres",
+    "giveth riches to a man",
+    "maketh him wise and eloquent",
+    "giveth true answers to your demands"
+   ],
+   "conditions": [
+    "he oweth obedience to his seal"
+   ],
+   "other": [],
+   "seal_clause": "His seal is this, which he oweth obedience to.",
+   "words": 103
+  },
+  {
+   "n": 27,
+   "name": "Ronove",
+   "ranks": [
+    "Marquis",
+    "Earl"
+   ],
+   "rank_adjectives": [
+    "great"
+   ],
+   "legions": 19,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "in the form of a monster"
+   ],
+   "transformation": null,
+   "manner": [],
+   "offices": [
+    "teacheth the art of rhetoric very well",
+    "giveth good servants",
+    "giveth knowledge of tongues",
+    "giveth favour of friends and foes"
+   ],
+   "conditions": [],
+   "other": [
+    "rank stated only after the offices"
+   ],
+   "seal_clause": "His seal is this.",
+   "words": 54
+  },
+  {
+   "n": 28,
+   "name": "Berith",
+   "ranks": [
+    "Duke"
+   ],
+   "rank_adjectives": [
+    "mighty",
+    "great",
+    "terrible"
+   ],
+   "legions": 26,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [
+    "a great liar and not to be trusted much"
+   ],
+   "appearance": [
+    "like a soldier with red clothing, riding on a red horse, with a crown of gold upon his head"
+   ],
+   "transformation": null,
+   "manner": [
+    "speaketh with a very clear and subtle voice"
+   ],
+   "offices": [
+    "giveth true answers of things past, present and to come",
+    "turneth all metals into gold",
+    "giveth dignities and confirmeth them to men"
+   ],
+   "conditions": [
+    "you must use a ring, as is before spoken of Beleth, in calling him forth",
+    "his seal must be worn as a lamen"
+   ],
+   "other": [
+    "in order as Solomon bound them",
+    "hath two other names given to him by men of latter times, viz. Beal and Bolfry"
+   ],
+   "seal_clause": "His seal is this, which must be worn as a lamen.",
+   "words": 136
+  },
+  {
+   "n": 29,
+   "name": "Astaroth",
+   "ranks": [
+    "Duke"
+   ],
+   "rank_adjectives": [
+    "mighty",
+    "strong"
+   ],
+   "legions": 40,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "in the form of an unbeautiful angel, riding on an infernal-like dragon, and carrying in his right hand a viper"
+   ],
+   "transformation": null,
+   "manner": [],
+   "offices": [
+    "giveth true answers of things present, past and to come",
+    "discovereth all secrets",
+    "declareth willingly how the spirits fell, if desired, and the reason of his own fall",
+    "maketh men wonderful knowing in all liberal sciences"
+   ],
+   "conditions": [
+    "you must not let him come too near you, lest he do you damage by his stinking breath",
+    "the exorcist must hold the magical ring near to his face, and that will defend him",
+    "wear his seal as a lamen before you, or else he will not obey you"
+   ],
+   "other": [],
+   "seal_clause": "His seal is this, which wear as a lamen before you, or else he will not obey you.",
+   "words": 139
+  },
+  {
+   "n": 30,
+   "name": "Forneus",
+   "ranks": [
+    "Marquis"
+   ],
+   "rank_adjectives": [
+    "mighty",
+    "great"
+   ],
+   "legions": 29,
+   "legions_note": "partly of the order of Thrones and partly of Angels",
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "in the form of a great sea monster"
+   ],
+   "transformation": null,
+   "manner": [],
+   "offices": [
+    "teacheth and maketh men wonderful knowing in the art of rhetoric",
+    "causeth men to have a good name",
+    "causeth men to have the understanding of tongues",
+    "maketh men to be beloved of their foes as well as of their friends"
+   ],
+   "conditions": [
+    "his seal is to be made and worn as aforesaid"
+   ],
+   "other": [],
+   "seal_clause": "His seal is this, to be made and worn as aforesaid.",
+   "words": 95
+  },
+  {
+   "n": 31,
+   "name": "Foras",
+   "ranks": [
+    "President"
+   ],
+   "rank_adjectives": [
+    "mighty",
+    "great"
+   ],
+   "legions": 29,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "in the form of a strong man, in human shape"
+   ],
+   "transformation": null,
+   "manner": [],
+   "offices": [
+    "giveth men the understanding how they may know the virtues of all herbs and precious stones",
+    "teacheth the art of logic and ethics in all their parts, if desired",
+    "maketh men invisible",
+    "maketh men witty and eloquent",
+    "maketh men to live long",
+    "discovereth treasures",
+    "recovereth things lost"
+   ],
+   "conditions": [
+    "his seal or character is to be made thus and worn as a lamen"
+   ],
+   "other": [],
+   "seal_clause": "His seal or character is thus to be made and worn as a lamen.",
+   "words": 98
+  },
+  {
+   "n": 32,
+   "name": "Asmoday",
+   "ranks": [
+    "King"
+   ],
+   "rank_adjectives": [
+    "great",
+    "strong",
+    "powerful"
+   ],
+   "legions": 72,
+   "legions_note": "of inferior spirits",
+   "location": "the first and chiefest under the power of Amaymon",
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "with three heads, whereof the first is like a bull, the second like a man, the third like a ram; with a serpent's tail, belching or vomiting up flames of fire out of his mouth; his feet are webbed like a goose; he sitteth on an infernal dragon, carrying a lance and a flag in his hands"
+   ],
+   "transformation": null,
+   "manner": [
+    "goeth before all others",
+    "by and by he will bow down to the ground"
+   ],
+   "offices": [
+    "giveth the ring of virtues",
+    "teacheth the art of arithmetic, geometry, astronomy and all handicrafts absolutely",
+    "giveth full and true answers to your demands",
+    "maketh a man invisible",
+    "showeth the place where treasures lie",
+    "guardeth it if it be among the legions of Amaymon"
+   ],
+   "conditions": [
+    "when the exorcist hath a mind to call him, let it be abroad",
+    "let him stand on his feet all the time of action with his cap off, for if it be on, Amaymon will deceive him and cause all his doings to be bewrayed",
+    "as soon as the exorcist seeth Asmoday in the shape aforesaid, he shall call him by his name, saying 'Thou art Asmoday', and he will not deny it",
+    "his seal is to be made thus and worn as a lamen before thee on your breast"
+   ],
+   "other": [],
+   "seal_clause": "His seal is thus, to be made and worn as a lamen before thee on your breast.",
+   "words": 251
+  },
+  {
+   "n": 33,
+   "name": "Gaap",
+   "ranks": [
+    "President",
+    "Prince"
+   ],
+   "rank_adjectives": [
+    "great",
+    "mighty"
+   ],
+   "legions": 66,
+   "legions_note": null,
+   "location": null,
+   "order": "of the order of Potestates",
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "in a human shape"
+   ],
+   "transformation": null,
+   "manner": [
+    "going before four great and mighty kings, as if he were a guide to conduct them along in their way"
+   ],
+   "offices": [
+    "maketh men knowing in philosophy and all the liberal sciences",
+    "causeth love or hatred",
+    "maketh men insensible",
+    "teacheth how to consecrate those things that belong to the dominion of Amaymon his king",
+    "delivereth familiars out of the custody of other magicians",
+    "answereth truly and perfectly of things past, present and to come",
+    "carrieth and recarrieth things most speedily from one kingdom to another at the will and pleasure of the exorcist"
+   ],
+   "conditions": [
+    "his seal is to be made thus and worn as a lamen"
+   ],
+   "other": [
+    "appeareth when the Sun is in some of the southern signs",
+    "Amaymon is his king"
+   ],
+   "seal_clause": "His seal is thus to be made and to be worn as a lamen.",
+   "words": 162
+  },
+  {
+   "n": 34,
+   "name": "Furtur",
+   "ranks": [
+    "Earl"
+   ],
+   "rank_adjectives": [
+    "great",
+    "mighty"
+   ],
+   "legions": 26,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [
+    "never speaketh truth except he be compelled"
+   ],
+   "appearance": [
+    "in the form of a hart with a fiery tail"
+   ],
+   "transformation": "being compelled within a triangle, he will take upon himself the form of an angel, being bidden",
+   "manner": [
+    "speaketh with a hoarse voice"
+   ],
+   "offices": [
+    "will willingly make love between man and wife",
+    "raiseth thunder, lightnings, blasts and great tempestuous storms",
+    "giveth true answers both of secret and divine things, if commanded"
+   ],
+   "conditions": [
+    "he must be compelled or brought up within a triangle, or he will not speak truth",
+    "his seal is to be worn as a lamen"
+   ],
+   "other": [],
+   "seal_clause": "His seal is this, which is to be worn as a lamen.",
+   "words": 111
+  },
+  {
+   "n": 35,
+   "name": "Marchosias",
+   "ranks": [
+    "Marquis"
+   ],
+   "rank_adjectives": [
+    "great",
+    "mighty"
+   ],
+   "legions": 30,
+   "legions_note": null,
+   "location": null,
+   "order": "of the order of Dominations",
+   "order_extra": "he told his chief master, which was Solomon, that after 1200 years he had hopes to return to the seventh throne",
+   "nature": [
+    "is a strong fighter",
+    "is very faithful to the exorcist in doing his business"
+   ],
+   "appearance": [
+    "at first in the form of a wolf, having griffin's wings and a serpent's tail, vomiting up fire out of his mouth"
+   ],
+   "transformation": "afterwards at the command of the exorcist he putteth on the shape of a man",
+   "manner": [],
+   "offices": [
+    "giveth true answers to all questions"
+   ],
+   "conditions": [
+    "his seal is to be made and worn as a lamen"
+   ],
+   "other": [],
+   "seal_clause": "His seal is thus, to be made and worn as a lamen.",
+   "words": 122
+  },
+  {
+   "n": 36,
+   "name": "Stolas",
+   "ranks": [
+    "Prince"
+   ],
+   "rank_adjectives": [
+    "great",
+    "powerful"
+   ],
+   "legions": 26,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "in the shape of a night raven, at first before the exorcist"
+   ],
+   "transformation": "afterwards he taketh the image of a man",
+   "manner": [],
+   "offices": [
+    "teacheth the art of astronomy",
+    "teacheth the virtues of herbs and precious stones"
+   ],
+   "conditions": [
+    "his seal is to be made and worn as a lamen"
+   ],
+   "other": [],
+   "seal_clause": "His seal is thus to be made and worn as a lamen.",
+   "words": 68
+  },
+  {
+   "n": 37,
+   "name": "Phoenix",
+   "ranks": [
+    "Marquis"
+   ],
+   "rank_adjectives": [
+    "great"
+   ],
+   "legions": 20,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": "hath hopes to return to the seventh throne after 1200 years more, as he said to Solomon",
+   "nature": [
+    "will be willing to do your request"
+   ],
+   "appearance": [
+    "like the bird Phoenix"
+   ],
+   "transformation": "by and by the exorcist must bid him put on human shape",
+   "manner": [
+    "having a child's voice",
+    "singeth many sweet notes before the exorcist"
+   ],
+   "offices": [
+    "speaketh marvellously of all wonderful sciences",
+    "is a good and excellent poet"
+   ],
+   "conditions": [
+    "the exorcist must not regard his sweet notes, but by and by must bid him put on human shape",
+    "his seal is to be made and worn"
+   ],
+   "other": [],
+   "seal_clause": "His seal is thus to be made and worn.",
+   "words": 104
+  },
+  {
+   "n": 38,
+   "name": "Halphas",
+   "ranks": [
+    "Earl"
+   ],
+   "rank_adjectives": [
+    "great"
+   ],
+   "legions": 26,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "in the form of a stork [dove]"
+   ],
+   "transformation": null,
+   "manner": [
+    "speaketh with a hoarse voice"
+   ],
+   "offices": [
+    "buildeth up towers [towns]",
+    "furnisheth them with ammunition and weapons",
+    "sendeth men of war to places appointed"
+   ],
+   "conditions": [
+    "his seal is to be made and worn as a lamen"
+   ],
+   "other": [],
+   "seal_clause": "His seal is thus to be made and worn as a lamen.",
+   "words": 70
+  },
+  {
+   "n": 39,
+   "name": "Malphas",
+   "ranks": [
+    "President"
+   ],
+   "rank_adjectives": [
+    "mighty",
+    "powerful"
+   ],
+   "legions": 40,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "at first in the form like a crow [raven]"
+   ],
+   "transformation": "afterwards will put on a human shape at the request of the exorcist",
+   "manner": [
+    "speaketh with a hoarse voice"
+   ],
+   "offices": [
+    "buildeth houses and high towers",
+    "bringeth quickly artificers together from all places of the world",
+    "destroyeth the enemies' desires or thoughts and all that they have done",
+    "giveth good familiars"
+   ],
+   "conditions": [
+    "if you make any sacrifices to him he will receive it kindly and willingly, but he will deceive him that doth it",
+    "his seal is to be made and worn as a lamen"
+   ],
+   "other": [],
+   "seal_clause": "His seal is thus to be made and worn as a lamen.",
+   "words": 124
+  },
+  {
+   "n": 40,
+   "name": "Raum",
+   "ranks": [
+    "Earl"
+   ],
+   "rank_adjectives": [],
+   "legions": 30,
+   "legions_note": null,
+   "location": null,
+   "order": "of the order of Thrones",
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "at first in the form of a crow"
+   ],
+   "transformation": "afterwards at the command of the exorcist he putteth on human shape",
+   "manner": [],
+   "offices": [
+    "stealeth treasures out of kings' houses and carrieth it where he is commanded",
+    "destroyeth cities",
+    "destroyeth the dignities of men",
+    "telleth all things past, and what is, and what will be",
+    "causeth love between friends and foes"
+   ],
+   "conditions": [
+    "his seal is to be made and worn as a lamen before you"
+   ],
+   "other": [],
+   "seal_clause": "His seal is thus, which make and wear as a lamen before you.",
+   "words": 107
+  },
+  {
+   "n": 41,
+   "name": "Focalor",
+   "ranks": [
+    "Duke"
+   ],
+   "rank_adjectives": [
+    "great",
+    "strong"
+   ],
+   "legions": 3,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": "hath hopes to return to the seventh throne after 1000 years",
+   "nature": [],
+   "appearance": [
+    "in the form of a man with griffin's wings"
+   ],
+   "transformation": null,
+   "manner": [],
+   "offices": [
+    "killeth men",
+    "drowneth them in the waters",
+    "overthroweth ships of war",
+    "hath power over both winds and seas"
+   ],
+   "conditions": [
+    "he will not hurt any man or thing if he be commanded to the contrary by the exorcist",
+    "his seal must be worn as a lamen"
+   ],
+   "other": [],
+   "seal_clause": "His seal is this, which must be worn as a lamen.",
+   "words": 104
+  },
+  {
+   "n": 42,
+   "name": "Vepar",
+   "ranks": [
+    "Duke"
+   ],
+   "rank_adjectives": [
+    "great",
+    "strong"
+   ],
+   "legions": 29,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "like a mermaid"
+   ],
+   "transformation": null,
+   "manner": [],
+   "offices": [
+    "guideth the waters and ships laden with armour thereon",
+    "at the request of the exorcist causeth the seas to be rough and stormy",
+    "causeth the seas to appear full of ships",
+    "causeth men to die in three days by putrefying their sores and wounds and causing worms in them to breed"
+   ],
+   "conditions": [
+    "his seal is to be made and worn as a lamen"
+   ],
+   "other": [],
+   "seal_clause": "His seal is thus to be made and worn as a lamen.",
+   "words": 92
+  },
+  {
+   "n": 43,
+   "name": "Sabnach",
+   "ranks": [
+    "Marquis"
+   ],
+   "rank_adjectives": [
+    "mighty",
+    "great",
+    "strong"
+   ],
+   "legions": 50,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "in the form of an armed soldier with a lion's head, riding on a pale-coloured horse"
+   ],
+   "transformation": null,
+   "manner": [],
+   "offices": [
+    "buildeth high towers, castles and cities",
+    "furnisheth them with armour",
+    "afflicteth men several days with wounds and rotten sores full of worms",
+    "giveth good familiars at the command of the exorcist"
+   ],
+   "conditions": [
+    "his seal is to be made and worn as a lamen"
+   ],
+   "other": [
+    "in order as Solomon commanded them into the brazen vessel"
+   ],
+   "seal_clause": "His seal is thus to be made and worn as a lamen.",
+   "words": 101
+  },
+  {
+   "n": 44,
+   "name": "Shax",
+   "ranks": [
+    "Marquis"
+   ],
+   "rank_adjectives": [
+    "great"
+   ],
+   "legions": 30,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "in the form of a stock dove"
+   ],
+   "transformation": null,
+   "manner": [
+    "speaketh with a hoarse and subtle voice"
+   ],
+   "offices": [
+    "taketh away the sight, hearing and understanding of any man or woman at the command of the exorcist",
+    "stealeth money out of kings' houses and carrieth it again in 1200 years, if commanded",
+    "fetcheth horses or any thing at the request of the exorcist",
+    "discovereth all things that are hidden and not kept by wicked spirits",
+    "giveth good familiars sometimes"
+   ],
+   "conditions": [
+    "he must be commanded into a triangle first, or else he will deceive the exorcist and tell you many lies",
+    "his seal is to be made and worn as a lamen"
+   ],
+   "other": [],
+   "seal_clause": "His seal is thus to be made and worn as a lamen.",
+   "words": 139
+  },
+  {
+   "n": 45,
+   "name": "Vine",
+   "ranks": [
+    "King",
+    "Earl"
+   ],
+   "rank_adjectives": [
+    "great"
+   ],
+   "legions": 35,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "in the form of a lion riding on a black horse, with a viper in his hand"
+   ],
+   "transformation": null,
+   "manner": [],
+   "offices": [
+    "discovereth things hidden",
+    "discovereth witches",
+    "discovereth things present, past and to come",
+    "at the command of the exorcist buildeth towers",
+    "throweth down great stone walls",
+    "maketh waters rough with storms"
+   ],
+   "conditions": [
+    "his seal is to be made and worn as a lamen"
+   ],
+   "other": [],
+   "seal_clause": "His seal is this, which make and wear as a lamen.",
+   "words": 87
+  },
+  {
+   "n": 46,
+   "name": "Bifrons",
+   "ranks": [
+    "Earl"
+   ],
+   "rank_adjectives": [],
+   "legions": 6,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "in the form of a monster at first"
+   ],
+   "transformation": "after a while at the command of the exorcist he putteth on the shape of a man",
+   "manner": [],
+   "offices": [
+    "maketh one knowing in astrology and geometry and other arts and sciences",
+    "teacheth the virtues of all herbs, precious stones and woods",
+    "changeth the dead bodies and putteth them into one another's places",
+    "lighteth candles seemingly upon the graves of the dead"
+   ],
+   "conditions": [
+    "he will own and submit unto his seal"
+   ],
+   "other": [],
+   "seal_clause": "His seal is this, which he will own and submit unto.",
+   "words": 108
+  },
+  {
+   "n": 47,
+   "name": "Vual",
+   "ranks": [
+    "Duke"
+   ],
+   "rank_adjectives": [
+    "great",
+    "mighty",
+    "strong"
+   ],
+   "legions": 37,
+   "legions_note": null,
+   "location": null,
+   "order": "of the order of Potestates",
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "in the form of a mighty dromedary at first"
+   ],
+   "transformation": "after a while he putteth on human shape",
+   "manner": [
+    "speaketh in the Egyptian tongue, but not perfectly"
+   ],
+   "offices": [
+    "procureth the love of women",
+    "telleth things past, present and to come",
+    "procureth friendship between friends and foes"
+   ],
+   "conditions": [
+    "his seal is to be made and worn as a lamen before you"
+   ],
+   "other": [],
+   "seal_clause": "His seal is thus to be made and worn as a lamen before you.",
+   "words": 98
+  },
+  {
+   "n": 48,
+   "name": "Haagenti",
+   "ranks": [
+    "President"
+   ],
+   "rank_adjectives": [
+    "great"
+   ],
+   "legions": 33,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "in the form of a mighty bull with griffin's wings at first"
+   ],
+   "transformation": "afterwards at the command of the exorcist he putteth on human shape",
+   "manner": [],
+   "offices": [
+    "maketh men wise",
+    "instructeth them in divers things",
+    "transmuteth all metals into gold",
+    "changeth wine into water and water into wine"
+   ],
+   "conditions": [
+    "his seal is to be made and worn as a lamen"
+   ],
+   "other": [],
+   "seal_clause": "His seal is thus made, and to be worn as a lamen.",
+   "words": 87
+  },
+  {
+   "n": 49,
+   "name": "Procel",
+   "ranks": [
+    "Duke"
+   ],
+   "rank_adjectives": [
+    "great",
+    "strong"
+   ],
+   "legions": 48,
+   "legions_note": null,
+   "location": null,
+   "order": "of the order of Potestates",
+   "order_extra": "as he declared to Solomon, before his fall",
+   "nature": [],
+   "appearance": [
+    "in the form of an angel"
+   ],
+   "transformation": null,
+   "manner": [
+    "speaketh somewhat mystically of hidden things"
+   ],
+   "offices": [
+    "teacheth the art of geometry and the liberal sciences",
+    "at the command of the exorcist maketh great noises like the running of great waters, although there be none",
+    "warmeth waters",
+    "distempereth baths"
+   ],
+   "conditions": [
+    "his character or mark is to be made thus and worn as a lamen before you"
+   ],
+   "other": [],
+   "seal_clause": "His character or mark is thus to be made and worn as a lamen before you.",
+   "words": 102
+  },
+  {
+   "n": 50,
+   "name": "Furcas",
+   "ranks": [
+    "Knight"
+   ],
+   "rank_adjectives": [],
+   "legions": 20,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "in the form and similitude of a cruel old man with a long beard and a hoary head, sitting on a pale-coloured horse, with a sharp weapon in his hand"
+   ],
+   "transformation": null,
+   "manner": [],
+   "offices": [
+    "teacheth the art of philosophy, astronomy, rhetoric, logic, chiromancy and pyromancy in all their parts perfectly"
+   ],
+   "conditions": [
+    "his seal or mark is to be made and worn as a lamen"
+   ],
+   "other": [],
+   "seal_clause": "His seal or mark is this, which make and wear as a lamen.",
+   "words": 87
+  },
+  {
+   "n": 51,
+   "name": "Balam",
+   "ranks": [
+    "King"
+   ],
+   "rank_adjectives": [
+    "terrible",
+    "great",
+    "powerful"
+   ],
+   "legions": 40,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "with three heads, the first like a bull's, the second like a man's, the third like a ram's head; he hath a serpent's tail and flaming eyes; riding upon a furious bear, carrying a goshawk on his fist"
+   ],
+   "transformation": null,
+   "manner": [
+    "speaketh with a hoarse voice"
+   ],
+   "offices": [
+    "giveth true answers of things past, present and to come",
+    "maketh men to go invisible",
+    "maketh men witty"
+   ],
+   "conditions": [
+    "his seal is to be made and worn as a lamen"
+   ],
+   "other": [],
+   "seal_clause": "His seal is thus to be made and to be worn as a lamen.",
+   "words": 100
+  },
+  {
+   "n": 52,
+   "name": "Alloces",
+   "ranks": [
+    "Duke"
+   ],
+   "rank_adjectives": [
+    "great",
+    "mighty",
+    "strong"
+   ],
+   "legions": 36,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "in the form of a soldier riding on a great horse; his face is like a lion's, very red, having flaming eyes"
+   ],
+   "transformation": null,
+   "manner": [
+    "his speech is hoarse and very big"
+   ],
+   "offices": [
+    "teacheth the art of astronomy and all the liberal sciences",
+    "bringeth good familiars"
+   ],
+   "conditions": [
+    "his seal is to be made and worn"
+   ],
+   "other": [],
+   "seal_clause": "His seal is thus made, and is to be worn.",
+   "words": 78
+  },
+  {
+   "n": 53,
+   "name": "Caim",
+   "ranks": [
+    "President"
+   ],
+   "rank_adjectives": [
+    "great"
+   ],
+   "legions": 30,
+   "legions_note": "of infernal spirits",
+   "location": null,
+   "order": "of the order of Angels",
+   "order_extra": null,
+   "nature": [
+    "is a good disputer"
+   ],
+   "appearance": [
+    "at first in the form of a bird called a thrush"
+   ],
+   "transformation": "after a while he putteth on the shape of a man, carrying in his hand a sharp sword",
+   "manner": [
+    "seemeth to answer in burning ashes"
+   ],
+   "offices": [
+    "giveth men the understanding of all birds, lowing of bullocks, barking of dogs and other creatures",
+    "giveth men the understanding of the noise of waters",
+    "giveth very true answers of things to come"
+   ],
+   "conditions": [
+    "his seal is to be worn as a lamen"
+   ],
+   "other": [],
+   "seal_clause": "His seal is this, which wear as a lamen.",
+   "words": 114
+  },
+  {
+   "n": 54,
+   "name": "Murmur",
+   "ranks": [
+    "Duke",
+    "Earl"
+   ],
+   "rank_adjectives": [
+    "great"
+   ],
+   "legions": 30,
+   "legions_note": null,
+   "location": null,
+   "order": "partly of the order of Thrones and partly of Angels",
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "in the form of a soldier riding on a griffin, with a duke's crown on his head"
+   ],
+   "transformation": null,
+   "manner": [
+    "there goeth before him two of his ministers with great trumpets sounding"
+   ],
+   "offices": [
+    "teacheth philosophy perfectly",
+    "constraineth souls deceased to come before the exorcist to answer those things that he shall ask them, if he desireth"
+   ],
+   "conditions": [
+    "his seal is to be worn as a lamen"
+   ],
+   "other": [],
+   "seal_clause": "His seal is this, which is to be worn as a lamen.",
+   "words": 108
+  },
+  {
+   "n": 55,
+   "name": "Orobas",
+   "ranks": [
+    "Prince"
+   ],
+   "rank_adjectives": [
+    "mighty",
+    "great"
+   ],
+   "legions": 20,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [
+    "is faithful to the exorcist"
+   ],
+   "appearance": [
+    "at first like a horse"
+   ],
+   "transformation": "afterwards at the command of the exorcist he putteth on the image of a man",
+   "manner": [],
+   "offices": [
+    "discovereth all things past, present and to come",
+    "giveth dignities and prelacies",
+    "giveth the favour of friends and foes",
+    "giveth true answers of divinity and of the creation of the world",
+    "will not suffer the exorcist to be tempted by any spirit"
+   ],
+   "conditions": [
+    "his seal must be made and worn as a lamen"
+   ],
+   "other": [],
+   "seal_clause": "His seal is this, which must be made and worn as a lamen.",
+   "words": 109
+  },
+  {
+   "n": 56,
+   "name": "Gemory",
+   "ranks": [
+    "Duke"
+   ],
+   "rank_adjectives": [
+    "strong",
+    "powerful"
+   ],
+   "legions": 26,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "in the form of a beautiful woman, with a duchess's coronet tied about her middle, riding on a great camel"
+   ],
+   "transformation": null,
+   "manner": [],
+   "offices": [
+    "telleth of all things past, present and to come",
+    "telleth of treasure hidden and what it lieth in",
+    "procureth the love of women, both young and old"
+   ],
+   "conditions": [
+    "his seal is to be made and worn as a lamen before the exorcist in the time of working"
+   ],
+   "other": [],
+   "seal_clause": "His seal is thus made, and worn as a lamen before the exorcist in the time of working.",
+   "words": 89
+  },
+  {
+   "n": 57,
+   "name": "Ose",
+   "ranks": [
+    "President"
+   ],
+   "rank_adjectives": [
+    "great"
+   ],
+   "legions": 3,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "like a leopard at first"
+   ],
+   "transformation": "after a little time he putteth on the shape of a man",
+   "manner": [],
+   "offices": [
+    "maketh one cunning in the liberal sciences",
+    "giveth true answers of divine and secret things",
+    "changeth a man into any shape that the exorcist desireth, so that he that is so changed will not think any other thing but that he is that creature or thing he is changed into"
+   ],
+   "conditions": [
+    "his seal is to be worn as a lamen"
+   ],
+   "other": [],
+   "seal_clause": "His seal is this, which wear as a lamen.",
+   "words": 104
+  },
+  {
+   "n": 58,
+   "name": "Amy",
+   "ranks": [
+    "President"
+   ],
+   "rank_adjectives": [
+    "great"
+   ],
+   "legions": 36,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "at first in the form of a flaming fire"
+   ],
+   "transformation": "after a while he putteth on the shape of a man",
+   "manner": [],
+   "offices": [
+    "maketh one wondrous knowing in astrology and all the liberal sciences",
+    "giveth good familiars",
+    "bewrayeth treasures which are kept by spirits"
+   ],
+   "conditions": [
+    "his seal is to be worn as a lamen"
+   ],
+   "other": [],
+   "seal_clause": "His seal is this, which wear as a lamen.",
+   "words": 79
+  },
+  {
+   "n": 59,
+   "name": "Orias",
+   "ranks": [
+    "Marquis"
+   ],
+   "rank_adjectives": [
+    "great"
+   ],
+   "legions": 30,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "in the form of a lion riding on a mighty horse, with a serpent's tail, holding in his right hand two great serpents hissing"
+   ],
+   "transformation": null,
+   "manner": [],
+   "offices": [
+    "teacheth the virtues of the stars",
+    "teacheth to know the mansions of the planets and how to understand their virtues",
+    "transformeth men",
+    "giveth dignities, prelacies and confirmations",
+    "giveth the favour of friends and foes"
+   ],
+   "conditions": [
+    "his seal is to be made and worn"
+   ],
+   "other": [],
+   "seal_clause": "His seal is this, to be made and worn.",
+   "words": 95
+  },
+  {
+   "n": 60,
+   "name": "Vapula",
+   "ranks": [
+    "Duke"
+   ],
+   "rank_adjectives": [
+    "great",
+    "mighty",
+    "strong"
+   ],
+   "legions": 36,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "in the form of a lion with griffin's wings"
+   ],
+   "transformation": null,
+   "manner": [],
+   "offices": [
+    "maketh men knowing in all handicraft professions",
+    "maketh men knowing in philosophy and other sciences"
+   ],
+   "conditions": [
+    "his seal or character is to be made and worn as a lamen"
+   ],
+   "other": [],
+   "seal_clause": "His seal or character is thus made, and is to be worn as a lamen.",
+   "words": 63
+  },
+  {
+   "n": 61,
+   "name": "Zagan",
+   "ranks": [
+    "King",
+    "President"
+   ],
+   "rank_adjectives": [
+    "great"
+   ],
+   "legions": 33,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "at first in the form of a bull with griffin's wings"
+   ],
+   "transformation": "afterwards he putteth on human shape",
+   "manner": [],
+   "offices": [
+    "maketh men witty",
+    "turneth wine into water, blood into wine, and water into wine",
+    "turneth all metals into coin of that dominion the metals are of",
+    "maketh fools wise"
+   ],
+   "conditions": [
+    "his seal is to be made and worn as a lamen"
+   ],
+   "other": [],
+   "seal_clause": "His seal is thus made and worn as a lamen.",
+   "words": 87
+  },
+  {
+   "n": 62,
+   "name": "Valac",
+   "ranks": [
+    "President"
+   ],
+   "rank_adjectives": [
+    "mighty",
+    "great"
+   ],
+   "legions": 30,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "like a boy with angel's wings, riding on a two-headed dragon"
+   ],
+   "transformation": null,
+   "manner": [],
+   "offices": [
+    "giveth true answers of hidden treasures",
+    "telleth where serpents may be seen, which he will bring and deliver to the exorcist without any force or strength"
+   ],
+   "conditions": [
+    "his seal must be made and worn as a lamen"
+   ],
+   "other": [],
+   "seal_clause": "His seal is this, which must be made and worn as a lamen.",
+   "words": 78
+  },
+  {
+   "n": 63,
+   "name": "Andras",
+   "ranks": [
+    "Marquis"
+   ],
+   "rank_adjectives": [
+    "great"
+   ],
+   "legions": 30,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "in the form of an angel with a head like a black night raven, riding upon a black strong wolf, with a sharp bright sword flourishing in his hand"
+   ],
+   "transformation": null,
+   "manner": [],
+   "offices": [
+    "soweth discords"
+   ],
+   "conditions": [
+    "if the exorcist hath not a care, he will kill him and his fellows",
+    "his seal is to be made and worn as a lamen before thee on your breast"
+   ],
+   "other": [],
+   "seal_clause": "His seal is thus, to be made and worn as a lamen before thee on your breast.",
+   "words": 81
+  },
+  {
+   "n": 64,
+   "name": "Flauros",
+   "ranks": [
+    "Duke"
+   ],
+   "rank_adjectives": [
+    "great"
+   ],
+   "legions": 36,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "at first like a mighty, terrible and strong leopard"
+   ],
+   "transformation": "afterwards at the command of the exorcist he putteth on the shape of a man with fiery eyes and a terrible countenance",
+   "manner": [],
+   "offices": [
+    "giveth true answers of all things past, present and to come",
+    "talketh gladly of divinity and of the creation of the world, and of his and all other spirits' fall",
+    "destroyeth and burneth those that are the exorcist's enemies, if he requesteth it",
+    "will not suffer the exorcist to be tempted by any spirit or otherwise"
+   ],
+   "conditions": [
+    "unless he be commanded into a triangle, he will lie in all those things and deceive or beguile the exorcist in other things or business",
+    "his seal is to be made and worn as a lamen"
+   ],
+   "other": [],
+   "seal_clause": "His seal is thus to be made and worn as a lamen.",
+   "words": 150
+  },
+  {
+   "n": 65,
+   "name": "Andrealphus",
+   "ranks": [
+    "Marquis"
+   ],
+   "rank_adjectives": [
+    "mighty",
+    "great"
+   ],
+   "legions": 30,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "at first in the form of a peacock"
+   ],
+   "transformation": "afterward he putteth on human shape",
+   "manner": [
+    "with great noises"
+   ],
+   "offices": [
+    "teacheth perfectly geometry and all things belonging to measuring",
+    "teacheth astronomy",
+    "maketh men very subtle and cunning therein",
+    "transformeth a man into the likeness of a bird"
+   ],
+   "conditions": [
+    "his seal is to be worn as a lamen"
+   ],
+   "other": [],
+   "seal_clause": "His seal is this, which is to be worn as a lamen.",
+   "words": 82
+  },
+  {
+   "n": 66,
+   "name": "Cimeies",
+   "ranks": [
+    "Marquis"
+   ],
+   "rank_adjectives": [
+    "mighty",
+    "great",
+    "strong",
+    "powerful"
+   ],
+   "legions": 20,
+   "legions_note": "of chief spirits, but more inferior than himself",
+   "location": "ruleth over all spirits in the parts of Africa",
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "like a valiant soldier riding on a goodly black horse"
+   ],
+   "transformation": null,
+   "manner": [],
+   "offices": [
+    "teacheth perfectly grammar, rhetoric and logic",
+    "discovereth treasures and things lost or hidden",
+    "maketh a man seem like a soldier of his own likeness"
+   ],
+   "conditions": [
+    "his seal is to be made and worn as a lamen"
+   ],
+   "other": [],
+   "seal_clause": "His seal is thus made and worn as a lamen.",
+   "words": 91
+  },
+  {
+   "n": 67,
+   "name": "Amduscias",
+   "ranks": [
+    "Duke"
+   ],
+   "rank_adjectives": [
+    "strong",
+    "great"
+   ],
+   "legions": 29,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "at first like a unicorn"
+   ],
+   "transformation": "afterwards at the request of the exorcist he standeth before him in human shape",
+   "manner": [],
+   "offices": [
+    "causeth trumpets and all manner of musical instruments to be heard but not seen",
+    "causeth trees to bend and incline according to the exorcist's will",
+    "giveth excellent familiars"
+   ],
+   "conditions": [
+    "his seal is to be formed thus and worn as a lamen"
+   ],
+   "other": [],
+   "seal_clause": "His seal is thus formed and is to be worn as a lamen.",
+   "words": 85
+  },
+  {
+   "n": 68,
+   "name": "Belial",
+   "ranks": [
+    "King"
+   ],
+   "rank_adjectives": [
+    "mighty",
+    "powerful"
+   ],
+   "legions": 80,
+   "legions_note": null,
+   "location": null,
+   "order": "of his [Lucifer's] order",
+   "order_extra": "was created next after Lucifer",
+   "nature": [
+    "tarrieth not one hour in the truth except he be constrained by divine power"
+   ],
+   "appearance": [
+    "in the form of a beautiful angel sitting in a chariot of fire"
+   ],
+   "transformation": null,
+   "manner": [
+    "speaketh with a comely voice"
+   ],
+   "offices": [
+    "distributeth preferments of senatorships",
+    "causeth favour of friends and foes",
+    "giveth excellent familiars"
+   ],
+   "conditions": [
+    "he must have offerings, sacrifices and gifts presented to him by the exorcist, or else he will not give true answers to his demands",
+    "his seal is to be worn as a lamen before the exorcist"
+   ],
+   "other": [
+    "declareth that he fell first, and amongst the worthier and wiser sort which went before Michael and other heavenly angels"
+   ],
+   "seal_clause": "His seal is thus, which is to be worn as a lamen before the exorcist.",
+   "words": 151
+  },
+  {
+   "n": 69,
+   "name": "Decarabia",
+   "ranks": [
+    "Marquis"
+   ],
+   "rank_adjectives": [
+    "great"
+   ],
+   "legions": 30,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "at first in the form of a star in the pentacle"
+   ],
+   "transformation": "afterwards at the command of the exorcist he putteth on the image of a man",
+   "manner": [],
+   "offices": [
+    "discovereth the virtues of herbs and precious stones",
+    "maketh the similitude of all birds to fly before the exorcist and to tarry with him, singing and drinking as natural birds do"
+   ],
+   "conditions": [
+    "his seal is to be made and worn as a lamen before the exorcist"
+   ],
+   "other": [
+    "rank stated only after the legions"
+   ],
+   "seal_clause": "His seal is thus to be made, and worn as a lamen before the exorcist.",
+   "words": 99
+  },
+  {
+   "n": 70,
+   "name": "Seere",
+   "ranks": [
+    "Prince"
+   ],
+   "rank_adjectives": [
+    "mighty",
+    "powerful"
+   ],
+   "legions": 26,
+   "legions_note": null,
+   "location": "under Amaymon, king of the East",
+   "order": null,
+   "order_extra": null,
+   "nature": [
+    "indifferent good-natured",
+    "willing to do any thing the exorcist desireth"
+   ],
+   "appearance": [
+    "in the form of a beautiful man riding on a strong horse with wings"
+   ],
+   "transformation": null,
+   "manner": [],
+   "offices": [
+    "bringeth all things to pass on a sudden",
+    "goeth and cometh, and carrieth and recarrieth any thing where thou wilt have it, or from where thou wilt have it",
+    "passeth over the whole world in the twinkling of an eye",
+    "maketh a true relation of all sorts of theft",
+    "maketh a true relation of treasures hid and of all other things"
+   ],
+   "conditions": [
+    "his mark or seal is to be made and worn as a lamen"
+   ],
+   "other": [],
+   "seal_clause": "His mark or seal is thus made, and is to be worn as a lamen.",
+   "words": 138
+  },
+  {
+   "n": 71,
+   "name": "Dantalion",
+   "ranks": [
+    "Duke"
+   ],
+   "rank_adjectives": [
+    "great",
+    "mighty"
+   ],
+   "legions": 36,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "in the form of a man with many faces, all like men and women, and a book in his right hand"
+   ],
+   "transformation": null,
+   "manner": [],
+   "offices": [
+    "teacheth all arts and sciences to anyone",
+    "declareth the secret counsels of anyone",
+    "knoweth the thoughts of all men and women",
+    "changeth their thoughts at his will",
+    "causeth love",
+    "showeth by vision the true similitude of anyone, let them be in what place or part of the world they will"
+   ],
+   "conditions": [
+    "his seal is to be worn as a lamen"
+   ],
+   "other": [],
+   "seal_clause": "His seal is this, which is to be worn as a lamen.",
+   "words": 115
+  },
+  {
+   "n": 72,
+   "name": "Andromalius",
+   "ranks": [
+    "Earl"
+   ],
+   "rank_adjectives": [
+    "great",
+    "mighty"
+   ],
+   "legions": 36,
+   "legions_note": null,
+   "location": null,
+   "order": null,
+   "order_extra": null,
+   "nature": [],
+   "appearance": [
+    "in the form of a man holding a serpent in his hand"
+   ],
+   "transformation": null,
+   "manner": [],
+   "offices": [
+    "bringeth back a thief and goods that are stolen",
+    "discovereth all wickedness and underhand dealings",
+    "punisheth thieves and other wicked people",
+    "discovereth treasure that is hidden"
+   ],
+   "conditions": [
+    "his seal is to be made and worn as a lamen in time of action"
+   ],
+   "other": [],
+   "seal_clause": "His seal is this, which make and wear as a lamen in time of action.",
+   "words": 87
+  }
+ ],
+ "summary": {
+  "rank_occurrences": {
+   "Duke": 23,
+   "Marquis": 15,
+   "President": 14,
+   "Earl": 11,
+   "King": 9,
+   "Prince": 7,
+   "Knight": 1
+  },
+  "primary_rank": {
+   "Duke": 23,
+   "Marquis": 15,
+   "President": 12,
+   "King": 9,
+   "Earl": 7,
+   "Prince": 5,
+   "Knight": 1
+  },
+  "entries_with_two_ranks": 8,
+  "rank_pairs": {
+   "President + Earl": 1,
+   "Earl + President": 1,
+   "Earl + Prince": 1,
+   "Marquis + Earl": 1,
+   "President + Prince": 1,
+   "King + Earl": 1,
+   "Duke + Earl": 1,
+   "King + President": 1
+  },
+  "rank_adjective_counts": {
+   "great": 53,
+   "mighty": 28,
+   "strong": 16,
+   "powerful": 8,
+   "terrible": 3,
+   "great in power": 2,
+   "most strong": 1,
+   "most valiant": 1
+  },
+  "rank_adjectives_per_entry": {
+   "0": 5,
+   "1": 32,
+   "2": 26,
+   "3": 8,
+   "4": 1
+  },
+  "legions_values": [
+   66,
+   31,
+   26,
+   30,
+   36,
+   10,
+   40,
+   30,
+   200,
+   50,
+   40,
+   60,
+   85,
+   30,
+   60,
+   26,
+   60,
+   30,
+   30,
+   22,
+   36,
+   36,
+   26,
+   19,
+   36,
+   30,
+   19,
+   26,
+   40,
+   29,
+   29,
+   72,
+   66,
+   26,
+   30,
+   26,
+   20,
+   26,
+   40,
+   30,
+   3,
+   29,
+   50,
+   30,
+   35,
+   6,
+   37,
+   33,
+   48,
+   20,
+   40,
+   36,
+   30,
+   30,
+   20,
+   26,
+   3,
+   36,
+   30,
+   36,
+   33,
+   30,
+   30,
+   36,
+   30,
+   20,
+   29,
+   80,
+   30,
+   26,
+   36,
+   36
+  ],
+  "legions_distribution": {
+   "3": 2,
+   "6": 1,
+   "10": 1,
+   "19": 2,
+   "20": 4,
+   "22": 1,
+   "26": 9,
+   "29": 4,
+   "30": 16,
+   "31": 1,
+   "33": 2,
+   "35": 1,
+   "36": 10,
+   "37": 1,
+   "40": 5,
+   "48": 1,
+   "50": 2,
+   "60": 3,
+   "66": 2,
+   "72": 1,
+   "80": 1,
+   "85": 1,
+   "200": 1
+  },
+  "legions_total": 2618,
+  "slot_nonempty": {
+   "location": 6,
+   "order": 12,
+   "order_extra": 6,
+   "legions_note": 10,
+   "nature": 12,
+   "appearance": 70,
+   "transformation": 24,
+   "manner": 26,
+   "conditions": 68,
+   "other": 10
+  },
+  "offices_per_entry": {
+   "0": 1,
+   "1": 6,
+   "2": 17,
+   "3": 14,
+   "4": 17,
+   "5": 10,
+   "6": 5,
+   "7": 2
+  },
+  "offices_total": 244,
+  "offices_mean": 3.39,
+  "appearance_phrases_per_entry": {
+   "0": 2,
+   "1": 69,
+   "4": 1
+  },
+  "conditions_per_entry": {
+   "0": 4,
+   "1": 55,
+   "2": 10,
+   "3": 1,
+   "4": 1,
+   "6": 1
+  },
+  "words_min_median_max": [
+   54,
+   93.5,
+   262
+  ],
+  "notes": [
+   "words: whitespace tokens of the manuscript text with Peterson's [..] and <..> insertions and footnote markers removed; entry 1 includes its separate seal_formula sentence; entry 72's seal_formula ('This is based on Agrippa's') is an editorial note and is not counted.",
+   "seal_clause is an extra field holding the closing seal sentence; any wear/obedience instruction in it is also listed under conditions.",
+   "transformation includes two non-human cases: 20 Purson 'can take a body either human or aerial' and 34 Furfur takes the form of an angel.",
+   "appearance excludes the post-transformation shape, which is in transformation."
+  ]
+ }
+}

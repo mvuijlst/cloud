@@ -1,0 +1,146 @@
+{
+ "forms": {
+  "source": 1027,
+  "kept": 1008,
+  "dropped": {
+   "length": 0,
+   "duplicate": 0,
+   "near": 0,
+   "copies_real": 0,
+   "stock_end": 19,
+   "stock_open": 0
+  }
+ },
+ "offices": {
+  "source": 2298,
+  "kept": 1667,
+  "dropped": {
+   "length": 0,
+   "duplicate": 0,
+   "near": 6,
+   "copies_real": 0,
+   "stock_end": 494,
+   "stock_open": 131
+  }
+ },
+ "manner": {
+  "source": 542,
+  "kept": 542,
+  "dropped": {
+   "length": 0,
+   "duplicate": 0,
+   "near": 0,
+   "copies_real": 0,
+   "stock_end": 0,
+   "stock_open": 0
+  }
+ },
+ "conditions": {
+  "source": 208,
+  "kept": 203,
+  "dropped": {
+   "length": 0,
+   "duplicate": 0,
+   "near": 0,
+   "copies_real": 0,
+   "stock_end": 5,
+   "stock_open": 0
+  }
+ },
+ "transformations": {
+  "source": 133,
+  "kept": 133,
+  "dropped": {
+   "length": 0,
+   "duplicate": 0,
+   "near": 0,
+   "copies_real": 0,
+   "stock_end": 0,
+   "stock_open": 0
+  }
+ },
+ "nature": {
+  "source": 120,
+  "kept": 120,
+  "dropped": {
+   "length": 0,
+   "duplicate": 0,
+   "near": 0,
+   "copies_real": 0,
+   "stock_end": 0,
+   "stock_open": 0
+  }
+ },
+ "locations": {
+  "source": 48,
+  "kept": 46,
+  "dropped": {
+   "length": 2,
+   "duplicate": 0,
+   "near": 0,
+   "copies_real": 0,
+   "stock_end": 0,
+   "stock_open": 0
+  }
+ },
+ "orders": {
+  "source": 45,
+  "kept": 45,
+  "dropped": {
+   "length": 0,
+   "duplicate": 0,
+   "near": 0,
+   "copies_real": 0,
+   "stock_end": 0,
+   "stock_open": 0
+  }
+ },
+ "hopes": {
+  "source": 34,
+  "kept": 34,
+  "dropped": {
+   "length": 0,
+   "duplicate": 0,
+   "near": 0,
+   "copies_real": 0,
+   "stock_end": 0,
+   "stock_open": 0
+  }
+ },
+ "seal_formulas": {
+  "source": 48,
+  "kept": 48,
+  "dropped": {
+   "length": 0,
+   "duplicate": 0,
+   "near": 0,
+   "copies_real": 0,
+   "stock_end": 0,
+   "stock_open": 0
+  }
+ },
+ "shards": {
+  "n": 128,
+  "bytes_min": 5220,
+  "bytes_max": 7620,
+  "bytes_total": 815820,
+  "per_shard_min": {
+   "forms": 2,
+   "offices": 4,
+   "manner": 0,
+   "conditions": 0
+  },
+  "shards_missing_a_slot": {
+   "forms": 0,
+   "offices": 0,
+   "manner": 2,
+   "conditions": 23,
+   "transformations": 0,
+   "nature": 0,
+   "locations": 0,
+   "orders": 0,
+   "hopes": 0,
+   "seal_formulas": 0
+  }
+ }
+}

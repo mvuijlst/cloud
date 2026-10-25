@@ -72,7 +72,8 @@
     <script>
         // Seals for seeds first, first + 1, ...: each can be seen again on the seal
         // page as sigils/#seed. Several workers draw at once; the zip stores the PNGs
-        // as they are (already compressed) with a list of seed, name and family.
+        // as they are (already compressed), each with its description as text, and a
+        // list of seed, name, family and description.
         const $ = id => document.getElementById(id);
         let run = 0, results = [], firstSeed = 0;
 
@@ -114,6 +115,7 @@
         // ---------- making them ----------
         const pad = (n, w) => String(n).padStart(w, '0');
         const fileName = r => `sigil-${r.seed}-${r.name.toLowerCase()}.png`;
+        const textName = r => fileName(r).replace(/\.png$/, '.txt');
 
         function show(r) {
             const fig = document.createElement('figure');
@@ -152,6 +154,7 @@
                 if (my !== run) return;
                 finished++;
                 if (r.blob) {
+                    r.lore = Sigils.loreForSeed(r.seed, r.name).catch(() => null);
                     r.url = URL.createObjectURL(r.blob);
                     results[r.id] = r;
                     slots[r.id].replaceWith(show(r));
@@ -214,8 +217,13 @@
             $('zip').disabled = true;
             const files = [];
             const list = results.filter(Boolean).sort((a, b) => a.id - b.id);
-            for (const r of list) files.push({ name: fileName(r), bytes: new Uint8Array(await r.blob.arrayBuffer()) });
-            const manifest = list.map(r => ({ file: fileName(r), seed: r.seed, name: r.name, family: r.family }));
+            const enc = new TextEncoder();
+            for (const r of list) {
+                files.push({ name: fileName(r), bytes: new Uint8Array(await r.blob.arrayBuffer()) });
+                r.text = await r.lore;
+                if (r.text) files.push({ name: textName(r), bytes: enc.encode(`${r.name}\n\n${r.text}\n`) });
+            }
+            const manifest = list.map(r => ({ file: fileName(r), seed: r.seed, name: r.name, family: r.family, text: r.text || null }));
             files.push({ name: 'sigils.json', bytes: new TextEncoder().encode(JSON.stringify(manifest, null, 1)) });
             const a = document.createElement('a');
             a.href = URL.createObjectURL(zip(files));
@@ -232,5 +240,6 @@
     <script src="sigil-data.js"></script>
     <script src="generator.js"></script>
     <script src="plate.js"></script>
+    <script src="lore.js"></script>
 </body>
 </html>

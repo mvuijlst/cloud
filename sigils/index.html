@@ -35,6 +35,18 @@
         figure { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 14px; }
         canvas { display: block; }
         figcaption { color: var(--dim); display: flex; gap: 18px; min-height: 1.4em; text-align: center; }
+        #lore {
+            margin: 4px 0 0;
+            font-family: "Times New Roman", Times, Georgia, serif;
+            font-size: 16px;
+            line-height: 1.55;
+            color: rgba(255, 255, 255, 0.82);
+            text-align: justify;
+            hyphens: auto;
+            opacity: 0;
+            transition: opacity 0.9s ease;
+        }
+        #lore.shown { opacity: 1; }
     </style>
 </head>
 <body>
@@ -42,11 +54,13 @@
     <figure>
         <canvas id="plate" role="img" aria-label="a seal in the manner of the Goetia, being drawn"></canvas>
         <figcaption id="cap" aria-live="polite"></figcaption>
+        <p id="lore" lang="en"></p>
     </figure>
 
     <script src="sigil-data.js"></script>
     <script src="generator.js"></script>
     <script src="plate.js"></script>
+    <script src="lore.js"></script>
     <script>
         // One seal per visit (a number in the URL, #1234, shows that seal again).
         // While a worker makes it, the page draws the making itself: the frame and
@@ -65,6 +79,10 @@
         stage.width = stage.height = W;
         stage.style.width = stage.style.height = (W / dpr) + 'px';
         const reduceMotion = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const loreEl = document.getElementById('lore');
+        loreEl.style.maxWidth = stage.style.width;
+        // what the book would say of him: fetched now, shown with the plate
+        const lore = Sigils.loreForSeed(seed, Sigils.nameForSeed(seed)).catch(() => null);
 
         const S = { name: null, enc: null, steps: null, plate: null, plateOnPage: false, sealAt: 0, done: false, skip: false };
         const t0 = performance.now();
@@ -210,6 +228,7 @@
         function finish() {
             ctx.putImageData(S.plate, 0, 0);
             S.done = true;
+            lore.then(text => { if (text) { loreEl.textContent = text; requestAnimationFrame(() => loreEl.classList.add('shown')); } });
             stage.setAttribute('aria-label', `the seal of ${S.name}, in the manner of the Goetia`);
             cap.innerHTML = '';
             const link = (text, href, title, fn) => {
