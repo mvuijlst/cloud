@@ -46,7 +46,7 @@
         @media (min-width: 900px) and (min-aspect-ratio: 5/4) {
             body { justify-content: center; padding: 24px 32px; }
             .wrap { flex-direction: row; align-items: center; gap: 56px; }
-            #lore { font-size: 20px; text-align: justify; }
+            #lore { font-size: 24px; line-height: 1.42; text-align: justify; }
         }
         a { color: var(--dim); text-decoration: none; }
         a:hover, a:focus-visible { color: #fff; }
@@ -99,9 +99,10 @@
         const dpr = Math.min(2, window.devicePixelRatio || 1);
         // on a wide screen the plate shares the row with a column of text
         const wide = window.matchMedia('(min-width: 900px) and (min-aspect-ratio: 5/4)').matches;
-        const textW = wide ? Math.round(Math.max(320, Math.min(window.innerWidth * 0.3, 470))) : 0;
+        // two columns of the same width: the plate and the text
+        const half = Math.floor((window.innerWidth - 64 - 56) / 2);
         const cssSize = wide
-            ? Math.max(240, Math.min(window.innerHeight * 0.86 - 40, window.innerWidth - 64 - textW - 56, 780))
+            ? Math.max(240, Math.min(window.innerHeight * 0.86 - 40, half, 780))
             : Math.max(240, Math.min(window.innerWidth - 32, window.innerHeight * 0.82 - 40, 720));
         const R = Math.round(cssSize * dpr / 2.14), W = Math.ceil(2.14 * R), c = W / 2;
         stage.width = stage.height = W;
@@ -109,8 +110,12 @@
         const reduceMotion = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
         const loreEl = document.getElementById('lore');
         // the text's column is set aside from the start, so nothing moves when it appears
-        if (wide) loreEl.style.width = textW + 'px';
-        else loreEl.style.maxWidth = stage.style.width;
+        if (wide) {
+            // the column as wide as the plate, the type scaled to it (about 55 characters a line)
+            const w = W / dpr;
+            loreEl.style.width = w + 'px';
+            loreEl.style.fontSize = Math.round(Math.max(20, Math.min(30, w / 25))) + 'px';
+        } else loreEl.style.maxWidth = stage.style.width;
         // what the book would say of him: fetched now, shown with the plate
         const lore = Sigils.loreParts(seed, Sigils.nameForSeed(seed)).catch(() => null);
 
