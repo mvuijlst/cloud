@@ -1,0 +1,165 @@
+{
+ "lookalike": {
+  "real_crops": {
+   "n": 72,
+   "mean": 0.4886,
+   "median": 0.4903,
+   "p90": 0.5763,
+   "nn_median": 0.6053,
+   "nn_p90": 0.6846
+  },
+  "real_encodings": {
+   "n": 60,
+   "mean": 0.4946,
+   "median": 0.4951,
+   "p90": 0.5873,
+   "nn_median": 0.6059,
+   "nn_p90": 0.6765
+  },
+  "generated": {
+   "n": 72,
+   "mean": 0.4576,
+   "median": 0.4619,
+   "p90": 0.5408,
+   "nn_median": 0.5916,
+   "nn_p90": 0.6537
+  }
+ },
+ "parts": {
+  "real_encodings": {
+   "share": {
+    "line": 0.388,
+    "pline": 0.055,
+    "arc": 0.099,
+    "bez": 0.022,
+    "ring": 0.256,
+    "dot": 0.011,
+    "cross": 0.047,
+    "tri": 0.07,
+    "spiral": 0.049,
+    "crescent": 0.003
+   },
+   "types_per_seal": 5.3,
+   "entropy_per_seal": 1.95,
+   "set_entropy": 2.501
+  },
+  "generated": {
+   "share": {
+    "line": 0.465,
+    "pline": 0.02,
+    "arc": 0.05,
+    "bez": 0.001,
+    "ring": 0.274,
+    "dot": 0.014,
+    "cross": 0.049,
+    "tri": 0.065,
+    "spiral": 0.043,
+    "crescent": 0.02
+   },
+   "types_per_seal": 6.03,
+   "entropy_per_seal": 1.969,
+   "set_entropy": 2.226
+  }
+ },
+ "line_ends": {
+  "real_encodings": {
+   "ring": 0.288,
+   "line": 0.286,
+   "arc": 0.105,
+   "tri": 0.088,
+   "free": 0.066,
+   "cross": 0.057,
+   "spiral": 0.048,
+   "pline": 0.029,
+   "bez": 0.021,
+   "dot": 0.012
+  },
+  "generated": {
+   "ring": 0.402,
+   "line": 0.206,
+   "free": 0.094,
+   "tri": 0.086,
+   "spiral": 0.057,
+   "cross": 0.055,
+   "pline": 0.053,
+   "arc": 0.03,
+   "dot": 0.014,
+   "bez": 0.002
+  }
+ },
+ "layout": {
+  "real_crops": {
+   "mean": 0.334,
+   "nn_median": 0.636
+  },
+  "generated": {
+   "mean": 0.226,
+   "nn_median": 0.582
+  }
+ },
+ "composition": {
+  "n": 72,
+  "most_common": [
+   [
+    "arm",
+    196
+   ],
+   [
+    "pendant",
+    64
+   ],
+   [
+    "stem",
+    61
+   ],
+   [
+    "arch on a rail",
+    31
+   ],
+   [
+    "stem at a corner",
+    26
+   ],
+   [
+    "crossbar",
+    21
+   ],
+   [
+    "vertical axis",
+    18
+   ],
+   [
+    "rail",
+    18
+   ],
+   [
+    "cross in an enclosure",
+    14
+   ],
+   [
+    "spur",
+    11
+   ],
+   [
+    "dot in an enclosure",
+    10
+   ],
+   [
+    "wall between rails",
+    10
+   ],
+   [
+    "cross in a cell",
+    7
+   ],
+   [
+    "2 one-sided extras",
+    6
+   ],
+   [
+    "bowl",
+    6
+   ]
+  ]
+ }
+}

@@ -67,6 +67,7 @@ Everything here was produced on 24 October 2026 from `72_Goeta_sigils.png` and t
 | `tools/plate_ink.py`, `data/plate_ink.json` | rings, line width variation, wander, raggedness, figure reach and lettering measured on good scans of the plates |
 | `tools/plate_check.py`, `data/plate_check.json` | the same measurement on rendered plates |
 | `tools/print_texture.py`, `data/print_texture.json` | paper, ink, edge, speck and skew measurements of a printed scan (1916 leaves), and how straight the sheet's drawn lines are |
+| `tools/variety.py`, `data/variety_before.json`, `data/variety_after.json` | how varied a generated set is against the sheet: look-alike, part mix, line ends, layout, repeated steps |
 | `data/visits_acceptance.json`, `data/visits_*_novelty.json` | six samples of 72 single visits against the acceptance and novelty tests |
 | `witnesses/delaurence1916/` | two leaves of the 1916 De Laurence printing (archive.org, BYU scan, 500 ppi) |
 

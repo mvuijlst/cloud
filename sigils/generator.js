@@ -459,9 +459,34 @@
 
   // Free line ends in the encodings land on a ring 29%, a triangle 9%, nothing
   // 7%, a cross 6%, a spiral 5%, a dot 1% (the rest join other strokes). The
-  // T-bar with ring ends and the crescent are the sheet's other end shapes.
-  const TERMINAL_W = [['ring', 0.46], ['tri', 0.11], ['none', 0.03], ['cross', 0.11], ['spiral', 0.09],
-                      ['tbar', 0.09], ['dot', 0.01], ['crescent', 0.02], ['foot', 0.04], ['ring2', 0.04]];
+  // T-bar with ring ends and the crescent are the sheet's other end shapes, and
+  // the encoders' wishes name the rest: a single pattee arm on a plain stem, the
+  // flared end of an I-bar, a closed lobed outline (heart), a fork. With the
+  // first weights rings ended 40% of generated line ends against the sheet's
+  // 29% (tools/variety.py), the plainest cause of sameness; these are lowered to match.
+  const TERMINAL_W = [['ring', 0.33], ['tri', 0.1], ['none', 0.05], ['cross', 0.1], ['spiral', 0.08],
+                      ['tbar', 0.06], ['dot', 0.02], ['crescent', 0.04], ['foot', 0.04], ['ring2', 0.03],
+                      ['pattee', 0.05], ['ibar', 0.03], ['heart', 0.025], ['fork', 0.04]];
+
+  // a flared end: from width w0 at p to w1 at p + u*len, sides curving out as on a cross pattee
+  function flare(p, u, len, w0, w1) {
+    const v = perp(u), side = [], fs = [0, 0.3, 0.55, 0.8, 1];
+    for (const f of fs) side.push([f, w0 + (w1 - w0) * f ** 2.2]);
+    const pts = side.map(([f, w]) => add(add(p, u, f * len), v, w / 2))
+      .concat(side.slice().reverse().map(([f, w]) => add(add(p, u, f * len), v, -w / 2)));
+    return { t: 'pline', p: rnd(pts), closed: true, fill: true };
+  }
+
+  // a heart, its point at p, its lobes toward u (Beleth's lobed outlines)
+  function heart(p, u, h) {
+    const v = perp(u), w = 0.5 * h;
+    const P = (a, b) => add(add(p, u, a * h), v, b * h);
+    const pts = [P(0, 0), P(0.2, 0.25), P(0.38, 0.55), P(0.62, 0.55), P(0.85, 0.56), P(1.02, 0.45), P(1.0, 0.25),
+                 P(0.98, 0.1), P(0.88, 0.02), P(0.82, 0), P(0.88, -0.02), P(0.98, -0.1), P(1.0, -0.25),
+                 P(1.02, -0.45), P(0.85, -0.56), P(0.62, -0.55), P(0.38, -0.55), P(0.2, -0.25), P(0, 0)];
+    void w;
+    return { t: 'bez', p: rnd(pts) };
+  }
 
   function terminal(rng, p, u, kind, scale = 1) {
     const v = perp(u);
@@ -507,6 +532,26 @@
     if (kind === 'crescent') {
       const r = rng.uniform(0.05, 0.075) * scale;
       return [{ t: 'crescent', c: rnd(add(p, u, r * 0.9)), r: rnd(r), ri: rnd(r * 0.92), k: 0.45, rot: rnd(mod(ang(u), 360), 1) }];
+    }
+    if (kind === 'pattee') {  // one arm of a cross pattee on the stem's end
+      const s = crossS(rng) * rng.uniform(0.7, 0.95) * scale;
+      return [{ t: 'pline', p: rnd(crossPolys(p, s, ang(u))[0]), closed: true, fill: true }];
+    }
+    if (kind === 'ibar') {    // the flared end of an I-bar
+      return [flare(p, u, rng.uniform(0.03, 0.05) * scale, 0.012, rng.uniform(0.06, 0.09) * scale)];
+    }
+    if (kind === 'heart') {
+      return [heart(p, u, rng.uniform(0.08, 0.12) * scale)];
+    }
+    if (kind === 'fork') {    // three prongs, the outer two sometimes ringed
+      const lf = rng.uniform(0.05, 0.08) * scale, spread = rng.uniform(30, 45), ringed = rng.random() < 0.5, r = ringR(rng) * 0.7 * scale;
+      const out = [];
+      for (const da of [-spread, 0, spread]) {
+        const w = unit(ang(u) + da), q = add(p, w, lf);
+        out.push(L(p, q));
+        if (ringed && da !== 0) out.push({ t: 'ring', c: rnd(add(q, w, r)), r: rnd(r) });
+      }
+      return out;
     }
     return [];
   }
@@ -562,8 +607,10 @@
     for (const [length, scale] of [[rng.uniform(0.08, 0.22), 1], [rng.uniform(0.05, 0.1), 0.8]]) {
       for (const d of rng.sample([1, -1], 2)) {
         const p0 = [x, y], p1 = [x, y + d * length];
-        const ms = [L(p0, p1)].concat(terminal(rng, p1, [0, d], kind, scale));
-        if (cv.add(ms, g, [p0], false, `${d > 0 ? 'pendant' : 'stem'} with ${kind}`)) {
+        const zig = length > 0.12 && rng.random() < 0.15;   // a zigzag stem, as on Focalor and Zagan
+        const stem = zig ? { t: 'pline', p: rnd([p0, [x - 0.03, y + d * length * 0.33], [x + 0.03, y + d * length * 0.66], p1]) } : L(p0, p1);
+        const ms = [stem].concat(terminal(rng, p1, [0, d], kind, scale));
+        if (cv.add(ms, g, [p0], false, `${zig ? 'zigzag ' : ''}${d > 0 ? 'pendant' : 'stem'} with ${kind}`)) {
           cv.posts.push([x, Math.min(y, p1[1]), Math.max(y, p1[1]), g]);
           return true;
         }
@@ -611,8 +658,15 @@
     const y = rng.uniform(y0 + 0.05, y1 - 0.05);
     const tilt = pick(rng, [[0, 0.55], [45, 0.25], [-45, 0.2]]);
     const u = d < 0 ? unit(180 + tilt) : unit(-tilt);
-    const p1 = add([x, y], u, rng.uniform(0.07, 0.17) * (tilt ? 1.2 : 1));
+    const len = rng.uniform(0.07, 0.17) * (tilt ? 1.2 : 1), p1 = add([x, y], u, len);
     const kind = pick(rng, TERMINAL_W, ['none', 'foot']);
+    if (rng.random() < 0.4) {   // a curved spur: the sheet joins lines to curves far more often than to rings alone
+      const bend = rng.choice([1, -1]) * len * 0.35, v = perp(u);
+      const c1 = add(add([x, y], u, len * 0.35), v, bend), c2 = add(add([x, y], u, len * 0.7), v, bend);
+      const end = add(p1, v, bend * 0.4), ue = [end[0] - c2[0], end[1] - c2[1]], n = Math.hypot(...ue);
+      return cv.add([{ t: 'bez', p: rnd([[x, y], c1, c2, end]) }].concat(terminal(rng, end, [ue[0] / n, ue[1] / n], kind)), g, [[x, y]], false,
+                    `curved spur with ${kind}`);
+    }
     return cv.add([L([x, y], p1)].concat(terminal(rng, p1, u, kind)), g, [[x, y]], false,
                   `${tilt ? 'diagonal ' : ''}spur with ${kind}`);
   }
@@ -630,6 +684,25 @@
     const cx = rng.uniform(lo, hi), up = rng.random() < 0.6;
     const ms = [{ t: 'arc', c: rnd([cx, y]), r: rnd([r, r * rng.uniform(0.8, 1.3)]), a: up ? [180, 360] : [0, 180] }];
     return cv.add(ms, cv.ax !== null ? 'side' : 'center', [[cx - r, y], [cx + r, y]], false, 'arch on a rail');
+  }
+
+  // a dome standing on a rail (or a bowl hanging from it), often crowned: Agares, Barbatos
+  function dome(cv) {
+    const rng = cv.rng;
+    if (!cv.rails.length) return false;
+    const [x0, x1, y] = rng.choice(cv.rails);
+    const hw = rng.uniform(0.07, 0.16), hh = hw * rng.uniform(0.6, 1.1), up = rng.random() < 0.65;
+    let cx, g;
+    if (cv.ax !== null && x0 + hw <= cv.ax && cv.ax <= x1 - hw && rng.random() < 0.25) { cx = cv.ax; g = 'center'; }
+    else {
+      const lo = x0 + hw + 0.02, hi = (cv.ax !== null ? Math.min(x1, cv.ax - 0.03) : x1) - hw - 0.02;
+      if (hi <= lo) return false;
+      cx = rng.uniform(lo, hi); g = cv.ax !== null ? 'side' : 'center';
+    }
+    const d = up ? -1 : 1, top = [cx, y + d * hh];
+    const kind = pick(rng, [['cross', 0.25], ['pattee', 0.15], ['ring', 0.15], ['fork', 0.1], ['tri', 0.1], ['none', 0.25]]);
+    const ms = [{ t: 'arc', c: rnd([cx, y]), r: rnd([hw, hh]), a: up ? [180, 360] : [0, 180] }].concat(terminal(rng, top, [0, d], kind, 0.85));
+    return cv.add(ms, g, [[cx - hw, y], [cx + hw, y]], false, `${up ? 'dome' : 'bowl'} on a rail${kind === 'none' ? '' : ' with ' + kind}`);
   }
 
   // distance (px) to the nearest ink for background pixels enclosed by ink
@@ -658,9 +731,10 @@
       axisCol = Math.round(cv.ax * R) + pad;
       for (let y = 0; y < H; y++) for (let x = axisCol + 1; x < W; x++) room[y * W + x] = 0;
     }
-    const kind = pick(rng, [['cross', 0.5], ['ring', 0.2], ['ringrow', 0.1], ['diamond', 0.08], ['tri', 0.08], ['dot', 0.04]]);
+    const kind = pick(rng, [['cross', 0.45], ['ring', 0.17], ['ringrow', 0.1], ['diamond', 0.08], ['tri', 0.08], ['dot', 0.04], ['heart', 0.06]]);
     const size = { cross: () => crossS(rng) * rng.uniform(0.55, 0.85), ring: () => ringR(rng), ringrow: () => ringR(rng) * 0.8,
-                   diamond: () => rng.uniform(0.035, 0.06), tri: () => rng.uniform(0.04, 0.07), dot: () => 0.02 }[kind]();
+                   diamond: () => rng.uniform(0.035, 0.06), tri: () => rng.uniform(0.04, 0.07), dot: () => 0.02,
+                   heart: () => rng.uniform(0.04, 0.06) }[kind]();
     const need = kind === 'ringrow' ? (2 * size + cv.s * 2) * R + cv.clear : (size + cv.s) * R + cv.clear;
     const spots = [];
     for (let i = 0; i < W * H; i++) if (room[i] >= need) spots.push(i);
@@ -685,6 +759,9 @@
     } else if (kind === 'tri') {
       const h = size, up = rng.choice([1, -1]);
       ms = [tri([[x, y - up * h], [x + h, y + up * h * 0.8], [x - h, y + up * h * 0.8]], rng.random() < 0.6)];
+    } else if (kind === 'heart') {
+      const h = 2 * size, up = rng.random() < 0.5;
+      ms = [heart([x, y + (up ? 0.5 : -0.5) * h], [0, up ? -1 : 1], h)];
     } else ms = [{ t: 'dot', c: rnd([x, y]), r: 0.02 }];
     if (cv.add(ms, g, [], false, `${kind} in an enclosure`)) { cv.floating++; return true; }
     return false;
@@ -753,10 +830,33 @@
     const span = dist(p0, target);
     const kind = pick(rng, TERMINAL_W, ['none']);
     const g = cv.ax !== null ? 'side' : 'center';
+    // straight arms only half the time: the sheet's lines bend, hook and branch
+    // (the first generator's arms were all straight: branch straightness +0.5 sd)
+    const form = pick(rng, [['straight', 0.42], ['curved', 0.3], ['hooked', 0.14], ['barred', 0.14]]);
     for (const f of [1, 0.7]) {
-      const p1 = add(p0, u, Math.max(0.05, span * f - 0.05));
-      const ms = [L(p0, p1)].concat(terminal(rng, p1, u, kind, f === 1 ? 1 : 0.8));
-      if (cv.add(ms, g, [p0], false, `arm with ${kind}`)) {
+      const len = Math.max(0.05, span * f - 0.05), p1 = add(p0, u, len), v = perp(u), sc = f === 1 ? 1 : 0.8;
+      let ms, label = 'arm';
+      if (form === 'curved' && len > 0.1) {
+        const bend = rng.choice([1, -1]) * len * rng.uniform(0.2, 0.4);
+        const c1 = add(add(p0, u, len * 0.35), v, bend), c2 = add(add(p0, u, len * 0.75), v, bend), end = add(p1, v, bend * 0.3);
+        const te = [end[0] - c2[0], end[1] - c2[1]], tn = Math.hypot(...te);
+        ms = [{ t: 'bez', p: rnd([p0, c1, c2, end]) }].concat(terminal(rng, end, [te[0] / tn, te[1] / tn], kind, sc));
+        label = 'curved arm';
+      } else if (form === 'hooked' && len > 0.12) {   // the arm turns back in a half circle
+        const r = Math.min(0.07, len * 0.3), side = rng.choice([1, -1]), q = add(p0, u, len - r), cc = add(q, v, side * r);
+        const a0 = ang([q[0] - cc[0], q[1] - cc[1]]);
+        const sweep = side > 0 ? -180 : 180, a1 = a0 + sweep;
+        const arc = { t: 'arc', c: rnd(cc), r: rnd(r), a: sweep > 0 ? [a0, a1] : [a1, a0] };
+        const endp = add(cc, unit(a1), r);
+        ms = [L(p0, q), arc].concat(terminal(rng, endp, [-u[0], -u[1]], pick(rng, [['ring', 0.4], ['dot', 0.2], ['none', 0.4]]), 0.7));
+        label = 'hooked arm';
+      } else if (form === 'barred' && len > 0.1) {    // a short crossbar near the end
+        const q = add(p0, u, len * rng.uniform(0.55, 0.75)), h = rng.uniform(0.035, 0.065), kb = pick(rng, [['ring', 0.4], ['none', 0.35], ['tri', 0.25]]);
+        ms = [L(p0, p1), L(add(q, v, h), add(q, v, -h))].concat(terminal(rng, add(q, v, h), v, kb, 0.6), terminal(rng, add(q, v, -h), [-v[0], -v[1]], kb, 0.6),
+                                                               terminal(rng, p1, u, kind, sc));
+        label = 'barred arm';
+      } else ms = [L(p0, p1)].concat(terminal(rng, p1, u, kind, sc));
+      if (cv.add(ms, g, [p0], false, `${label} with ${kind}`)) {
         if (u[1] === 0) cv.rails.push([Math.min(p0[0], p1[0]), Math.max(p0[0], p1[0]), p0[1], g]);
         else cv.posts.push([p0[0], Math.min(p0[1], p1[1]), Math.max(p0[1], p1[1]), g]);
         return true;
@@ -765,7 +865,7 @@
     return false;
   }
 
-  const ORNAMENTS = { pendant, spur, filler, crossbar, connector, arch, ringrow, reach };
+  const ORNAMENTS = { pendant, spur, filler, crossbar, connector, arch, ringrow, reach, dome };
 
   function decorate(cv, target) {
     const rng = cv.rng;
@@ -778,10 +878,17 @@
     }
     // about half the mirrored seals on the sheet carry one-sided extras
     // (Leraje's rail end, Buer's arms): sheet sym_lr median 0.56, not 0.9
-    const extras = cv.ax !== null && rng.random() < 0.5 ? rng.choice([1, 2, 2, 3]) : 0;
+    const extras = cv.ax !== null && rng.random() < 0.65 ? rng.choice([1, 2, 2, 3]) : 0;
+    // Each ornament grows less likely every time this seal uses it: with fixed
+    // weights the "arm" move ran to 2.7 per seal and pendants to 1.7, the stock
+    // ringed stems that made the seals look alike (tools/variety.py).
+    const uses = {};
     for (let tries = 0; cv.count < target - 2.5 * extras && tries < 700; tries++) {
-      ORNAMENTS[pick(rng, [['pendant', 0.24], ['spur', 0.15], ['filler', cv.floating < 4 ? 0.18 : 0.04], ['crossbar', 0.07],
-                           ['connector', 0.09], ['arch', 0.06], ['ringrow', 0.08], ['reach', 0.13]])](cv);
+      const weights = [['pendant', 0.2], ['spur', 0.15], ['filler', cv.floating < 4 ? 0.16 : 0.04], ['crossbar', 0.07],
+                       ['connector', 0.09], ['arch', 0.06], ['ringrow', 0.07], ['reach', 0.09], ['dome', 0.09]]
+        .map(([k, w]) => [k, w * (k === 'reach' ? 0.45 : 0.6) ** (uses[k] || 0)]);
+      const act = pick(rng, weights);
+      if (ORNAMENTS[act](cv)) uses[act] = (uses[act] || 0) + 1;
     }
     if (extras) {
       cv.ax = null;
@@ -999,7 +1106,7 @@
     const rng = cv.rng, A = cv.A, ax = A / 2, mirrored = cv.ax !== null;
     const x0 = rng.uniform(0.1, 0.22), x1 = A - x0;
     const ytop = rng.uniform(0.2, 0.32), ybot = rng.uniform(0.68, 0.82);
-    const style = pick(rng, [['stepped', 0.45], ['cells', 0.35], ['arched', 0.2]]);
+    const style = pick(rng, [['stepped', 0.3], ['cells', 0.22], ['arched', 0.14], ['domed', 0.12], ['rounded', 0.1], ['nested', 0.12]]);
     const cols = rng.choice([3, 3, 4, 5]);
     let xs, tops, bots, cells;
     if (style === 'stepped') {
@@ -1021,6 +1128,22 @@
                     { t: 'repeat', n: cols, d: [rnd(2 * r), 0], m: [{ t: 'arc', c: rnd([x0 + r, ytop]), r: rnd([r, Math.min(r, ytop - 0.06)]), a: [180, 360] }] }];
         if (rng.random() < 0.5) ms.push(L([x0, ytop], [x1, ytop]));
         cv.add(ms, 'center', [], true, `arched frame, ${cols} arches`);
+      } else if (style === 'domed') {        // walls and floor under one dome (Barbatos, Amon)
+        const hw = (x1 - x0) / 2, hh = Math.min(hw * rng.uniform(0.35, 0.7), ytop - 0.05);
+        const ms = [L([x0, ytop], [x0, ybot]), L([x1, ytop], [x1, ybot]), L([x0, ybot], [x1, ybot]),
+                    { t: 'arc', c: rnd([(x0 + x1) / 2, ytop]), r: rnd([hw, hh]), a: [180, 360] }];
+        if (rng.random() < 0.5) ms.push(L([x0, ytop], [x1, ytop]));
+        cv.add(ms, 'center', [], true, 'domed frame');
+      } else if (style === 'rounded' && x1 - x0 > ybot - ytop + 0.1) {   // straight sides, round ends
+        const r = (ybot - ytop) / 2, ym = (ytop + ybot) / 2;
+        cv.add([L([x0 + r, ytop], [x1 - r, ytop]), L([x0 + r, ybot], [x1 - r, ybot]),
+                { t: 'arc', c: rnd([x0 + r, ym]), r: rnd(r), a: [90, 270] }, { t: 'arc', c: rnd([x1 - r, ym]), r: rnd(r), a: [270, 450] }],
+               'center', [], true, 'rounded frame');
+      } else if (style === 'nested') {        // a frame within a frame
+        const d = rng.uniform(0.045, 0.075);
+        cv.add([{ t: 'pline', p: rnd([[x0, ytop], [x1, ytop], [x1, ybot], [x0, ybot]]), closed: true },
+                { t: 'pline', p: rnd([[x0 + d, ytop + d], [x1 - d, ytop + d], [x1 - d, ybot - d], [x0 + d, ybot - d]]), closed: true }],
+               'center', [], true, 'nested frames');
       } else {
         cv.add([{ t: 'pline', p: rnd([[x0, ytop], [x1, ytop], [x1, ybot], [x0, ybot]]), closed: true }], 'center', [], true, `frame of ${cols} cells`);
       }
@@ -1221,7 +1344,9 @@
   // Share of the family's drawings on the sheet with sym_lr > 0.8 (axial 0.62,
   // comb 0.18, bowl 0.46, compartment 0.22, radial 0.5, cursive 0), raised a
   // little because half of the mirrored seals get one-sided extras.
-  const MIRROR_P = { axial: 0.72, comb: 0.3, bowl: 0.6, compartment: 0.32, radial: 0.7, cursive: 0 };
+  // Lowered by an eighth when the new symmetric parts (domes, rounded and nested
+  // frames, forks) pushed sym_lr up by 0.24 to 0.64 sd in five samples of 72 visits.
+  const MIRROR_P = { axial: 0.63, comb: 0.26, bowl: 0.53, compartment: 0.28, radial: 0.62, cursive: 0 };
 
   // ---------- normalisation to the encoding convention ----------
 
@@ -1537,8 +1662,10 @@
 
   // one novel seal for a seed, its family drawn in the sheet's proportions
   function sealForSeed(seed, opts = {}) {
+    // the family from the golden-ratio sequence of the seed: a random seed gives a
+    // uniform draw, consecutive seeds (a batch) follow the sheet's mix closely
     const rng = makeRng((seed ^ 0x51A15EA1) >>> 0);
-    let x = rng.random() * 72, family = FAMILY_COUNTS[0][0];
+    let x = ((seed * 0.6180339887498949) % 1) * 72, family = FAMILY_COUNTS[0][0];
     for (const [f, k] of FAMILY_COUNTS) { x -= k; if (x < 0) { family = f; break; } }
     return generateNovelSeal(Math.floor(rng.random() * 4294967296), family, String(seed), opts);
   }

@@ -1,65 +1,65 @@
 {
- "what": "72 independent single-visit seals per sample (Sigils.sealForSeed, seeds drawn from the master seed with makeRng), tested with tools/acceptance.py and tools/novelty.py",
+ "what": "72 independent single-visit seals per sample (Sigils.sealForSeed, seeds drawn from the master seed with makeRng), tested with tools/acceptance.py and tools/novelty.py; generator after the variety changes of 25 October 2026",
  "samples": {
-  "20261025": {
-   "energy_distance": 0.4008,
-   "max_ks": 0.3819,
-   "max_ks_feature": "sym_lr",
-   "diversity_ratio": 0.9175,
-   "escapes": 0,
-   "pass_automatic": true,
-   "n_novel": 72,
-   "max_sim": 0.6772
-  },
   "7777": {
-   "energy_distance": 0.2068,
-   "max_ks": 0.3069,
+   "energy_distance": 0.27,
+   "max_ks": 0.2847,
    "max_ks_feature": "sym_lr",
-   "diversity_ratio": 0.8994,
+   "diversity_ratio": 0.8826,
    "escapes": 0,
    "pass_automatic": true,
    "n_novel": 72,
-   "max_sim": 0.6727
+   "max_sim": 0.6697
   },
   "15554": {
-   "energy_distance": 0.2154,
-   "max_ks": 0.3611,
-   "max_ks_feature": "sym_lr",
-   "diversity_ratio": 0.9733,
+   "energy_distance": 0.2583,
+   "max_ks": 0.2375,
+   "max_ks_feature": "components_t128",
+   "diversity_ratio": 0.9521,
    "escapes": 0,
    "pass_automatic": true,
    "n_novel": 72,
-   "max_sim": 0.6667
+   "max_sim": 0.6877
   },
   "23331": {
-   "energy_distance": 0.2519,
-   "max_ks": 0.3125,
-   "max_ks_feature": "sym_lr",
-   "diversity_ratio": 0.9356,
+   "energy_distance": 0.2646,
+   "max_ks": 0.2625,
+   "max_ks_feature": "branch_straightness",
+   "diversity_ratio": 0.9477,
    "escapes": 0,
    "pass_automatic": true,
    "n_novel": 72,
-   "max_sim": 0.6793
+   "max_sim": 0.6744
   },
   "31108": {
-   "energy_distance": 0.2893,
-   "max_ks": 0.3264,
-   "max_ks_feature": "sym_lr",
-   "diversity_ratio": 0.9263,
+   "energy_distance": 0.2914,
+   "max_ks": 0.2583,
+   "max_ks_feature": "branch_straightness",
+   "diversity_ratio": 0.8756,
    "escapes": 0,
    "pass_automatic": true,
    "n_novel": 72,
-   "max_sim": 0.6695
+   "max_sim": 0.6582
   },
   "38885": {
-   "energy_distance": 0.3024,
-   "max_ks": 0.3125,
-   "max_ks_feature": "rings",
-   "diversity_ratio": 0.8762,
+   "energy_distance": 0.2548,
+   "max_ks": 0.3611,
+   "max_ks_feature": "sym_lr",
+   "diversity_ratio": 0.9362,
    "escapes": 0,
    "pass_automatic": true,
    "n_novel": 72,
-   "max_sim": 0.6737
+   "max_sim": 0.6557
+  },
+  "46662": {
+   "energy_distance": 0.3513,
+   "max_ks": 0.2847,
+   "max_ks_feature": "sym_lr",
+   "diversity_ratio": 0.8855,
+   "escapes": 0,
+   "pass_automatic": true,
+   "n_novel": 72,
+   "max_sim": 0.672
   }
  }
 }

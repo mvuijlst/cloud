@@ -89,3 +89,28 @@ The page shows the making rather than a spinner: the three rings swept from the 
 
 `batch.html` (sigils/batch.html, not linked from the seal page) makes any number of plates as PNG: how many (up to 2000), size (600 to 2400 px), black on white or white on black, and a first seed (random if left empty). Seeds run first, first + 1, ..., so each plate can be seen again on the seal page as `sigils/#seed`. Up to eight workers (`sigil-worker.js`, mode `png`) draw at once and encode the PNGs; "save zip" stores them uncompressed (they are compressed already) with `sigils.json` listing file, seed, name and family. Where workers cannot draw (opened from disk, no OffscreenCanvas) the page draws them itself, one at a time. Checked: 12 plates at 600 px in 1.6 s and 48 at 1000 px in 9.4 s with eight workers; the zip's checksums verified in the page and a zip from the same writer opened cleanly with Python's `zipfile`.
 
+## More variety (25 October 2026)
+
+A batch of 32 looked less varied than the 72 to the user. Measured with `tools/variety.py` on 72 single visits against the sheet (`data/variety_before.json`, `data/variety_after.json`):
+
+| | the sheet | before | after |
+|---|---|---|---|
+| line ends on a ring | 0.29 | 0.40 | 0.25 |
+| line ends on another line | 0.29 | 0.21 | 0.35 |
+| line ends on an arc | 0.105 | 0.03 | 0.036 |
+| entropy of the part mix (bits) | 2.50 | 2.23 | 2.55 |
+| share of lines / arcs / free curves | 0.39 / 0.10 / 0.022 | 0.47 / 0.05 / 0.001 | 0.44 / 0.07 / 0.036 |
+| "arm" placements in 72 seals | | 196 | 125 |
+| layout likeness (coarse silhouettes, mean pair) | 0.33 | 0.23 | 0.30 |
+
+The skeleton similarity of the novelty test did not see the problem (generated pairs were if anything less alike than the sheet's, 0.458 against 0.489), nor did the overall arrangement: the sameness was in the motifs. Lines ended in rings 40% of the time against 29%, the decoration loop's "arm" (a stem grown into empty space, mostly ringed) ran to 2.7 per seal, and curves were scarce. The batch's family mix (18 compartments of 32) was chance, about one batch in 270, not a fault of the seeds.
+
+Changes, in `generator.js` (the browser generator; `tools/generate.py` stays as the 24 October reference and no longer matches it):
+- new ends, the shapes the encoders asked for: a single pattee arm on a plain stem, the flared end of an I-bar, a heart (closed lobed outline), a three-pronged fork; more crescents; ring ends lowered;
+- each ornament grows less likely every time a seal uses it; arms are straight only 42% of the time, else curved, hooked back in a half circle, or barred near the end; spurs curve 40% of the time; pendants sometimes zigzag; domes and bowls stand on rails, often crowned; hearts among the loose parts in enclosures;
+- compartments: domed, rounded and nested frames besides plain, stepped and arched;
+- the family of a seed follows the golden-ratio sequence of the seed, so consecutive seeds (a batch) keep the sheet's mix while a random seed still draws uniformly;
+- the new parts are symmetric in themselves and pushed sym_lr up 0.24 to 0.64 sd, so mirroring is an eighth less likely in every family and two in three mirrored seals now get one-sided extras.
+
+Checked: six samples of 72 single visits pass tests 1, 3 and 4 (energy distance 0.25 to 0.35, largest KS 0.24 to 0.36, diversity 0.88 to 0.95; `data/visits_acceptance.json`), better than before the change; all 432 novel (closest 0.656 to 0.688). The fixed-mix sets for seeds 20261025 and 7, rerun: energy 0.229 and 0.364, largest KS 0.253 and 0.292, novel all (`data/web*_novelty.json`). These replace the earlier figures for the browser sets and single visits above. Still short of the sheet: arcs (0.07 of parts against 0.10) and lines running into arcs (0.036 of line ends against 0.105).
+
