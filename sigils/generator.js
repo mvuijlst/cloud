@@ -509,6 +509,20 @@
     return [];
   }
 
+  // horizontal extent of a few primitive members (stroke not included)
+  function widthX(members) {
+    const xs = [];
+    for (const m of expand(members)) {
+      if (m.c) {
+        let r = m.s !== undefined ? m.s : (m.r || 0);
+        if (Array.isArray(r)) r = Math.max(...r);
+        xs.push(m.c[0] - r, m.c[0] + r);
+      } else if (m.t === 'line') xs.push(m.p[0], m.p[2]);
+      else for (const q of m.p) xs.push(q[0]);
+    }
+    return xs.length ? Math.max(...xs) - Math.min(...xs) : 0;
+  }
+
   // try terminal kinds at a socket until one fits; returns the kind placed
   function placeTerminal(cv, sock, kinds = null, exclude = []) {
     const rng = cv.rng;
@@ -856,9 +870,20 @@
     const n = rng.choice([3, 3, 4, 4, 5, 6]);
     const inset = rng.uniform(0.12, 0.2), d = (x1 - x0 - 2 * inset) / (n - 1);
     const length = rng.uniform(0.25, 0.92 - yr - 0.12);
-    const kind = pick(rng, [['ring', 0.35], ['spiral', 0.25], ['cross', 0.1], ['foot', 0.1], ['tbar', 0.1], ['tri', 0.1]]);
     const xs = x0 + inset;
-    const stem = [L([xs, yr], [xs, yr + length])].concat(terminal(rng, [xs, yr + length], [0, 1], kind));
+    // the teeth are one repeat, placed without a collision test, so the
+    // terminal must be narrower than the gap or neighbours fuse
+    let kind, term, fitted = false;
+    for (let i = 0; i < 6 && !fitted; i++) {
+      kind = pick(rng, [['ring', 0.35], ['spiral', 0.25], ['cross', 0.1], ['foot', 0.1], ['tbar', 0.1], ['tri', 0.1]]);
+      term = terminal(rng, [xs, yr + length], [0, 1], kind);
+      fitted = widthX(term) <= d - 3 * cv.s;
+    }
+    if (!fitted) {   // a smaller ring if there is room for one, else bare teeth
+      const room = d - 3 * cv.s;
+      [kind, term] = room >= 0.045 ? ['ring', terminal(rng, [xs, yr + length], [0, 1], 'ring', Math.min(1, room / 0.1))] : ['none', []];
+    }
+    const stem = [L([xs, yr], [xs, yr + length])].concat(term);
     cv.add([{ t: 'repeat', n, d: [rnd(d), 0], m: stem }], 'center', [], true, `${n} teeth with ${kind}`);
     for (let i = 0; i < n; i++) cv.posts.push([xs + i * d, yr, yr + length, 'center']);
     // above the rail: arches, raised crosses, or I-bar heads
@@ -1086,7 +1111,14 @@
         const a1 = add(q, v, h), a2 = add(q, v, -h);
         spoke = spoke.concat([L(a1, a2)], terminal(rng, a1, v, kb, 0.7), terminal(rng, a2, [-v[0], -v[1]], kb, 0.7));
       }
-      cv.add([{ t: 'mirror', axis: 'y', at: cy, m: [{ t: 'mirror', axis: 'x', at: rnd(ax), m: spoke }] }], 'center', [], true, `X of four spokes with ${k1}`);
+      if (cv.ax !== null) {
+        cv.add([{ t: 'mirror', axis: 'y', at: cy, m: [{ t: 'mirror', axis: 'x', at: rnd(ax), m: spoke }] }], 'center', [], true, `X of four spokes with ${k1}`);
+      } else {   // unmirrored: the right-hand arms end differently, as on Decarabia (crescents and crosses)
+        const k1b = pick(rng, [['ring', 0.35], ['cross', 0.3], ['crescent', 0.2], ['tbar', 0.1], ['tri', 0.05]], [k1]);
+        const ur = [-u[0], u[1]], pr = [ax + ur[0] * rr, cy + ur[1] * rr];
+        cv.add([{ t: 'mirror', axis: 'y', at: cy, m: spoke.concat([L([ax, cy], pr)], terminal(rng, pr, ur, k1b, 0.9)) }], 'center', [], true,
+               `X of four spokes with ${k1} and ${k1b}`);
+      }
     }
     if (form === 'x_axis' || form === 'star8') {
       const k2 = pick(rng, [['ring', 0.3], ['cross', 0.35], ['tri', 0.15], ['tbar', 0.1], ['crescent', 0.1]]);
@@ -1427,6 +1459,14 @@
     throw new Error('no novel seal after 10 seeds');
   }
 
+  // one novel seal for a seed, its family drawn in the sheet's proportions
+  function sealForSeed(seed) {
+    const rng = makeRng((seed ^ 0x51A15EA1) >>> 0);
+    let x = rng.random() * 72, family = FAMILY_COUNTS[0][0];
+    for (const [f, k] of FAMILY_COUNTS) { x -= k; if (x < 0) { family = f; break; } }
+    return generateNovelSeal(Math.floor(rng.random() * 4294967296), family, String(seed));
+  }
+
   // the families and per-seal seeds of a set, in the sheet's proportions for n = 72
   function planSet(seed, n = 72) {
     const rng = makeRng(seed);
@@ -1478,7 +1518,7 @@
     return parts.join('\n');
   }
 
-  const api = { generateSeal, generateNovelSeal, novelty, planSet, generateSet, toSvg, expand, rasterize,
+  const api = { generateSeal, generateNovelSeal, sealForSeed, novelty, planSet, generateSet, toSvg, expand, rasterize, makeRng,
                 FAMILIES: FAMILY_COUNTS.map(([f]) => f), STROKE_K };
   root.Sigils = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;

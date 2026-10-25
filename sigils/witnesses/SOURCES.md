@@ -138,3 +138,9 @@ Figure → spirit map (read from the plates; eight spirits have two seals): 1 Ba
 ## Not attempted / outside the brief
 
 Bodleian Douce 116 (proto-Lemegeton with sigils), Northwestern University "NWU" manuscript, BL Add. 36674, Sloane 3824 as a whole, Wellcome MS 4665 — not searched beyond what is noted above.
+
+---
+
+## 5. De Laurence 1916, two leaves for the scan look (fetched 2026-10-25)
+
+Item `lesserkeyofsolom00dela` on archive.org (*The Lesser Key of Solomon, Goetia*, Chicago: De Laurence, 1916; Harold B. Lee Library, Brigham Young University; scanned at 500 ppi). Two leaves fetched with the user's permission through the BookReader page-image service (`https://ia601408.us.archive.org/BookReader/BookReaderImages.php?zip=/15/items/lesserkeyofsolom00dela/lesserkeyofsolom00dela_jp2.zip&file=lesserkeyofsolom00dela_jp2/lesserkeyofsolom00dela_NNNN.jp2&id=lesserkeyofsolom00dela&scale=1&rotate=0`, NNNN = 0034 and 0045), saved as `delaurence1916/leaf_n34.jpg` (676,412 bytes) and `leaf_n45.jpg` (910,614 bytes), 2375 x 3641 px colour JPEG. Leaf n34 is printed page 22 (Bael to Samigina), n45 page 33 (Furfur, Marchosias): text only, no seals on these leaves, contrary to the note in section 2 that the seals stand inline from n34. Used only to measure paper, ink and edges of an uncleaned printed scan (`tools/print_texture.py`).

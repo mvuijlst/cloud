@@ -1,0 +1,154 @@
+{
+ "source": "witnesses/delaurence1916/leaf_n34.jpg, leaf_n45.jpg (archive.org lesserkeyofsolom00dela, BYU scan, 500 ppi, fetched 2026-10-25)",
+ "ppi": 500,
+ "pages": [
+  {
+   "page": "leaf_n34.jpg",
+   "size": [
+    2375,
+    3641
+   ],
+   "paper_rgb": [
+    210.0,
+    205.0,
+    193.0
+   ],
+   "ink_rgb": [
+    34.0,
+    31.0,
+    27.0
+   ],
+   "paper_grain_grey": {
+    "fine": 0.656,
+    "mid": 0.869,
+    "coarse": 1.163
+   },
+   "ink_mottle_grey": 8.47,
+   "ink_mottle_fine": 4.59,
+   "ink_mottle_mid": 8.35,
+   "mottle_deep": 7.17,
+   "mottle_deep_fine": 3.01,
+   "deep_px": 1143,
+   "contrast_grey": 174.0,
+   "edge_sigma_px": 1.287,
+   "raggedness_px": {
+    "smooth_2px": {
+     "mad": 0.155,
+     "rms": 0.299
+    },
+    "smooth_3px": {
+     "mad": 0.34,
+     "rms": 0.562
+    },
+    "smooth_4px": {
+     "mad": 0.58,
+     "rms": 0.856
+    },
+    "smooth_6px": {
+     "mad": 1.147,
+     "rms": 1.489
+    },
+    "smooth_10px": {
+     "mad": 2.578,
+     "rms": 2.773
+    }
+   },
+   "skew_deg": 0.0,
+   "light_range_grey": 25.0,
+   "specks_per_cm2": 0.098,
+   "speck_area_px_median": 8.0,
+   "margin_cm2": 81.4
+  },
+  {
+   "page": "leaf_n45.jpg",
+   "size": [
+    2375,
+    3641
+   ],
+   "paper_rgb": [
+    201.0,
+    196.0,
+    188.0
+   ],
+   "ink_rgb": [
+    12.0,
+    9.0,
+    7.0
+   ],
+   "paper_grain_grey": {
+    "fine": 1.114,
+    "mid": 1.185,
+    "coarse": 1.335
+   },
+   "ink_mottle_grey": 9.72,
+   "ink_mottle_fine": 5.91,
+   "ink_mottle_mid": 9.78,
+   "mottle_deep": 5.79,
+   "mottle_deep_fine": 3.28,
+   "deep_px": 2022,
+   "contrast_grey": 187.0,
+   "edge_sigma_px": 1.186,
+   "raggedness_px": {
+    "smooth_2px": {
+     "mad": 0.155,
+     "rms": 0.309
+    },
+    "smooth_3px": {
+     "mad": 0.339,
+     "rms": 0.574
+    },
+    "smooth_4px": {
+     "mad": 0.578,
+     "rms": 0.869
+    },
+    "smooth_6px": {
+     "mad": 1.145,
+     "rms": 1.499
+    },
+    "smooth_10px": {
+     "mad": 2.536,
+     "rms": 2.765
+    }
+   },
+   "skew_deg": 0.15,
+   "light_range_grey": 20.0,
+   "specks_per_cm2": 0.133,
+   "speck_area_px_median": 4.5,
+   "margin_cm2": 60.0
+  }
+ ],
+ "mean": {
+  "edge_sigma_px": 1.236,
+  "specks_per_cm2": 0.116,
+  "speck_area_px_median": 6.25,
+  "ink_mottle_grey": 9.095,
+  "ink_mottle_fine": 5.25,
+  "ink_mottle_mid": 9.065,
+  "mottle_deep": 6.48,
+  "mottle_deep_fine": 3.145,
+  "contrast_grey": 180.5,
+  "skew_deg": 0.075,
+  "light_range_grey": 22.5
+ },
+ "paper_grain_grey": {
+  "fine": 0.885,
+  "mid": 1.027,
+  "coarse": 1.249
+ },
+ "raggedness_px": {
+  "smooth_2px": 0.155,
+  "smooth_3px": 0.34,
+  "smooth_4px": 0.579,
+  "smooth_6px": 1.146,
+  "smooth_10px": 2.557
+ },
+ "drawn_lines": {
+  "lines": 69,
+  "bending_rms_units": 0.00046,
+  "residual_rms_units": 0.0008,
+  "width_mean_units": 0.0324,
+  "width_cv": 0.043,
+  "width_cv_above_003": 0.017,
+  "note": "units of drawing height; one sheet pixel is 0.0075"
+ }
+}

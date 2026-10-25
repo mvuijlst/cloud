@@ -3,7 +3,7 @@
  "n": 72,
  "n_novel": 72,
  "sim": {
-  "median": 0.5864499999999999,
+  "median": 0.5853999999999999,
   "max": 0.6828
  },
  "results": [
@@ -34,9 +34,9 @@
   {
    "id": "g04",
    "nearest": "42a",
-   "sim": 0.6111,
-   "second": "34a",
-   "sim2": 0.5907,
+   "sim": 0.5846,
+   "second": "18a",
+   "sim2": 0.553,
    "novel": true
   },
   {
@@ -265,10 +265,10 @@
   },
   {
    "id": "g33",
-   "nearest": "30a",
-   "sim": 0.5785,
-   "second": "28a",
-   "sim2": 0.5587,
+   "nearest": "42a",
+   "sim": 0.554,
+   "second": "55a",
+   "sim2": 0.5518,
    "novel": true
   },
   {
@@ -338,9 +338,9 @@
   {
    "id": "g42",
    "nearest": "57a",
-   "sim": 0.5959,
-   "second": "54a",
-   "sim2": 0.5951,
+   "sim": 0.4793,
+   "second": "69a",
+   "sim2": 0.4564,
    "novel": true
   },
   {
@@ -394,9 +394,9 @@
   {
    "id": "g49",
    "nearest": "42a",
-   "sim": 0.6448,
-   "second": "55a",
-   "sim2": 0.6286,
+   "sim": 0.624,
+   "second": "15a",
+   "sim2": 0.6212,
    "novel": true
   },
   {
@@ -506,9 +506,9 @@
   {
    "id": "g63",
    "nearest": "11a",
-   "sim": 0.5754,
-   "second": "18b",
-   "sim2": 0.5601,
+   "sim": 0.5277,
+   "second": "50a",
+   "sim2": 0.5035,
    "novel": true
   },
   {
@@ -577,10 +577,10 @@
   },
   {
    "id": "g72",
-   "nearest": "09a",
-   "sim": 0.5816,
+   "nearest": "42a",
+   "sim": 0.6533,
    "second": "44a",
-   "sim2": 0.5721,
+   "sim2": 0.6488,
    "novel": true
   }
  ]

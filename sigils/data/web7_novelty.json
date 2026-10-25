@@ -3,7 +3,7 @@
  "n": 72,
  "n_novel": 72,
  "sim": {
-  "median": 0.5975,
+  "median": 0.5959000000000001,
   "max": 0.6731
  },
  "results": [
@@ -41,10 +41,10 @@
   },
   {
    "id": "g05",
-   "nearest": "55a",
-   "sim": 0.5942,
-   "second": "15a",
-   "sim2": 0.5842,
+   "nearest": "46a",
+   "sim": 0.5878,
+   "second": "02a",
+   "sim2": 0.5776,
    "novel": true
   },
   {
@@ -145,10 +145,10 @@
   },
   {
    "id": "g18",
-   "nearest": "19a",
-   "sim": 0.6653,
-   "second": "42a",
-   "sim2": 0.6381,
+   "nearest": "26b",
+   "sim": 0.6076,
+   "second": "19a",
+   "sim2": 0.6023,
    "novel": true
   },
   {
@@ -169,10 +169,10 @@
   },
   {
    "id": "g21",
-   "nearest": "31a",
-   "sim": 0.578,
-   "second": "39a",
-   "sim2": 0.5751,
+   "nearest": "36a",
+   "sim": 0.5856,
+   "second": "48a",
+   "sim2": 0.5811,
    "novel": true
   },
   {
@@ -185,10 +185,10 @@
   },
   {
    "id": "g23",
-   "nearest": "28a",
-   "sim": 0.609,
-   "second": "54a",
-   "sim2": 0.5999,
+   "nearest": "54a",
+   "sim": 0.5918,
+   "second": "57a",
+   "sim2": 0.5715,
    "novel": true
   },
   {
@@ -337,10 +337,10 @@
   },
   {
    "id": "g42",
-   "nearest": "44a",
-   "sim": 0.6512,
-   "second": "27a",
-   "sim2": 0.6187,
+   "nearest": "18a",
+   "sim": 0.6255,
+   "second": "18b",
+   "sim2": 0.5958,
    "novel": true
   },
   {
@@ -457,10 +457,10 @@
   },
   {
    "id": "g57",
-   "nearest": "26b",
-   "sim": 0.5966,
-   "second": "44a",
-   "sim2": 0.5798,
+   "nearest": "11a",
+   "sim": 0.5963,
+   "second": "09b",
+   "sim2": 0.5951,
    "novel": true
   },
   {

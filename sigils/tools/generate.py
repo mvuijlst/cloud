@@ -245,6 +245,21 @@ def terminal(rng, p, u, kind, scale=1.0):
     return []
 
 
+def width_x(members):
+    """Horizontal extent of a few primitive members (stroke not included)."""
+    xs = []
+    for m in sigil.expand(members):
+        if 'c' in m:
+            r = m.get('s', m.get('r', 0))
+            r = max(r) if isinstance(r, list) else r
+            xs += [m['c'][0] - r, m['c'][0] + r]
+        elif m['t'] == 'line':
+            xs += [m['p'][0], m['p'][2]]
+        else:
+            xs += [q[0] for q in m['p']]
+    return max(xs) - min(xs) if xs else 0.0
+
+
 def place_terminal(cv, sock, kinds=None, exclude=()):
     """Try terminal kinds at a socket until one fits; returns the kind placed."""
     rng = cv.rng
@@ -623,11 +638,19 @@ def g_comb(cv):
     inset = rng.uniform(0.12, 0.2)
     d = (x1 - x0 - 2 * inset) / (n - 1)
     length = rng.uniform(0.25, 0.92 - yr - 0.12)
-    kind = pick(rng, {'ring': 0.35, 'spiral': 0.25, 'cross': 0.1, 'foot': 0.1, 'tbar': 0.1, 'tri': 0.1})
     xs = x0 + inset
-    stem = [L((xs, yr), (xs, yr + length))] + terminal(rng, (xs, yr + length), (0, 1), kind)
-    if not cv.add([{'t': 'repeat', 'n': n, 'd': [rnd(d), 0], 'm': stem}], force=True, note=f'{n} teeth with {kind}'):
-        pass
+    # the teeth are one repeat, placed without a collision test, so the
+    # terminal must be narrower than the gap or neighbours fuse
+    for _ in range(6):
+        kind = pick(rng, {'ring': 0.35, 'spiral': 0.25, 'cross': 0.1, 'foot': 0.1, 'tbar': 0.1, 'tri': 0.1})
+        term = terminal(rng, (xs, yr + length), (0, 1), kind)
+        if width_x(term) <= d - 3 * cv.s:
+            break
+    else:   # a smaller ring if there is room for one, else bare teeth
+        room = d - 3 * cv.s
+        kind, term = ('ring', terminal(rng, (xs, yr + length), (0, 1), 'ring', min(1.0, room / 0.1))) if room >= 0.045 else ('none', [])
+    stem = [L((xs, yr), (xs, yr + length))] + term
+    cv.add([{'t': 'repeat', 'n': n, 'd': [rnd(d), 0], 'm': stem}], force=True, note=f'{n} teeth with {kind}')
     for i in range(n):
         cv.posts.append((xs + i * d, yr, yr + length, 'center'))
     # above the rail: arches, raised crosses, or I-bar heads
@@ -857,8 +880,15 @@ def g_radial(cv):
             kb = pick(rng, {'ring': 0.6, 'none': 0.25, 'tri': 0.15})
             a1 = add(q, v, h); a2 = add(q, v, -h)
             spoke += [L(a1, a2)] + terminal(rng, a1, v, kb, 0.7) + terminal(rng, a2, (-v[0], -v[1]), kb, 0.7)
-        m = [{'t': 'mirror', 'axis': 'y', 'at': cy, 'm': [{'t': 'mirror', 'axis': 'x', 'at': rnd(ax), 'm': spoke}]}]
-        cv.add(m, force=True, note=f'X of four spokes with {k1}')
+        if cv.ax is not None:
+            m = [{'t': 'mirror', 'axis': 'y', 'at': cy, 'm': [{'t': 'mirror', 'axis': 'x', 'at': rnd(ax), 'm': spoke}]}]
+            note = f'X of four spokes with {k1}'
+        else:   # unmirrored: the right-hand arms end differently, as on Decarabia (crescents and crosses)
+            k1b = pick(rng, {'ring': 0.35, 'cross': 0.3, 'crescent': 0.2, 'tbar': 0.1, 'tri': 0.05}, exclude=(k1,))
+            ur = (-u[0], u[1]); pr = (ax + ur[0] * rr, cy + ur[1] * rr)
+            m = [{'t': 'mirror', 'axis': 'y', 'at': cy, 'm': spoke + [L((ax, cy), pr)] + terminal(rng, pr, ur, k1b, 0.9)}]
+            note = f'X of four spokes with {k1} and {k1b}'
+        cv.add(m, force=True, note=note)
     if form in ('x_axis', 'star8'):
         k2 = pick(rng, {'ring': 0.3, 'cross': 0.35, 'tri': 0.15, 'tbar': 0.1, 'crescent': 0.1})
         r2 = rr * rng.uniform(0.95, 1.2) if form == 'x_axis' else rr * rng.uniform(0.85, 1.0)
