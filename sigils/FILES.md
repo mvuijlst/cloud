@@ -62,9 +62,10 @@ Everything here was produced on 24 October 2026 from `72_Goeta_sigils.png` and t
 | `tools/generate.py`, `generated/` | the Python generator and its 72 seals (seed 20261024) |
 | `tools/acceptance.py`, `tools/novelty.py` | ACCEPTANCE.md tests 1, 3, 4 with the corrected renderer; the novelty test |
 | `tools/encoding_stats.py`, `data/encoding_stats.json` | the part statistics the generator is fitted to |
-| `index.html`, `generator.js`, `scan.js`, `sigil-data.js` | the generator in the browser, one seal per visit rendered as a printed scan; `sigil-data.js` from `tools/build_web_data.py` |
+| `index.html`, `generator.js`, `plate.js`, `sigil-data.js` | the generator in the browser: one seal per visit in the plates' double ring with a generated name, white on black; `sigil-data.js` from `tools/build_web_data.py` |
+| `tools/plate_ink.py`, `data/plate_ink.json` | rings, line width variation, wander, raggedness, figure reach and lettering measured on good scans of the plates |
+| `tools/plate_check.py`, `data/plate_check.json` | the same measurement on rendered plates |
 | `tools/print_texture.py`, `data/print_texture.json` | paper, ink, edge, speck and skew measurements of a printed scan (1916 leaves), and how straight the sheet's drawn lines are |
-| `tools/scan_check.py`, `data/scan_check.json` | the same measurement on the real leaves and on rendered scans |
 | `data/visits_acceptance.json`, `data/visits_*_novelty.json` | six samples of 72 single visits against the acceptance and novelty tests |
 | `witnesses/delaurence1916/` | two leaves of the 1916 De Laurence printing (archive.org, BYU scan, 500 ppi) |
 

@@ -1459,6 +1459,54 @@
     throw new Error('no novel seal after 10 seeds');
   }
 
+  // ---------- names for the frame ----------
+  // An order-2 letter model of the 72 spirit names on the sheet (first spelling
+  // of each); a name is kept only if it is 5 to 9 letters long, at least two
+  // edits away from every spelling on the sheet and contains none of them (of
+  // four letters or more), so it is none of theirs and not two of them glued.
+
+  let NAME_MODEL = null;
+  function nameModel() {
+    if (NAME_MODEL) return NAME_MODEL;
+    const next = {};
+    for (const n of D.names.train) {
+      const s = '^^' + n + '$';
+      for (let i = 2; i < s.length; i++) {
+        const k = s.slice(i - 2, i);
+        (next[k] = next[k] || {})[s[i]] = (next[k][s[i]] || 0) + 1;
+      }
+    }
+    NAME_MODEL = next;
+    return next;
+  }
+
+  function editDistance(a, b) {
+    let prev = Array.from({ length: b.length + 1 }, (_, j) => j);
+    for (let i = 1; i <= a.length; i++) {
+      const cur = [i];
+      for (let j = 1; j <= b.length; j++) cur.push(Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)));
+      prev = cur;
+    }
+    return prev[b.length];
+  }
+
+  function nameForSeed(seed) {
+    const rng = makeRng((seed ^ 0x4E414D45) >>> 0), model = nameModel();
+    for (let tries = 0; tries < 500; tries++) {
+      let s = '^^';
+      while (s.length < 14) {
+        const opts = Object.entries(model[s.slice(-2)]);
+        let x = rng.random() * opts.reduce((a, [, c]) => a + c, 0), ch = opts[opts.length - 1][0];
+        for (const [c, n] of opts) { x -= n; if (x <= 0) { ch = c; break; } }
+        if (ch === '$') break;
+        s += ch;
+      }
+      const name = s.slice(2);
+      if (name.length >= 5 && name.length <= 9 && D.names.avoid.every(r => editDistance(name, r) >= 2 && !(r.length >= 4 && name.includes(r)))) return name;
+    }
+    return 'NOMEN';
+  }
+
   // one novel seal for a seed, its family drawn in the sheet's proportions
   function sealForSeed(seed) {
     const rng = makeRng((seed ^ 0x51A15EA1) >>> 0);
@@ -1518,7 +1566,7 @@
     return parts.join('\n');
   }
 
-  const api = { generateSeal, generateNovelSeal, sealForSeed, novelty, planSet, generateSet, toSvg, expand, rasterize, makeRng,
+  const api = { generateSeal, generateNovelSeal, sealForSeed, nameForSeed, novelty, planSet, generateSet, toSvg, expand, translate, rasterize, distanceTransform, makeRng,
                 FAMILIES: FAMILY_COUNTS.map(([f]) => f), STROKE_K };
   root.Sigils = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;

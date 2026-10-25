@@ -1,0 +1,305 @@
+{
+ "source": "witnesses/plate_examples/ (user-supplied, 25 Oct 2026)",
+ "plates": [
+  {
+   "name": "asmoday",
+   "R_px": 295.5,
+   "rings": [
+    {
+     "radius": 0.7597,
+     "coverage": 0.938,
+     "ellipticity": 0.0067,
+     "wobble_rms": 0.00204,
+     "wobble_corr": 0.2354,
+     "width": 0.02709,
+     "width_cv": 0.1005,
+     "width_corr": 0.0298,
+     "edge_rag_rms": 0.0014,
+     "edge_rag_px": 0.414,
+     "width_px": 8.01
+    },
+    {
+     "radius": 0.9695,
+     "coverage": 0.836,
+     "ellipticity": 0.0042,
+     "wobble_rms": 0.00252,
+     "wobble_corr": 0.2454,
+     "width": 0.02603,
+     "width_cv": 0.129,
+     "width_corr": 0.0169,
+     "edge_rag_rms": 0.00198,
+     "edge_rag_px": 0.586,
+     "width_px": 7.69
+    },
+    {
+     "radius": 1.0,
+     "coverage": 0.813,
+     "ellipticity": 0.0049,
+     "wobble_rms": 0.00246,
+     "wobble_corr": 0.3272,
+     "width": 0.01864,
+     "width_cv": 0.134,
+     "width_corr": 0.0218,
+     "edge_rag_rms": 0.00147,
+     "edge_rag_px": 0.434,
+     "width_px": 5.51
+    }
+   ],
+   "figure": {
+    "stroke": 0.03384,
+    "stroke_px": 10.0,
+    "height": 1.4552,
+    "width": 1.3875,
+    "half_diagonal": 1.0053,
+    "inner_radius": 0.7326,
+    "max_radius": 0.7249
+   },
+   "letters": {
+    "n": 1,
+    "height": 0.1363,
+    "radius": 0.8606
+   },
+   "specks": 20
+  },
+  {
+   "name": "haagenti",
+   "R_px": 292.5,
+   "rings": [
+    {
+     "radius": 0.7573,
+     "coverage": 0.934,
+     "ellipticity": 0.007,
+     "wobble_rms": 0.00334,
+     "wobble_corr": 0.2412,
+     "width": 0.0255,
+     "width_cv": 0.135,
+     "width_corr": 0.0496,
+     "edge_rag_rms": 0.00172,
+     "edge_rag_px": 0.502,
+     "width_px": 7.46
+    },
+    {
+     "radius": 0.9658,
+     "coverage": 0.794,
+     "ellipticity": 0.0085,
+     "wobble_rms": 0.00312,
+     "wobble_corr": 0.3456,
+     "width": 0.02506,
+     "width_cv": 0.0938,
+     "width_corr": 0.0169,
+     "edge_rag_rms": 0.00135,
+     "edge_rag_px": 0.395,
+     "width_px": 7.33
+    },
+    {
+     "radius": 1.0,
+     "coverage": 0.834,
+     "ellipticity": 0.0085,
+     "wobble_rms": 0.0034,
+     "wobble_corr": 0.3534,
+     "width": 0.01872,
+     "width_cv": 0.1404,
+     "width_corr": 0.0567,
+     "edge_rag_rms": 0.00135,
+     "edge_rag_px": 0.396,
+     "width_px": 5.48
+    }
+   ],
+   "figure": {
+    "stroke": 0.02735,
+    "stroke_px": 8.0,
+    "height": 1.053,
+    "width": 1.4085,
+    "half_diagonal": 0.8793,
+    "inner_radius": 0.7318,
+    "max_radius": 0.7228
+   },
+   "letters": {
+    "n": 3,
+    "height": 0.1422,
+    "radius": 0.8656
+   },
+   "specks": 0
+  },
+  {
+   "name": "sitri",
+   "R_px": 285.5,
+   "rings": [
+    {
+     "radius": 0.7583,
+     "coverage": 0.999,
+     "ellipticity": 0.0019,
+     "wobble_rms": 0.00239,
+     "wobble_corr": 0.0496,
+     "width": 0.02994,
+     "width_cv": 0.1177,
+     "width_corr": 0.0265,
+     "edge_rag_rms": 0.00199,
+     "edge_rag_px": 0.569,
+     "width_px": 8.55
+    },
+    {
+     "radius": 0.9615,
+     "coverage": 0.919,
+     "ellipticity": 0.0028,
+     "wobble_rms": 0.00364,
+     "wobble_corr": 0.2769,
+     "width": 0.02822,
+     "width_cv": 0.1284,
+     "width_corr": 0.0252,
+     "edge_rag_rms": 0.00215,
+     "edge_rag_px": 0.613,
+     "width_px": 8.06
+    },
+    {
+     "radius": 1.0,
+     "coverage": 0.902,
+     "ellipticity": 0.0028,
+     "wobble_rms": 0.00377,
+     "wobble_corr": 0.24,
+     "width": 0.01963,
+     "width_cv": 0.1918,
+     "width_corr": 0.0742,
+     "edge_rag_rms": 0.00207,
+     "edge_rag_px": 0.591,
+     "width_px": 5.61
+    }
+   ],
+   "figure": {
+    "stroke": 0.03503,
+    "stroke_px": 10.0,
+    "height": 1.2189,
+    "width": 1.4431,
+    "half_diagonal": 0.9445,
+    "inner_radius": 0.7284,
+    "max_radius": 0.718
+   },
+   "letters": {
+    "n": 2,
+    "height": 0.1295,
+    "radius": 0.8673
+   },
+   "specks": 8
+  },
+  {
+   "name": "buer",
+   "R_px": 283.5,
+   "rings": [
+    {
+     "radius": 0.7566,
+     "coverage": 0.97,
+     "ellipticity": 0.0026,
+     "wobble_rms": 0.00277,
+     "wobble_corr": 0.066,
+     "width": 0.03016,
+     "width_cv": 0.1453,
+     "width_corr": 0.0363,
+     "edge_rag_rms": 0.00222,
+     "edge_rag_px": 0.629,
+     "width_px": 8.55
+    },
+    {
+     "radius": 0.9647,
+     "coverage": 0.99,
+     "ellipticity": 0.0011,
+     "wobble_rms": 0.00237,
+     "wobble_corr": 0.0589,
+     "width": 0.02953,
+     "width_cv": 0.1128,
+     "width_corr": 0.0168,
+     "edge_rag_rms": 0.00208,
+     "edge_rag_px": 0.59,
+     "width_px": 8.37
+    },
+    {
+     "radius": 1.0,
+     "coverage": 1.0,
+     "ellipticity": 0.0013,
+     "wobble_rms": 0.00249,
+     "wobble_corr": 0.0698,
+     "width": 0.02044,
+     "width_cv": 0.1629,
+     "width_corr": 0.0175,
+     "edge_rag_rms": 0.00206,
+     "edge_rag_px": 0.585,
+     "width_px": 5.8
+    }
+   ],
+   "figure": {
+    "stroke": 0.03527,
+    "stroke_px": 10.0,
+    "height": 1.1358,
+    "width": 1.3616,
+    "half_diagonal": 0.8865,
+    "inner_radius": 0.7264,
+    "max_radius": 0.7182
+   },
+   "letters": {
+    "n": 3,
+    "height": 0.1344,
+    "radius": 0.8669
+   },
+   "specks": 8
+  },
+  {
+   "name": "beleth",
+   "R_px": 283.5,
+   "rings": [
+    {
+     "radius": 0.7566,
+     "coverage": 0.996,
+     "ellipticity": 0.0035,
+     "wobble_rms": 0.00185,
+     "wobble_corr": 0.1255,
+     "width": 0.02775,
+     "width_cv": 0.1153,
+     "width_corr": 0.0297,
+     "edge_rag_rms": 0.00167,
+     "edge_rag_px": 0.472,
+     "width_px": 7.87
+    },
+    {
+     "radius": 0.9612,
+     "coverage": 1.0,
+     "ellipticity": 0.0028,
+     "wobble_rms": 0.00154,
+     "wobble_corr": 0.0126,
+     "width": 0.02544,
+     "width_cv": 0.1269,
+     "width_corr": 0.0168,
+     "edge_rag_rms": 0.0018,
+     "edge_rag_px": 0.511,
+     "width_px": 7.21
+    },
+    {
+     "radius": 1.0,
+     "coverage": 1.0,
+     "ellipticity": 0.0029,
+     "wobble_rms": 0.0015,
+     "wobble_corr": 0.0436,
+     "width": 0.01785,
+     "width_cv": 0.1865,
+     "width_corr": 0.0175,
+     "edge_rag_rms": 0.00172,
+     "edge_rag_px": 0.489,
+     "width_px": 5.06
+    }
+   ],
+   "figure": {
+    "stroke": 0.02822,
+    "stroke_px": 8.0,
+    "height": 1.1534,
+    "width": 1.4215,
+    "half_diagonal": 0.9153,
+    "inner_radius": 0.7289,
+    "max_radius": 0.72
+   },
+   "letters": {
+    "n": 5,
+    "height": 0.1398,
+    "radius": 0.8594
+   },
+   "specks": 7
+  }
+ ]
+}

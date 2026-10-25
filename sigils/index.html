@@ -26,45 +26,45 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 14px;
             padding: 16px;
             box-sizing: border-box;
         }
         a { color: var(--dim); text-decoration: none; }
         a:hover, a:focus-visible { color: #fff; }
         #back { position: fixed; top: 14px; left: 16px; font-size: 16px; }
-        canvas {
-            display: block;
-            max-width: min(92vw, 900px);
-            max-height: 78vh;
-            width: auto;
-            height: auto;
-        }
-        figure { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+        figure { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+        canvas { display: block; }
         figcaption { color: var(--dim); display: flex; gap: 18px; min-height: 1.4em; }
     </style>
 </head>
 <body>
     <a id="back" href="../" aria-label="back to the index">←</a>
     <figure>
-        <canvas id="scan" role="img" aria-label="a seal in the manner of the Goetia, as if scanned from a printed book"></canvas>
+        <canvas id="plate" role="img" aria-label="a seal in the manner of the Goetia, in a double ring with its name"></canvas>
         <figcaption id="cap">drawing…</figcaption>
     </figure>
 
     <script src="sigil-data.js"></script>
     <script src="generator.js"></script>
-    <script src="scan.js"></script>
+    <script src="plate.js"></script>
     <script>
         // one seal per visit; a number in the URL (#1234) shows that seal again
         const fromHash = parseInt(location.hash.slice(1), 10);
         const seed = fromHash >= 0 ? fromHash : Math.floor(Math.random() * 1e9);
-        const cap = document.getElementById('cap'), canvas = document.getElementById('scan');
+        const cap = document.getElementById('cap'), canvas = document.getElementById('plate');
+
+        // drawn at the screen's own pixel density, so nothing is scaled up
+        const dpr = Math.min(2, window.devicePixelRatio || 1);
+        const cssSize = Math.max(240, Math.min(window.innerWidth - 32, window.innerHeight * 0.82 - 40, 720));
+        const R = Math.round(cssSize * dpr / 2.14);
 
         setTimeout(() => {
-            const enc = Sigils.sealForSeed(seed);
-            const img = Sigils.renderScan(enc, seed);
+            const enc = Sigils.sealForSeed(seed), name = Sigils.nameForSeed(seed);
+            const img = Sigils.renderPlate(enc, name, seed, { R });
             canvas.width = img.width; canvas.height = img.height;
+            canvas.style.width = canvas.style.height = (img.width / dpr) + 'px';
             canvas.getContext('2d').putImageData(new ImageData(img.data, img.width, img.height), 0, 0);
+            canvas.setAttribute('aria-label', `the seal of ${name}, in the manner of the Goetia`);
             cap.innerHTML = '';
             const link = (text, href, title) => {
                 const a = document.createElement('a');
@@ -73,11 +73,11 @@
             };
             link(`No. ${seed}`, `#${seed}`, 'this seal again');
             link('another', './', 'a new seal').onclick = e => { e.preventDefault(); location.href = location.pathname; };
-            link('png', '#', 'download this scan').onclick = e => {
+            link('png', '#', 'download').onclick = e => {
                 e.preventDefault();
                 canvas.toBlob(b => {
                     const a = document.createElement('a');
-                    a.href = URL.createObjectURL(b); a.download = `sigil-${seed}.png`; a.click();
+                    a.href = URL.createObjectURL(b); a.download = `sigil-${seed}-${name.toLowerCase()}.png`; a.click();
                     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
                 });
             };
