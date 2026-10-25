@@ -8,6 +8,9 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#000000">
     <link rel="manifest" href="../manifest.json">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&display=swap">
     <title>sigils</title>
     <style>
         @font-face {
@@ -15,9 +18,9 @@
             src: url('../IBMPlexMono-Regular.ttf');
         }
         :root { --dim: rgba(255, 255, 255, 0.45); }
-        html, body { height: 100%; }
         body {
             margin: 0;
+            min-height: 100vh;
             background: #000;
             color: #fff;
             font-family: 'IBMPlexMono', monospace;
@@ -25,9 +28,15 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            padding: 16px;
+            padding: 44px 16px 48px;    /* the page scrolls on a phone: room above for the arrow, below for the text */
             box-sizing: border-box;
+        }
+        .wrap { display: flex; flex-direction: column; align-items: center; gap: 18px; }
+        /* wide screens: the text beside the plate, both centred in the window */
+        @media (min-width: 900px) and (min-aspect-ratio: 5/4) {
+            body { justify-content: center; padding: 24px 32px; }
+            .wrap { flex-direction: row; align-items: center; gap: 56px; }
+            #lore { font-size: 20px; text-align: justify; }
         }
         a { color: var(--dim); text-decoration: none; }
         a:hover, a:focus-visible { color: #fff; }
@@ -36,26 +45,30 @@
         canvas { display: block; }
         figcaption { color: var(--dim); display: flex; gap: 18px; min-height: 1.4em; text-align: center; }
         #lore {
-            margin: 4px 0 0;
-            font-family: "Times New Roman", Times, Georgia, serif;
-            font-size: 16px;
-            line-height: 1.55;
-            color: rgba(255, 255, 255, 0.82);
-            text-align: justify;
+            margin: 0;
+            padding-bottom: 8px;
+            font-family: 'IM Fell English', 'Times New Roman', Times, Georgia, serif;
+            font-size: 19px;
+            line-height: 1.45;
+            color: rgba(255, 255, 255, 0.84);
+            text-align: left;
             hyphens: auto;
             opacity: 0;
             transition: opacity 0.9s ease;
         }
         #lore.shown { opacity: 1; }
+        #lore i { font-style: italic; }
     </style>
 </head>
 <body>
     <a id="back" href="../" aria-label="back to the index">←</a>
-    <figure>
-        <canvas id="plate" role="img" aria-label="a seal in the manner of the Goetia, being drawn"></canvas>
-        <figcaption id="cap" aria-live="polite"></figcaption>
+    <main class="wrap">
+        <figure>
+            <canvas id="plate" role="img" aria-label="a seal in the manner of the Goetia, being drawn"></canvas>
+            <figcaption id="cap" aria-live="polite"></figcaption>
+        </figure>
         <p id="lore" lang="en"></p>
-    </figure>
+    </main>
 
     <script src="sigil-data.js"></script>
     <script src="generator.js"></script>
@@ -74,15 +87,39 @@
 
         // drawn at the screen's own pixel density, so nothing is scaled up
         const dpr = Math.min(2, window.devicePixelRatio || 1);
-        const cssSize = Math.max(240, Math.min(window.innerWidth - 32, window.innerHeight * 0.82 - 40, 720));
+        // on a wide screen the plate shares the row with a column of text
+        const wide = window.matchMedia('(min-width: 900px) and (min-aspect-ratio: 5/4)').matches;
+        const textW = wide ? Math.round(Math.max(320, Math.min(window.innerWidth * 0.3, 470))) : 0;
+        const cssSize = wide
+            ? Math.max(240, Math.min(window.innerHeight * 0.86 - 40, window.innerWidth - 64 - textW - 56, 780))
+            : Math.max(240, Math.min(window.innerWidth - 32, window.innerHeight * 0.82 - 40, 720));
         const R = Math.round(cssSize * dpr / 2.14), W = Math.ceil(2.14 * R), c = W / 2;
         stage.width = stage.height = W;
         stage.style.width = stage.style.height = (W / dpr) + 'px';
         const reduceMotion = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
         const loreEl = document.getElementById('lore');
-        loreEl.style.maxWidth = stage.style.width;
+        // the text's column is set aside from the start, so nothing moves when it appears
+        if (wide) loreEl.style.width = textW + 'px';
+        else loreEl.style.maxWidth = stage.style.width;
         // what the book would say of him: fetched now, shown with the plate
-        const lore = Sigils.loreForSeed(seed, Sigils.nameForSeed(seed)).catch(() => null);
+        const lore = Sigils.loreParts(seed, Sigils.nameForSeed(seed)).catch(() => null);
+
+        // the name in italic wherever it stands, and the closing sentence on the seal
+        // as an italic rubric, as a book of the period would set them
+        function setLore(L) {
+            loreEl.textContent = '';
+            L.parts.forEach((part, k) => {
+                if (k) loreEl.append(' ');
+                if (part.role === 'seal') {
+                    const i = document.createElement('i'); i.textContent = part.s; loreEl.append(i);
+                    return;
+                }
+                part.s.split(L.name).forEach((bit, j) => {
+                    if (j) { const i = document.createElement('i'); i.textContent = L.name; loreEl.append(i); }
+                    if (bit) loreEl.append(bit);
+                });
+            });
+        }
 
         const S = { name: null, enc: null, steps: null, plate: null, plateOnPage: false, sealAt: 0, done: false, skip: false };
         const t0 = performance.now();
@@ -228,7 +265,7 @@
         function finish() {
             ctx.putImageData(S.plate, 0, 0);
             S.done = true;
-            lore.then(text => { if (text) { loreEl.textContent = text; requestAnimationFrame(() => loreEl.classList.add('shown')); } });
+            lore.then(L => { if (L) { setLore(L); requestAnimationFrame(() => loreEl.classList.add('shown')); } });
             stage.setAttribute('aria-label', `the seal of ${S.name}, in the manner of the Goetia`);
             cap.innerHTML = '';
             const link = (text, href, title, fn) => {

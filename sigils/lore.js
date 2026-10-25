@@ -111,16 +111,24 @@
       out.push(`He was of ${rng.choice(slots.orders)}` + (p('hope') && slots.hopes.length ? `, and ${rng.choice(slots.hopes)}.` : '.'));
     }
     out.push(`He ${weighted(rng, L.legion_verbs)} ${rng.choice(L.legions)} Legions of Spirits.`);
-    if (p('seal') && slots.seal_formulas.length) out.push(cap(rng.choice(slots.seal_formulas)) + '.');
-    return out.join(' ');
+    let seal = null;
+    if (p('seal') && slots.seal_formulas.length) seal = cap(rng.choice(slots.seal_formulas)) + '.';
+    // sentences with their roles, for setting the name and the seal's rubric in italic
+    const parts = out.map(s => ({ s, role: 'text' })).concat(seal ? [{ s: seal, role: 'seal' }] : []);
+    return { text: parts.map(x => x.s).join(' '), parts, name: N };
   }
 
   async function loreForSeed(seed, name, base = '') {
+    const slots = await loadShard(shardOf(seed), base);
+    return compose(name, slots, seed).text;
+  }
+
+  async function loreParts(seed, name, base = '') {
     const slots = await loadShard(shardOf(seed), base);
     return compose(name, slots, seed);
   }
 
   root.Sigils = root.Sigils || {};
-  Object.assign(root.Sigils, { loreForSeed, loreCompose: compose, loreShardOf: shardOf, loreDecode: decode });
-  if (typeof module !== 'undefined' && module.exports) module.exports = { loreForSeed, compose, shardOf, decode };
+  Object.assign(root.Sigils, { loreForSeed, loreParts, loreCompose: compose, loreShardOf: shardOf, loreDecode: decode });
+  if (typeof module !== 'undefined' && module.exports) module.exports = { loreForSeed, loreParts, compose, shardOf, decode };
 })(typeof globalThis !== 'undefined' ? globalThis : this);
