@@ -63,6 +63,7 @@ Everything here was produced on 24 October 2026 from `72_Goeta_sigils.png` and t
 | `tools/acceptance.py`, `tools/novelty.py` | ACCEPTANCE.md tests 1, 3, 4 with the corrected renderer; the novelty test |
 | `tools/encoding_stats.py`, `data/encoding_stats.json` | the part statistics the generator is fitted to |
 | `index.html`, `generator.js`, `plate.js`, `sigil-worker.js`, `sigil-data.js` | the generator in the browser: one seal per visit in the plates' double ring with a generated name, white on black, its making animated while a worker draws it; `sigil-data.js` from `tools/build_web_data.py` |
+| `batch.html` | any number of plates as PNG in a zip, with a list of seed, name and family |
 | `tools/plate_ink.py`, `data/plate_ink.json` | rings, line width variation, wander, raggedness, figure reach and lettering measured on good scans of the plates |
 | `tools/plate_check.py`, `data/plate_check.json` | the same measurement on rendered plates |
 | `tools/print_texture.py`, `data/print_texture.json` | paper, ink, edge, speck and skew measurements of a printed scan (1916 leaves), and how straight the sheet's drawn lines are |

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#000000">
+    <link rel="manifest" href="../manifest.json">
+    <title>sigils in bulk</title>
+    <style>
+        @font-face {
+            font-family: 'IBMPlexMono';
+            src: url('../IBMPlexMono-Regular.ttf');
+        }
+        :root { --dim: rgba(255, 255, 255, 0.5); --faint: rgba(255, 255, 255, 0.16); }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            background: #000;
+            color: #fff;
+            font-family: 'IBMPlexMono', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        a { color: var(--dim); text-decoration: none; }
+        a:hover, a:focus-visible { color: #fff; }
+        header, #status, main { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
+        header { padding-top: 26px; display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: baseline; }
+        h1 { font-size: 18px; font-weight: normal; margin: 0; }
+        form { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; }
+        label { color: var(--dim); display: flex; gap: 8px; align-items: center; }
+        input, select, button {
+            font: inherit; color: #fff; background: #000;
+            border: 1px solid var(--faint); border-radius: 2px; padding: 4px 8px;
+        }
+        input[type=number] { width: 7.5em; }
+        button { cursor: pointer; }
+        button:hover:not(:disabled), input:focus, select:focus { border-color: var(--dim); outline: none; }
+        button:disabled { opacity: 0.4; cursor: default; }
+        #status { color: var(--dim); min-height: 1.5em; margin-top: 14px; display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center; }
+        main {
+            margin-top: 14px; padding-bottom: 40px;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); gap: 10px;
+        }
+        figure { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        figure img { width: 100%; height: auto; display: block; cursor: pointer; }
+        figcaption { color: var(--dim); font-size: 11px; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1><a href="./">←</a> sigils in bulk</h1>
+        <form id="form">
+            <label>how many <input id="n" type="number" min="1" max="2000" value="24"></label>
+            <label>size <select id="size">
+                <option value="600">600 px</option>
+                <option value="1000" selected>1000 px</option>
+                <option value="1600">1600 px</option>
+                <option value="2400">2400 px</option>
+            </select></label>
+            <label>ink <select id="ink">
+                <option value="black" selected>black on white</option>
+                <option value="white">white on black</option>
+            </select></label>
+            <label>first seed <input id="seed" type="number" min="0" step="1" placeholder="random"></label>
+            <button id="go" type="submit">make</button>
+            <button id="zip" type="button" disabled>save zip</button>
+        </form>
+    </header>
+    <div id="status"></div>
+    <main id="grid"></main>
+
+    <script>
+        // Seals for seeds first, first + 1, ...: each can be seen again on the seal
+        // page as sigils/#seed. Several workers draw at once; the zip stores the PNGs
+        // as they are (already compressed) with a list of seed, name and family.
+        const $ = id => document.getElementById(id);
+        let run = 0, results = [], firstSeed = 0;
+
+        // ---------- a zip without compression ----------
+        const CRC = new Uint32Array(256).map((_, n) => { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; return c >>> 0; });
+        function crc32(bytes) {
+            let c = 0xFFFFFFFF;
+            for (let i = 0; i < bytes.length; i++) c = CRC[(c ^ bytes[i]) & 0xFF] ^ (c >>> 8);
+            return (c ^ 0xFFFFFFFF) >>> 0;
+        }
+        function zip(files) {   // files: [{ name, bytes: Uint8Array }]
+            const now = new Date(), enc = new TextEncoder();
+            const time = (now.getHours() << 11) | (now.getMinutes() << 5) | (now.getSeconds() >> 1);
+            const date = ((now.getFullYear() - 1980) << 9) | ((now.getMonth() + 1) << 5) | now.getDate();
+            const parts = [], central = [];
+            let offset = 0;
+            for (const f of files) {
+                const name = enc.encode(f.name), crc = crc32(f.bytes), size = f.bytes.length;
+                const h = new DataView(new ArrayBuffer(30));
+                h.setUint32(0, 0x04034b50, true); h.setUint16(4, 20, true); h.setUint16(6, 0x0800, true); h.setUint16(8, 0, true);
+                h.setUint16(10, time, true); h.setUint16(12, date, true); h.setUint32(14, crc, true);
+                h.setUint32(18, size, true); h.setUint32(22, size, true); h.setUint16(26, name.length, true); h.setUint16(28, 0, true);
+                parts.push(h.buffer, name, f.bytes);
+                const c = new DataView(new ArrayBuffer(46));
+                c.setUint32(0, 0x02014b50, true); c.setUint16(4, 20, true); c.setUint16(6, 20, true); c.setUint16(8, 0x0800, true);
+                c.setUint16(10, 0, true); c.setUint16(12, time, true); c.setUint16(14, date, true); c.setUint32(16, crc, true);
+                c.setUint32(20, size, true); c.setUint32(24, size, true); c.setUint16(28, name.length, true);
+                c.setUint32(42, offset, true);
+                central.push(c.buffer, name);
+                offset += 30 + name.length + size;
+            }
+            const cdSize = central.reduce((a, b) => a + b.byteLength, 0);
+            const e = new DataView(new ArrayBuffer(22));
+            e.setUint32(0, 0x06054b50, true); e.setUint16(8, files.length, true); e.setUint16(10, files.length, true);
+            e.setUint32(12, cdSize, true); e.setUint32(16, offset, true);
+            return new Blob([...parts, ...central, e.buffer], { type: 'application/zip' });
+        }
+
+        // ---------- making them ----------
+        const pad = (n, w) => String(n).padStart(w, '0');
+        const fileName = r => `sigil-${r.seed}-${r.name.toLowerCase()}.png`;
+
+        function show(r) {
+            const fig = document.createElement('figure');
+            const img = new Image();
+            img.src = r.url; img.alt = `the seal of ${r.name}`;
+            img.title = `${r.name}, seed ${r.seed}: click to save`;
+            img.onclick = () => { const a = document.createElement('a'); a.href = r.url; a.download = fileName(r); a.click(); };
+            const cap = document.createElement('figcaption');
+            cap.textContent = r.name;
+            fig.append(img, cap);
+            return fig;
+        }
+
+        function start(e) {
+            e.preventDefault();
+            const my = ++run;
+            for (const r of results) if (r && r.url) URL.revokeObjectURL(r.url);
+            results = [];
+            const n = Math.max(1, Math.min(2000, parseInt($('n').value, 10) || 1));
+            const size = parseInt($('size').value, 10), ink = $('ink').value, R = size / 2.14;
+            const given = parseInt($('seed').value, 10);
+            firstSeed = given >= 0 ? given : Math.floor(Math.random() * 1e9);
+            $('seed').placeholder = `random (last ${firstSeed})`;
+            $('zip').disabled = true;
+            $('grid').innerHTML = '';
+            const slots = Array.from({ length: n }, () => { const d = document.createElement('div'); $('grid').appendChild(d); return d; });
+            const t0 = performance.now();
+            let next = 0, finished = 0, failed = 0;
+            const status = () => {
+                const s = ((performance.now() - t0) / 1000).toFixed(1);
+                $('status').textContent = finished < n
+                    ? `${finished} of ${n} · ${s} s · seeds ${firstSeed} to ${firstSeed + n - 1}`
+                    : `${n - failed} seals in ${s} s · seeds ${firstSeed} to ${firstSeed + n - 1}${failed ? ` · ${failed} failed` : ''}`;
+            };
+            const done = r => {
+                if (my !== run) return;
+                finished++;
+                if (r.blob) {
+                    r.url = URL.createObjectURL(r.blob);
+                    results[r.id] = r;
+                    slots[r.id].replaceWith(show(r));
+                } else failed++;
+                status();
+                if (finished === n) $('zip').disabled = results.filter(Boolean).length === 0;
+            };
+
+            // a pool of workers, or the page itself where workers cannot draw
+            const nWorkers = Math.max(1, Math.min(8, (navigator.hardwareConcurrency || 4) - 1, n));
+            const workers = [];
+            let onPage = false;
+            const toPage = () => {     // workers cannot draw here: the page draws whatever is left
+                if (onPage) return;
+                onPage = true;
+                workers.forEach(w => w.terminate());
+                pageLoop();
+            };
+            const feed = w => {
+                if (next >= n || my !== run || onPage) { w.terminate(); return; }
+                const id = next++;
+                w.postMessage({ mode: 'png', id, seed: firstSeed + id, R, ink });
+            };
+            try {
+                for (let k = 0; k < nWorkers; k++) {
+                    const w = new Worker('sigil-worker.js');
+                    workers.push(w);
+                    w.onmessage = ({ data }) => {
+                        if (data.type === 'error' && data.noCanvas) return toPage();
+                        done(data);
+                        feed(w);
+                    };
+                    w.onerror = ev => { ev.preventDefault(); toPage(); };
+                    feed(w);
+                }
+            } catch (err) {
+                toPage();   // opened from disk, or no workers
+            }
+
+            function pageLoop() {
+                let id = 0;
+                const step = () => {
+                    if (my !== run || id >= n) return;
+                    if (results[id]) { id++; return setTimeout(step, 0); }
+                    const seed = firstSeed + id, name = Sigils.nameForSeed(seed), enc = Sigils.sealForSeed(seed);
+                    const img = Sigils.renderPlate(enc, name, seed, { R });
+                    if (ink === 'black') for (let i = 0; i < img.data.length; i += 4) { img.data[i] = 255 - img.data[i]; img.data[i + 1] = 255 - img.data[i + 1]; img.data[i + 2] = 255 - img.data[i + 2]; }
+                    const cv = document.createElement('canvas');
+                    cv.width = img.width; cv.height = img.height;
+                    cv.getContext('2d').putImageData(new ImageData(img.data, img.width, img.height), 0, 0);
+                    const thisId = id++;
+                    cv.toBlob(blob => { done({ id: thisId, seed, name, family: enc.family, blob }); setTimeout(step, 0); }, 'image/png');
+                };
+                step();
+            }
+            status();
+        }
+
+        async function saveZip() {
+            $('zip').disabled = true;
+            const files = [];
+            const list = results.filter(Boolean).sort((a, b) => a.id - b.id);
+            for (const r of list) files.push({ name: fileName(r), bytes: new Uint8Array(await r.blob.arrayBuffer()) });
+            const manifest = list.map(r => ({ file: fileName(r), seed: r.seed, name: r.name, family: r.family }));
+            files.push({ name: 'sigils.json', bytes: new TextEncoder().encode(JSON.stringify(manifest, null, 1)) });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(zip(files));
+            a.download = `sigils-${firstSeed}-${list.length}.zip`;
+            a.click();
+            setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+            $('zip').disabled = false;
+        }
+
+        $('form').addEventListener('submit', start);
+        $('zip').addEventListener('click', saveZip);
+    </script>
+    <!-- for the fallback that draws on the page -->
+    <script src="sigil-data.js"></script>
+    <script src="generator.js"></script>
+    <script src="plate.js"></script>
+</body>
+</html>
