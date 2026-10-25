@@ -71,6 +71,7 @@ Everything here was produced on 24 October 2026 from `72_Goeta_sigils.png` and t
 | `data/goetia_slots.json` | the 72 entries annotated by slot (rank, appearance, offices, ...), with counts |
 | `tools/build_lore.py`, `lore/*.dat`, `data/lore_build.json` | the description corpus, filtered and served as 128 encoded shards; `lore_src/` (plain corpus) is not in git |
 | `lore.js` | the description's slot grammar in the browser |
+| `fonts/` | IM Fell English, roman and italic, by Igino Marini (SIL Open Font License 1.1, `fonts/OFL.txt`), from github.com/google/fonts, served with the page |
 | `tools/variety.py`, `data/variety_before.json`, `data/variety_after.json` | how varied a generated set is against the sheet: look-alike, part mix, line ends, layout, repeated steps |
 | `data/visits_acceptance.json`, `data/visits_*_novelty.json` | six samples of 72 single visits against the acceptance and novelty tests |
 | `witnesses/delaurence1916/` | two leaves of the 1916 De Laurence printing (archive.org, BYU scan, 500 ppi) |
