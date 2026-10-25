@@ -1,0 +1,470 @@
+{
+ "method": "Similarity of two drawings: both ink masks cropped to their bounding box,\nscaled (aspect kept) into 96 x 96 and skeletonised; the F-score of the two\nskeletons, each pixel counting as matched when the other skeleton is within\n2 px, maximised over shifts of +-4 px and over the identity, left-right,\ntop-bottom and 180-degree flips (a mirrored copy is still a copy).",
+ "threshold_p95_nn_other_identity": 0.6945,
+ "nn_other_identity": {
+  "min": 0.4523,
+  "median": 0.60795,
+  "p95": 0.694505,
+  "max": 0.7012
+ },
+ "same_identity_pairs": [
+  {
+   "pair": [
+    "09a",
+    "09b"
+   ],
+   "sim": 0.7087
+  },
+  {
+   "pair": [
+    "13a",
+    "13b"
+   ],
+   "sim": 0.5066
+  },
+  {
+   "pair": [
+    "14a",
+    "14b"
+   ],
+   "sim": 0.4836
+  },
+  {
+   "pair": [
+    "18a",
+    "18b"
+   ],
+   "sim": 0.7858
+  },
+  {
+   "pair": [
+    "26a",
+    "26b"
+   ],
+   "sim": 0.628
+  },
+  {
+   "pair": [
+    "42a",
+    "42b"
+   ],
+   "sim": 0.8142
+  },
+  {
+   "pair": [
+    "47a",
+    "47b"
+   ],
+   "sim": 0.5084
+  },
+  {
+   "pair": [
+    "70a",
+    "70b"
+   ],
+   "sim": 0.6128
+  }
+ ],
+ "nearest": [
+  {
+   "id": "01a",
+   "nearest": "18b",
+   "sim": 0.4946
+  },
+  {
+   "id": "02a",
+   "nearest": "42a",
+   "sim": 0.5752
+  },
+  {
+   "id": "03a",
+   "nearest": "04a",
+   "sim": 0.5796
+  },
+  {
+   "id": "04a",
+   "nearest": "03a",
+   "sim": 0.5796
+  },
+  {
+   "id": "05a",
+   "nearest": "08a",
+   "sim": 0.4804
+  },
+  {
+   "id": "06a",
+   "nearest": "31a",
+   "sim": 0.5762
+  },
+  {
+   "id": "07a",
+   "nearest": "49a",
+   "sim": 0.5524
+  },
+  {
+   "id": "08a",
+   "nearest": "42a",
+   "sim": 0.6156
+  },
+  {
+   "id": "09a",
+   "nearest": "42a",
+   "sim": 0.6888
+  },
+  {
+   "id": "09b",
+   "nearest": "62a",
+   "sim": 0.6877
+  },
+  {
+   "id": "10a",
+   "nearest": "18b",
+   "sim": 0.6083
+  },
+  {
+   "id": "11a",
+   "nearest": "48a",
+   "sim": 0.6265
+  },
+  {
+   "id": "12a",
+   "nearest": "48a",
+   "sim": 0.569
+  },
+  {
+   "id": "13a",
+   "nearest": "48a",
+   "sim": 0.6288
+  },
+  {
+   "id": "13b",
+   "nearest": "42a",
+   "sim": 0.6058
+  },
+  {
+   "id": "14a",
+   "nearest": "18b",
+   "sim": 0.5857
+  },
+  {
+   "id": "14b",
+   "nearest": "42a",
+   "sim": 0.584
+  },
+  {
+   "id": "15a",
+   "nearest": "40a",
+   "sim": 0.6343
+  },
+  {
+   "id": "16a",
+   "nearest": "09a",
+   "sim": 0.5866
+  },
+  {
+   "id": "17a",
+   "nearest": "52a",
+   "sim": 0.5813
+  },
+  {
+   "id": "18a",
+   "nearest": "42a",
+   "sim": 0.6888
+  },
+  {
+   "id": "18b",
+   "nearest": "42a",
+   "sim": 0.6943
+  },
+  {
+   "id": "19a",
+   "nearest": "09b",
+   "sim": 0.668
+  },
+  {
+   "id": "20a",
+   "nearest": "42a",
+   "sim": 0.5816
+  },
+  {
+   "id": "21a",
+   "nearest": "09b",
+   "sim": 0.552
+  },
+  {
+   "id": "22a",
+   "nearest": "46a",
+   "sim": 0.5913
+  },
+  {
+   "id": "23a",
+   "nearest": "33a",
+   "sim": 0.5943
+  },
+  {
+   "id": "24a",
+   "nearest": "42b",
+   "sim": 0.662
+  },
+  {
+   "id": "25a",
+   "nearest": "28a",
+   "sim": 0.6068
+  },
+  {
+   "id": "26a",
+   "nearest": "42a",
+   "sim": 0.701
+  },
+  {
+   "id": "26b",
+   "nearest": "19a",
+   "sim": 0.6531
+  },
+  {
+   "id": "27a",
+   "nearest": "26a",
+   "sim": 0.6337
+  },
+  {
+   "id": "28a",
+   "nearest": "46a",
+   "sim": 0.6674
+  },
+  {
+   "id": "29a",
+   "nearest": "42a",
+   "sim": 0.6095
+  },
+  {
+   "id": "30a",
+   "nearest": "42a",
+   "sim": 0.6599
+  },
+  {
+   "id": "31a",
+   "nearest": "43a",
+   "sim": 0.6171
+  },
+  {
+   "id": "32a",
+   "nearest": "42b",
+   "sim": 0.6404
+  },
+  {
+   "id": "33a",
+   "nearest": "42b",
+   "sim": 0.6434
+  },
+  {
+   "id": "34a",
+   "nearest": "19a",
+   "sim": 0.6076
+  },
+  {
+   "id": "35a",
+   "nearest": "30a",
+   "sim": 0.6296
+  },
+  {
+   "id": "36a",
+   "nearest": "28a",
+   "sim": 0.6039
+  },
+  {
+   "id": "37a",
+   "nearest": "53a",
+   "sim": 0.5975
+  },
+  {
+   "id": "38a",
+   "nearest": "45a",
+   "sim": 0.4523
+  },
+  {
+   "id": "39a",
+   "nearest": "42a",
+   "sim": 0.6263
+  },
+  {
+   "id": "40a",
+   "nearest": "42a",
+   "sim": 0.7012
+  },
+  {
+   "id": "41a",
+   "nearest": "15a",
+   "sim": 0.5792
+  },
+  {
+   "id": "42a",
+   "nearest": "40a",
+   "sim": 0.7012
+  },
+  {
+   "id": "42b",
+   "nearest": "46a",
+   "sim": 0.6663
+  },
+  {
+   "id": "43a",
+   "nearest": "31a",
+   "sim": 0.6171
+  },
+  {
+   "id": "44a",
+   "nearest": "42a",
+   "sim": 0.6864
+  },
+  {
+   "id": "45a",
+   "nearest": "63a",
+   "sim": 0.5701
+  },
+  {
+   "id": "46a",
+   "nearest": "42a",
+   "sim": 0.6856
+  },
+  {
+   "id": "47a",
+   "nearest": "18a",
+   "sim": 0.5936
+  },
+  {
+   "id": "47b",
+   "nearest": "42a",
+   "sim": 0.5848
+  },
+  {
+   "id": "48a",
+   "nearest": "42a",
+   "sim": 0.6753
+  },
+  {
+   "id": "49a",
+   "nearest": "46a",
+   "sim": 0.5935
+  },
+  {
+   "id": "50a",
+   "nearest": "28a",
+   "sim": 0.5763
+  },
+  {
+   "id": "51a",
+   "nearest": "18b",
+   "sim": 0.574
+  },
+  {
+   "id": "52a",
+   "nearest": "63a",
+   "sim": 0.6278
+  },
+  {
+   "id": "53a",
+   "nearest": "42a",
+   "sim": 0.6511
+  },
+  {
+   "id": "54a",
+   "nearest": "57a",
+   "sim": 0.6508
+  },
+  {
+   "id": "55a",
+   "nearest": "42a",
+   "sim": 0.6713
+  },
+  {
+   "id": "56a",
+   "nearest": "52a",
+   "sim": 0.5598
+  },
+  {
+   "id": "57a",
+   "nearest": "54a",
+   "sim": 0.6508
+  },
+  {
+   "id": "58a",
+   "nearest": "42a",
+   "sim": 0.5599
+  },
+  {
+   "id": "59a",
+   "nearest": "42a",
+   "sim": 0.6224
+  },
+  {
+   "id": "60a",
+   "nearest": "30a",
+   "sim": 0.5915
+  },
+  {
+   "id": "61a",
+   "nearest": "26b",
+   "sim": 0.642
+  },
+  {
+   "id": "62a",
+   "nearest": "40a",
+   "sim": 0.6984
+  },
+  {
+   "id": "63a",
+   "nearest": "42a",
+   "sim": 0.6281
+  },
+  {
+   "id": "64a",
+   "nearest": "52a",
+   "sim": 0.5523
+  },
+  {
+   "id": "65a",
+   "nearest": "36a",
+   "sim": 0.5857
+  },
+  {
+   "id": "66a",
+   "nearest": "40a",
+   "sim": 0.6132
+  },
+  {
+   "id": "67a",
+   "nearest": "26a",
+   "sim": 0.6208
+  },
+  {
+   "id": "68a",
+   "nearest": "46a",
+   "sim": 0.5779
+  },
+  {
+   "id": "69a",
+   "nearest": "54a",
+   "sim": 0.5655
+  },
+  {
+   "id": "70a",
+   "nearest": "42a",
+   "sim": 0.5858
+  },
+  {
+   "id": "70b",
+   "nearest": "57a",
+   "sim": 0.5679
+  },
+  {
+   "id": "71a",
+   "nearest": "39a",
+   "sim": 0.5675
+  },
+  {
+   "id": "72a",
+   "nearest": "09b",
+   "sim": 0.6063
+  }
+ ]
+}

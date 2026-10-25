@@ -208,8 +208,20 @@ def _walk(members):
 
 # ---------- raster rendering ----------
 
-def render(enc, height_px, pad=4, ink=0, bg=255, include_escapes=True):
-    """Render to a grey uint8 image; unit height -> height_px pixels."""
+def render(enc, height_px, pad=4, ink=0, bg=255, include_escapes=True, exact=False):
+    """Render to a grey uint8 image; unit height -> height_px pixels.
+
+    The default path (OpenCV anti-aliasing) draws strokes about 2 px heavier than
+    requested at corpus scale, as measured in GENERATOR.md; all scores in
+    data/encoding_scores.csv were made with it. exact=True draws without
+    anti-aliasing at 4x and downsamples by area, which keeps the requested width."""
+    if exact:
+        big = _render(enc, height_px * 4, pad * 4, ink, bg, include_escapes, cv2.LINE_8)
+        return cv2.resize(big, (big.shape[1] // 4, big.shape[0] // 4), interpolation=cv2.INTER_AREA)
+    return _render(enc, height_px, pad, ink, bg, include_escapes, cv2.LINE_AA)
+
+
+def _render(enc, height_px, pad, ink, bg, include_escapes, LT):
     s = float(height_px)
     W = int(round(enc['aspect'] * s)) + 2 * pad; H = int(round(s)) + 2 * pad
     img = np.full((H, W), bg, np.uint8)
@@ -222,50 +234,50 @@ def render(enc, height_px, pad=4, ink=0, bg=255, include_escapes=True):
     for m in members:
         t = m['t']; w = width(m)
         if t == 'line':
-            cv2.line(img, P(m['p'][:2]), P(m['p'][2:]), ink, w, cv2.LINE_AA, SH)
+            cv2.line(img, P(m['p'][:2]), P(m['p'][2:]), ink, w, LT, SH)
         elif t in ('pline', 'tri'):
             pts = np.array([P(p) for p in m['p']], np.int32).reshape(-1, 1, 2)
             if m.get('fill', t == 'tri'):
-                cv2.fillPoly(img, [pts], ink, cv2.LINE_AA, SH)
-                cv2.polylines(img, [pts], True, ink, max(1, w // 2), cv2.LINE_AA, SH)
+                cv2.fillPoly(img, [pts], ink, LT, SH)
+                cv2.polylines(img, [pts], True, ink, max(1, w // 2), LT, SH)
             else:
-                cv2.polylines(img, [pts], bool(m.get('closed', False)), ink, w, cv2.LINE_AA, SH)
+                cv2.polylines(img, [pts], bool(m.get('closed', False)), ink, w, LT, SH)
         elif t in ('bez', 'path'):
             pts = _bez_points(m['p'])
             pts = np.array([P(p) for p in pts], np.int32).reshape(-1, 1, 2)
-            cv2.polylines(img, [pts], False, ink, w, cv2.LINE_AA, SH)
+            cv2.polylines(img, [pts], False, ink, w, LT, SH)
         elif t == 'arc':
             pts = _arc_points(m['c'], m['r'], m['a'][0], m['a'][1])
             pts = np.array([P(p) for p in pts], np.int32).reshape(-1, 1, 2)
-            cv2.polylines(img, [pts], False, ink, w, cv2.LINE_AA, SH)
+            cv2.polylines(img, [pts], False, ink, w, LT, SH)
         elif t == 'ring':
-            cv2.circle(img, P(m['c']), int(round(m['r'] * s * F)), ink, w, cv2.LINE_AA, SH)
+            cv2.circle(img, P(m['c']), int(round(m['r'] * s * F)), ink, w, LT, SH)
         elif t == 'dot':
-            cv2.circle(img, P(m['c']), int(round(m['r'] * s * F)), ink, -1, cv2.LINE_AA, SH)
+            cv2.circle(img, P(m['c']), int(round(m['r'] * s * F)), ink, -1, LT, SH)
         elif t == 'cross':
             c = m['c']; sz = m['s']; rot = m.get('rot', 0)
             if m.get('flared', True):
                 for poly in _cross_polys(c, sz, True, rot):
                     pts = np.array([P(p) for p in poly], np.int32).reshape(-1, 1, 2)
-                    cv2.fillPoly(img, [pts], ink, cv2.LINE_AA, SH)
+                    cv2.fillPoly(img, [pts], ink, LT, SH)
                 # stem through the centre so the arms join visibly
                 for k in range(2):
                     th = math.radians(rot + 90 * k); u = np.array([math.cos(th), math.sin(th)])
                     a = np.array(c) - u * sz; b = np.array(c) + u * sz
-                    cv2.line(img, P(a), P(b), ink, max(1, int(w * 0.8)), cv2.LINE_AA, SH)
+                    cv2.line(img, P(a), P(b), ink, max(1, int(w * 0.8)), LT, SH)
             else:
                 for k in range(2):
                     th = math.radians(rot + 90 * k); u = np.array([math.cos(th), math.sin(th)])
                     a = np.array(c) - u * sz; b = np.array(c) + u * sz
-                    cv2.line(img, P(a), P(b), ink, w, cv2.LINE_AA, SH)
+                    cv2.line(img, P(a), P(b), ink, w, LT, SH)
         elif t == 'spiral':
             pts = _spiral_points(m['c'], m['r'][0], m['r'][1], m['a'][0], m['a'][1])
             pts = np.array([P(p) for p in pts], np.int32).reshape(-1, 1, 2)
-            cv2.polylines(img, [pts], False, ink, w, cv2.LINE_AA, SH)
+            cv2.polylines(img, [pts], False, ink, w, LT, SH)
         elif t == 'crescent':
             poly = _crescent_poly(m['c'], m['r'], m.get('k', 0.35), m.get('rot', 0), m.get('ri'))
             pts = np.array([P(p) for p in poly], np.int32).reshape(-1, 1, 2)
-            cv2.fillPoly(img, [pts], ink, cv2.LINE_AA, SH)
+            cv2.fillPoly(img, [pts], ink, LT, SH)
         else:
             raise ValueError(f'unknown member type {t}')
     return img

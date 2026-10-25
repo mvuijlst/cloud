@@ -1,0 +1,99 @@
+{
+ "id": "g72",
+ "identity": null,
+ "variant": null,
+ "name": null,
+ "vocab": "1.0",
+ "aspect": 1.861,
+ "stroke": 0.0397,
+ "family": "comb",
+ "generated": true,
+ "members": [
+  {
+   "t": "line",
+   "p": [
+    0.0648,
+    0.3474,
+    1.8417,
+    0.3474
+   ]
+  },
+  {
+   "t": "repeat",
+   "n": 5,
+   "d": [
+    0.3574,
+    0.0
+   ],
+   "m": [
+    {
+     "t": "line",
+     "p": [
+      0.2385,
+      0.3474,
+      0.2385,
+      0.7375
+     ]
+    },
+    {
+     "t": "cross",
+     "c": [
+      0.2385,
+      0.8581
+     ],
+     "s": 0.127,
+     "flared": true,
+     "rot": 0.0
+    }
+   ]
+  },
+  {
+   "t": "repeat",
+   "n": 3,
+   "d": [
+    0.7147,
+    0.0
+   ],
+   "m": [
+    {
+     "t": "line",
+     "p": [
+      0.2385,
+      0.3474,
+      0.2385,
+      0.1935
+     ]
+    },
+    {
+     "t": "cross",
+     "c": [
+      0.2385,
+      0.1066
+     ],
+     "s": 0.0914,
+     "flared": true,
+     "rot": 0
+    }
+   ]
+  },
+  {
+   "t": "spiral",
+   "c": [
+    0.0648,
+    0.2944
+   ],
+   "r": [
+    0.053,
+    0.0095
+   ],
+   "a": [
+    90.0,
+    442.7
+   ]
+  }
+ ],
+ "escapes": [],
+ "notes": "comb: rail; 5 teeth with cross; crosses above the rail.",
+ "target_primitives": 12,
+ "seed": 20261024
+}

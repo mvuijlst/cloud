@@ -54,6 +54,16 @@ Everything here was produced on 24 October 2026 from `72_Goeta_sigils.png` and t
 | `ACCEPTANCE.md` | the test a future generator must pass |
 | `data/acceptance_calibration.json` | thresholds from 500 identity-balanced halvings of the corpus (`tools/acceptance_calibration.py`) |
 
+## Generator
+
+| path | what |
+|---|---|
+| `GENERATOR.md` | protocol, instrument check, novelty measure, results, browser port |
+| `tools/generate.py`, `generated/` | the Python generator and its 72 seals (seed 20261024) |
+| `tools/acceptance.py`, `tools/novelty.py` | ACCEPTANCE.md tests 1, 3, 4 with the corrected renderer; the novelty test |
+| `tools/encoding_stats.py`, `data/encoding_stats.json` | the part statistics the generator is fitted to |
+| `index.html`, `generator.js`, `sigil-data.js` | the generator in the browser; `sigil-data.js` from `tools/build_web_data.py` |
+
 ## Superseded
 
 `ANALYSIS.md` and `REVIEW.md` are the earlier pass; kept for the record, not used by anything above.
