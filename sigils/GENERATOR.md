@@ -81,3 +81,7 @@ This corrects the earlier finding that the plates' lines are straight and even (
 
 **Speed:** about 0.1 to 0.5 s for the seal and 0.5 s for the plate at R = 413 px in a desktop browser.
 
+### While it is being made (25 October 2026)
+
+The page shows the making rather than a spinner: the three rings swept from the top, the name lettered in outline in the places and face it will be inked in, then the seal's parts in the order the grammar placed them, each step captioned with its label from the grammar ("bowl · stem in the bowl", "axial · crossbar"), then "inking" and the plate fading in, about three seconds in all; a tap skips to the plate once it is ready, and a reduced-motion setting shows it at once. The work runs in `sigil-worker.js`, which sends the name, then the seal with its construction trace (`generateSeal(..., { trace: true })`: every placement in order, mirror images included, normalised with the seal) and the plate layout (`plateLayout`, so the outlines land where the ink will), then the rendered plate. Where workers or OffscreenCanvas lettering are missing (opened from disk, older browsers) the page does the same work itself. Recording the trace draws no random numbers: a set of 72 for seed 20261025 is identical to the one tested above, and a plate renders to the same pixels. The check against the 72 seals still runs on every seal but is not shown. The png link saves the plate as printed, black ink on white.
+

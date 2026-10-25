@@ -365,6 +365,7 @@
       this.rails = [];     // horizontal lines usable for pendants: [x0, x1, y, group]
       this.posts = [];     // vertical lines usable for spurs: [x, y0, y1, group]
       this.count = 0; this.floating = 0; this.log = [];
+      this.trace = [];     // every placement in order, mirror images included: what the page animates
       this.clear = Math.max(2, Math.round(0.7 * stroke * R));
       this.disk = [];
       for (let dy = -this.clear; dy <= this.clear; dy++) {
@@ -437,6 +438,7 @@
       (this.mirrored(group) ? this.side : this.center).push(...members);
       this.count += expand(members).length * (this.mirrored(group) ? 2 : 1);
       if (note) this.log.push(note);
+      this.trace.push({ note, prims: expand(this.full(members, group)) });
       return true;
     }
 
@@ -1245,7 +1247,7 @@
     return m;
   }
 
-  function normalise(enc) {
+  function normalise(enc, trace = null) {
     const big = 400, pad = 40;
     const W = Math.round(enc.aspect * big) + 2 * pad, H = big + 2 * pad;
     const pix = rasterize(expand(enc.members), W, H, big, pad, enc.stroke, true);
@@ -1258,6 +1260,7 @@
     const x0 = (xMin - pad) / big, x1 = (xMax + 1 - pad) / big, y0 = (yMin - pad) / big, y1 = (yMax + 1 - pad) / big;
     const k = 1 / (y1 - y0);
     enc.members = enc.members.map(m => transform(m, k, -x0, -y0));
+    if (trace) for (const step of trace) step.prims = step.prims.map(m => transform(m, k, -x0, -y0));
     enc.aspect = rnd((x1 - x0) * k, 3);
     enc.stroke = rnd(clamp(enc.stroke * k, 0.026, 0.046), 4);   // encodings' q10..max
     return enc;
@@ -1422,7 +1425,8 @@
 
   // ---------- one seal, a set of seals ----------
 
-  function generateSeal(seed, family, id) {
+  // opts.trace: also return the construction, step by step (enc.trace)
+  function generateSeal(seed, family, id, opts = {}) {
     const rng = makeRng(seed);
     const totals = D.per.filter(r => r.family === family).map(r => r.total);
     for (let attempt = 0; attempt < 20; attempt++) {
@@ -1434,29 +1438,53 @@
       const target = rng.choice(totals.length ? totals : D.per.map(r => r.total)) * rng.uniform(0.95, 1.25);
       decorate(cv, target);
       if (cv.count < 12) continue;
-      return normalise({
+      const enc = normalise({
         id, identity: null, variant: null, name: null, vocab: '1.0',
         aspect: A, stroke, family, generated: true, seed,
         members: cv.members(), escapes: [],
         notes: `${family}${mirror ? ' (mirrored)' : ''}: ${[...new Set(cv.log)].join('; ')}.`,
         target_primitives: Math.round(target),
-      });
+      }, opts.trace ? cv.trace : null);
+      if (opts.trace) enc.trace = cv.trace;
+      return enc;
     }
     throw new Error('no seal after 20 attempts');
   }
 
   // a seal that passes the novelty test: a seal too close to one on the sheet
   // is discarded and the next seed in a fixed sequence is tried
-  function generateNovelSeal(seed, family, id) {
+  function generateNovelSeal(seed, family, id, opts = {}) {
     let s = seed >>> 0;
+    const discarded = [];   // nearest drawing and similarity of each draw thrown away
     for (let rejected = 0; rejected < 10; rejected++) {
-      const enc = generateSeal(s, family, id);
+      const enc = generateSeal(s, family, id, opts);
       enc.novelty = novelty(enc);
       enc.novelty.rejected = rejected;
+      enc.novelty.discarded = discarded.slice();
       if (enc.novelty.novel) return enc;
+      discarded.push({ nearest: enc.novelty.nearest, sim: enc.novelty.sim });
       s = (Math.imul(s, 2654435761) + 0x9E3779B9) >>> 0;
     }
     throw new Error('no novel seal after 10 seeds');
+  }
+
+  // a primitive as polylines in seal units ({pts, closed}), for drawing its outline
+  function outlines(m) {
+    const t = m.t;
+    if (t === 'line') return [{ pts: [m.p.slice(0, 2), m.p.slice(2)], closed: false }];
+    if (t === 'pline') return [{ pts: m.p, closed: !!(m.closed || m.fill) }];
+    if (t === 'tri') return [{ pts: m.p, closed: true }];
+    if (t === 'bez' || t === 'path') return [{ pts: bezPoints(m.p), closed: false }];
+    if (t === 'arc') return [{ pts: arcPoints(m.c, m.r, m.a[0], m.a[1]), closed: false }];
+    if (t === 'ring' || t === 'dot') return [{ pts: arcPoints(m.c, m.r, 0, 360, 48), closed: true }];
+    if (t === 'spiral') return [{ pts: spiralPoints(m.c, m.r[0], m.r[1], m.a[0], m.a[1]), closed: false }];
+    if (t === 'crescent') return [{ pts: crescentPoly(m.c, m.r, m.k === undefined ? 0.35 : m.k, m.rot || 0, m.ri), closed: true }];
+    if (t === 'cross') {
+      const rot = m.rot || 0;
+      if (m.flared === false) return [0, 1].map(j => { const u = unit(rot + 90 * j); return { pts: [add(m.c, u, -m.s), add(m.c, u, m.s)], closed: false }; });
+      return crossPolys(m.c, m.s, rot).map(pts => ({ pts, closed: true }));
+    }
+    return [];
   }
 
   // ---------- names for the frame ----------
@@ -1508,11 +1536,11 @@
   }
 
   // one novel seal for a seed, its family drawn in the sheet's proportions
-  function sealForSeed(seed) {
+  function sealForSeed(seed, opts = {}) {
     const rng = makeRng((seed ^ 0x51A15EA1) >>> 0);
     let x = rng.random() * 72, family = FAMILY_COUNTS[0][0];
     for (const [f, k] of FAMILY_COUNTS) { x -= k; if (x < 0) { family = f; break; } }
-    return generateNovelSeal(Math.floor(rng.random() * 4294967296), family, String(seed));
+    return generateNovelSeal(Math.floor(rng.random() * 4294967296), family, String(seed), opts);
   }
 
   // the families and per-seal seeds of a set, in the sheet's proportions for n = 72
@@ -1566,7 +1594,7 @@
     return parts.join('\n');
   }
 
-  const api = { generateSeal, generateNovelSeal, sealForSeed, nameForSeed, novelty, planSet, generateSet, toSvg, expand, translate, rasterize, distanceTransform, makeRng,
+  const api = { generateSeal, generateNovelSeal, sealForSeed, nameForSeed, novelty, planSet, generateSet, toSvg, expand, translate, outlines, rasterize, distanceTransform, makeRng,
                 FAMILIES: FAMILY_COUNTS.map(([f]) => f), STROKE_K };
   root.Sigils = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;

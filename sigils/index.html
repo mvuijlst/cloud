@@ -34,56 +34,213 @@
         #back { position: fixed; top: 14px; left: 16px; font-size: 16px; }
         figure { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 14px; }
         canvas { display: block; }
-        figcaption { color: var(--dim); display: flex; gap: 18px; min-height: 1.4em; }
+        figcaption { color: var(--dim); display: flex; gap: 18px; min-height: 1.4em; text-align: center; }
     </style>
 </head>
 <body>
     <a id="back" href="../" aria-label="back to the index">←</a>
     <figure>
-        <canvas id="plate" role="img" aria-label="a seal in the manner of the Goetia, in a double ring with its name"></canvas>
-        <figcaption id="cap">drawing…</figcaption>
+        <canvas id="plate" role="img" aria-label="a seal in the manner of the Goetia, being drawn"></canvas>
+        <figcaption id="cap" aria-live="polite"></figcaption>
     </figure>
 
     <script src="sigil-data.js"></script>
     <script src="generator.js"></script>
     <script src="plate.js"></script>
     <script>
-        // one seal per visit; a number in the URL (#1234) shows that seal again
+        // One seal per visit (a number in the URL, #1234, shows that seal again).
+        // While a worker makes it, the page draws the making itself: the frame and
+        // the name, then the seal's parts in the order the grammar placed them, then
+        // the inked plate. (The check against the 72 seals runs, but is not shown.)
         const fromHash = parseInt(location.hash.slice(1), 10);
         const seed = fromHash >= 0 ? fromHash : Math.floor(Math.random() * 1e9);
-        const cap = document.getElementById('cap'), canvas = document.getElementById('plate');
+        const P = SIGIL_DATA.plate;
+        const cap = document.getElementById('cap'), stage = document.getElementById('plate');
+        const ctx = stage.getContext('2d');
 
         // drawn at the screen's own pixel density, so nothing is scaled up
         const dpr = Math.min(2, window.devicePixelRatio || 1);
         const cssSize = Math.max(240, Math.min(window.innerWidth - 32, window.innerHeight * 0.82 - 40, 720));
-        const R = Math.round(cssSize * dpr / 2.14);
+        const R = Math.round(cssSize * dpr / 2.14), W = Math.ceil(2.14 * R), c = W / 2;
+        stage.width = stage.height = W;
+        stage.style.width = stage.style.height = (W / dpr) + 'px';
+        const reduceMotion = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-        setTimeout(() => {
-            const enc = Sigils.sealForSeed(seed), name = Sigils.nameForSeed(seed);
-            const img = Sigils.renderPlate(enc, name, seed, { R });
-            canvas.width = img.width; canvas.height = img.height;
-            canvas.style.width = canvas.style.height = (img.width / dpr) + 'px';
-            canvas.getContext('2d').putImageData(new ImageData(img.data, img.width, img.height), 0, 0);
-            canvas.setAttribute('aria-label', `the seal of ${name}, in the manner of the Goetia`);
+        const S = { name: null, enc: null, steps: null, plate: null, plateOnPage: false, sealAt: 0, done: false, skip: false };
+        const t0 = performance.now();
+        const ease = x => x <= 0 ? 0 : x >= 1 ? 1 : 1 - (1 - x) ** 3;
+        const clamp01 = x => Math.max(0, Math.min(1, x));
+
+        // ---------- the work: a worker if possible, else the page itself ----------
+        function onMessage(m) {
+            if (m.type === 'name') S.name = m.name;
+            else if (m.type === 'seal') sealArrived(m.enc, m.layout);
+            else if (m.type === 'plate') S.plate = new ImageData(new Uint8ClampedArray(m.data), m.width, m.height);
+            else if (m.type === 'plate-on-page') S.plateOnPage = true;
+        }
+        function onPage() {
+            S.plateOnPage = true;
+            setTimeout(() => {
+                onMessage({ type: 'name', name: Sigils.nameForSeed(seed) });
+                setTimeout(() => {
+                    const enc = Sigils.sealForSeed(seed, { trace: true });
+                    onMessage({ type: 'seal', enc, layout: Sigils.plateLayout(enc, S.name, R) });
+                }, 30);
+            }, 30);
+        }
+        try {
+            const worker = new Worker('sigil-worker.js');
+            worker.onmessage = e => onMessage(e.data);
+            worker.onerror = e => { e.preventDefault(); worker.terminate(); if (!S.enc) onPage(); else S.plateOnPage = true; };
+            worker.postMessage({ seed, R });
+        } catch (e) {
+            onPage();   // opened from disk, or no workers
+        }
+
+        // ---------- what the animation draws ----------
+        function sealArrived(enc, L) {
+            S.enc = enc; S.layout = L; S.sealAt = performance.now() - t0;
+            const toPx = p => [c + (p[0] - L.bx) * L.k, c + (p[1] - L.by) * L.k];
+            S.steps = enc.trace.map(step => ({
+                note: step.note,
+                lines: step.prims.flatMap(m => Sigils.outlines(m)).map(o => ({ pts: o.pts.map(toPx), closed: o.closed })),
+            })).filter(s => s.lines.length);
+        }
+        function polyline(pts, closed, frac) {
+            const n = Math.max(2, Math.ceil(pts.length * frac));
+            ctx.beginPath();
+            ctx.moveTo(pts[0][0], pts[0][1]);
+            for (let i = 1; i < Math.min(n, pts.length); i++) ctx.lineTo(pts[i][0], pts[i][1]);
+            if (closed && frac >= 1) ctx.closePath();
+            ctx.stroke();
+        }
+        function letterPositions(name) {
+            return [...name].map((ch, i) => {
+                const a = -Math.PI / 2 + 2 * Math.PI * i / name.length;
+                return { ch, a, x: c + P.letter_radius * R * Math.cos(a), y: c + P.letter_radius * R * Math.sin(a) };
+            });
+        }
+
+        // ---------- the timeline ----------
+        const RINGS_END = 650, LETTERS_AT = 300, LETTER_GAP = 70, STEPS_FROM = 750, PAUSE_MS = 250, REVEAL_MS = 600;
+        let plateCanvas = null, revealAt = 0, stepsAt = 0, stepMs = 0, builtAt = 0;
+
+        function frame() {
+            const t = performance.now() - t0;
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, W, W);
+            ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+            const lw = 1.15 * dpr;
+            let fadeOut = 1;
+            if (revealAt) fadeOut = 1 - clamp01((t - revealAt) / REVEAL_MS);
+
+            // the frame: three circles swept from the top
+            ctx.lineWidth = lw;
+            P.rings.forEach((r, i) => {
+                const p = ease((t - 110 * i) / (RINGS_END - 220));
+                if (p <= 0) return;
+                ctx.strokeStyle = `rgba(255,255,255,${0.55 * fadeOut})`;
+                ctx.beginPath();
+                ctx.arc(c, c, r.radius * R, -Math.PI / 2, -Math.PI / 2 + 2 * Math.PI * p);
+                ctx.stroke();
+            });
+
+            // the name, letter by letter, in the place and face it will be inked in
+            if (S.name) {
+                ctx.font = Sigils.LETTER_FONT(P.letter_height * R);
+                ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+                letterPositions(S.name).forEach((L, i) => {
+                    const p = clamp01((t - LETTERS_AT - i * LETTER_GAP) / 220);
+                    if (p <= 0) return;
+                    ctx.save();
+                    ctx.translate(L.x, L.y); ctx.rotate(L.a + Math.PI / 2);
+                    ctx.lineWidth = lw;
+                    ctx.strokeStyle = `rgba(255,255,255,${0.6 * p * fadeOut})`;
+                    ctx.strokeText(L.ch, 0, P.letter_height * R / 2);
+                    ctx.restore();
+                });
+            }
+
+            // the seal, step by step as it was built
+            let caption = 'drawing the frame';
+            if (S.name && t > LETTERS_AT) caption = `naming it ${S.name}`;
+            if (S.steps) {
+                if (!stepsAt) {
+                    stepsAt = Math.max(STEPS_FROM, S.sealAt);
+                    stepMs = Math.max(60, Math.min(230, 1500 / S.steps.length));
+                    builtAt = stepsAt + S.steps.length * stepMs;
+                }
+                let note = null;
+                S.steps.forEach((step, j) => {
+                    const p = (t - stepsAt - j * stepMs) / stepMs;
+                    if (p <= 0) return;
+                    if (step.note) note = step.note;
+                    const current = p < 1;
+                    ctx.lineWidth = current ? 1.6 * dpr : lw;
+                    ctx.strokeStyle = `rgba(255,255,255,${(current ? 0.95 : 0.6) * fadeOut})`;
+                    for (const l of step.lines) polyline(l.pts, l.closed, ease(p));
+                });
+                if (t > stepsAt) caption = `${S.enc.family}${note ? ' · ' + note : ''}`;
+                if (t > builtAt) caption = 'inking';
+            }
+
+            // the plate: rendered on the page if the worker could not, then faded in
+            const checked = S.steps && t > builtAt + PAUSE_MS;
+            if ((checked || S.skip) && !S.plate && S.plateOnPage && S.enc) {
+                const img = Sigils.renderPlate(S.enc, S.name, seed, { R });
+                S.plate = new ImageData(img.data, img.width, img.height);
+            }
+            if (S.plate && (checked || S.skip) && !revealAt) revealAt = t;
+            if (revealAt) {
+                if (!plateCanvas) {
+                    plateCanvas = document.createElement('canvas');
+                    plateCanvas.width = plateCanvas.height = W;
+                    plateCanvas.getContext('2d').putImageData(S.plate, 0, 0);
+                }
+                ctx.globalAlpha = clamp01((t - revealAt) / REVEAL_MS);
+                ctx.drawImage(plateCanvas, 0, 0);
+                ctx.globalAlpha = 1;
+                if (t - revealAt >= REVEAL_MS) return finish();
+            }
+            if (cap.dataset.caption !== caption) { cap.textContent = caption; cap.dataset.caption = caption; }
+            requestAnimationFrame(frame);
+        }
+
+        function finish() {
+            ctx.putImageData(S.plate, 0, 0);
+            S.done = true;
+            stage.setAttribute('aria-label', `the seal of ${S.name}, in the manner of the Goetia`);
             cap.innerHTML = '';
-            const link = (text, href, title) => {
+            const link = (text, href, title, fn) => {
                 const a = document.createElement('a');
-                a.textContent = text; a.href = href; if (title) a.title = title;
-                cap.appendChild(a); return a;
+                a.textContent = text; a.href = href; a.title = title;
+                a.onclick = e => { e.preventDefault(); fn(); };
+                cap.appendChild(a);
             };
-            link(`No. ${seed}`, `#${seed}`, 'this seal again');
-            link('another', './', 'a new seal').onclick = e => { e.preventDefault(); location.href = location.pathname; };
-            link('png', '#', 'download').onclick = e => {
-                e.preventDefault();
-                canvas.toBlob(b => {
+            link('another', './', 'a new seal', () => { location.href = location.pathname; });
+            link('png', '#', 'download, black on white', () => {
+                // the plate as printed: black ink on white
+                const inv = new ImageData(new Uint8ClampedArray(S.plate.data), W, W);
+                for (let i = 0; i < inv.data.length; i += 4) {
+                    inv.data[i] = 255 - inv.data[i]; inv.data[i + 1] = 255 - inv.data[i + 1]; inv.data[i + 2] = 255 - inv.data[i + 2];
+                }
+                const cv = document.createElement('canvas');
+                cv.width = cv.height = W;
+                cv.getContext('2d').putImageData(inv, 0, 0);
+                cv.toBlob(b => {
                     const a = document.createElement('a');
-                    a.href = URL.createObjectURL(b); a.download = `sigil-${seed}-${name.toLowerCase()}.png`; a.click();
+                    a.href = URL.createObjectURL(b); a.download = `sigil-${S.name.toLowerCase()}.png`; a.click();
                     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
                 });
-            };
-        }, 30);
+            });
+        }
 
-        // following the permalink from this page should redraw that seal
+        stage.addEventListener('click', () => { S.skip = true; });
+        if (reduceMotion) S.skip = true;
+        requestAnimationFrame(frame);
+
+        // following a #number link from this page should draw that seal
         window.addEventListener('hashchange', () => location.reload());
     </script>
 </body>

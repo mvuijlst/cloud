@@ -85,6 +85,8 @@
     return out;
   }
 
+  const LETTER_FONT = capPx => `bold ${(capPx / 0.66).toFixed(1)}px "Times New Roman", Times, "Liberation Serif", Georgia, serif`;
+
   // the letters as coverage, drawn with the browser's serif capitals
   function lettering(W, H, letters, capPx) {
     let cnv = null;
@@ -95,7 +97,7 @@
     ctx.fillStyle = '#fff';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'alphabetic';
-    ctx.font = `bold ${(capPx / 0.66).toFixed(1)}px "Times New Roman", Times, "Liberation Serif", Georgia, serif`;
+    ctx.font = LETTER_FONT(capPx);
     for (const L of letters) {
       ctx.save();
       ctx.translate(L.x, L.y);
@@ -108,11 +110,11 @@
     return out;
   }
 
-  function renderPlate(enc, name, seed, opts = {}) {
+  // where everything goes on a plate of outer radius R px: also used by the page
+  // to animate the construction exactly where the ink will land
+  function plateLayout(enc, name, R) {
     const S = root.Sigils, P = root.SIGIL_DATA.plate;
-    const rng = S.makeRng((seed ^ 0x9A7E1904) >>> 0);
-    const R = opts.R || P.R_px;
-    const W = Math.ceil(2.14 * R), H = W, c = W / 2;
+    const W = Math.ceil(2.14 * R), c = W / 2;
 
     // the figure: centred, scaled so its ink reaches toward the inner ring as on the plates
     const k0 = 300, probe = S.rasterize(S.expand(enc.members), Math.ceil(enc.aspect * k0) + 40, k0 + 40, k0, 20, enc.stroke * S.STROKE_K, true);
@@ -125,9 +127,22 @@
     const k = (P.figure_reach - 0.02) * R / reach;                       // px per seal unit
     const strokePx = CAL.figStroke * R * (enc.stroke / STROKE_REF);
     const wScale = strokePx / k / enc.stroke;
-    const figure = S.expand(enc.members).map(m => S.translate(m.w === undefined ? m : Object.assign({}, m, { w: m.w * wScale }), -bx, -by));
-    // the frame: two close rings outside, one inside the lettering
+    // the name, evenly round the band from the top, clockwise
+    const letters = [...name].map((ch, i) => {
+      const angle = -Math.PI / 2 + 2 * Math.PI * i / name.length;
+      return { ch, angle, x: c + P.letter_radius * R * Math.cos(angle), y: c + P.letter_radius * R * Math.sin(angle) };
+    });
+    // the frame: two close rings outside, one inside the lettering (radii and widths in R)
     const rings = P.rings.map(r => ({ t: 'ring', c: [0, 0], r: r.radius, w: r.width }));
+    return { W, c, R, k, bx, by, wScale, strokePx, letters, rings, capPx: P.letter_height * R };
+  }
+
+  function renderPlate(enc, name, seed, opts = {}) {
+    const S = root.Sigils, P = root.SIGIL_DATA.plate;
+    const rng = S.makeRng((seed ^ 0x9A7E1904) >>> 0);
+    const R = opts.R || P.R_px;
+    const { W, c, k, bx, by, wScale, letters, rings, capPx } = plateLayout(enc, name, R), H = W;
+    const figure = S.expand(enc.members).map(m => S.translate(m.w === undefined ? m : Object.assign({}, m, { w: m.w * wScale }), -bx, -by));
     // both drawn at 2x and averaged down, so edges fall between pixels
     const W2 = 2 * W, hi = new Uint8Array(W2 * W2);
     for (const i of S.rasterize(figure, W2, W2, 2 * k, 2 * c, enc.stroke * wScale, true)) hi[i] = 1;
@@ -140,12 +155,7 @@
       }
     }
 
-    // the name, evenly round the band from the top, clockwise
-    const letters = [...name].map((ch, i) => {
-      const angle = -Math.PI / 2 + 2 * Math.PI * i / name.length;
-      return { ch, angle, x: c + P.letter_radius * R * Math.cos(angle), y: c + P.letter_radius * R * Math.sin(angle) };
-    });
-    const text = opts.letters === false ? null : lettering(W, H, letters, P.letter_height * R);
+    const text = opts.letters === false ? null : lettering(W, H, letters, capPx);
     if (text) for (let i = 0; i < W * H; i++) A[i] = Math.max(A[i], text[i]);
 
     // a few specks of ink
@@ -200,6 +210,8 @@
   }
 
   root.Sigils.renderPlate = renderPlate;
+  root.Sigils.plateLayout = plateLayout;
+  root.Sigils.LETTER_FONT = LETTER_FONT;
   root.Sigils.PLATE_CAL = CAL;
   if (typeof module !== 'undefined' && module.exports) module.exports = renderPlate;
 })(typeof globalThis !== 'undefined' ? globalThis : this);
