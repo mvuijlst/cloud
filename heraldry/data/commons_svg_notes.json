@@ -1,0 +1,67 @@
+{
+ "accessed": "2026-10-26",
+ "files": [
+  {
+   "title": "File:Arms of William Douglas, 6th Earl of Douglas and Earl of Wigtown.svg",
+   "author": "Euryrel",
+   "date": "2022-03-26",
+   "licence": "CC BY-SA 4.0",
+   "nominal_px": [
+    410,
+    476
+   ],
+   "fills_by_count": {
+    "#ffffff": 92,
+    "#e94545": 41,
+    "#d30707": 16,
+    "#377bc8": 13,
+    "#ee6c6c": 11,
+    "#dfdfdf": 6,
+    "#f4f4f4": 6,
+    "#cd0707": 5,
+    "#e6e6e6": 3,
+    "#0036b6": 2
+   },
+   "strokes": {
+    "#cccccc": 71,
+    "#800000": 53,
+    "#2c5aa0": 13,
+    "#554400": 6,
+    "#808080": 5
+   },
+   "stroke_widths_px": {
+    "1.0": 69,
+    "0.96": 18,
+    "0.44": 16,
+    "0.64": 15,
+    "0.94": 13,
+    "0.53": 9
+   },
+   "reading": "gules in four tones (base #d30707, light #e94545/#ee6c6c, dark #cd0707) with dark-red outlines #800000; argent in three greys; azure #377bc8 with #2c5aa0 outlines"
+  },
+  {
+   "title": "File:Arms of Alexander Stewart, Earl of Mar.svg",
+   "author": "MostEpic",
+   "date": "2023-05-09",
+   "licence": "CC BY-SA 4.0",
+   "nominal_px": [
+    410,
+    478
+   ],
+   "source_named_by_author": "archive.org heraldryofstewar00john (Johnston, The Heraldry of the Stewarts, 1902)",
+   "fills_by_count": {
+    "#ffffff": 30,
+    "#b60d21": 15,
+    "#cb1227": 12,
+    "#e82d38": 8,
+    "#a60712": 7,
+    "#ffe25c": 7,
+    "#1353b4": 4,
+    "#fee46e": 1
+   },
+   "stroke_width_px": 2.69,
+   "outline_colour": "#810201"
+  }
+ ],
+ "note": "Both files are share-alike; a generator may measure them (shape, palette, line weight) but must not embed their paths. The user's chart of Scottish earls appears to be assembled from files of this kind; its exact source was not identified."
+}

@@ -1,0 +1,284 @@
+[
+ {
+  "charge": "lion rampant",
+  "file": "OC-18016-lion-rampant.svg",
+  "body": [
+   "#ffff00"
+  ],
+  "ink": [
+   "#000000"
+  ],
+  "credit": "szquirrel, after Graham Johnston's plates in Fox-Davies, A Complete Guide to Heraldry (1909)",
+  "licence": "Public domain (Openclipart)",
+  "source": "https://openclipart.org/detail/18016",
+  "crown_at": [
+   [
+    0.5,
+    0.05,
+    0.15
+   ]
+  ]
+ },
+ {
+  "charge": "lion passant",
+  "file": "Coa Illustration Elements Animal Lion Passant.svg",
+  "luma": 0.5,
+  "credit": "RootOfAllLight, traced from Fox-Davies (1909)",
+  "licence": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Animal_Lion_Passant.svg",
+  "crown_at": [
+   [
+    0.37,
+    0.235,
+    0.13
+   ]
+  ]
+ },
+ {
+  "charge": "lion's head",
+  "file": "Meuble héraldique Tête (lion).svg",
+  "body": [
+   "#ffffff"
+  ],
+  "tongue": [
+   "#2b5df2"
+  ],
+  "ink": [
+   "#000000"
+  ],
+  "credit": "Syryatsu (Projet Blasons)",
+  "licence": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Meuble_h%C3%A9raldique_T%C3%AAte_(lion).svg"
+ },
+ {
+  "charge": "eagle",
+  "file": "OC-18023-eagle-displayed.svg",
+  "body": [
+   "#ffff00"
+  ],
+  "ink": [
+   "#000000"
+  ],
+  "credit": "szquirrel, after Fox-Davies (1909)",
+  "licence": "Public domain (Openclipart)",
+  "source": "https://openclipart.org/detail/18023",
+  "crown_at": [
+   [
+    0.435,
+    0.105,
+    0.11
+   ]
+  ]
+ },
+ {
+  "charge": "eagle doubleheaded",
+  "file": "Coa Illustration Elements Animal Double-Headed Eagle Displayed.svg",
+  "luma": 0.5,
+  "credit": "RootOfAllLight, traced from Fox-Davies (1909)",
+  "licence": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Animal_Double-Headed_Eagle_Displayed.svg",
+  "crown_at": [
+   [
+    0.335,
+    0.115,
+    0.09
+   ],
+   [
+    0.6,
+    0.115,
+    0.09
+   ]
+  ]
+ },
+ {
+  "charge": "griffin rampant",
+  "file": "Coa Illustration Elements Animal Griffin 1.svg",
+  "luma": 0.5,
+  "credit": "RootOfAllLight, traced from Fox-Davies (1909)",
+  "licence": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Animal_Griffin_1.svg"
+ },
+ {
+  "charge": "stag passant",
+  "file": "Coa Illustration Elements Animal Stag Trippant.svg",
+  "luma": 0.5,
+  "credit": "RootOfAllLight, traced from Fox-Davies (1909)",
+  "licence": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Animal_Stag_Trippant.svg"
+ },
+ {
+  "charge": "boar passant",
+  "file": "Coa Illustration Elements Animal Boar Passant.svg",
+  "luma": 0.5,
+  "credit": "RootOfAllLight, traced from Fox-Davies (1909)",
+  "licence": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Animal_Boar_Passant.svg"
+ },
+ {
+  "charge": "boar's head",
+  "file": "Coa Illustration Elements Animal Boar's Head Erased.svg",
+  "luma": 0.5,
+  "credit": "RootOfAllLight, traced from Fox-Davies (1909)",
+  "licence": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Animal_Boar%27s_Head_Erased.svg"
+ },
+ {
+  "charge": "bear passant",
+  "file": "Coa Illustration Elements Animal Bear Passant.svg",
+  "luma": 0.5,
+  "credit": "RootOfAllLight, traced from Fox-Davies (1909)",
+  "licence": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Animal_Bear_Passant.svg"
+ },
+ {
+  "charge": "wolf passant",
+  "file": "Coa Illustration Elements Animal Wolf Passant.svg",
+  "luma": 0.5,
+  "credit": "RootOfAllLight, traced from Fox-Davies (1909)",
+  "licence": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Animal_Wolf_Passant.svg"
+ },
+ {
+  "charge": "talbot passant",
+  "file": "Coa Illustration Elements Animal Talbot Passant.svg",
+  "luma": 0.5,
+  "credit": "RootOfAllLight, traced from Fox-Davies (1909)",
+  "licence": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Animal_Talbot_Passant.svg"
+ },
+ {
+  "charge": "bull passant",
+  "file": "Coa Illustration Elements Animal Bull Passant.svg",
+  "luma": 0.5,
+  "credit": "RootOfAllLight, traced from Fox-Davies (1909)",
+  "licence": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Animal_Bull_Passant.svg"
+ },
+ {
+  "charge": "bull's head",
+  "file": "Coa Illustration Elements Animal Bull's Head Caboshed.svg",
+  "luma": 0.5,
+  "credit": "RootOfAllLight, traced from Fox-Davies (1909)",
+  "licence": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Animal_Bull%27s_Head_Caboshed.svg"
+ },
+ {
+  "charge": "goat passant",
+  "file": "Coa Illustration Elements Animal Goat Passant.svg",
+  "luma": 0.5,
+  "credit": "RootOfAllLight, traced from Fox-Davies (1909)",
+  "licence": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Animal_Goat_Passant.svg"
+ },
+ {
+  "charge": "goat rampant",
+  "file": "OC-18020-goat-rampant.svg",
+  "body": [
+   "#ffff00"
+  ],
+  "ink": [
+   "#000000"
+  ],
+  "credit": "szquirrel, after Fox-Davies (1909)",
+  "licence": "Public domain (Openclipart)",
+  "source": "https://openclipart.org/detail/18020"
+ },
+ {
+  "charge": "horse rampant",
+  "file": "OC-18018-horse-rampant.svg",
+  "body": [
+   "#ffff00"
+  ],
+  "ink": [
+   "#000000"
+  ],
+  "credit": "szquirrel, after Fox-Davies (1909)",
+  "licence": "Public domain (Openclipart)",
+  "source": "https://openclipart.org/detail/18018"
+ },
+ {
+  "charge": "unicorn rampant",
+  "file": "Coa Illustration Elements Animal Unicorn.svg",
+  "luma": 0.5,
+  "credit": "RootOfAllLight, traced from John Vinycomb, Fictitious and Symbolic Creatures in Art (1906)",
+  "licence": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Animal_Unicorn.svg"
+ },
+ {
+  "charge": "martlet",
+  "file": "OC-18015-martlet-volant.svg",
+  "body": [
+   "#ffff00"
+  ],
+  "ink": [
+   "#000000"
+  ],
+  "credit": "szquirrel, after Fox-Davies (1909)",
+  "licence": "Public domain (Openclipart)",
+  "source": "https://openclipart.org/detail/18015"
+ },
+ {
+  "charge": "swan",
+  "file": "Swan standing with wings displayed and elevated.svg",
+  "body": [
+   "#ffffff"
+  ],
+  "arms": [
+   "#ffff00"
+  ],
+  "ink": [
+   "#000000"
+  ],
+  "credit": "element of 'Flagge Schwanheide.svg' (Commons), extracted by Ilzolende",
+  "licence": "Public domain (PD-Flag-Germany)",
+  "source": "https://commons.wikimedia.org/wiki/File:Swan_standing_with_wings_displayed_and_elevated.svg"
+ },
+ {
+  "charge": "dolphin",
+  "file": "OC-18025-dolphin-naiant.svg",
+  "body": [
+   "#ffff00"
+  ],
+  "ink": [
+   "#000000"
+  ],
+  "credit": "szquirrel, after Fox-Davies (1909)",
+  "licence": "Public domain (Openclipart)",
+  "source": "https://openclipart.org/detail/18025"
+ },
+ {
+  "charge": "fish",
+  "file": "Heraldry Fish 056.svg",
+  "body": [
+   "#e3e4e5"
+  ],
+  "ink": [
+   "#000000"
+  ],
+  "credit": "Mrmw",
+  "licence": "CC0",
+  "source": "https://commons.wikimedia.org/wiki/File:Heraldry_Fish_056.svg"
+ },
+ {
+  "charge": "tree",
+  "file": "Coa Illustration Elements Plant Oak Tree Fructed and Eradicated.svg",
+  "luma": 0.5,
+  "credit": "RootOfAllLight, traced from Fox-Davies (1909)",
+  "licence": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Plant_Oak_Tree_Fructed_and_Eradicated.svg"
+ },
+ {
+  "charge": "wing",
+  "file": "OC-63607-wing-sinister.svg",
+  "body": [
+   "#a0a0a0"
+  ],
+  "ink": [
+   "#000000"
+  ],
+  "flip": true,
+  "credit": "paxed",
+  "licence": "Public domain (Openclipart)",
+  "source": "https://openclipart.org/detail/63607"
+ }
+]

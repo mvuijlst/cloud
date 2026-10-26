@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><title>one</title>
+<style>body{margin:6px;font:10px monospace;background:#fff}.g{display:flex;flex-wrap:wrap;gap:6px}.g div{display:flex;flex-direction:column;align-items:center}svg{width:260px;height:260px;border:1px solid #eee}</style></head><body>
+<div class="g" id="g"></div>
+<script src="../geometry.js"></script><script src="../charges.js"></script><script src="../charges-art.js"></script><script src="../render.js"></script>
+<script>
+const q = new URLSearchParams(location.search);
+const names = (q.get('n') || 'lion rampant').split(',');
+const g = document.getElementById('g');
+for (const n of names) for (const [style, t] of [['engraved','gules'],['colour','or']]) {
+  const d = document.createElement('div'); d.innerHTML = Heraldry.drawChargeSVG(n, style, t, {doubleheaded: q.get('dh')==='1', crowned: q.get('cr')==='1'}) + '<span>'+n+'</span>'; g.appendChild(d);
+}
+</script></body></html>

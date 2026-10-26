@@ -1,0 +1,156 @@
+{
+ "zurich": {
+  "test1_fit": {
+   "n": 520,
+   "ok": 368,
+   "bucket": 116,
+   "out": 36,
+   "structure_covered": 0.9308,
+   "library_covered": 0.7077,
+   "gate": 0.95,
+   "passed": false
+  },
+  "test2_holdout": {
+   "items": 38,
+   "with_blazon": 38,
+   "ok": 28,
+   "bucket": 9,
+   "out": 1,
+   "no_blazon": 0,
+   "structure_covered": 0.9737,
+   "gate": 0.95,
+   "passed": true
+  },
+  "test4_distribution": {
+   "n": 260,
+   "energy": 0.2279,
+   "energy_threshold": 0.0813,
+   "max_ks": 0.225,
+   "ks_threshold": 0.0846,
+   "passed": false,
+   "largest_mean_gaps": {
+    "m_other": 0.227,
+    "m_beast": 0.083,
+    "n_tinct": 0.082,
+    "m_lion": 0.041,
+    "m_bird": 0.034,
+    "o_none": 0.033,
+    "m_flower": 0.031,
+    "m_n": 0.028
+   }
+  },
+  "test4_secondary_library_coats_only": {
+   "n": 184,
+   "energy": 0.093,
+   "energy_threshold": 0.1292,
+   "max_ks": 0.087,
+   "ks_threshold": 0.1087,
+   "passed": true,
+   "largest_mean_gaps": {
+    "n_tinct": 0.084,
+    "m_none": 0.078,
+    "m_n": 0.069,
+    "o_none": 0.051,
+    "m_beast": 0.039,
+    "m_flower": 0.021
+   }
+  },
+  "test5_diversity": {
+   "generated": 7.354,
+   "corpus": 7.524,
+   "ratio": 0.977,
+   "passed": true
+  },
+  "test5_repetition": {
+   "generated_top_share": 0.014,
+   "generated_top": "F:plain:::argent|M:goat passant:1:gules:",
+   "corpus_top_share": 0.0129,
+   "corpus_top": "F:plain:::or|M:lion rampant:1:sable:",
+   "passed": false
+  },
+  "test5_matches": {
+   "no_match_share": 0.936,
+   "no_match_without_redraw": 0.614,
+   "target": 0.7,
+   "passed": true,
+   "note": "index = development coats of both rolls only; the Clemmensen Ordinary, Papworth and Rietstap were not indexed"
+  }
+ },
+ "grunenberg": {
+  "test1_fit": {
+   "n": 2064,
+   "ok": 1452,
+   "bucket": 463,
+   "out": 149,
+   "structure_covered": 0.9278,
+   "library_covered": 0.7035,
+   "gate": 0.95,
+   "passed": false
+  },
+  "test2_holdout": {
+   "items": 39,
+   "with_blazon": 35,
+   "ok": 32,
+   "bucket": 1,
+   "out": 2,
+   "no_blazon": 4,
+   "structure_covered": 0.9429,
+   "gate": 0.95,
+   "passed": false
+  },
+  "test4_distribution": {
+   "n": 500,
+   "energy": 0.1684,
+   "energy_threshold": 0.0461,
+   "max_ks": 0.204,
+   "ks_threshold": 0.0681,
+   "passed": false,
+   "largest_mean_gaps": {
+    "m_other": 0.209,
+    "n_tinct": 0.129,
+    "m_beast": 0.075,
+    "m_lion": 0.044,
+    "m_object": 0.024,
+    "m_bird": 0.023,
+    "m_geometric": 0.022,
+    "m_none": 0.015
+   }
+  },
+  "test4_secondary_library_coats_only": {
+   "n": 500,
+   "energy": 0.0491,
+   "energy_threshold": 0.0442,
+   "max_ks": 0.071,
+   "ks_threshold": 0.064,
+   "passed": false,
+   "largest_mean_gaps": {
+    "n_tinct": 0.087,
+    "m_none": 0.072,
+    "m_beast": 0.046,
+    "m_n": 0.045,
+    "o_none": 0.031,
+    "f_plain": 0.026
+   }
+  },
+  "test5_diversity": {
+   "generated": 8.157,
+   "corpus": 7.817,
+   "ratio": 1.044,
+   "passed": true
+  },
+  "test5_repetition": {
+   "generated_top_share": 0.012,
+   "generated_top": "F:plain:::or|M:lion rampant:1:sable:cr",
+   "corpus_top_share": 0.0096,
+   "corpus_top": "F:plain:::argent|M:lion rampant:1:gules:",
+   "passed": false
+  },
+  "test5_matches": {
+   "no_match_share": 0.948,
+   "no_match_without_redraw": 0.658,
+   "target": 0.7,
+   "passed": true,
+   "note": "index = development coats of both rolls only; the Clemmensen Ordinary, Papworth and Rietstap were not indexed"
+  }
+ }
+}

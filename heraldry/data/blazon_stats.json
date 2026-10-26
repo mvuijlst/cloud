@@ -1,0 +1,604 @@
+{
+ "zurich": {
+  "items_in_edition": 559,
+  "items_with_coat": 558,
+  "coats_per_item": {
+   "1": 553,
+   "4": 3,
+   "2": 2
+  },
+  "tinctures_per_single_coat": {
+   "2": 359,
+   "3": 130,
+   "4": 50,
+   "5": 11
+  },
+  "field_tincture": {
+   "A": 179,
+   "O": 115,
+   "G": 114,
+   "B": 69,
+   "S": 38,
+   "X": 24,
+   "V": 9,
+   "Z": 2
+  },
+  "charge_tincture": {
+   "A": 146,
+   "S": 132,
+   "G": 117,
+   "O": 72,
+   "B": 35,
+   "V": 23,
+   "X": 17,
+   "Z": 5,
+   "N": 2,
+   "E": 1
+  },
+  "field_charge_pair": {
+   "GA": 79,
+   "AG": 77,
+   "OS": 64,
+   "AS": 63,
+   "BO": 34,
+   "BA": 31,
+   "OG": 29,
+   "SA": 24,
+   "AB": 19,
+   "GO": 18,
+   "AV": 14,
+   "OB": 12
+  },
+  "metal_colour_combo": {
+   "AG": 156,
+   "AS": 87,
+   "OS": 72,
+   "AB": 50,
+   "GO": 47,
+   "BO": 46,
+   "AV": 20,
+   "GX": 13,
+   "OX": 11,
+   "AX": 7,
+   "GS": 6,
+   "BX": 5
+  },
+  "rule_of_tincture": {
+   "tested": 500,
+   "violations": 17,
+   "rate": 0.034,
+   "cases": [
+    {
+     "num": 32,
+     "name": "luitringen",
+     "codes": "GB",
+     "blazon": "bend"
+    },
+    {
+     "num": 50,
+     "name": "mandach",
+     "codes": "SGS",
+     "blazon": "chief ch. moor's head dx"
+    },
+    {
+     "num": 86,
+     "name": "buiron",
+     "codes": "SVA",
+     "blazon": "branch sprouting 3 roses"
+    },
+    {
+     "num": 122,
+     "name": "..",
+     "codes": "AOG",
+     "blazon": "cross potenty fitchy ch. 5 roundels"
+    },
+    {
+     "num": 239,
+     "name": "..",
+     "codes": "GSO",
+     "blazon": "pale & border"
+    },
+    {
+     "num": 361,
+     "name": "..",
+     "codes": "SV",
+     "blazon": "cabbage"
+    },
+    {
+     "num": 374,
+     "name": "..",
+     "codes": "AOG",
+     "blazon": "torch"
+    },
+    {
+     "num": 388,
+     "name": "erelmarx",
+     "codes": "GSO",
+     "blazon": "2 arms isst mount"
+    },
+    {
+     "num": 422,
+     "name": "zezikoven",
+     "codes": "GVAO",
+     "blazon": "stem with 3 fleurs-de-lis above mount"
+    },
+    {
+     "num": 430,
+     "name": "weriant",
+     "codes": "AAV",
+     "blazon": "ladder acc. mount in base"
+    },
+    {
+     "num": 460,
+     "name": "..",
+     "codes": "GSO",
+     "blazon": "pale chevronny"
+    },
+    {
+     "num": 513,
+     "name": "..",
+     "codes": "GV",
+     "blazon": "duck"
+    },
+    {
+     "num": 519,
+     "name": "..",
+     "codes": "GS",
+     "blazon": "bull statant"
+    },
+    {
+     "num": 527,
+     "name": "..",
+     "codes": "GBA",
+     "blazon": "falcon holding horseshoe"
+    },
+    {
+     "num": 538,
+     "name": "..",
+     "codes": "VG",
+     "blazon": "bull statant"
+    },
+    {
+     "num": 540,
+     "name": "..",
+     "codes": "SG",
+     "blazon": "fess"
+    },
+    {
+     "num": 551,
+     "name": "..",
+     "codes": "OAG",
+     "blazon": "bird & border"
+    }
+   ]
+  },
+  "charge_classes_per_mille": {
+   "object": 163.1,
+   "beast": 143.4,
+   "per_partition": 138.0,
+   "lion": 112.9,
+   "_unclassified": 107.5,
+   "fess_barry": 102.2,
+   "bend_bendy": 82.4,
+   "human": 68.1,
+   "chief": 66.3,
+   "antler_horn": 59.1,
+   "bird": 52.0,
+   "qtly_checky_lozengy": 48.4,
+   "eagle": 44.8,
+   "rose_flower": 39.4,
+   "star_crescent_sun": 32.3,
+   "pale_paly": 28.7,
+   "roundel_annulet": 26.9,
+   "monster": 23.3,
+   "plant_tree_leaf": 23.3,
+   "cross": 17.9,
+   "border": 17.9,
+   "fish": 14.3,
+   "chevron": 10.8,
+   "semy": 1.8,
+   "label": 1.8
+  },
+  "charge_classes_count": {
+   "object": 91,
+   "beast": 80,
+   "per_partition": 77,
+   "lion": 63,
+   "_unclassified": 60,
+   "fess_barry": 57,
+   "bend_bendy": 46,
+   "human": 38,
+   "chief": 37,
+   "antler_horn": 33,
+   "bird": 29,
+   "qtly_checky_lozengy": 27,
+   "eagle": 25,
+   "rose_flower": 22,
+   "star_crescent_sun": 18,
+   "pale_paly": 16,
+   "roundel_annulet": 15,
+   "monster": 13,
+   "plant_tree_leaf": 13,
+   "cross": 10,
+   "border": 10,
+   "fish": 8,
+   "chevron": 6,
+   "semy": 1,
+   "label": 1
+  }
+ },
+ "grunenberg": {
+  "items_in_edition": 2199,
+  "items_with_coat": 2099,
+  "coats_per_item": {
+   "1": 1954,
+   "2": 18,
+   "4": 112,
+   "3": 11,
+   "5": 2,
+   "7": 2
+  },
+  "tinctures_per_single_coat": {
+   "1": 7,
+   "2": 1192,
+   "3": 417,
+   "4": 228,
+   "5": 42,
+   "6": 7,
+   "7": 1
+  },
+  "field_tincture": {
+   "A": 514,
+   "G": 435,
+   "O": 382,
+   "B": 279,
+   "S": 165,
+   "X": 83,
+   "V": 22,
+   "P": 5,
+   "Z": 5,
+   "E": 4
+  },
+  "charge_tincture": {
+   "A": 559,
+   "G": 426,
+   "S": 311,
+   "O": 307,
+   "B": 143,
+   "X": 80,
+   "V": 30,
+   "N": 15,
+   "Z": 13,
+   "E": 3
+  },
+  "field_charge_pair": {
+   "GA": 295,
+   "AG": 254,
+   "OS": 155,
+   "AS": 142,
+   "OG": 127,
+   "BO": 123,
+   "BA": 122,
+   "GO": 91,
+   "SA": 91,
+   "AB": 74,
+   "SO": 60,
+   "OB": 56
+  },
+  "metal_colour_combo": {
+   "AG": 549,
+   "AS": 233,
+   "GO": 218,
+   "OS": 215,
+   "AB": 196,
+   "BO": 179,
+   "GX": 49,
+   "AX": 32,
+   "BX": 30,
+   "AV": 28,
+   "OX": 26,
+   "AO": 25
+  },
+  "rule_of_tincture": {
+   "tested": 1686,
+   "violations": 51,
+   "rate": 0.0302,
+   "cases": [
+    {
+     "num": 11,
+     "name": "abisay",
+     "codes": "AOSG",
+     "blazon": "fess fimbriated ch. 3 hebrew letters \"U Z A\" acc. 3 mullets"
+    },
+    {
+     "num": 15,
+     "name": "der dritt bamawal",
+     "codes": "SBOA",
+     "blazon": "pale bordered ch. grillet acc. hebrew letters \"..\""
+    },
+    {
+     "num": 246,
+     "name": "der kaisertum von der gebiergen inndÿen",
+     "codes": "AOPN",
+     "blazon": "boat with woman on horseback"
+    },
+    {
+     "num": 249,
+     "name": "der grosmächtig kung von korsa in indyen hat under im funff fürstentum",
+     "codes": "GVA",
+     "blazon": "serpent with 3 horns"
+    },
+    {
+     "num": 251,
+     "name": "kung von trappolle in indÿen",
+     "codes": "BGO",
+     "blazon": "bust of saracen acc. crown in chf"
+    },
+    {
+     "num": 254,
+     "name": "kung von oderdallach in indÿen ist für sich selbs",
+     "codes": "GBOO",
+     "blazon": "bust of king having bird's beak acc. estoile in chf dx"
+    },
+    {
+     "num": 271,
+     "name": "das an geschlacht im der tartarÿ genant jabu, es hait och mer dangosch",
+     "codes": "OA",
+     "blazon": "bust of man from the rear (stones on neck, circelet)"
+    },
+    {
+     "num": 315,
+     "name": "kung von kaldea undern",
+     "codes": "BGA",
+     "blazon": "3 banners per bend acc. estoile in chf sn"
+    },
+    {
+     "num": 316,
+     "name": "kung von morot under",
+     "codes": "GS",
+     "blazon": "3 busts of blackamoor"
+    },
+    {
+     "num": 321,
+     "name": "kung von zalta undern",
+     "codes": "BG",
+     "blazon": "griffin segreant"
+    },
+    {
+     "num": 341,
+     "name": "das kaisertum von maldach",
+     "codes": "GSA",
+     "blazon": "blackamoor's head turbaned"
+    },
+    {
+     "num": 349,
+     "name": "der kung von hispÿe gehört under arabÿe undern soldan",
+     "codes": "AOO",
+     "blazon": "bust of angel acc. cross trefly in chf"
+    },
+    {
+     "num": 350,
+     "name": "kung von jerussallem das kung david besas",
+     "codes": "AO",
+     "blazon": "cross of Jerusalem"
+    },
+    {
+     "num": 367,
+     "name": "grauf von ultingen",
+     "codes": "OA",
+     "blazon": "stag statant"
+    },
+    {
+     "num": 376,
+     "name": "dz kaisertum der sirsie",
+     "codes": "GSO",
+     "blazon": "boar's head pierced by arrow"
+    },
+    {
+     "num": 378,
+     "name": "kung von darbischutte gehört undern turgischen k",
+     "codes": "GSAO",
+     "blazon": "per bend plain & eagle per bend sn & crancelin overall on partition"
+    },
+    {
+     "num": 392,
+     "name": "hertzog von ballach in kriechen",
+     "codes": "AOBA",
+     "blazon": "crown with man isst holding book"
+    },
+    {
+     "num": 409,
+     "name": "disser kung gehort undern kaisser von athen",
+     "codes": "TOAB",
+     "blazon": "lymphad, semy of points"
+    },
+    {
+     "num": 410,
+     "name": "der kung von azuschÿ und here des lands neggurgio",
+     "codes": "OA",
+     "blazon": "4 swans (2:2)"
+    },
+    {
+     "num": 411,
+     "name": "das alt kingkrich von bichny",
+     "codes": "SGA",
+     "blazon": "3 knives conjoined in base on a mount"
+    },
+    {
+     "num": 434,
+     "name": "borggongne",
+     "codes": "AOO",
+     "blazon": "lion, billety"
+    },
+    {
+     "num": 442,
+     "name": "der herczog von bawiera etc",
+     "codes": "OAO",
+     "blazon": "bend ch. 3 eagles"
+    },
+    {
+     "num": 515,
+     "name": "herczog von tüssen gehört undern wittolden wz ainer zum costencz im concilium",
+     "codes": "AOG",
+     "blazon": "lion stat cr. standing in flames"
+    },
+    {
+     "num": 683,
+     "name": "grauff von sant briden in büllen",
+     "codes": "OAB",
+     "blazon": "2 storks acc. crown in chf"
+    },
+    {
+     "num": 691,
+     "name": "grauff von alalter                                                                 _FR",
+     "codes": "BG",
+     "blazon": "barry nebuly"
+    },
+    {
+     "num": 692,
+     "name": "grauff von starris",
+     "codes": "AO",
+     "blazon": "wheel block"
+    },
+    {
+     "num": 758,
+     "name": "grauff von mumillÿan uf frankrich                                                      _FR",
+     "codes": "BGO",
+     "blazon": "bend acc. toad in chf sn"
+    },
+    {
+     "num": 888,
+     "name": "frÿ von ligeritz in burgunn",
+     "codes": "BGO",
+     "blazon": "bend & border"
+    },
+    {
+     "num": 894,
+     "name": "frÿ von rossneg",
+     "codes": "OAG",
+     "blazon": "fess betw 6 roses (3:3)"
+    },
+    {
+     "num": 996,
+     "name": "hern von bottendorff",
+     "codes": "GBA",
+     "blazon": "chief ch. lion isst"
+    },
+    {
+     "num": 1006,
+     "name": "huscher zum ulme",
+     "codes": "OA",
+     "blazon": "lozengy"
+    },
+    {
+     "num": 1032,
+     "name": "her de pile in sawog",
+     "codes": "BGGO",
+     "blazon": "border engrailed & chief ch. 3 mullets"
+    },
+    {
+     "num": 1070,
+     "name": "her von rechemberg",
+     "codes": "GS",
+     "blazon": "ram's face"
+    },
+    {
+     "num": 1080,
+     "name": "her von gurnaix her zum fernie",
+     "codes": "GSAXAG",
+     "blazon": "bend ch. 3 towers acc. roundel gironated in chf"
+    },
+    {
+     "num": 1207,
+     "name": "mn palag heren",
+     "codes": "pq[Ar;Or3barsGu;=;=]",
+     "blazon": "1 G OB+ castle & border ch. escutch"
+    },
+    {
+     "num": 1308,
+     "name": "von schenkemberg im aergo",
+     "codes": "BG",
+     "blazon": "bull's face"
+    },
+    {
+     "num": 1346,
+     "name": "von waelden",
+     "codes": "GVA",
+     "blazon": "per pale plain & fess"
+    },
+    {
+     "num": 1349,
+     "name": "von riethan",
+     "codes": "OA",
+     "blazon": "donkey salient"
+    },
+    {
+     "num": 1510,
+     "name": "von wolfersdorf",
+     "codes": "AA",
+     "blazon": "wolf rampant"
+    },
+    {
+     "num": 1755,
+     "name": "touffkircher zum guttenburg",
+     "codes": "BGA",
+     "blazon": "chief ch. pale"
+    }
+   ]
+  },
+  "charge_classes_per_mille": {
+   "object": 148.2,
+   "per_partition": 139.6,
+   "fess_barry": 125.8,
+   "lion": 123.4,
+   "_unclassified": 110.1,
+   "beast": 94.8,
+   "bend_bendy": 81.9,
+   "chief": 70.0,
+   "rose_flower": 58.1,
+   "eagle": 55.3,
+   "qtly_checky_lozengy": 49.5,
+   "pale_paly": 45.7,
+   "star_crescent_sun": 41.4,
+   "cross": 36.2,
+   "human": 31.9,
+   "border": 29.1,
+   "bird": 28.1,
+   "antler_horn": 27.6,
+   "roundel_annulet": 26.7,
+   "chevron": 23.3,
+   "semy": 19.5,
+   "monster": 17.6,
+   "fish": 17.2,
+   "label": 11.9,
+   "plant_tree_leaf": 7.1
+  },
+  "charge_classes_count": {
+   "object": 311,
+   "per_partition": 293,
+   "fess_barry": 264,
+   "lion": 259,
+   "_unclassified": 231,
+   "beast": 199,
+   "bend_bendy": 172,
+   "chief": 147,
+   "rose_flower": 122,
+   "eagle": 116,
+   "qtly_checky_lozengy": 104,
+   "pale_paly": 96,
+   "star_crescent_sun": 87,
+   "cross": 76,
+   "human": 67,
+   "border": 61,
+   "bird": 59,
+   "antler_horn": 58,
+   "roundel_annulet": 56,
+   "chevron": 49,
+   "semy": 41,
+   "monster": 37,
+   "fish": 36,
+   "label": 25,
+   "plant_tree_leaf": 15
+  }
+ }
+}

@@ -1,0 +1,9554 @@
+[
+{
+"num": 1,
+"name": "..",
+"region": null,
+"attr": null,
+"pos": "s1f1a",
+"coats": [
+{
+"codes": "OG",
+"blazon": "camel",
+"repeat": false
+}
+],
+"crest": "no crest ornament  G           camel",
+"raw_arms": "s1f1a 1 O G     camel",
+"parse": "single"
+},
+{
+"num": 2,
+"name": "hispania",
+"region": "cas",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OS",
+"blazon": "lion",
+"repeat": false
+},
+{
+"codes": "AG",
+"blazon": "castle",
+"repeat": false
+},
+{
+"codes": "AG",
+"blazon": "castle",
+"repeat": true
+},
+{
+"codes": "AG",
+"blazon": "castle",
+"repeat": true
+}
+],
+"crest": "no crest ornament  =           fan triangular ch. arms",
+"raw_arms": "lion; castle; =; = {OS, AG}",
+"parse": "multi"
+},
+{
+"num": 3,
+"name": "arragun",
+"region": "ara",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OG",
+"blazon": "paly",
+"repeat": false
+}
+],
+"crest": "no crest ornament  =V          fan ch. arms garnished with peacock eyes",
+"raw_arms": "1 OG      paly",
+"parse": "single"
+},
+{
+"num": 4,
+"name": "schotten",
+"region": "sco",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OSG",
+"blazon": "monk holding staff and covered cup",
+"repeat": false
+}
+],
+"crest": "no crest ornament  =           figure of arms isst",
+"raw_arms": "1 O SG    monk holding staff and covered cup",
+"parse": "single"
+},
+{
+"num": 5,
+"name": "..",
+"region": "lan",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OS",
+"blazon": "blackamoor's head",
+"repeat": false
+}
+],
+"crest": "no crest ornament  SA          moor's head garnished with elm leaves",
+"raw_arms": "1 OS      blackamoor's head",
+"parse": "single"
+},
+{
+"num": 6,
+"name": "..",
+"region": null,
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "XOAG",
+"blazon": "lozengy & fretty",
+"repeat": false
+}
+],
+"crest": "no crest ornament  =V          fan ch. arms garnished with peacock eyes",
+"raw_arms": "1 X O AG lozengy & fretty",
+"parse": "single"
+},
+{
+"num": 7,
+"name": "..",
+"region": null,
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "SAV",
+"blazon": "3 knives conjoined in base on a mount",
+"repeat": false
+}
+],
+"crest": "no crest ornament  GA          arm holding dagger",
+"raw_arms": "1 S AV    3 knives conjoined in base on a mount",
+"parse": "single"
+},
+{
+"num": 8,
+"name": "..",
+"region": "dan",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OB",
+"blazon": "3 lions passt guard",
+"repeat": false
+}
+],
+"crest": "no crest ornament  B           lion isst cr.",
+"raw_arms": "1 OB      3 lions passt guard",
+"parse": "single"
+},
+{
+"num": 9,
+"name": "..                                                                                      _ROY",
+"region": null,
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OG",
+"blazon": "3 lions passt guard",
+"repeat": false
+}
+],
+"crest": "no crest ornament  =A          fan ch. arms garnished with pearls",
+"raw_arms": "1 OG      3 lions passt guard",
+"parse": "single"
+},
+{
+"num": 10,
+"name": "portegalien",
+"region": null,
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BAGO",
+"blazon": "doorway open",
+"repeat": false
+}
+],
+"crest": "no crest ornament  =           figure of arms",
+"raw_arms": "1 B AGO doorway open",
+"parse": "single"
+},
+{
+"num": 11,
+"name": "marrach",
+"region": null,
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OS",
+"blazon": "3 chessrooks",
+"repeat": false
+}
+],
+"crest": "no crest ornament       AV            chessrook tipped with 2 peacock tails",
+"raw_arms": "1 OS           3 chessrooks",
+"parse": "single"
+},
+{
+"num": 12,
+"name": "rom                                                                             _ROY",
+"region": null,
+"attr": null,
+"pos": "s2f1a",
+"coats": [
+{
+"codes": "OS",
+"blazon": "eagle",
+"repeat": false
+}
+],
+"crest": "no crest ornament       OGO           2 bull's horns crested semy of elm leaves",
+"raw_arms": "s2f1a 1 O S    eagle",
+"parse": "single"
+},
+{
+"num": 13,
+"name": "franckrich                                                                      _ROY",
+"region": null,
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": null,
+"blazon": "boh",
+"repeat": false
+}
+],
+"crest": "no crest ornament       ON            fleur-de-lis on peacock fan",
+"raw_arms": "boh",
+"parse": "nocode"
+},
+{
+"num": 14,
+"name": "behan",
+"region": null,
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GA",
+"blazon": "lion q.f. cr.",
+"repeat": false
+}
+],
+"crest": "no crest ornament       SO            2 wings semy of elm leaves",
+"raw_arms": "1 GA           lion q.f. cr.",
+"parse": "single"
+},
+{
+"num": 15,
+"name": "ungern",
+"region": "hoe",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GA",
+"blazon": "barruly",
+"repeat": false
+}
+],
+"crest": "no crest ornament       =V            fan ch. arms garnished with peacock eyes",
+"raw_arms": "1 GA           barruly",
+"parse": "single"
+},
+{
+"num": 16,
+"name": "kaernden",
+"region": "aut",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OS",
+"blazon": "3 lions passt",
+"repeat": false
+},
+{
+"codes": "GA",
+"blazon": "fess",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "3 lions passt; fess {OS, GA}",
+"parse": "multi"
+},
+{
+"num": 17,
+"name": "oesterich",
+"region": "aut",
+"attr": null,
+"pos": "s2f2a",
+"coats": [
+{
+"codes": "GA",
+"blazon": "fess",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "s2f2a 1 G A    fess",
+"parse": "single"
+},
+{
+"num": 18,
+"name": "baiern",
+"region": "bav",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AB",
+"blazon": "lozengy",
+"repeat": false
+}
+],
+"crest": "no crest ornament       GA            roundel ch. elm tree",
+"raw_arms": "1 AB           lozengy",
+"parse": "single"
+},
+{
+"num": 19,
+"name": "sahsen",
+"region": "sax",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": null,
+"blazon": "eagle :dim: barry {AG, SO}",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "eagle :dim: barry {AG, SO}",
+"parse": "nocode"
+},
+{
+"num": 20,
+"name": "stir",
+"region": "aut",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "VA",
+"blazon": "panther",
+"repeat": false
+}
+],
+"crest": "no crest ornament       A         panther isst vomiting flames",
+"raw_arms": "1 VA           panther",
+"parse": "single"
+},
+{
+"num": 21,
+"name": "tek",
+"region": "sou",
+"attr": null,
+"pos": "s2f3a",
+"coats": [
+{
+"codes": "OS",
+"blazon": "lozengy",
+"repeat": false
+}
+],
+"crest": "no crest ornament       XN GS swan's head barry",
+"raw_arms": "s2f3a 1 O S    lozengy",
+"parse": "single"
+},
+{
+"num": 22,
+"name": "kiburg",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GOO",
+"blazon": "bend betw 2 lions per bend",
+"repeat": false
+}
+],
+"crest": "no crest ornament       GO        lion's head crested",
+"raw_arms": "1 G OO         bend betw 2 lions per bend",
+"parse": "single"
+},
+{
+"num": 23,
+"name": "baden",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OG",
+"blazon": "bend",
+"repeat": false
+}
+],
+"crest": "no crest ornament       XA SA 2 ibex's horns garnished with elm leaves",
+"raw_arms": "1 OG           bend",
+"parse": "single"
+},
+{
+"num": 24,
+"name": "honberg",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OS",
+"blazon": "2 eagles in pale",
+"repeat": false
+}
+],
+"crest": "no crest ornament       AO        2 swan's heads each biting annulet",
+"raw_arms": "1 OS           2 eagles in pale",
+"parse": "single"
+},
+{
+"num": 25,
+"name": "hohenberg",
+"region": "sou",
+"attr": null,
+"pos": "s2f4a",
+"coats": [
+{
+"codes": "GA",
+"blazon": "chief",
+"repeat": false
+}
+],
+"crest": "no crest ornament       AG        2 bugle horns per fess",
+"raw_arms": "s2f4a 1 G A    chief",
+"parse": "single"
+},
+{
+"num": 26,
+"name": "wirtenberg",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OS",
+"blazon": "3 antlers in pale",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "1 OS           3 antlers in pale",
+"parse": "single"
+},
+{
+"num": 27,
+"name": "nellenburg",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OB",
+"blazon": "3 antlers in pale",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "1 OB           3 antlers in pale",
+"parse": "single"
+},
+{
+"num": 28,
+"name": "froburg",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OZ",
+"blazon": "eagle",
+"repeat": false
+}
+],
+"crest": "no crest ornament     =N           fan ch. arms garnished with peacock eyes",
+"raw_arms": "1 OZ           eagle",
+"parse": "single"
+},
+{
+"num": 29,
+"name": "oetingen",
+"region": "sou",
+"attr": null,
+"pos": "s2f5a",
+"coats": [
+{
+"codes": "XABOG",
+"blazon": "vairy & saltire ch. escutcheon",
+"repeat": false
+}
+],
+"crest": "no crest ornament     =N           cone ch. arms tipped with peacock plume",
+"raw_arms": "s2f5a  1 X AB OG vairy & saltire ch. escutcheon",
+"parse": "single"
+},
+{
+"num": 30,
+"name": "pfirt",
+"region": "als",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GO",
+"blazon": "2 barbels addorsed",
+"repeat": false
+}
+],
+"crest": "no crest ornament     O            2 fishes erect",
+"raw_arms": "1 GO           2 barbels addorsed",
+"parse": "single"
+},
+{
+"num": 31,
+"name": "zolre",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AS",
+"blazon": "qtly",
+"repeat": false
+}
+],
+"crest": "no crest ornament     SA           2 bull's horns per fess cch",
+"raw_arms": "1 AS           qtly",
+"parse": "single"
+},
+{
+"num": 32,
+"name": "luitringen",
+"region": "lor",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GB",
+"blazon": "bend",
+"repeat": false
+}
+],
+"crest": "no crest ornament     =N           fan triangular ch. arms garnished with peacock eyes",
+"raw_arms": "1 GB           bend",
+"parse": "single"
+},
+{
+"num": 33,
+"name": "buocheg",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GOGV",
+"blazon": "pale ch. 3 roses slipped",
+"repeat": false
+}
+],
+"crest": "no crest ornament     =N           mitre ch. arms tipped with 2 peacock plumes",
+"raw_arms": "1 G OGV pale ch. 3 roses slipped",
+"parse": "single"
+},
+{
+"num": 34,
+"name": "hapspurg",
+"region": "sui",
+"attr": null,
+"pos": "s2f6a",
+"coats": [
+{
+"codes": "OG",
+"blazon": "lion rampant",
+"repeat": false
+}
+],
+"crest": "no crest ornament     GAN          lion isst crested and garnished with peacock eyes",
+"raw_arms": "s2f6a 1 O G           lion rampant",
+"parse": "single"
+},
+{
+"num": 35,
+"name": "toggenburg",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OS",
+"blazon": "talbot gorged",
+"repeat": false
+}
+],
+"crest": "no crest ornament     A               2 fishes reversed",
+"raw_arms": "1 OS           talbot gorged",
+"parse": "single"
+},
+{
+"num": 36,
+"name": "nuerenberg",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "ASG",
+"blazon": "qtly & border",
+"repeat": false
+}
+],
+"crest": "no crest ornament     OG              talbot's head",
+"raw_arms": "1 A SG         qtly & border",
+"parse": "single"
+},
+{
+"num": 37,
+"name": "fuerstenberg",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AGZ",
+"blazon": "eagle & border nebuly",
+"repeat": false
+}
+],
+"crest": "no crest ornament     A               ball of wool",
+"raw_arms": "1 A GZ         eagle & border nebuly",
+"parse": "single"
+},
+{
+"num": 38,
+"name": "schaelkingen",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GA",
+"blazon": "bendy",
+"repeat": false
+}
+],
+"crest": "no crest ornament     AGN             2 bugle horns bendy tipped with peacock tails",
+"raw_arms": "1 GA           bendy",
+"parse": "single"
+},
+{
+"num": 39,
+"name": "hiersberg",
+"region": "bav",
+"attr": null,
+"pos": "s2f7a",
+"coats": [
+{
+"codes": "OSV",
+"blazon": "stag on mount",
+"repeat": false
+}
+],
+"crest": "no crest ornament     AS              2 fans garnished with feathers",
+"raw_arms": "s2f7a  1 O SV         stag on mount",
+"parse": "single"
+},
+{
+"num": 40,
+"name": "helfenstain",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GAV",
+"blazon": "elephant on mount",
+"repeat": false
+}
+],
+"crest": "no crest ornament     AN              fan garnished with peacock eyes",
+"raw_arms": "1 G AV         elephant on mount",
+"parse": "single"
+},
+{
+"num": 41,
+"name": "graf von kasteln",
+"region": "fkn",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "qtly",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "1 AG           qtly",
+"parse": "single"
+},
+{
+"num": 42,
+"name": "brandenburg",
+"region": "brg",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AGO",
+"blazon": "eagle ch. crescent",
+"repeat": false
+}
+],
+"crest": "no crest ornament     SA              2 wings semy of elm leaves",
+"raw_arms": "1 A GO         eagle ch. crescent",
+"parse": "single"
+},
+{
+"num": 43,
+"name": "hennenberg",
+"region": "thu",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OSV",
+"blazon": "cock on mount",
+"repeat": false
+}
+],
+"crest": "no crest ornament         AA  2 wings semy of elm leaves",
+"raw_arms": "1 O SV         cock on mount",
+"parse": "single"
+},
+{
+"num": 44,
+"name": "ortenburg",
+"region": "aut",
+"attr": null,
+"pos": "s2f8a",
+"coats": [
+{
+"codes": "AG",
+"blazon": "per chevron & 3 wings fesswise cch",
+"repeat": false
+}
+],
+"crest": "no crest ornament         AG  2 wings",
+"raw_arms": "s2f8a 1 A G    per chevron & 3 wings fesswise cch",
+"parse": "single"
+},
+{
+"num": 45,
+"name": "sulz",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "pily-paly",
+"repeat": false
+}
+],
+"crest": "no crest ornament         =N  fan triangular ch. arms garnished with peacock eyes",
+"raw_arms": "1 AG           pily-paly",
+"parse": "single"
+},
+{
+"num": 46,
+"name": "liningen",
+"region": "pal",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BA",
+"blazon": "3 eagles",
+"repeat": false
+}
+],
+"crest": "no crest ornament         =   fan triangular ch. arms",
+"raw_arms": "1 BA           3 eagles",
+"parse": "single"
+},
+{
+"num": 47,
+"name": "rosnow",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OS",
+"blazon": "goat statant",
+"repeat": false
+}
+],
+"crest": "no crest ornament         A   ibex's head",
+"raw_arms": "1 OS           goat statant",
+"parse": "single"
+},
+{
+"num": 48,
+"name": "arbon",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "eagle",
+"repeat": false
+}
+],
+"crest": "no crest ornament         G   eagle naissant",
+"raw_arms": "1 AG           eagle",
+"parse": "single"
+},
+{
+"num": 49,
+"name": "wagenberg",
+"region": "sou",
+"attr": null,
+"pos": "s2f9a",
+"coats": [
+{
+"codes": "OS",
+"blazon": "lion naissant",
+"repeat": false
+}
+],
+"crest": "no crest ornament         S   lion isst",
+"raw_arms": "s2f9a 1 O S    lion naissant",
+"parse": "single"
+},
+{
+"num": 50,
+"name": "mandach",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "SGS",
+"blazon": "chief ch. moor's head dx",
+"repeat": false
+}
+],
+"crest": "no crest ornament         S   moor's head",
+"raw_arms": "1 S GS         chief ch. moor's head dx",
+"parse": "single"
+},
+{
+"num": 51,
+"name": "end",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BA",
+"blazon": "lion guard",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "1 BA              lion guard",
+"parse": "single"
+},
+{
+"num": 52,
+"name": "lochen",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GA",
+"blazon": "swan's head",
+"repeat": false
+}
+],
+"crest": "no crest ornament        AS        swan's head garnished with cock feathers",
+"raw_arms": "1 GA              swan's head",
+"parse": "single"
+},
+{
+"num": 53,
+"name": "scharpfenberg",
+"region": "aut",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AS",
+"blazon": "crown",
+"repeat": false
+}
+],
+"crest": "no crest ornament        AN        crown tipped with 3 peacock plumes",
+"raw_arms": "1 AS              crown",
+"parse": "single"
+},
+{
+"num": 54,
+"name": "langenstain",
+"region": "sou",
+"attr": null,
+"pos": "s2f10a",
+"coats": [
+{
+"codes": "AGB",
+"blazon": "eagle ch. mount",
+"repeat": false
+}
+],
+"crest": "no crest ornament        SA        2 wings each ch. fess",
+"raw_arms": "s2f10a 1 A GB     eagle ch. mount",
+"parse": "single"
+},
+{
+"num": 55,
+"name": "spiegelberg",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GOBV",
+"blazon": "3 mirrors above mount",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "1 G OBV 3 mirrors above mount",
+"parse": "single"
+},
+{
+"num": 56,
+"name": "schoenenstain",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GOXAG",
+"blazon": "fess & chief checky",
+"repeat": false
+}
+],
+"crest": "no crest ornament        =N        cap pointed ch. arms tipped with peacock tail",
+"raw_arms": "1 G OX AG fess & chief checky",
+"parse": "single"
+},
+{
+"num": 57,
+"name": "huirling",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GO",
+"blazon": "bend",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "1 GO              bend",
+"parse": "single"
+},
+{
+"num": 58,
+"name": "helmensdorf",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GA",
+"blazon": "2 unicorns' heads addorsed",
+"repeat": false
+}
+],
+"crest": "no crest ornament              GN      cap pointed tipped with peacock plume",
+"raw_arms": "1 GA               2 unicorns' heads addorsed",
+"parse": "single"
+},
+{
+"num": 59,
+"name": "landenberg",
+"region": "sui",
+"attr": null,
+"pos": "s2f11a",
+"coats": [
+{
+"codes": "GA",
+"blazon": "3 annulets",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "s2f11a 1 G A       3 annulets",
+"parse": "single"
+},
+{
+"num": 60,
+"name": "sulzberg",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BO",
+"blazon": "barry undy",
+"repeat": false
+}
+],
+"crest": "no crest ornament              O       2 ibex' horns",
+"raw_arms": "1 BO               barry undy",
+"parse": "single"
+},
+{
+"num": 61,
+"name": "wildenstain",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BA",
+"blazon": "bend radiant",
+"repeat": false
+}
+],
+"crest": "no crest ornament              A       2 swan's heads",
+"raw_arms": "1 BA               bend radiant",
+"parse": "single"
+},
+{
+"num": 62,
+"name": "schellenberg",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "SO",
+"blazon": "barry of 4",
+"repeat": false
+}
+],
+"crest": "no crest ornament              AG      2 bugle horns stringed",
+"raw_arms": "1 SO               barry of 4",
+"parse": "single"
+},
+{
+"num": 63,
+"name": "wienterstetten",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "crampon per fess",
+"repeat": false
+}
+],
+"crest": "no crest ornament              AS      cap pointed tipped tuft of cock feathers",
+"raw_arms": "1 AG               crampon per fess",
+"parse": "single"
+},
+{
+"num": 64,
+"name": "goesicon",
+"region": "sui",
+"attr": null,
+"pos": "s2f12a",
+"coats": [
+{
+"codes": "GA",
+"blazon": "per bend",
+"repeat": false
+}
+],
+"crest": "no crest ornament              AA      woman's head betw bull's horns",
+"raw_arms": "s2f12a 1 G A       per bend",
+"parse": "single"
+},
+{
+"num": 65,
+"name": "swandeg",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "ASO",
+"blazon": "ibex stat & border",
+"repeat": false
+}
+],
+"crest": "no crest ornament              S       ibex isst",
+"raw_arms": "1 A SO             ibex stat & border",
+"parse": "single"
+},
+{
+"num": 66,
+"name": "aems",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BA",
+"blazon": "ibex' head",
+"repeat": false
+}
+],
+"crest": "no crest ornament   A         2 bull's horns furred",
+"raw_arms": "1 BA    ibex' head",
+"parse": "single"
+},
+{
+"num": 67,
+"name": "stras",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AS",
+"blazon": "wing fesswise",
+"repeat": false
+}
+],
+"crest": "no crest ornament   SS        2 bull's horns garnished with cock feathers",
+"raw_arms": "1 AS    wing fesswise",
+"parse": "single"
+},
+{
+"num": 68,
+"name": "bludenze",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AS",
+"blazon": "3 annulets",
+"repeat": false
+}
+],
+"crest": "no crest ornament   SA        2 bull's horns garnished with roundels cch",
+"raw_arms": "1 AS    3 annulets",
+"parse": "single"
+},
+{
+"num": 69,
+"name": "nuiwenburg",
+"region": "sou",
+"attr": null,
+"pos": "s2f13a",
+"coats": [
+{
+"codes": "OS",
+"blazon": "barry of 4",
+"repeat": false
+}
+],
+"crest": "no crest ornament   O         3 swan's heads",
+"raw_arms": "s2f13a 1 O S   barry of 4",
+"parse": "single"
+},
+{
+"num": 70,
+"name": "oetlausen",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "attire",
+"repeat": false
+}
+],
+"crest": "no crest ornament   GAS       hat ch. roundel and tipped with 3 tufts of cock feathers",
+"raw_arms": "1 AG    attire",
+"parse": "single"
+},
+{
+"num": 71,
+"name": "ringenberg",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AXVAG",
+"blazon": "annulet compony above mount",
+"repeat": false
+}
+],
+"crest": "no crest ornament   GA        annulet compony",
+"raw_arms": "1 A XV AG annulet compony above mount",
+"parse": "single"
+},
+{
+"num": 72,
+"name": "ramensperg",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "ASV",
+"blazon": "ram on mount",
+"repeat": false
+}
+],
+"crest": "no crest ornament   S         ibex isst",
+"raw_arms": "1 A SV  ram on mount",
+"parse": "single"
+},
+{
+"num": 73,
+"name": "om",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "ASG",
+"blazon": "sheep & border",
+"repeat": false
+}
+],
+"crest": "no crest ornament   S         sheep",
+"raw_arms": "1 A SG  sheep & border",
+"parse": "single"
+},
+{
+"num": 74,
+"name": "grifenstain",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OSV",
+"blazon": "griffin on mount",
+"repeat": false
+}
+],
+"crest": "no crest ornament     S           griffin segreant",
+"raw_arms": "1 O SV         griffin on mount",
+"parse": "single"
+},
+{
+"num": 75,
+"name": "kuirneg",
+"region": "sou",
+"attr": null,
+"pos": "s2f14a",
+"coats": [
+{
+"codes": "GA",
+"blazon": "pile isst base sn",
+"repeat": false
+}
+],
+"crest": "no crest ornament     =S          fan ch. arms garnished with tufts of cock feathers",
+"raw_arms": "s2f14a 1 G A          pile isst base sn",
+"parse": "single"
+},
+{
+"num": 76,
+"name": "schoenenberg",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "chief",
+"repeat": false
+}
+],
+"crest": "no crest ornament     GA          2 bull's horns per fess",
+"raw_arms": "1 AG           chief",
+"parse": "single"
+},
+{
+"num": 77,
+"name": "wellenberg",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OS",
+"blazon": "wing fesswise",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "1 OS           wing fesswise",
+"parse": "single"
+},
+{
+"num": 78,
+"name": "luterberg",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GAA",
+"blazon": "bend betw 6 roses",
+"repeat": false
+}
+],
+"crest": "no crest ornament     AS          2 angle bars tipped with roundels cch",
+"raw_arms": "1 G AA         bend betw 6 roses",
+"parse": "single"
+},
+{
+"num": 79,
+"name": "buizer",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "bend",
+"repeat": false
+}
+],
+"crest": "no crest ornament     =S          fan ch. arms garnished with tufts of cock feathers",
+"raw_arms": "1 AG           bend",
+"parse": "single"
+},
+{
+"num": 80,
+"name": "schinen",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BOA",
+"blazon": "star of 8 pt above mount",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "1 B OA         star of 8 pt above mount",
+"parse": "single"
+},
+{
+"num": 81,
+"name": "maehern",
+"region": "mor",
+"attr": null,
+"pos": "s3f1a",
+"coats": [
+{
+"codes": "BXOG",
+"blazon": "eagle checky cr.",
+"repeat": false
+}
+],
+"crest": "no crest ornament     AS          wing extended paly",
+"raw_arms": "s3f1a  1 B X OG eagle checky cr.",
+"parse": "single"
+},
+{
+"num": 82,
+"name": "misen",
+"region": "mis",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OS",
+"blazon": "lion rampant",
+"repeat": false
+}
+],
+"crest": "no crest ornament         GON      cone crested tipped with peacock tail",
+"raw_arms": "1 OS           lion rampant",
+"parse": "single"
+},
+{
+"num": 83,
+"name": "bretzla",
+"region": "pol",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OSA",
+"blazon": "eagle ch. crescent",
+"repeat": false
+}
+],
+"crest": "no crest ornament         =N       fan ch. arms garnished with peacock eyes",
+"raw_arms": "1 O SA         eagle ch. crescent",
+"parse": "single"
+},
+{
+"num": 84,
+"name": "brunswig",
+"region": "lux",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "XGAB",
+"blazon": "barruly & lion cr.",
+"repeat": false
+}
+],
+"crest": "no crest ornament         G        lion isst cr.",
+"raw_arms": "1 X G AB barruly & lion cr.",
+"parse": "single"
+},
+{
+"num": 85,
+"name": "nifen",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "SA",
+"blazon": "3 bugle-horns stringed in pale",
+"repeat": false
+}
+],
+"crest": "no crest ornament         OS       2 bugle horns stringed",
+"raw_arms": "1 SA           3 bugle-horns stringed in pale",
+"parse": "single"
+},
+{
+"num": 86,
+"name": "buiron",
+"region": "bav",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "SVA",
+"blazon": "branch sprouting 3 roses",
+"repeat": false
+}
+],
+"crest": "no crest ornament         =        figure of arms",
+"raw_arms": "1 S VA         branch sprouting 3 roses",
+"parse": "single"
+},
+{
+"num": 87,
+"name": "veringen",
+"region": "sou",
+"attr": null,
+"pos": "s3f2a",
+"coats": [
+{
+"codes": "OG",
+"blazon": "3 antlers in pale",
+"repeat": false
+}
+],
+"crest": "no crest ornament         O        2 antlers",
+"raw_arms": "s3f2a 1 O G    3 antlers in pale",
+"parse": "single"
+},
+{
+"num": 88,
+"name": "landow",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OS",
+"blazon": "3 antlers in pale   fan semy of elm leaves garnished with tufts of cock feathers",
+"repeat": false
+}
+],
+"crest": "no crest ornament         OAS",
+"raw_arms": "1 OS           3 antlers in pale   fan semy of elm leaves garnished with tufts of cock feathers",
+"parse": "single"
+},
+{
+"num": 89,
+"name": "schoennegg",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OS",
+"blazon": "3 mallets",
+"repeat": false
+}
+],
+"crest": "no crest ornament         SAA      man's head with bull's horns and garland of elm leaves",
+"raw_arms": "1 OS           3 mallets",
+"parse": "single"
+},
+{
+"num": 90,
+"name": "aichelberg",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OS",
+"blazon": "3 yokes in pale",
+"repeat": false
+}
+],
+"crest": "no crest ornament   O        talbot's head",
+"raw_arms": "1 OS      3 yokes in pale",
+"parse": "single"
+},
+{
+"num": 91,
+"name": "guotenburg",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GZ",
+"blazon": "saltire",
+"repeat": false
+}
+],
+"crest": "no crest ornament   AA       swan's head betw wings",
+"raw_arms": "1 GZ      saltire",
+"parse": "single"
+},
+{
+"num": 92,
+"name": "cem turn",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OS",
+"blazon": "tower",
+"repeat": false
+}
+],
+"crest": "no crest ornament   OS       cone garnished with roundels",
+"raw_arms": "1 OS      tower",
+"parse": "single"
+},
+{
+"num": 93,
+"name": "horenberg",
+"region": "sou",
+"attr": null,
+"pos": "s3f3a",
+"coats": [
+{
+"codes": "OVB",
+"blazon": "2 bugle-horns stringed affronted on mount",
+"repeat": false
+}
+],
+"crest": "no crest ornament   ON       bugle horn tipped with peacock plume",
+"raw_arms": "s3f3a  1 O VB    2 bugle-horns stringed affronted on mount",
+"parse": "single"
+},
+{
+"num": 94,
+"name": "scowenberg",
+"region": "aut",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "per pale",
+"repeat": false
+}
+],
+"crest": "no crest ornament   AG       2 bugle horns stringed",
+"raw_arms": "1 AG      per pale",
+"parse": "single"
+},
+{
+"num": 95,
+"name": "bienburg",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BO",
+"blazon": "lion passt guard",
+"repeat": false
+}
+],
+"crest": "no crest ornament   GN       2 bull's horns garnished with peacock feathers",
+"raw_arms": "1 BO      lion passt guard",
+"parse": "single"
+},
+{
+"num": 96,
+"name": "turner",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GA",
+"blazon": "tower",
+"repeat": false
+}
+],
+"crest": "no crest ornament   A        talbot's head",
+"raw_arms": "1 GA      tower",
+"parse": "single"
+},
+{
+"num": 97,
+"name": "lovbgassen",
+"region": "als",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OVG",
+"blazon": "6 elm leaves",
+"repeat": false
+}
+],
+"crest": "no crest ornament   V        elm tree",
+"raw_arms": "1 O VG    6 elm leaves",
+"parse": "single"
+},
+{
+"num": 98,
+"name": "lovbenberg",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GA",
+"blazon": "3 elm leaves in bend",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "1 GA           3 elm leaves in bend",
+"parse": "single"
+},
+{
+"num": 99,
+"name": "montalt",
+"region": "sui",
+"attr": null,
+"pos": "s3f4a",
+"coats": [
+{
+"codes": "BA",
+"blazon": "barry of 4",
+"repeat": false
+},
+{
+"codes": "G",
+"blazon": "plain",
+"repeat": false
+},
+{
+"codes": "G",
+"blazon": "plain",
+"repeat": true
+},
+{
+"codes": "G",
+"blazon": "plain",
+"repeat": true
+}
+],
+"crest": "no crest ornament        A           bear's head",
+"raw_arms": "s3f4a                 barry of 4; plain; =; = {BA, G}",
+"parse": "multi"
+},
+{
+"num": 100,
+"name": "schilt",
+"region": "als",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "SA",
+"blazon": "3 eagles",
+"repeat": false
+}
+],
+"crest": "no crest ornament        SA          man isst holding spade",
+"raw_arms": "1 SA           3 eagles",
+"parse": "single"
+},
+{
+"num": 101,
+"name": "snewli",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "VO",
+"blazon": "chief",
+"repeat": false
+}
+],
+"crest": "no crest ornament        A           2 bells",
+"raw_arms": "1 VO           chief",
+"parse": "single"
+},
+{
+"num": 102,
+"name": "berchain",
+"region": "als",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OG",
+"blazon": "cross",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "1 OG           cross",
+"parse": "single"
+},
+{
+"num": 103,
+"name": "schletstat",
+"region": "als",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GA",
+"blazon": "eagle's head",
+"repeat": false
+}
+],
+"crest": "no crest ornament        A           eagle's head",
+"raw_arms": "1 GA           eagle's head",
+"parse": "single"
+},
+{
+"num": 104,
+"name": "ruisegg",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BO",
+"blazon": "swan's head",
+"repeat": false
+}
+],
+"crest": "no crest ornament        AS          swan's head tipped with tuft of cock feathers",
+"raw_arms": "1 BO           swan's head",
+"parse": "single"
+},
+{
+"num": 105,
+"name": "graber",
+"region": "aut",
+"attr": null,
+"pos": "s3f5a",
+"coats": [
+{
+"codes": "OS",
+"blazon": "bend",
+"repeat": false
+}
+],
+"crest": "no crest ornament        GS          spade tipped with tuft of cock feathers",
+"raw_arms": "s3f5a 1 O S           bend",
+"parse": "single"
+},
+{
+"num": 106,
+"name": "helmshoven",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GO",
+"blazon": "helmet",
+"repeat": false
+}
+],
+"crest": "no crest ornament            O       helmet = pot helmet",
+"raw_arms": "1 GO             helmet",
+"parse": "single"
+},
+{
+"num": 107,
+"name": "chienstain",
+"region": "bav",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OG",
+"blazon": "fess",
+"repeat": false
+}
+],
+"crest": "no crest ornament            =N      mitre ch. arms tipped with 2 peacock plumes",
+"raw_arms": "1 OG             fess",
+"parse": "single"
+},
+{
+"num": 108,
+"name": "grenzer",
+"region": "bav",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "2 barbels addorsed",
+"repeat": false
+}
+],
+"crest": "no crest ornament            A       snail",
+"raw_arms": "1 AG             2 barbels addorsed",
+"parse": "single"
+},
+{
+"num": 109,
+"name": "belsholtz",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "VAGO",
+"blazon": "3 bars undy & chief ch. lion passt",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "1 V AGO 3 bars undy & chief ch. lion passt",
+"parse": "single"
+},
+{
+"num": 110,
+"name": "liebenberg",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "pitcher",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "1 AG             pitcher",
+"parse": "single"
+},
+{
+"num": 111,
+"name": "zwirkenberg",
+"region": "sou",
+"attr": null,
+"pos": "s3f6a",
+"coats": [
+{
+"codes": "AS",
+"blazon": "horseshoe",
+"repeat": false
+}
+],
+"crest": "no crest ornament            AS      horseshoe garnished with cock feathers",
+"raw_arms": "s3f6a 1 A S      horseshoe",
+"parse": "single"
+},
+{
+"num": 112,
+"name": "uffenstein",
+"region": "tir",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OSB",
+"blazon": "owl on mount",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "1 O SB           owl on mount",
+"parse": "single"
+},
+{
+"num": 113,
+"name": "wiler",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "per bend nebuly",
+"repeat": false
+}
+],
+"crest": "no crest ornament            =       2 bull's horns ch. arms",
+"raw_arms": "1 AG             per bend nebuly",
+"parse": "single"
+},
+{
+"num": 114,
+"name": "<obaerloh>",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AS",
+"blazon": "goat statant",
+"repeat": false
+}
+],
+"crest": "no crest ornament  S              ibex isst",
+"raw_arms": "1 AS       goat statant",
+"parse": "single"
+},
+{
+"num": 115,
+"name": "schoenen",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "eagle per bend",
+"repeat": false
+}
+],
+"crest": "no crest ornament  N              man's head",
+"raw_arms": "1 AG       eagle per bend",
+"parse": "single"
+},
+{
+"num": 116,
+"name": "..",
+"region": null,
+"attr": null,
+"pos": "s1f1b",
+"coats": [
+{
+"codes": "OG",
+"blazon": "wolf's head",
+"repeat": false
+}
+],
+"crest": "no crest ornament  G              wolf's head",
+"raw_arms": "s1f1b 1 O G        wolf's head",
+"parse": "single"
+},
+{
+"num": 117,
+"name": "..",
+"region": null,
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OBG",
+"blazon": "fess dancetty cotised",
+"repeat": false
+}
+],
+"crest": "no crest ornament  =A             fan ch. arms garnished with pearls",
+"raw_arms": "1 O BG     fess dancetty cotised",
+"parse": "single"
+},
+{
+"num": 118,
+"name": "..",
+"region": "nav",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": null,
+"blazon": "cross moline :dim: bend cotised {OG, BAO}",
+"repeat": false
+}
+],
+"crest": "no crest ornament  =              fan triangular ch. arms",
+"raw_arms": "cross moline :dim: bend cotised {OG, BAO}",
+"parse": "nocode"
+},
+{
+"num": 119,
+"name": "..",
+"region": null,
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "lion",
+"repeat": false
+},
+{
+"codes": "BO",
+"blazon": "castle",
+"repeat": false
+}
+],
+"crest": "no crest ornament  A              castle",
+"raw_arms": "lion; castle {AG, BO}",
+"parse": "multi"
+},
+{
+"num": 120,
+"name": "..",
+"region": null,
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BOG",
+"blazon": "chief ch. lion isst",
+"repeat": false
+}
+],
+"crest": "no crest ornament  G              lion isst cr.",
+"raw_arms": "1 B OG     chief ch. lion isst",
+"parse": "single"
+},
+{
+"num": 121,
+"name": "..",
+"region": null,
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OXSG",
+"blazon": "lion hooded cr.",
+"repeat": false
+}
+],
+"crest": "no crest ornament  SA             lion hooded cr.",
+"raw_arms": "1 O X SG lion hooded cr.",
+"parse": "single"
+},
+{
+"num": 122,
+"name": "..",
+"region": "ori",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AOG",
+"blazon": "cross potenty fitchy ch. 5 roundels",
+"repeat": false
+}
+],
+"crest": "no crest ornament  =              figure of arms",
+"raw_arms": "1 A OG     cross potenty fitchy ch. 5 roundels",
+"parse": "single"
+},
+{
+"num": 123,
+"name": "..",
+"region": null,
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GO",
+"blazon": "2 barbels addorsed",
+"repeat": false
+}
+],
+"crest": "no crest ornament  OG             2 fishes addorsed on fan",
+"raw_arms": "1 GO       2 barbels addorsed",
+"parse": "single"
+},
+{
+"num": 124,
+"name": "herin",
+"region": null,
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BN",
+"blazon": "king's head cr.",
+"repeat": false
+}
+],
+"crest": "no crest ornament     =           figure of arms",
+"raw_arms": "1 BN        king's head cr.",
+"parse": "single"
+},
+{
+"num": 125,
+"name": "..",
+"region": null,
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "cap with cordon",
+"repeat": false
+}
+],
+"crest": "no crest ornament     G           broadbrimmed hat",
+"raw_arms": "1 AG        cap with cordon",
+"parse": "single"
+},
+{
+"num": 126,
+"name": "..",
+"region": null,
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GO",
+"blazon": "3 hats pointed",
+"repeat": false
+}
+],
+"crest": "no crest ornament     ON          hat tipped with peacock plume",
+"raw_arms": "1 GO        3 hats pointed",
+"parse": "single"
+},
+{
+"num": 127,
+"name": "bregentz",
+"region": "sui",
+"attr": null,
+"pos": "s2f1b",
+"coats": [
+{
+"codes": "ZE",
+"blazon": "pale",
+"repeat": false
+}
+],
+"crest": "no crest ornament     XN AB turban garnished with peacock eyes",
+"raw_arms": "s2f1b 1 Z E         pale",
+"parse": "single"
+},
+{
+"num": 128,
+"name": "werdenberg",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AS",
+"blazon": "gonfanon",
+"repeat": false
+}
+],
+"crest": "no crest ornament     A           wing extended",
+"raw_arms": "1 AS        gonfanon",
+"parse": "single"
+},
+{
+"num": 129,
+"name": "velkirch",
+"region": "hen",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OG",
+"blazon": "gonfanon",
+"repeat": false
+}
+],
+"crest": "no crest ornament     =N          fan ch. arms garnished with peacock eyes",
+"raw_arms": "1 OG        gonfanon",
+"parse": "single"
+},
+{
+"num": 130,
+"name": "tetnang",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "gonfanon",
+"repeat": false
+}
+],
+"crest": "no crest ornament     GA          mitre tipped with 2 roundels",
+"raw_arms": "1 AG        gonfanon",
+"parse": "single"
+},
+{
+"num": 131,
+"name": "kur",
+"region": "hen",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OG",
+"blazon": "gonfanon",
+"repeat": false
+}
+],
+"crest": "no crest ornament                 mitre tipped with 2 roundels",
+"raw_arms": "1 OG        gonfanon",
+"parse": "single"
+},
+{
+"num": 132,
+"name": "asperg",
+"region": "sou",
+"attr": null,
+"pos": "s2f2b",
+"coats": [
+{
+"codes": "GO",
+"blazon": "gonfanon              2 angle bars with banners ch. arms tipped with peacock plumes and",
+"repeat": false
+}
+],
+"crest": "no crest ornament     A=V=",
+"raw_arms": "s2f2b 1 G O         gonfanon              2 angle bars with banners ch. arms tipped with peacock plumes and",
+"parse": "single"
+},
+{
+"num": 133,
+"name": "hailigberg",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AS",
+"blazon": "bend dancetty",
+"repeat": false
+}
+],
+"crest": "no crest ornament     A             talbot's head",
+"raw_arms": "1 AS            bend dancetty",
+"parse": "single"
+},
+{
+"num": 134,
+"name": "wildenberg",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OS",
+"blazon": "griffin segreant",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "1 OS            griffin segreant",
+"parse": "single"
+},
+{
+"num": 135,
+"name": "kilchberg",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "ASA",
+"blazon": "woman holdig mitre",
+"repeat": false
+}
+],
+"crest": "no crest ornament     AS            mitre tipped with 2 tufts of cock feathers",
+"raw_arms": "1 A SA          woman holdig mitre",
+"parse": "single"
+},
+{
+"num": 136,
+"name": "walse",
+"region": "aut",
+"attr": null,
+"pos": "s2f3b",
+"coats": [
+{
+"codes": "GA",
+"blazon": "fess",
+"repeat": false
+}
+],
+"crest": "no crest ornament     GA            mitre tipped with 2 roundels",
+"raw_arms": "s2f3b 1 G A     fess",
+"parse": "single"
+},
+{
+"num": 137,
+"name": "vatz",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AB",
+"blazon": "checky of 9",
+"repeat": false
+},
+{
+"codes": "G",
+"blazon": "plain",
+"repeat": false
+},
+{
+"codes": "G",
+"blazon": "plain",
+"repeat": true
+},
+{
+"codes": "G",
+"blazon": "plain",
+"repeat": true
+}
+],
+"crest": "no crest ornament     A             2 swan's heads",
+"raw_arms": "checky of 9; plain; =; = {AB, G}",
+"parse": "multi"
+},
+{
+"num": 138,
+"name": "clingen",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "SOO",
+"blazon": "lion cr., billety",
+"repeat": false
+}
+],
+"crest": "no crest ornament     ABN           lion isst crested and garnished with peacock eyes",
+"raw_arms": "1 S OO          lion cr., billety",
+"parse": "single"
+},
+{
+"num": 139,
+"name": "clingen",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OV",
+"blazon": "crequer plant with oak leaves",
+"repeat": false
+}
+],
+"crest": "no crest ornament     GOA           mirror garnished with feathers",
+"raw_arms": "1 OV            crequer plant with oak leaves",
+"parse": "single"
+},
+{
+"num": 140,
+"name": "sax",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OG",
+"blazon": "per pale",
+"repeat": false
+}
+],
+"crest": "no crest ornament          S          bear's head",
+"raw_arms": "1 OG             per pale",
+"parse": "single"
+},
+{
+"num": 141,
+"name": "belmont",
+"region": "sui",
+"attr": null,
+"pos": "s2f4b",
+"coats": [
+{
+"codes": "OS",
+"blazon": "bend embattled-counterembattled",
+"repeat": false
+}
+],
+"crest": "no crest ornament          =G         mitre ch. arms tipped with 2 roundels",
+"raw_arms": "s2f4b 1 O S      bend embattled-counterembattled",
+"parse": "single"
+},
+{
+"num": 142,
+"name": "guitingen",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AGV",
+"blazon": "rose slipped",
+"repeat": false
+}
+],
+"crest": "no crest ornament          =G         mitre ch. arms tipped with 2 roses",
+"raw_arms": "1 A GV           rose slipped",
+"parse": "single"
+},
+{
+"num": 143,
+"name": "roetelen",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "ZOG",
+"blazon": "chief ch. lion isst",
+"repeat": false
+}
+],
+"crest": "no crest ornament          GZ         lion's head crested",
+"raw_arms": "1 Z OG           chief ch. lion isst",
+"parse": "single"
+},
+{
+"num": 144,
+"name": "griesenberg",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BO",
+"blazon": "chevronny            cap pointed per fess ch. escutcheon of arms and tipped with peacock",
+"repeat": false
+}
+],
+"crest": "no crest ornament          X=V OG",
+"raw_arms": "1 BO             chevronny            cap pointed per fess ch. escutcheon of arms and tipped with peacock",
+"parse": "single"
+},
+{
+"num": 145,
+"name": "buirglen",
+"region": "sui",
+"attr": null,
+"pos": "s2f5b",
+"coats": [
+{
+"codes": "BO",
+"blazon": "lion cr.",
+"repeat": false
+}
+],
+"crest": "no crest ornament          AS         mitre tipped with 2 tufts of cock feathers",
+"raw_arms": "s2f5b 1 B O      lion cr.",
+"parse": "single"
+},
+{
+"num": 146,
+"name": "regensperg",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "XGAB",
+"blazon": "paly & fess",
+"repeat": false
+}
+],
+"crest": "no crest ornament          =N         mitre ch. arms tipped with 2 peacock plumes",
+"raw_arms": "1 X G AB paly & fess",
+"parse": "single"
+},
+{
+"num": 147,
+"name": "krenkingen",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GXAB",
+"blazon": "chief paly",
+"repeat": false
+}
+],
+"crest": "no crest ornament    O         talbot's head",
+"raw_arms": "1 G X AB chief paly",
+"parse": "single"
+},
+{
+"num": 148,
+"name": "lupfen",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AB",
+"blazon": "chief",
+"repeat": false
+}
+],
+"crest": "no crest ornament    AAS       swan's head betw 2 rods tipped with tufts of cock feathers",
+"raw_arms": "1 AB       chief",
+"parse": "single"
+},
+{
+"num": 149,
+"name": "tengen",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GA",
+"blazon": "unicorn salient",
+"repeat": false
+}
+],
+"crest": "no crest ornament    A         unicorn naissant",
+"raw_arms": "1 GA       unicorn salient",
+"parse": "single"
+},
+{
+"num": 150,
+"name": "hewen",
+"region": "sou",
+"attr": null,
+"pos": "s2f6b",
+"coats": [
+{
+"codes": "OSO",
+"blazon": "chief ch. mullet",
+"repeat": false
+}
+],
+"crest": "no crest ornament    AOS       mirror garnished with cock feathers",
+"raw_arms": "s2f6b  1 O SO     chief ch. mullet",
+"parse": "single"
+},
+{
+"num": 151,
+"name": "gundelvingen",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OG",
+"blazon": "bend radiant        swan's head betw 2 angle bars tipped with peacock plumes",
+"repeat": false
+}
+],
+"crest": "no crest ornament    AGN",
+"raw_arms": "1 OG       bend radiant        swan's head betw 2 angle bars tipped with peacock plumes",
+"parse": "single"
+},
+{
+"num": 152,
+"name": "roetenberg",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OG",
+"blazon": "mount couped        swan's head betw 2 angle bars tipped with peacock plumes",
+"repeat": false
+}
+],
+"crest": "no crest ornament    AON",
+"raw_arms": "1 OG       mount couped        swan's head betw 2 angle bars tipped with peacock plumes",
+"parse": "single"
+},
+{
+"num": 153,
+"name": "friberg",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BA",
+"blazon": "3 lozenges in fess",
+"repeat": false
+}
+],
+"crest": "no crest ornament    A         plume of feathers",
+"raw_arms": "1 BA       3 lozenges in fess",
+"parse": "single"
+},
+{
+"num": 154,
+"name": "kim",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GA",
+"blazon": "pointed hat",
+"repeat": false
+}
+],
+"crest": "no crest ornament    O         cap pointed and tipped unusual",
+"raw_arms": "1 GA       pointed hat",
+"parse": "single"
+},
+{
+"num": 155,
+"name": "hetlingen",
+"region": "sui",
+"attr": null,
+"pos": "s2f7b",
+"coats": [
+{
+"codes": "XOSAG",
+"blazon": "checky & chief ch. eagle isst",
+"repeat": false
+}
+],
+"crest": "no crest ornament     SA         2 bull's horns garnished with crescents",
+"raw_arms": "s2f7b  1 X OS AG checky & chief ch. eagle isst",
+"parse": "single"
+},
+{
+"num": 156,
+"name": "suls",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BO",
+"blazon": "bathtub",
+"repeat": false
+}
+],
+"crest": "no crest ornament     OS         bathtub tipped with 2 tufts of cock feathers",
+"raw_arms": "1 BO       bathtub",
+"parse": "single"
+},
+{
+"num": 157,
+"name": "bichelnse",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GA",
+"blazon": "fess",
+"repeat": false
+}
+],
+"crest": "no crest ornament     GA         2 bull's horns each ch. fess",
+"raw_arms": "1 GA       fess",
+"parse": "single"
+},
+{
+"num": 158,
+"name": "elerbach",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OV",
+"blazon": "qtly",
+"repeat": false
+}
+],
+"crest": "no crest ornament     OV         2 bull's horns per fess cch",
+"raw_arms": "1 OV       qtly",
+"parse": "single"
+},
+{
+"num": 159,
+"name": "richenstain",
+"region": "tir",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OB",
+"blazon": "per bend",
+"repeat": false
+}
+],
+"crest": "no crest ornament     OB         2 bull's horns per fess cch",
+"raw_arms": "1 OB       per bend",
+"parse": "single"
+},
+{
+"num": 160,
+"name": "ruiti",
+"region": "sou",
+"attr": null,
+"pos": "s2f8b",
+"coats": [
+{
+"codes": "BA",
+"blazon": "3 mullets",
+"repeat": false
+}
+],
+"crest": "no crest ornament     BA         2 bull's horns garnished with stars",
+"raw_arms": "s2f8b 1 B A       3 mullets",
+"parse": "single"
+},
+{
+"num": 161,
+"name": "muiris",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OS",
+"blazon": "drinking-horn",
+"repeat": false
+}
+],
+"crest": "no crest ornament     SO         drinking-horn",
+"raw_arms": "1 OS       drinking-horn",
+"parse": "single"
+},
+{
+"num": 162,
+"name": "bekburg",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GAS",
+"blazon": "tierced per fess",
+"repeat": false
+}
+],
+"crest": "no crest ornament     GAS        cap pointed",
+"raw_arms": "1 G AS     tierced per fess",
+"parse": "single"
+},
+{
+"num": 163,
+"name": "ebersberg",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OSV",
+"blazon": "boar on mount",
+"repeat": false
+}
+],
+"crest": "no crest ornament        SA         2 sunflowers",
+"raw_arms": "1 O SV        boar on mount",
+"parse": "single"
+},
+{
+"num": 164,
+"name": "hasenbain",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "SOO",
+"blazon": "bend betw 2 roundels",
+"repeat": false
+}
+],
+"crest": "no crest ornament        =S         fan ch. arms garnished with cock feathers",
+"raw_arms": "1 S OO        bend betw 2 roundels",
+"parse": "single"
+},
+{
+"num": 165,
+"name": "tierberg",
+"region": "sou",
+"attr": null,
+"pos": "s2f9b",
+"coats": [
+{
+"codes": "BOA",
+"blazon": "doe on mount",
+"repeat": false
+}
+],
+"crest": "no crest ornament        O          doe's head",
+"raw_arms": "s2f9b  1 B OA        doe on mount",
+"parse": "single"
+},
+{
+"num": 166,
+"name": "rordof",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OB",
+"blazon": "per pale",
+"repeat": false
+}
+],
+"crest": "no crest ornament        OV         2 bull's horns",
+"raw_arms": "1 OB          per pale",
+"parse": "single"
+},
+{
+"num": 167,
+"name": "marbach",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "XOGAB",
+"blazon": "checky & chief ch. lion isst",
+"repeat": false
+}
+],
+"crest": "no crest ornament        GA         lion's head crested",
+"raw_arms": "1 X OG AB checky & chief ch. lion isst",
+"parse": "single"
+},
+{
+"num": 168,
+"name": "montfort",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AS",
+"blazon": "chessrook",
+"repeat": false
+}
+],
+"crest": "no crest ornament        GN         chessrook tipped with peacock tail",
+"raw_arms": "1 AS          chessrook",
+"parse": "single"
+},
+{
+"num": 169,
+"name": "hoheneg",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OS",
+"blazon": "bull's head",
+"repeat": false
+}
+],
+"crest": "no crest ornament        O          bull's head",
+"raw_arms": "1 OS          bull's head",
+"parse": "single"
+},
+{
+"num": 170,
+"name": "ainwile",
+"region": "sui",
+"attr": null,
+"pos": "s2f10b",
+"coats": [
+{
+"codes": "AG",
+"blazon": "stag's head isst flanc sn",
+"repeat": false
+}
+],
+"crest": "no crest ornament          G          wolf naissant",
+"raw_arms": "s2f10b 1 A G     stag's head isst flanc sn",
+"parse": "single"
+},
+{
+"num": 171,
+"name": "aspermont",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "SA",
+"blazon": "fess",
+"repeat": false
+}
+],
+"crest": "no crest ornament          =          fan triangular ch. arms",
+"raw_arms": "1 SA             fess",
+"parse": "single"
+},
+{
+"num": 172,
+"name": "kallenberg",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AV",
+"blazon": "elm tree",
+"repeat": false
+}
+],
+"crest": "no crest ornament          AS         2 fans garnished with cock featehrs",
+"raw_arms": "1 AV             elm tree",
+"parse": "single"
+},
+{
+"num": 173,
+"name": "clingenberg",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AS",
+"blazon": "chief",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "1 AS             chief",
+"parse": "single"
+},
+{
+"num": 174,
+"name": "bluomberg",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GZ",
+"blazon": "barry",
+"repeat": false
+}
+],
+"crest": "no crest ornament          =S         mitre ch. arms and tipped with 2 tufts of cock feathers",
+"raw_arms": "1 GZ             barry",
+"parse": "single"
+},
+{
+"num": 175,
+"name": "fridingen",
+"region": "sou",
+"attr": null,
+"pos": "s2f11b",
+"coats": [
+{
+"codes": "BAO",
+"blazon": "bend acc. lion in chf sn",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "s2f11b 1 B AO    bend acc. lion in chf sn",
+"parse": "single"
+},
+{
+"num": 176,
+"name": "walburg",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OS",
+"blazon": "3 lions passt guard",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "1 OS             3 lions passt guard",
+"parse": "single"
+},
+{
+"num": 177,
+"name": "sunenberg",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "2 lions passt guard cr.",
+"repeat": false
+}
+],
+"crest": "no crest ornament        G               2 bull's horns furred",
+"raw_arms": "1 AG            2 lions passt guard cr.",
+"parse": "single"
+},
+{
+"num": 178,
+"name": "landeg",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "2 lions passt guard cr.",
+"repeat": false
+}
+],
+"crest": "no crest ornament        AGS             cap pointed tipped tuft of cock feathers",
+"raw_arms": "1 AG            2 lions passt guard cr.",
+"parse": "single"
+},
+{
+"num": 179,
+"name": "ramenswag",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "2 lions passt guard cr.",
+"repeat": false
+}
+],
+"crest": "no crest ornament        A               3 swan's heads",
+"raw_arms": "1 AG            2 lions passt guard cr.",
+"parse": "single"
+},
+{
+"num": 180,
+"name": "kuinseg",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OG",
+"blazon": "lozengy",
+"repeat": false
+}
+],
+"crest": "no crest ornament        AN              cone tipped with peacock tail",
+"raw_arms": "1 OG            lozengy",
+"parse": "single"
+},
+{
+"num": 181,
+"name": "rischag",
+"region": "sou",
+"attr": null,
+"pos": "s2f12b",
+"coats": [
+{
+"codes": "OS",
+"blazon": "boar's head",
+"repeat": false
+}
+],
+"crest": "no crest ornament        OA              boar's head crested",
+"raw_arms": "s2f12b 1 O S    boar's head",
+"parse": "single"
+},
+{
+"num": 182,
+"name": "staineg",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BO",
+"blazon": "fess nebuly",
+"repeat": false
+}
+],
+"crest": "no crest ornament        =S              cap pointed ch. arms tipped tuft of cock feathers",
+"raw_arms": "1 BO            fess nebuly",
+"parse": "single"
+},
+{
+"num": 183,
+"name": "frowenvelt",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AS",
+"blazon": "2 ibex horns addorsed",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "1 AS            2 ibex horns addorsed",
+"parse": "single"
+},
+{
+"num": 184,
+"name": "tetingen",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OS",
+"blazon": "per fess & pale cch",
+"repeat": false
+}
+],
+"crest": "no crest ornament           AA        rod tipped with roundel betw wings",
+"raw_arms": "1 OS             per fess & pale cch",
+"parse": "single"
+},
+{
+"num": 185,
+"name": "criech",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GXAS",
+"blazon": "chief lozengy",
+"repeat": false
+}
+],
+"crest": "no crest ornament           =S        cone ch. arms tipped with tuft of cock feathers",
+"raw_arms": "1 G X AS chief lozengy",
+"parse": "single"
+},
+{
+"num": 186,
+"name": "martdorf",
+"region": "sou",
+"attr": null,
+"pos": "s2f13b",
+"coats": [
+{
+"codes": "AG",
+"blazon": "lion passt guard",
+"repeat": false
+}
+],
+"crest": "no crest ornament           G         virgin's head",
+"raw_arms": "s2f13b 1 A G     lion passt guard",
+"parse": "single"
+},
+{
+"num": 187,
+"name": "lindenberg",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "XBOAG",
+"blazon": "checky & chief ch. eagle per fess",
+"repeat": false
+}
+],
+"crest": "no crest ornament           A         plume of ostrich feathers",
+"raw_arms": "1 X BO AG checky & chief ch. eagle per fess",
+"parse": "single"
+},
+{
+"num": 188,
+"name": "diesenhoven",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "SA",
+"blazon": "cauldron",
+"repeat": false
+}
+],
+"crest": "no crest ornament           =S        cone ch. arms tipped with tuft of cock feathers",
+"raw_arms": "1 SA             cauldron",
+"parse": "single"
+},
+{
+"num": 189,
+"name": "heidelberg",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BO",
+"blazon": "3 buckles",
+"repeat": false
+}
+],
+"crest": "no crest ornament           O         bear passt",
+"raw_arms": "1 BO             3 buckles",
+"parse": "single"
+},
+{
+"num": 190,
+"name": "rorschach",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AVGO",
+"blazon": "rose bush on mount",
+"repeat": false
+}
+],
+"crest": "no crest ornament           S         tuft of cock feathers",
+"raw_arms": "1 A VGO rose bush on mount",
+"parse": "single"
+},
+{
+"num": 191,
+"name": "wartenberg",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "lion rampant",
+"repeat": false
+}
+],
+"crest": "no crest ornament           GO        lion isst crested",
+"raw_arms": "1 AG             lion rampant",
+"parse": "single"
+},
+{
+"num": 192,
+"name": "wartense",
+"region": "sui",
+"attr": null,
+"pos": "s2f14b",
+"coats": [
+{
+"codes": "BAG",
+"blazon": "2 bars acc. lion isst",
+"repeat": false
+}
+],
+"crest": "no crest ornament       SA              2 hooves per fess affronted",
+"raw_arms": "s2f14b 1 B AG         2 bars acc. lion isst",
+"parse": "single"
+},
+{
+"num": 193,
+"name": "maetsch",
+"region": "tir",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AB",
+"blazon": "3 wings fesswise (2:1)",
+"repeat": false
+}
+],
+"crest": "no crest ornament       AG              2 bugle horns stringed",
+"raw_arms": "1 AB           3 wings fesswise (2:1)",
+"parse": "single"
+},
+{
+"num": 194,
+"name": "rotenstain",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AGO",
+"blazon": "bend fretty",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "1 A GO         bend fretty",
+"parse": "single"
+},
+{
+"num": 195,
+"name": "staina",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BO",
+"blazon": "harp",
+"repeat": false
+}
+],
+"crest": "no crest ornament       GS              fan garnished with cock feathers",
+"raw_arms": "1 BO           harp",
+"parse": "single"
+},
+{
+"num": 196,
+"name": "melibrunnen",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AS",
+"blazon": "2 ibex horns in saltire",
+"repeat": false
+}
+],
+"crest": "no crest ornament       S               2 ibex' horns",
+"raw_arms": "1 AS           2 ibex horns in saltire",
+"parse": "single"
+},
+{
+"num": 197,
+"name": "honberg",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GO",
+"blazon": "2 bends",
+"repeat": false
+}
+],
+"crest": "no crest ornament       AS              wing extended per pale",
+"raw_arms": "1 GO           2 bends",
+"parse": "single"
+},
+{
+"num": 198,
+"name": "muilhain",
+"region": "sui",
+"attr": null,
+"pos": "s3f1b",
+"coats": [
+{
+"codes": "XGAB",
+"blazon": "per pale & lion cr. acc. 2 annulets cch in chf",
+"repeat": false
+}
+],
+"crest": "no crest ornament       =               figure of arms isst",
+"raw_arms": "s3f1b  1 X G AB per pale & lion cr. acc. 2 annulets cch in chf",
+"parse": "single"
+},
+{
+"num": 199,
+"name": "kelrshals",
+"region": "als",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BA",
+"blazon": "talon per fess isst dx",
+"repeat": false
+}
+],
+"crest": "no crest ornament       A               talon",
+"raw_arms": "1 BA           talon per fess isst dx",
+"parse": "single"
+},
+{
+"num": 200,
+"name": "zuirnler",
+"region": "tir",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GA",
+"blazon": "3 sickles (2 addorsed, 1 per pale)",
+"repeat": false
+}
+],
+"crest": "no crest ornament  AGS                  2 sickles garnished with cock's feathers",
+"raw_arms": "1 GA           3 sickles (2 addorsed, 1 per pale)",
+"parse": "single"
+},
+{
+"num": 201,
+"name": "tengen",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BOO",
+"blazon": "bend isst fleurs-de-lis",
+"repeat": false
+}
+],
+"crest": "no crest ornament  =S                   cap pointed ch. arms tipped tuft of cock feathers",
+"raw_arms": "1 B OO         bend isst fleurs-de-lis",
+"parse": "single"
+},
+{
+"num": 202,
+"name": "windeg             ibex segreant",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [],
+"crest": null,
+"raw_arms": "OOS",
+"parse": "none"
+},
+{
+"num": 203,
+"name": "brunnenvelt",
+"region": "aut",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OSS",
+"blazon": "bend cotised",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "1 O SS         bend cotised",
+"parse": "single"
+},
+{
+"num": 204,
+"name": "elnhoven",
+"region": "sou",
+"attr": null,
+"pos": "s3f2b",
+"coats": [
+{
+"codes": "XABG",
+"blazon": "per bend sn nebuly & lion guard cr. isst",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "s3f2b   1 X A BG per bend sn nebuly & lion guard cr. isst",
+"parse": "single"
+},
+{
+"num": 205,
+"name": "haimenhoven",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GA",
+"blazon": "horse saillant saddled",
+"repeat": false
+}
+],
+"crest": "no crest ornament  A                    horse's head",
+"raw_arms": "1 GA           horse saillant saddled",
+"parse": "single"
+},
+{
+"num": 206,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BXOA",
+"blazon": "chief per pale",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "1 B X OA chief per pale",
+"parse": "single"
+},
+{
+"num": 207,
+"name": "tosters",
+"region": "aut",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GAV",
+"blazon": "2 rams combatant on mount",
+"repeat": false
+}
+],
+"crest": "no crest ornament  A                    ibex isst",
+"raw_arms": "1 G AV         2 rams combatant on mount",
+"parse": "single"
+},
+{
+"num": 208,
+"name": "werdstain",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "SOO",
+"blazon": "anchor inv & border",
+"repeat": false
+}
+],
+"crest": "no crest ornament          =S        fan ch. arms garnished with tufts of cock feathers",
+"raw_arms": "1 S OO         anchor inv & border",
+"parse": "single"
+},
+{
+"num": 209,
+"name": "gruenenstain",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "VA",
+"blazon": "barry of 4",
+"repeat": false
+}
+],
+"crest": "no crest ornament          AS        cap pointed garnished with tufts of cock feathers",
+"raw_arms": "1 VA           barry of 4",
+"parse": "single"
+},
+{
+"num": 210,
+"name": "wuinnenberg",
+"region": "sui",
+"attr": null,
+"pos": "s3f3b",
+"coats": [
+{
+"codes": "BO",
+"blazon": "mount couped",
+"repeat": false
+}
+],
+"crest": "no crest ornament          =S        fan ch. arms garnished with tufts of cock feathers",
+"raw_arms": "s3f3b 1 B O           mount couped",
+"parse": "single"
+},
+{
+"num": 211,
+"name": "hirseg",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OGB",
+"blazon": "stag salient against hill dx",
+"repeat": false
+}
+],
+"crest": "no crest ornament          G         stag naissant",
+"raw_arms": "1 O GB         stag salient against hill dx",
+"parse": "single"
+},
+{
+"num": 212,
+"name": "wilfendingen",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "3 viols",
+"repeat": false
+}
+],
+"crest": "no crest ornament          AG        fan ch. figure of arms",
+"raw_arms": "1 AG           3 viols",
+"parse": "single"
+},
+{
+"num": 213,
+"name": "guitingen",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AGV",
+"blazon": "rose slipped",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "1 A GV         rose slipped",
+"parse": "single"
+},
+{
+"num": 214,
+"name": "strasberg",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AS",
+"blazon": "ibex horn inv",
+"repeat": false
+}
+],
+"crest": "no crest ornament          A         2 ibex' horns",
+"raw_arms": "1 AS           ibex horn inv",
+"parse": "single"
+},
+{
+"num": 215,
+"name": "munolgingen",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GA",
+"blazon": "lancehead per bend",
+"repeat": false
+}
+],
+"crest": "no crest ornament          AN        arrowhead tipped with peacock plume",
+"raw_arms": "1 GA           lancehead per bend",
+"parse": "single"
+},
+{
+"num": 216,
+"name": "sunthain",
+"region": "sou",
+"attr": null,
+"pos": "s3f4b",
+"coats": [
+{
+"codes": "ABO",
+"blazon": "chief ch. wolf passt",
+"repeat": false
+}
+],
+"crest": "no crest ornament          AS        ram's head per pale",
+"raw_arms": "s3f4b  1 A BO         chief ch. wolf passt",
+"parse": "single"
+},
+{
+"num": 217,
+"name": "itelhusen",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BO",
+"blazon": "ibex segreant",
+"repeat": false
+}
+],
+"crest": "no crest ornament    A                ram's head",
+"raw_arms": "1 BO         ibex segreant",
+"parse": "single"
+},
+{
+"num": 218,
+"name": "aeschah",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GA",
+"blazon": "fish's head per bend",
+"repeat": false
+}
+],
+"crest": "no crest ornament    A                fish's head",
+"raw_arms": "1 GA         fish's head per bend",
+"parse": "single"
+},
+{
+"num": 219,
+"name": "schaelchlingen",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GO",
+"blazon": "bendy of 4",
+"repeat": false
+}
+],
+"crest": "no crest ornament    =                2 bull's horns ch. arms",
+"raw_arms": "1 GO         bendy of 4",
+"parse": "single"
+},
+{
+"num": 220,
+"name": "mettenbuoch",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AS",
+"blazon": "cock's head",
+"repeat": false
+}
+],
+"crest": "no crest ornament    S                cock's head",
+"raw_arms": "1 AS         cock's head",
+"parse": "single"
+},
+{
+"num": 221,
+"name": "stgen",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "SAG",
+"blazon": "chief ch. 3 cinquefoils",
+"repeat": false
+}
+],
+"crest": "no crest ornament    =                fan triangular ch. arms",
+"raw_arms": "1 S AG       chief ch. 3 cinquefoils",
+"parse": "single"
+},
+{
+"num": 222,
+"name": "hevenler",
+"region": "bgu",
+"attr": null,
+"pos": "s3f5b",
+"coats": [
+{
+"codes": "SAG",
+"blazon": "chief & label",
+"repeat": false
+}
+],
+"crest": "no crest ornament    SAG              swan's head crested",
+"raw_arms": "s3f5b  1 S AG       chief & label",
+"parse": "single"
+},
+{
+"num": 223,
+"name": "ab der haid",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AS",
+"blazon": "bull's head",
+"repeat": false
+}
+],
+"crest": "no crest ornament    S                bull's head",
+"raw_arms": "1 AS         bull's head",
+"parse": "single"
+},
+{
+"num": 224,
+"name": "andolfingen",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OS",
+"blazon": "spearhead in bend",
+"repeat": false
+}
+],
+"crest": "no crest ornament    SA               boar spearhead garnished with feathers",
+"raw_arms": "1 OS         spearhead in bend",
+"parse": "single"
+},
+{
+"num": 225,
+"name": "wasserburg",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GA",
+"blazon": "3 vats",
+"repeat": false
+}
+],
+"crest": "no crest ornament    AN               2 vats each tipped with peacock plume",
+"raw_arms": "1 GA         3 vats",
+"parse": "single"
+},
+{
+"num": 226,
+"name": "fridrih",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OB",
+"blazon": "wolf passt",
+"repeat": false
+}
+],
+"crest": "no crest ornament          A            hare courant",
+"raw_arms": "1 OB           wolf passt",
+"parse": "single"
+},
+{
+"num": 227,
+"name": "kuissenberg",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OB",
+"blazon": "chief",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "1 OB           chief",
+"parse": "single"
+},
+{
+"num": 228,
+"name": "crachenvels",
+"region": "sou",
+"attr": null,
+"pos": "s3f6b",
+"coats": [
+{
+"codes": "GAA",
+"blazon": "bend cotised",
+"repeat": false
+}
+],
+"crest": "no crest ornament          =!           2 bull's horns ch. arms",
+"raw_arms": "s3f6b  1 G AA         bend cotised",
+"parse": "single"
+},
+{
+"num": 229,
+"name": "rosberg",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OSG",
+"blazon": "horse trippant saddled",
+"repeat": false
+}
+],
+"crest": "no crest ornament          S            horse",
+"raw_arms": "1 O SG         horse trippant saddled",
+"parse": "single"
+},
+{
+"num": 230,
+"name": "bizzenhoven",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "VA",
+"blazon": "2 ibex horns in saltire",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "1 VA           2 ibex horns in saltire",
+"parse": "single"
+},
+{
+"num": 231,
+"name": "wagenberg",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GO",
+"blazon": "ibex horn inv",
+"repeat": false
+}
+],
+"crest": "no crest ornament          AS           ibex' horn garnished with tufts of cock feathers",
+"raw_arms": "1 GO           ibex horn inv",
+"parse": "single"
+},
+{
+"num": 232,
+"name": "aichshan",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AB",
+"blazon": "per pale",
+"repeat": false
+}
+],
+"crest": "no crest ornament          AB           2 bull's horns",
+"raw_arms": "1 AB           per pale",
+"parse": "single"
+},
+{
+"num": 233,
+"name": "eppenstein",
+"region": "sui",
+"attr": null,
+"pos": "s3b1a",
+"coats": [
+{
+"codes": "GA",
+"blazon": "ibex' head",
+"repeat": false
+}
+],
+"crest": "no crest ornament          A            ibex's head",
+"raw_arms": "s3b1a 1 G A           ibex' head",
+"parse": "single"
+},
+{
+"num": 234,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GA",
+"blazon": "2 combatants on foot",
+"repeat": false
+}
+],
+"crest": "no crest ornament   J         man's head helmeted",
+"raw_arms": "1 GA    2 combatants on foot",
+"parse": "single"
+},
+{
+"num": 235,
+"name": "..",
+"region": "als",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "ASG",
+"blazon": "lion & border",
+"repeat": false
+}
+],
+"crest": "no crest ornament   S         lion's head",
+"raw_arms": "1 A SG  lion & border",
+"parse": "single"
+},
+{
+"num": 236,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BA",
+"blazon": "quatrefoil",
+"repeat": false
+}
+],
+"crest": "no crest ornament             cap pointed ch. arms tipped with crescent",
+"raw_arms": "1 BA    quatrefoil",
+"parse": "single"
+},
+{
+"num": 237,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GAAG",
+"blazon": "per pale eagle isst & barry",
+"repeat": false
+}
+],
+"crest": "no crest ornament   AS        broom tipped with tuft of cock feathers",
+"raw_arms": "1 G AAG per pale eagle isst & barry",
+"parse": "single"
+},
+{
+"num": 238,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "XOGAB",
+"blazon": "checky & chief ch. lion passt guard",
+"repeat": false
+}
+],
+"crest": "no crest ornament   AN        eagle's head garnished with peacock eyes",
+"raw_arms": "1 X OG AB checky & chief ch. lion passt guard",
+"parse": "single"
+},
+{
+"num": 239,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": "s3b2a",
+"coats": [
+{
+"codes": "GSO",
+"blazon": "pale & border",
+"repeat": false
+}
+],
+"crest": "no crest ornament   =!N       2 bull's horns ch. arms garnished with peacock fan",
+"raw_arms": "s3b2a 1 G SO    pale & border",
+"parse": "single"
+},
+{
+"num": 240,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BA",
+"blazon": "per bend",
+"repeat": false
+}
+],
+"crest": "no crest ornament   G         cushion",
+"raw_arms": "1 BA    per bend",
+"parse": "single"
+},
+{
+"num": 241,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "XGAO",
+"blazon": "per pale & boar's head",
+"repeat": false
+}
+],
+"crest": "no crest ornament   GA        boar's head crested",
+"raw_arms": "1 X G AO per pale & boar's head",
+"parse": "single"
+},
+{
+"num": 242,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BO",
+"blazon": "griffin segreant",
+"repeat": false
+}
+],
+"crest": "no crest ornament    AA         eagle's head betw wings",
+"raw_arms": "1 BO        griffin segreant",
+"parse": "single"
+},
+{
+"num": 243,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "VA",
+"blazon": "sheep",
+"repeat": false
+}
+],
+"crest": "no crest ornament    A          sheep",
+"raw_arms": "1 VA        sheep",
+"parse": "single"
+},
+{
+"num": 244,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AB",
+"blazon": "mount couped",
+"repeat": false
+}
+],
+"crest": "no crest ornament    OG         chaplet of roses",
+"raw_arms": "1 AB        mount couped",
+"parse": "single"
+},
+{
+"num": 245,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": "s3b3a",
+"coats": [
+{
+"codes": "AXGVG",
+"blazon": "wheel per pale ch. 6 roses",
+"repeat": false
+}
+],
+"crest": "no crest ornament    SG         wheel segment",
+"raw_arms": "s3b3a 1 A XG VG wheel per pale ch. 6 roses",
+"parse": "single"
+},
+{
+"num": 246,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AS",
+"blazon": "andiron",
+"repeat": false
+}
+],
+"crest": "no crest ornament    SA         figure of arms tipped with tuft of cock feathers",
+"raw_arms": "1 AS        andiron",
+"parse": "single"
+},
+{
+"num": 247,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AS",
+"blazon": "3 ibex horns",
+"repeat": false
+}
+],
+"crest": "no crest ornament    AS         rod tipped wtih roundel betw ibex' horns",
+"raw_arms": "1 AS        3 ibex horns",
+"parse": "single"
+},
+{
+"num": 248,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GAB",
+"blazon": "3 hides fimbriated",
+"repeat": false
+}
+],
+"crest": "no crest ornament    =S         bust of man ch. arms with capuchon tipped with tuft of cock feathers",
+"raw_arms": "1 G AB      3 hides fimbriated",
+"parse": "single"
+},
+{
+"num": 249,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BOA",
+"blazon": "stag salient against hill dx",
+"repeat": false
+}
+],
+"crest": "no crest ornament",
+"raw_arms": "1 B OA      stag salient against hill dx",
+"parse": "single"
+},
+{
+"num": 250,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AS",
+"blazon": "bear rampant",
+"repeat": false
+}
+],
+"crest": "no crest ornament    S          bear naissant",
+"raw_arms": "1 AS        bear rampant",
+"parse": "single"
+},
+{
+"num": 251,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": "s3b4a",
+"coats": [
+{
+"codes": "OS",
+"blazon": "3 horseshoes",
+"repeat": false
+}
+],
+"crest": "no crest ornament  OS         2 horseshoes garnished with cock feathers",
+"raw_arms": "s3b4a 1 O S       3 horseshoes",
+"parse": "single"
+},
+{
+"num": 252,
+"name": "..",
+"region": "fkn",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GA",
+"blazon": "horse's head",
+"repeat": false
+}
+],
+"crest": "no crest ornament  A          horse's head",
+"raw_arms": "1 GA      horse's head",
+"parse": "single"
+},
+{
+"num": 253,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GA",
+"blazon": "3 glaive blades",
+"repeat": false
+}
+],
+"crest": "no crest ornament  AS         glaive blade",
+"raw_arms": "1 GA      3 glaive blades",
+"parse": "single"
+},
+{
+"num": 254,
+"name": "..",
+"region": "bav",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OSSA",
+"blazon": "per pale lion acc. bendy",
+"repeat": false
+}
+],
+"crest": "no crest ornament  GA         wheel segment garnished with tufts of cock feathers",
+"raw_arms": "1 O SSA   per pale lion acc. bendy",
+"parse": "single"
+},
+{
+"num": 255,
+"name": "..",
+"region": "aut",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GAS",
+"blazon": "chief ch. bird",
+"repeat": false
+}
+],
+"crest": "no crest ornament  AS         roundel tipped with bird close",
+"raw_arms": "1 G AS    chief ch. bird",
+"parse": "single"
+},
+{
+"num": 256,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BA",
+"blazon": "unicorn naissant",
+"repeat": false
+}
+],
+"crest": "no crest ornament  AS         unicorn isst garnished with tufts of cock feathers",
+"raw_arms": "1 BA      unicorn naissant",
+"parse": "single"
+},
+{
+"num": 257,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": "s3b5a",
+"coats": [
+{
+"codes": "GA",
+"blazon": "wolf naissant",
+"repeat": false
+}
+],
+"crest": "no crest ornament  A          wolf naissant",
+"raw_arms": "s3b5a 1 G A       wolf naissant",
+"parse": "single"
+},
+{
+"num": 258,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AS",
+"blazon": "per pale & 2 mullets cch",
+"repeat": false
+}
+],
+"crest": "no crest ornament  XSA AS human head per pale and ibex' horn garnished with stars",
+"raw_arms": "1 AS      per pale & 2 mullets cch",
+"parse": "single"
+},
+{
+"num": 259,
+"name": "..",
+"region": "bav",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AS",
+"blazon": "pale",
+"repeat": false
+}
+],
+"crest": "no crest ornament   =S              cap pointed ch. arms tipped tuft of cock feathers",
+"raw_arms": "1 AS       pale",
+"parse": "single"
+},
+{
+"num": 260,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "ASG",
+"blazon": "3 jew's hats",
+"repeat": false
+}
+],
+"crest": "no crest ornament   AS              cap pointed tipped tuft of cock feathers",
+"raw_arms": "1 A SG     3 jew's hats",
+"parse": "single"
+},
+{
+"num": 261,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AS",
+"blazon": "3 blackamoor's heads",
+"repeat": false
+}
+],
+"crest": "no crest ornament   A               man's head",
+"raw_arms": "1 AS       3 blackamoor's heads",
+"parse": "single"
+},
+{
+"num": 262,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GOB",
+"blazon": "bend ch. wolf",
+"repeat": false
+}
+],
+"crest": "no crest ornament   =A              fan ch. arms garnished with tufts of cock feathers",
+"raw_arms": "1 G OB     bend ch. wolf",
+"parse": "single"
+},
+{
+"num": 263,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": "s3b6a",
+"coats": [
+{
+"codes": "OXAG",
+"blazon": "chief checky",
+"repeat": false
+}
+],
+"crest": "no crest ornament   =               fan triangular ch. arms",
+"raw_arms": "s3b6a 1 O X AG chief checky",
+"parse": "single"
+},
+{
+"num": 264,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BOO",
+"blazon": "2 bends (the upper isst fleur-de-lis)",
+"repeat": false
+}
+],
+"crest": "no crest ornament   O               2 staves flory in saltire",
+"raw_arms": "1 B OO     2 bends (the upper isst fleur-de-lis)",
+"parse": "single"
+},
+{
+"num": 265,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OBS",
+"blazon": "fess betw 6 roses (3:3)",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "1 O BS     fess betw 6 roses (3:3)",
+"parse": "single"
+},
+{
+"num": 266,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "2 bends",
+"repeat": false
+}
+],
+"crest": "no crest ornament   =N              cap pointed ch. arms tipped with peacock tail",
+"raw_arms": "1 AG       2 bends",
+"parse": "single"
+},
+{
+"num": 267,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "checky",
+"repeat": false
+}
+],
+"crest": "no crest ornament         =           fan triangular ch. arms",
+"raw_arms": "1 AG           checky",
+"parse": "single"
+},
+{
+"num": 268,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BO",
+"blazon": "mill wheel",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "1 BO           mill wheel",
+"parse": "single"
+},
+{
+"num": 269,
+"name": "eberhartzwile",
+"region": "sou",
+"attr": null,
+"pos": "s2b1a",
+"coats": [
+{
+"codes": "AB",
+"blazon": "pily-paly",
+"repeat": false
+}
+],
+"crest": "no crest ornament         =           fan triangular ch. arms",
+"raw_arms": "s2b1a 1 A B            pily-paly",
+"parse": "single"
+},
+{
+"num": 270,
+"name": "liebenvels",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GA",
+"blazon": "wing fesswise upwards",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "1 GA           wing fesswise upwards",
+"parse": "single"
+},
+{
+"num": 271,
+"name": "rineg",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "SAG",
+"blazon": "roundel ch. lion passt guard",
+"repeat": false
+}
+],
+"crest": "no crest ornament         G           lion isst",
+"raw_arms": "1 S AG         roundel ch. lion passt guard",
+"parse": "single"
+},
+{
+"num": 272,
+"name": "hornstain",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BAO",
+"blazon": "antler per fess above mount",
+"repeat": false
+}
+],
+"crest": "no crest ornament         AO          antler enrolled on mount",
+"raw_arms": "1 B AO         antler per fess above mount",
+"parse": "single"
+},
+{
+"num": 273,
+"name": "regroltzwile",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AV",
+"blazon": "elm leaf inv",
+"repeat": false
+}
+],
+"crest": "no crest ornament         G           bull's attire",
+"raw_arms": "1 AV           elm leaf inv",
+"parse": "single"
+},
+{
+"num": 274,
+"name": "bartenstein",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BAA",
+"blazon": "2 axes addorsed above mount",
+"repeat": false
+}
+],
+"crest": "no crest ornament         GA          2 axes",
+"raw_arms": "1 B AA         2 axes addorsed above mount",
+"parse": "single"
+},
+{
+"num": 275,
+"name": "stofeln",
+"region": "sou",
+"attr": null,
+"pos": "s2b2a",
+"coats": [
+{
+"codes": "AG",
+"blazon": "3 gambs in pale",
+"repeat": false
+}
+],
+"crest": "no crest ornament        GG       woman's head betw gambs",
+"raw_arms": "s2b2a 1 A G     3 gambs in pale",
+"parse": "single"
+},
+{
+"num": 276,
+"name": "altsteten",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AB",
+"blazon": "barry",
+"repeat": false
+}
+],
+"crest": "no crest ornament        AS       cap pointed garnished with tufts of cock feathers",
+"raw_arms": "1 AB            barry",
+"parse": "single"
+},
+{
+"num": 277,
+"name": "aichan",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AS",
+"blazon": "3 yokes in pale",
+"repeat": false
+}
+],
+"crest": "no crest ornament        AS       2 bull's horns cch",
+"raw_arms": "1 AS            3 yokes in pale",
+"parse": "single"
+},
+{
+"num": 278,
+"name": "hoedorf",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GAA",
+"blazon": "per pale 3 fishing hooks & plain",
+"repeat": false
+}
+],
+"crest": "no crest ornament        AS       2 fishing hooks garnished with cock feathers",
+"raw_arms": "1 G AA          per pale 3 fishing hooks & plain",
+"parse": "single"
+},
+{
+"num": 279,
+"name": "bodmen",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "3 elm leaves inv",
+"repeat": false
+}
+],
+"crest": "no crest ornament        AN",
+"raw_arms": "1 AG            3 elm leaves inv",
+"parse": "single"
+},
+{
+"num": 280,
+"name": "haitnow",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OG",
+"blazon": "qtly",
+"repeat": false
+}
+],
+"crest": "no crest ornament        OG       2 bull's horns per fess cch",
+"raw_arms": "1 OG            qtly",
+"parse": "single"
+},
+{
+"num": 281,
+"name": "baldeg",
+"region": "sui",
+"attr": null,
+"pos": "s2b3a",
+"coats": [
+{
+"codes": "GA",
+"blazon": "2 wings",
+"repeat": false
+}
+],
+"crest": "no crest ornament        ON=      star isst garnished with peacock eyes and garland of escutcheons",
+"raw_arms": "s2b3a 1 G A     2 wings",
+"parse": "single"
+},
+{
+"num": 282,
+"name": "studengast",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BO",
+"blazon": "talon terminated in chf by 2 fleurs-de-lis",
+"repeat": false
+}
+],
+"crest": "no crest ornament        GS       2 bull's horns",
+"raw_arms": "1 BO            talon terminated in chf by 2 fleurs-de-lis",
+"parse": "single"
+},
+{
+"num": 283,
+"name": "hohenvels",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AV",
+"blazon": "chief",
+"repeat": false
+}
+],
+"crest": "no crest ornament      VA             2 bull's horns crested per fess",
+"raw_arms": "1 AV            chief",
+"parse": "single"
+},
+{
+"num": 284,
+"name": "casteln",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "XGOA",
+"blazon": "per pale & lion passt guard",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "1 X G OA per pale & lion passt guard",
+"parse": "single"
+},
+{
+"num": 285,
+"name": "uitendorf",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OS",
+"blazon": "crampon per fess",
+"repeat": false
+}
+],
+"crest": "no crest ornament      SAA            man's head with bull's horns and garland of elm leaves",
+"raw_arms": "1 OS            crampon per fess",
+"parse": "single"
+},
+{
+"num": 286,
+"name": "nuiwahusen",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "SA",
+"blazon": "2 crescents addorsed",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "1 SA            2 crescents addorsed",
+"parse": "single"
+},
+{
+"num": 287,
+"name": "riet",
+"region": "sou",
+"attr": null,
+"pos": "s2b4a",
+"coats": [
+{
+"codes": "XGBA",
+"blazon": "barry & lion cr.",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "s2b4a 1 X G BA barry & lion cr.",
+"parse": "single"
+},
+{
+"num": 288,
+"name": "iberg",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OB",
+"blazon": "2 unicorns' heads addorsed",
+"repeat": false
+}
+],
+"crest": "no crest ornament      VAS            unicorn isst crested garnished with tufts of cock feathers",
+"raw_arms": "1 OB            2 unicorns' heads addorsed",
+"parse": "single"
+},
+{
+"num": 289,
+"name": "lutra",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "stag's head isst flanc sn",
+"repeat": false
+}
+],
+"crest": "no crest ornament      A              stag's head",
+"raw_arms": "1 AG            stag's head isst flanc sn",
+"parse": "single"
+},
+{
+"num": 290,
+"name": "iungingen",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BA",
+"blazon": "scissors open         2 bull's horns garnished with tufts of cock feathers all cch",
+"repeat": false
+}
+],
+"crest": "no crest ornament      AS",
+"raw_arms": "1 BA            scissors open         2 bull's horns garnished with tufts of cock feathers all cch",
+"parse": "single"
+},
+{
+"num": 291,
+"name": "berwag",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BA",
+"blazon": "fess dancetty",
+"repeat": false
+}
+],
+"crest": "no crest ornament       =S     fan ch. arms garnished with tufts of cock feathers",
+"raw_arms": "1 BA            fess dancetty",
+"parse": "single"
+},
+{
+"num": 292,
+"name": "im turn",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OG",
+"blazon": "bendy",
+"repeat": false
+}
+],
+"crest": "no crest ornament       =      talbot's head in capuchon ch. arms",
+"raw_arms": "1 OG            bendy",
+"parse": "single"
+},
+{
+"num": 293,
+"name": "mazingen",
+"region": "sui",
+"attr": null,
+"pos": "s2b5a",
+"coats": [
+{
+"codes": "OS",
+"blazon": "escutcheon",
+"repeat": false
+}
+],
+"crest": "no crest ornament       GGA    2 bull's horns garnished with wolf-hooks feathered",
+"raw_arms": "s2b5a 1 O S     escutcheon",
+"parse": "single"
+},
+{
+"num": 294,
+"name": "biber",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OS",
+"blazon": "beaver",
+"repeat": false
+}
+],
+"crest": "no crest ornament       =S     cone ch. arms tipped with tuft of cock feathers",
+"raw_arms": "1 OS            beaver",
+"parse": "single"
+},
+{
+"num": 295,
+"name": "uesenberg",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BA",
+"blazon": "wing fesswise",
+"repeat": false
+}
+],
+"crest": "no crest ornament       GA     woman's head tipped with wing extended",
+"raw_arms": "1 BA            wing fesswise",
+"parse": "single"
+},
+{
+"num": 296,
+"name": "eschibach",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OS",
+"blazon": "cross moline",
+"repeat": false
+}
+],
+"crest": "no crest ornament       AS     2 bull's horns garnished with tufts of cock feathers",
+"raw_arms": "1 OS            cross moline",
+"parse": "single"
+},
+{
+"num": 297,
+"name": "uirslingen",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AGXOS",
+"blazon": "3 escutcheons & border compony",
+"repeat": false
+}
+],
+"crest": "no crest ornament       N      peacock",
+"raw_arms": "1 A GX OS 3 escutcheons & border compony",
+"parse": "single"
+},
+{
+"num": 298,
+"name": "wolfurt",
+"region": "aut",
+"attr": null,
+"pos": "s2b6a",
+"coats": [
+{
+"codes": "ABB",
+"blazon": "2 wolves passt in pale above 2 bars undy",
+"repeat": false
+}
+],
+"crest": "no crest ornament       B      wolf's head",
+"raw_arms": "s2b6a 1 A BB    2 wolves passt in pale above 2 bars undy",
+"parse": "single"
+},
+{
+"num": 299,
+"name": "phlegelberg",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GAV",
+"blazon": "2 flails addorsed acc. mount in base",
+"repeat": false
+}
+],
+"crest": "no crest ornament         A                 2 flails",
+"raw_arms": "1 G AV           2 flails addorsed acc. mount in base",
+"parse": "single"
+},
+{
+"num": 300,
+"name": "nordholz",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BA",
+"blazon": "wheel",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "1 BA             wheel",
+"parse": "single"
+},
+{
+"num": 301,
+"name": "aemarkingen",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BO",
+"blazon": "crampon per fess",
+"repeat": false
+}
+],
+"crest": "no crest ornament         G                 ibex's head",
+"raw_arms": "1 BO             crampon per fess",
+"parse": "single"
+},
+{
+"num": 302,
+"name": "kloten",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GA",
+"blazon": "2 staves flory in saltire",
+"repeat": false
+}
+],
+"crest": "no crest ornament         GA                roundel garnished with feathers",
+"raw_arms": "1 GA             2 staves flory in saltire",
+"parse": "single"
+},
+{
+"num": 303,
+"name": "hoest",
+"region": "aut",
+"attr": null,
+"pos": "s2b7a",
+"coats": [
+{
+"codes": "AG",
+"blazon": "chevron",
+"repeat": false
+}
+],
+"crest": "no crest ornament         =S                fan triangular ch. arms garnished with cock feathers",
+"raw_arms": "s2b7a 1 A G      chevron",
+"parse": "single"
+},
+{
+"num": 304,
+"name": "berg",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AS",
+"blazon": "wheel",
+"repeat": false
+}
+],
+"crest": "no crest ornament         SA                wheel garnished with tufts of cock feathers",
+"raw_arms": "1 AS             wheel",
+"parse": "single"
+},
+{
+"num": 305,
+"name": "wildenvels",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "XGAS",
+"blazon": "per pale lion guard isst & plain",
+"repeat": false
+}
+],
+"crest": "no crest ornament         GS                horn garnished with 3 tufts of cock feathers",
+"raw_arms": "1 X G AS per pale lion guard isst & plain",
+"parse": "single"
+},
+{
+"num": 306,
+"name": "rineg",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BOG",
+"blazon": "roundel ch. lion passt",
+"repeat": false
+}
+],
+"crest": "no crest ornament         =S                figure of arms",
+"raw_arms": "1 B OG           roundel ch. lion passt",
+"parse": "single"
+},
+{
+"num": 307,
+"name": "bonlant",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "SO",
+"blazon": "fleur-de-lis",
+"repeat": false
+}
+],
+"crest": "no crest ornament            OS         fleur-de-lis tipped with tuft of cock feathers",
+"raw_arms": "1 SO             fleur-de-lis",
+"parse": "single"
+},
+{
+"num": 308,
+"name": "tuifel",
+"region": "sui",
+"attr": null,
+"pos": "s2b8a",
+"coats": [
+{
+"codes": "OS",
+"blazon": "roundel",
+"repeat": false
+}
+],
+"crest": "no crest ornament            SO         2 bull's horns garnished with roundels",
+"raw_arms": "s2b8a 1 O S      roundel",
+"parse": "single"
+},
+{
+"num": 309,
+"name": "grassower",
+"region": "aut",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GA",
+"blazon": "fire steel",
+"repeat": false
+}
+],
+"crest": "no crest ornament            S          bear's head",
+"raw_arms": "1 GA             fire steel",
+"parse": "single"
+},
+{
+"num": 310,
+"name": "sterneg",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "SAG",
+"blazon": "pale ch. 3 mullets",
+"repeat": false
+}
+],
+"crest": "no crest ornament            OG         2 sickles with star betw points",
+"raw_arms": "1 S AG           pale ch. 3 mullets",
+"parse": "single"
+},
+{
+"num": 311,
+"name": "blattenberg",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AGV",
+"blazon": "fess acc. 3 mounts in chf",
+"repeat": false
+}
+],
+"crest": "no crest ornament            V          elm tree",
+"raw_arms": "1 A GV           fess acc. 3 mounts in chf",
+"parse": "single"
+},
+{
+"num": 312,
+"name": "lochnow",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OGOS",
+"blazon": "per pale eagle isst & fess",
+"repeat": false
+}
+],
+"crest": "no crest ornament            A          unicorn's head",
+"raw_arms": "1 O GOS per pale eagle isst & fess",
+"parse": "single"
+},
+{
+"num": 313,
+"name": "swaninger",
+"region": "sou",
+"attr": null,
+"pos": "s2b9a",
+"coats": [
+{
+"codes": "AS",
+"blazon": "per chevron embowed",
+"repeat": false
+}
+],
+"crest": "no crest ornament            GJ         man's head helmeted",
+"raw_arms": "s2b9a 1 A S      per chevron embowed",
+"parse": "single"
+},
+{
+"num": 314,
+"name": "melneg",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GAG",
+"blazon": "fess ch. 3 annulets",
+"repeat": false
+}
+],
+"crest": "no crest ornament            =S         cap pointed ch. arms tipped tuft of cock feathers",
+"raw_arms": "1 G AG           fess ch. 3 annulets",
+"parse": "single"
+},
+{
+"num": 315,
+"name": "spiser",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GA",
+"blazon": "millstone              millstone garnished with cock feathers and tipped with tuft of cock",
+"repeat": false
+}
+],
+"crest": "no crest ornament     ASA",
+"raw_arms": "1 GA       millstone              millstone garnished with cock feathers and tipped with tuft of cock",
+"parse": "single"
+},
+{
+"num": 316,
+"name": "ruidberg",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AS",
+"blazon": "barry",
+"repeat": false
+}
+],
+"crest": "no crest ornament     =           2 bull's horns ch. arms",
+"raw_arms": "1 AS       barry",
+"parse": "single"
+},
+{
+"num": 317,
+"name": "tal",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "per bend",
+"repeat": false
+}
+],
+"crest": "no crest ornament     =S          fan triangular ch. arms garnished with cock feathers",
+"raw_arms": "1 AG       per bend",
+"parse": "single"
+},
+{
+"num": 318,
+"name": "slat",
+"region": "sui",
+"attr": null,
+"pos": "s2b10a",
+"coats": [
+{
+"codes": "AB",
+"blazon": "eagle doubleheaded",
+"repeat": false
+}
+],
+"crest": "no crest ornament     AS          eagle's head tipped with tuft of cock feathers",
+"raw_arms": "s2b10a 1 A B        eagle doubleheaded",
+"parse": "single"
+},
+{
+"num": 319,
+"name": "kaemrer",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "XGAAS",
+"blazon": "per pale & 2 cinquefoils",
+"repeat": false
+}
+],
+"crest": "no crest ornament                 2 bugle horns garnished with roses all cch",
+"raw_arms": "1 X GA AS per pale & 2 cinquefoils",
+"parse": "single"
+},
+{
+"num": 320,
+"name": "helt",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "ASV",
+"blazon": "bear rampant on mount",
+"repeat": false
+}
+],
+"crest": "no crest ornament     GAS         cap pointed",
+"raw_arms": "1 A SV     bear rampant on mount",
+"parse": "single"
+},
+{
+"num": 321,
+"name": "wisendangen",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AS",
+"blazon": "2 ibex horns addorsed",
+"repeat": false
+}
+],
+"crest": "no crest ornament     A           2 ibex' horns curled",
+"raw_arms": "1 AS       2 ibex horns addorsed",
+"parse": "single"
+},
+{
+"num": 322,
+"name": "laiterberg",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "2 ladders in saltire",
+"repeat": false
+}
+],
+"crest": "no crest ornament     SA          2 bull horns garnished with feathers",
+"raw_arms": "1 AG       2 ladders in saltire",
+"parse": "single"
+},
+{
+"num": 323,
+"name": "rast",
+"region": "sou",
+"attr": null,
+"pos": "s2b11a",
+"coats": [
+{
+"codes": "AS",
+"blazon": "duck",
+"repeat": false
+}
+],
+"crest": "no crest ornament       SA                2 swan's heads garnished with feathers",
+"raw_arms": "s2b11a 1 A S      duck",
+"parse": "single"
+},
+{
+"num": 324,
+"name": "ruizuins",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BAG",
+"blazon": "per pale barry & plain",
+"repeat": false
+}
+],
+"crest": "no crest ornament       =                 2 bull's horns crested all ch. arms",
+"raw_arms": "1 B AG            per pale barry & plain",
+"parse": "single"
+},
+{
+"num": 325,
+"name": "sandolshain",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GA",
+"blazon": "lion's head",
+"repeat": false
+}
+],
+"crest": "no crest ornament       A                 lion's head",
+"raw_arms": "1 GA              lion's head",
+"parse": "single"
+},
+{
+"num": 326,
+"name": "wile",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "XBOG",
+"blazon": "per bend dancetty abased & tower",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "1 X B OG per bend dancetty abased & tower",
+"parse": "single"
+},
+{
+"num": 327,
+"name": "schowenburg",
+"region": "sou",
+"attr": null,
+"pos": "s2b12a",
+"coats": [
+{
+"codes": "OSS",
+"blazon": "castle acc. mount in base",
+"repeat": false
+}
+],
+"crest": "no crest ornament       A                 2 feather plumes in saltire",
+"raw_arms": "s2b12a 1 O SS     castle acc. mount in base",
+"parse": "single"
+},
+{
+"num": 328,
+"name": "tieringer",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BA",
+"blazon": "fess dancetty",
+"repeat": false
+}
+],
+"crest": "no crest ornament       OS                chevron tipped with tuft of cock feathers",
+"raw_arms": "1 BA              fess dancetty",
+"parse": "single"
+},
+{
+"num": 329,
+"name": "werdenstain",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GA",
+"blazon": "chevronny of 4",
+"repeat": false
+}
+],
+"crest": "no crest ornament       A                 hare courant",
+"raw_arms": "1 GA              chevronny of 4",
+"parse": "single"
+},
+{
+"num": 330,
+"name": "twingenstein",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "2 gambs in saltire",
+"repeat": false
+}
+],
+"crest": "no crest ornament       SG                man's head betw gambs",
+"raw_arms": "1 AG              2 gambs in saltire",
+"parse": "single"
+},
+{
+"num": 331,
+"name": "töss",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "ABB",
+"blazon": "fess acc. estoile in chf",
+"repeat": false
+}
+],
+"crest": "no crest ornament          =S               fan triangular ch. arms garnished with tufts of cock feathers",
+"raw_arms": "1 A BB            fess acc. estoile in chf",
+"parse": "single"
+},
+{
+"num": 332,
+"name": "eppenberg",
+"region": "sui",
+"attr": null,
+"pos": "s2b13a",
+"coats": [
+{
+"codes": "AS",
+"blazon": "2 bends",
+"repeat": false
+}
+],
+"crest": "no crest ornament          AS               2 angle braces garnished with cock feathers",
+"raw_arms": "s2b13a 1 A S      2 bends",
+"parse": "single"
+},
+{
+"num": 333,
+"name": "trutgeselle",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "axe",
+"repeat": false
+}
+],
+"crest": "no crest ornament          AS               axe garnished with cock feathers",
+"raw_arms": "1 AG              axe",
+"parse": "single"
+},
+{
+"num": 334,
+"name": "huernhusen",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AS",
+"blazon": "cock doubleheaded",
+"repeat": false
+}
+],
+"crest": "no crest ornament          A                2 cock's heads",
+"raw_arms": "1 AS              cock doubleheaded",
+"parse": "single"
+},
+{
+"num": 335,
+"name": "nuifro",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BA",
+"blazon": "barry",
+"repeat": false
+}
+],
+"crest": "no crest ornament          AB               fan triangular decorated",
+"raw_arms": "1 BA              barry",
+"parse": "single"
+},
+{
+"num": 336,
+"name": "buela",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GXOS",
+"blazon": "fess qtly",
+"repeat": false
+}
+],
+"crest": "no crest ornament          =                2 bull's horns ch. arms",
+"raw_arms": "1 G X OS fess qtly",
+"parse": "single"
+},
+{
+"num": 337,
+"name": "schoenbuihel",
+"region": "sui",
+"attr": null,
+"pos": "s2b14a",
+"coats": [
+{
+"codes": "AVG",
+"blazon": "3 branches leaved in pale",
+"repeat": false
+}
+],
+"crest": "no crest ornament          V                2 branches leaved",
+"raw_arms": "s2b14a 1 A VG     3 branches leaved in pale",
+"parse": "single"
+},
+{
+"num": 338,
+"name": "nideg",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "lancehead per bend",
+"repeat": false
+}
+],
+"crest": "no crest ornament          GO               arrowhead garnished with roundels",
+"raw_arms": "1 AG              lancehead per bend",
+"parse": "single"
+},
+{
+"num": 339,
+"name": "horw",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BA",
+"blazon": "3 arrows in pale",
+"repeat": false
+}
+],
+"crest": "no crest ornament  SA          cone betw 2 arrowheads",
+"raw_arms": "1 BA         3 arrows in pale",
+"parse": "single"
+},
+{
+"num": 340,
+"name": "rus..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AS",
+"blazon": "3 hooves in pale",
+"repeat": false
+}
+],
+"crest": "no crest ornament  S           2 hooves affronted",
+"raw_arms": "1 AS         3 hooves in pale",
+"parse": "single"
+},
+{
+"num": 341,
+"name": "helwer",
+"region": "aut",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BA",
+"blazon": "saltire couped",
+"repeat": false
+}
+],
+"crest": "no crest ornament  SA          wing extended garnished with tufts of cock feathers",
+"raw_arms": "1 BA         saltire couped",
+"parse": "single"
+},
+{
+"num": 342,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": "s3b1b",
+"coats": [
+{
+"codes": "GA",
+"blazon": "3 saws per bend in pale",
+"repeat": false
+}
+],
+"crest": "no crest ornament  AS          2 saws garnished with cock feathers",
+"raw_arms": "s3b1b 1 G A          3 saws per bend in pale",
+"parse": "single"
+},
+{
+"num": 343,
+"name": "..",
+"region": "mor",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "rose",
+"repeat": false
+}
+],
+"crest": "no crest ornament  AS          rose garnished with tufts of cock feathers",
+"raw_arms": "1 AG         rose",
+"parse": "single"
+},
+{
+"num": 344,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "per pale & 2 roses cch per pale",
+"repeat": false
+}
+],
+"crest": "no crest ornament  =           fan ch. arms",
+"raw_arms": "1 AG         per pale & 2 roses cch per pale",
+"parse": "single"
+},
+{
+"num": 345,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OSGA",
+"blazon": "per bend eagle & greyhound",
+"repeat": false
+}
+],
+"crest": "no crest ornament  AS          talbot's head betw wings",
+"raw_arms": "1 O SGA per bend eagle & greyhound",
+"parse": "single"
+},
+{
+"num": 346,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OGA",
+"blazon": "bust of blackamoor holding 2 axes",
+"repeat": false
+}
+],
+"crest": "no crest ornament  SA          bust of man holding 2 axes",
+"raw_arms": "1 O GA       bust of blackamoor holding 2 axes",
+"parse": "single"
+},
+{
+"num": 347,
+"name": "..",
+"region": "bav",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AVG",
+"blazon": "mount couped enflamed",
+"repeat": false
+}
+],
+"crest": "no crest ornament  =         figure of arms",
+"raw_arms": "1 A VG   mount couped enflamed",
+"parse": "single"
+},
+{
+"num": 348,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": "s3b2b",
+"coats": [
+{
+"codes": "AG",
+"blazon": "cock",
+"repeat": false
+}
+],
+"crest": "no crest ornament  G         cock's head",
+"raw_arms": "s3b2b 1 A G      cock",
+"parse": "single"
+},
+{
+"num": 349,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AS",
+"blazon": "horse's head",
+"repeat": false
+}
+],
+"crest": "no crest ornament  S         horse's head",
+"raw_arms": "1 AS     horse's head",
+"parse": "single"
+},
+{
+"num": 350,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OSGA",
+"blazon": "per pale fleur-de-lis & bendy",
+"repeat": false
+}
+],
+"crest": "no crest ornament  GO        2 arms holding a fleur-de-lis",
+"raw_arms": "1 O SGA per pale fleur-de-lis & bendy",
+"parse": "single"
+},
+{
+"num": 351,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BAOO",
+"blazon": "fess acc. moon and sun faces in chf",
+"repeat": false
+}
+],
+"crest": "no crest ornament  =A        fan triangular ch. arms garnished with plain feathers",
+"raw_arms": "1 B AOO fess acc. moon and sun faces in chf",
+"parse": "single"
+},
+{
+"num": 352,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "griffin segreant",
+"repeat": false
+}
+],
+"crest": "no crest ornament  GG        eagle's head betw wings",
+"raw_arms": "1 AG     griffin segreant",
+"parse": "single"
+},
+{
+"num": 353,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OS",
+"blazon": "per pale",
+"repeat": false
+}
+],
+"crest": "no crest ornament  OS        2 bugle horns stringed cch",
+"raw_arms": "1 OS     per pale",
+"parse": "single"
+},
+{
+"num": 354,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": "s3b3b",
+"coats": [
+{
+"codes": "AG",
+"blazon": "2 gambs in saltire",
+"repeat": false
+}
+],
+"crest": "no crest ornament  G         2 gambs",
+"raw_arms": "s3b3b 1 A G      2 gambs in saltire",
+"parse": "single"
+},
+{
+"num": 355,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OS",
+"blazon": "attire",
+"repeat": false
+}
+],
+"crest": "no crest ornament   S            2 antlers",
+"raw_arms": "1 OS       attire",
+"parse": "single"
+},
+{
+"num": 356,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AVG",
+"blazon": "annulet adorned with 7 roses",
+"repeat": false
+}
+],
+"crest": "no crest ornament   =            figure of arms",
+"raw_arms": "1 A VG     annulet adorned with 7 roses",
+"parse": "single"
+},
+{
+"num": 357,
+"name": "..",
+"region": "fkn",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AB",
+"blazon": "pale",
+"repeat": false
+}
+],
+"crest": "no crest ornament   =A           fan triangular ch. arms garnished with pearls",
+"raw_arms": "1 AB       pale",
+"parse": "single"
+},
+{
+"num": 358,
+"name": "..",
+"region": "bav",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "owl",
+"repeat": false
+}
+],
+"crest": "no crest ornament   GS           owl isst tipped with tuft of cock feathers",
+"raw_arms": "1 AG       owl",
+"parse": "single"
+},
+{
+"num": 359,
+"name": "..",
+"region": "bav",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "ASA",
+"blazon": "chief ch. 3 lozenges",
+"repeat": false
+}
+],
+"crest": "no crest ornament   =A           fan triangular ch. arms garnished with tufts of cock feathers",
+"raw_arms": "1 A SA     chief ch. 3 lozenges",
+"parse": "single"
+},
+{
+"num": 360,
+"name": "..",
+"region": "mis",
+"attr": null,
+"pos": "s3b4b",
+"coats": [
+{
+"codes": "AXSV",
+"blazon": "lion per fess",
+"repeat": false
+}
+],
+"crest": "no crest ornament   AG           lion isst garnished with roses",
+"raw_arms": "s3b4b 1 A X SV lion per fess",
+"parse": "single"
+},
+{
+"num": 361,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "SV",
+"blazon": "cabbage",
+"repeat": false
+}
+],
+"crest": "no crest ornament   V            cabbage",
+"raw_arms": "1 SV       cabbage",
+"parse": "single"
+},
+{
+"num": 362,
+"name": "..",
+"region": "bav",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GXSA",
+"blazon": "lion per fess",
+"repeat": false
+}
+],
+"crest": "no crest ornament   SA           lion isst crested all per fess cch",
+"raw_arms": "1 G X SA lion per fess",
+"parse": "single"
+},
+{
+"num": 363,
+"name": "..",
+"region": "bav",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "ibex horn inv",
+"repeat": false
+}
+],
+"crest": "no crest ornament   GA           ibex' horn garnished with plumes of feathers",
+"raw_arms": "1 AG       ibex horn inv",
+"parse": "single"
+},
+{
+"num": 364,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OSGA",
+"blazon": "per bend eagle & greyhound",
+"repeat": false
+}
+],
+"crest": "no crest ornament      =              fan ch. arms",
+"raw_arms": "1 O SGA per bend eagle & greyhound",
+"parse": "single"
+},
+{
+"num": 365,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GA",
+"blazon": "canton",
+"repeat": false
+}
+],
+"crest": "no crest ornament      =S             fan triangular ch. arms garnished with cock feathers",
+"raw_arms": "1 GA           canton",
+"parse": "single"
+},
+{
+"num": 366,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": "s3b5b",
+"coats": [
+{
+"codes": "AG",
+"blazon": "2 maces in saltire",
+"repeat": false
+}
+],
+"crest": "no crest ornament      SS             bust of man holding mace",
+"raw_arms": "s3b5b 1 A G            2 maces in saltire",
+"parse": "single"
+},
+{
+"num": 367,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OS",
+"blazon": "per pale & attire cch",
+"repeat": false
+}
+],
+"crest": "no crest ornament      AS             2 antlers",
+"raw_arms": "1 OS           per pale & attire cch",
+"parse": "single"
+},
+{
+"num": 368,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BO",
+"blazon": "vine branch",
+"repeat": false
+}
+],
+"crest": "no crest ornament      O              vine branch",
+"raw_arms": "1 BO           vine branch",
+"parse": "single"
+},
+{
+"num": 369,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GA",
+"blazon": "swan",
+"repeat": false
+}
+],
+"crest": "no crest ornament      GA             swan's head crested",
+"raw_arms": "1 GA           swan",
+"parse": "single"
+},
+{
+"num": 370,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AGA",
+"blazon": "roundel ch. fleur-de-lis",
+"repeat": false
+}
+],
+"crest": "no crest ornament      =S             escutcheon of arms garnished with tufts of cock feathers",
+"raw_arms": "1 A GA         roundel ch. fleur-de-lis",
+"parse": "single"
+},
+{
+"num": 371,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GAS",
+"blazon": "roundel ch. bear's head",
+"repeat": false
+}
+],
+"crest": "no crest ornament      =S             escutcheon of arms garnished with tufts of cock feathers",
+"raw_arms": "1 G AS         roundel ch. bear's head",
+"parse": "single"
+},
+{
+"num": 372,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": "s3b6b",
+"coats": [
+{
+"codes": "AG",
+"blazon": "ibex segreant",
+"repeat": false
+}
+],
+"crest": "no crest ornament      G              ibex's head",
+"raw_arms": "s3b6b 1 A G            ibex segreant",
+"parse": "single"
+},
+{
+"num": 373,
+"name": "..",
+"region": "als",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OS",
+"blazon": "bend",
+"repeat": false
+}
+],
+"crest": "no crest ornament  =      fan ch. arms",
+"raw_arms": "1 OS    bend",
+"parse": "single"
+},
+{
+"num": 374,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AOG",
+"blazon": "torch",
+"repeat": false
+}
+],
+"crest": "no crest ornament  OG     2 torches",
+"raw_arms": "1 A OG  torch",
+"parse": "single"
+},
+{
+"num": 375,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OS",
+"blazon": "talbot gorged",
+"repeat": false
+}
+],
+"crest": "no crest ornament  ASA    mirror garnished with feathers",
+"raw_arms": "1 OS    talbot gorged",
+"parse": "single"
+},
+{
+"num": 376,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OS",
+"blazon": "fess",
+"repeat": false
+}
+],
+"crest": "no crest ornament  OS     2 bull's horns each ch. fess",
+"raw_arms": "1 OS    fess",
+"parse": "single"
+},
+{
+"num": 377,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "crampon per fess",
+"repeat": false
+}
+],
+"crest": "no crest ornament  BN     swan's head garnished with peacock eyes",
+"raw_arms": "1 AG    crampon per fess",
+"parse": "single"
+},
+{
+"num": 378,
+"name": "stofen",
+"region": "sou",
+"attr": null,
+"pos": "s2b1b",
+"coats": [
+{
+"codes": "BO",
+"blazon": "3 goblets",
+"repeat": false
+}
+],
+"crest": "no crest ornament  O      phrygian bonnet",
+"raw_arms": "s2b1b 1 B O     3 goblets",
+"parse": "single"
+},
+{
+"num": 379,
+"name": "hatstatt",
+"region": "als",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OGS",
+"blazon": "saltire acc. mullet in chf",
+"repeat": false
+}
+],
+"crest": "no crest ornament  =N     fan ch. arms garnished with peacock eyes",
+"raw_arms": "1 O GS  saltire acc. mullet in chf",
+"parse": "single"
+},
+{
+"num": 380,
+"name": "tor",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GA",
+"blazon": "doorway open",
+"repeat": false
+}
+],
+"crest": "no crest ornament  AS     mitre with tuft of cock feathers",
+"raw_arms": "1 GA    doorway open",
+"parse": "single"
+},
+{
+"num": 381,
+"name": "send",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GA",
+"blazon": "cross of saint Anthony",
+"repeat": false
+}
+],
+"crest": "no crest ornament            S          queen's head",
+"raw_arms": "1 GA            cross of saint Anthony",
+"parse": "single"
+},
+{
+"num": 382,
+"name": "zorn",
+"region": "als",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OGA",
+"blazon": "chief ch. mullet",
+"repeat": false
+}
+],
+"crest": "no crest ornament            A          talbot's head",
+"raw_arms": "1 O GA          chief ch. mullet",
+"parse": "single"
+},
+{
+"num": 383,
+"name": "stuibenweg",
+"region": "als",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GA",
+"blazon": "talbot sejt",
+"repeat": false
+}
+],
+"crest": "no crest ornament            A          talbot sejt",
+"raw_arms": "1 GA            talbot sejt",
+"parse": "single"
+},
+{
+"num": 384,
+"name": "muilhan",
+"region": "als",
+"attr": null,
+"pos": "s2b2b",
+"coats": [
+{
+"codes": "GA",
+"blazon": "rose",
+"repeat": false
+}
+],
+"crest": "no crest ornament            =S         cone ch. arms tipped with tuft of cock feathers",
+"raw_arms": "s2b2b 1 G A     rose",
+"parse": "single"
+},
+{
+"num": 385,
+"name": "rapelstain",
+"region": "als",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "3 escutcheons",
+"repeat": false
+}
+],
+"crest": "no crest ornament            G          bust of woman",
+"raw_arms": "1 AG            3 escutcheons",
+"parse": "single"
+},
+{
+"num": 386,
+"name": "muinch",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AS",
+"blazon": "monk",
+"repeat": false
+}
+],
+"crest": "no crest ornament            S          monk isst",
+"raw_arms": "1 AS            monk",
+"parse": "single"
+},
+{
+"num": 387,
+"name": "borwil",
+"region": "als",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BOG",
+"blazon": "pale ch. 3 chevrons",
+"repeat": false
+}
+],
+"crest": "no crest ornament            =          bust of woman ch. arms",
+"raw_arms": "1 B OG          pale ch. 3 chevrons",
+"parse": "single"
+},
+{
+"num": 388,
+"name": "erelmarx",
+"region": "als",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GSO",
+"blazon": "2 arms isst mount",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "1 G SO           2 arms isst mount",
+"parse": "single"
+},
+{
+"num": 389,
+"name": "schaler",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GA",
+"blazon": "bend of lozenges",
+"repeat": false
+}
+],
+"crest": "no crest ornament    =N                  fan ch. arms garnished with peacock eyes",
+"raw_arms": "1 GA             bend of lozenges",
+"parse": "single"
+},
+{
+"num": 390,
+"name": "egbret",
+"region": "sou",
+"attr": null,
+"pos": "s2b3b",
+"coats": [
+{
+"codes": "GA",
+"blazon": "bendy of 4",
+"repeat": false
+}
+],
+"crest": "no crest ornament    =S                  mitre ch. arms tippe with tuft of cock feathers",
+"raw_arms": "s2b3b 1 G A      bendy of 4",
+"parse": "single"
+},
+{
+"num": 391,
+"name": "bonstetten",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "SAO",
+"blazon": "3 lozenges in fess & border",
+"repeat": false
+}
+],
+"crest": "no crest ornament    SS                  swan's head betw wings",
+"raw_arms": "1 S AO           3 lozenges in fess & border",
+"parse": "single"
+},
+{
+"num": 392,
+"name": "lobeg",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AVG",
+"blazon": "elm leaf above terrace",
+"repeat": false
+}
+],
+"crest": "no crest ornament    G                   bull's attire",
+"raw_arms": "1 A VG           elm leaf above terrace",
+"parse": "single"
+},
+{
+"num": 393,
+"name": "randeg",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "lion's head",
+"repeat": false
+}
+],
+"crest": "no crest ornament    G                   lion's head",
+"raw_arms": "1 AG             lion's head",
+"parse": "single"
+},
+{
+"num": 394,
+"name": "vom stain",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OS",
+"blazon": "3 wolf-hooks in pale",
+"repeat": false
+}
+],
+"crest": "no crest ornament    AN                  wolf-hook with ring tipped with peacock plume",
+"raw_arms": "1 OS             3 wolf-hooks in pale",
+"parse": "single"
+},
+{
+"num": 395,
+"name": "wasersteltz",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BOB",
+"blazon": "fess ch. 3 birds",
+"repeat": false
+}
+],
+"crest": "no crest ornament    AS                  swan's head tipped with tuft of cock feathers",
+"raw_arms": "1 B OB           fess ch. 3 birds",
+"parse": "single"
+},
+{
+"num": 396,
+"name": "kuirnbach",
+"region": "sou",
+"attr": null,
+"pos": "s2b4b",
+"coats": [
+{
+"codes": "OBO",
+"blazon": "fess ch. 3 fish",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "s2b4b 1 O BO     fess ch. 3 fish",
+"parse": "single"
+},
+{
+"num": 397,
+"name": "wolfsatel",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AB",
+"blazon": "per fess",
+"repeat": false
+}
+],
+"crest": "no crest ornament          BA     wolf passt saddled",
+"raw_arms": "1 AB             per fess",
+"parse": "single"
+},
+{
+"num": 398,
+"name": "honburg",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OS",
+"blazon": "attire",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "1 OS             attire",
+"parse": "single"
+},
+{
+"num": 399,
+"name": "wuilflingen",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AVB",
+"blazon": "double elm leaf acc. wolf passt in chf",
+"repeat": false
+}
+],
+"crest": "no crest ornament          B      wolf naissant",
+"raw_arms": "1 A VB           double elm leaf acc. wolf passt in chf",
+"parse": "single"
+},
+{
+"num": 400,
+"name": "briner",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "SO",
+"blazon": "fess             2 bull's horns barry each tipped with tufts of cock feathers",
+"repeat": false
+}
+],
+"crest": "no crest ornament          AGS",
+"raw_arms": "1 SO             fess             2 bull's horns barry each tipped with tufts of cock feathers",
+"parse": "single"
+},
+{
+"num": 401,
+"name": "mos",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GXAB",
+"blazon": "bend checky",
+"repeat": false
+}
+],
+"crest": "no crest ornament          GA     mirror garnished with feathers",
+"raw_arms": "1 G X AB bend checky",
+"parse": "single"
+},
+{
+"num": 402,
+"name": "buwenburg",
+"region": "sou",
+"attr": null,
+"pos": "s2b5b",
+"coats": [
+{
+"codes": "SA",
+"blazon": "3 escallops",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "s2b5b 1 S A      3 escallops",
+"parse": "single"
+},
+{
+"num": 403,
+"name": "rehberg",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "2 lions rampant addorsed",
+"repeat": false
+}
+],
+"crest": "no crest ornament          G      lion isst",
+"raw_arms": "1 AG             2 lions rampant addorsed",
+"parse": "single"
+},
+{
+"num": 404,
+"name": "huin",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OS",
+"blazon": "eagle's head",
+"repeat": false
+}
+],
+"crest": "no crest ornament         S             eagle's head",
+"raw_arms": "1 OS           eagle's head",
+"parse": "single"
+},
+{
+"num": 405,
+"name": "wart",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AB",
+"blazon": "per saltire",
+"repeat": false
+}
+],
+"crest": "no crest ornament         =             2 bull's horns ch. arms",
+"raw_arms": "1 AB           per saltire",
+"parse": "single"
+},
+{
+"num": 406,
+"name": "suirg",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AS",
+"blazon": "bend",
+"repeat": false
+}
+],
+"crest": "no crest ornament           =S          cap pointed ch. arms tipped tuft of cock feathers",
+"raw_arms": "1 AS           bend",
+"parse": "single"
+},
+{
+"num": 407,
+"name": "kurberg",
+"region": "sou",
+"attr": null,
+"pos": "s2b6b",
+"coats": [
+{
+"codes": "AGOV",
+"blazon": "qtly (1st ch. castle on mount)",
+"repeat": false
+}
+],
+"crest": "no crest ornament         AG            2 bull's horns crested per fess cch",
+"raw_arms": "s2b6b 1 A GOV qtly (1st ch. castle on mount)",
+"parse": "single"
+},
+{
+"num": 408,
+"name": "tannevels",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BO",
+"blazon": "lion q.f.",
+"repeat": false
+}
+],
+"crest": "no crest ornament         AGS           cap pointed barry tipped with tuft of cock feathers",
+"raw_arms": "1 BO           lion q.f.",
+"parse": "single"
+},
+{
+"num": 409,
+"name": "loenberg",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GO",
+"blazon": "bugle-horn",
+"repeat": false
+}
+],
+"crest": "no crest ornament           O           2 drinking horns reversed",
+"raw_arms": "1 GO           bugle-horn",
+"parse": "single"
+},
+{
+"num": 410,
+"name": "razenriet",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BA",
+"blazon": "2 ibex horns in saltire",
+"repeat": false
+}
+],
+"crest": "no crest ornament         AS            3 caps pointed each tipped with a tuft of cock feathers",
+"raw_arms": "1 BA           2 ibex horns in saltire",
+"parse": "single"
+},
+{
+"num": 411,
+"name": "snel von buirglen",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GA",
+"blazon": "cap with cordon",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "1 GA           cap with cordon",
+"parse": "single"
+},
+{
+"num": 412,
+"name": "affenstein",
+"region": "sou",
+"attr": null,
+"pos": "s2b7b",
+"coats": [
+{
+"codes": "AGO",
+"blazon": "man holding stone",
+"repeat": false
+}
+],
+"crest": "no crest ornament           =         figure of arms",
+"raw_arms": "s2b7b 1 A GO    man holding stone",
+"parse": "single"
+},
+{
+"num": 413,
+"name": "der dolle von martdorf",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "ASA",
+"blazon": "roundel ch. bird",
+"repeat": false
+}
+],
+"crest": "no crest ornament           G         unicorn's head",
+"raw_arms": "1 A SA          roundel ch. bird",
+"parse": "single"
+},
+{
+"num": 414,
+"name": "slutolz",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "unicorn's head",
+"repeat": false
+}
+],
+"crest": "no crest ornament           G         unicorn's head",
+"raw_arms": "1 AG            unicorn's head",
+"parse": "single"
+},
+{
+"num": 415,
+"name": "richenbach",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AGV",
+"blazon": "bull on mount",
+"repeat": false
+}
+],
+"crest": "no crest ornament           G         bull's head",
+"raw_arms": "1 A GV          bull on mount",
+"parse": "single"
+},
+{
+"num": 416,
+"name": "burst",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "SAV",
+"blazon": "bend ch. 3 elm leaves inv",
+"repeat": false
+}
+],
+"crest": "no crest ornament           GA        elm leaf garnished with plain feathers",
+"raw_arms": "1 S AV          bend ch. 3 elm leaves inv",
+"parse": "single"
+},
+{
+"num": 417,
+"name": "kaplan",
+"region": "aut",
+"attr": null,
+"pos": "s2b8b",
+"coats": [
+{
+"codes": "XAGS",
+"blazon": "per pale & chief",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "s2b8b 1 X A GS per pale & chief",
+"parse": "single"
+},
+{
+"num": 418,
+"name": "stuben",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GAO",
+"blazon": "3 windows fimbriated",
+"repeat": false
+}
+],
+"crest": "no crest ornament                     figure of arms garnished with tufts of cock feathers",
+"raw_arms": "1 G AO          3 windows fimbriated",
+"parse": "single"
+},
+{
+"num": 419,
+"name": "geltingen",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "VXAG",
+"blazon": "2 bugle-horns stringed addorsed",
+"repeat": false
+}
+],
+"crest": "no crest ornament           GA        2 bull horns garnished with feathers",
+"raw_arms": "1 V X AG 2 bugle-horns stringed addorsed",
+"parse": "single"
+},
+{
+"num": 420,
+"name": "betler",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "ASG",
+"blazon": "monk holding staff and cup",
+"repeat": false
+}
+],
+"crest": "no crest ornament               =    figure of arms isst",
+"raw_arms": "1 A SG             monk holding staff and cup",
+"parse": "single"
+},
+{
+"num": 421,
+"name": "hagendorn",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "XSAG",
+"blazon": "per pale checky & plain",
+"repeat": false
+}
+],
+"crest": "no crest ornament               =S   cap pointed ch. arms tipped tuft of cock feathers",
+"raw_arms": "1 X S AG per pale checky & plain",
+"parse": "single"
+},
+{
+"num": 422,
+"name": "zezikoven",
+"region": "sui",
+"attr": null,
+"pos": "s2b9b",
+"coats": [
+{
+"codes": "GVAO",
+"blazon": "stem with 3 fleurs-de-lis above mount",
+"repeat": false
+}
+],
+"crest": "no crest ornament               SA   2 bull's horns garnished with fleurs-de-lis",
+"raw_arms": "s2b9b 1 G VAO stem with 3 fleurs-de-lis above mount",
+"parse": "single"
+},
+{
+"num": 423,
+"name": "riethusen",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GA",
+"blazon": "fish hauriant",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "1 GA               fish hauriant",
+"parse": "single"
+},
+{
+"num": 424,
+"name": "welter",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "SA",
+"blazon": "3 ibex stat",
+"repeat": false
+}
+],
+"crest": "no crest ornament               A    ibex statant",
+"raw_arms": "1 SA               3 ibex stat",
+"parse": "single"
+},
+{
+"num": 425,
+"name": "egbrecht",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "XOBAG",
+"blazon": "lozengy & chief ch. lion isst",
+"repeat": false
+}
+],
+"crest": "no crest ornament               GA   crescent on each tip a tuft of cock feathers",
+"raw_arms": "1 X OB AG lozengy & chief ch. lion isst",
+"parse": "single"
+},
+{
+"num": 426,
+"name": "haegelnbach",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AB",
+"blazon": "2 bars",
+"repeat": false
+}
+],
+"crest": "no crest ornament               ASA  mirror garnished with feathers",
+"raw_arms": "1 AB               2 bars",
+"parse": "single"
+},
+{
+"num": 427,
+"name": "ot a dem hard",
+"region": "sui",
+"attr": null,
+"pos": "s2b10b",
+"coats": [
+{
+"codes": "SA",
+"blazon": "turnip",
+"repeat": false
+}
+],
+"crest": "no crest ornament               =    figure of arms",
+"raw_arms": "s2b10b 1 S A       turnip",
+"parse": "single"
+},
+{
+"num": 428,
+"name": "stubenwid",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "SA",
+"blazon": "furnace",
+"repeat": false
+}
+],
+"crest": "no crest ornament          =       figure of arms",
+"raw_arms": "1 SA              furnace",
+"parse": "single"
+},
+{
+"num": 429,
+"name": "amenhusen",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BXGA",
+"blazon": "chief per pale",
+"repeat": false
+}
+],
+"crest": "no crest ornament          SA      swan's head garnished with plain feathers",
+"raw_arms": "1 B X GA chief per pale",
+"parse": "single"
+},
+{
+"num": 430,
+"name": "weriant",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AAV",
+"blazon": "ladder acc. mount in base",
+"repeat": false
+}
+],
+"crest": "no crest ornament          AS      ladder tipped with 2 tufts of cock feathers",
+"raw_arms": "1 A AV            ladder acc. mount in base",
+"parse": "single"
+},
+{
+"num": 431,
+"name": "sumerow",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OS",
+"blazon": "antler enrolled",
+"repeat": false
+}
+],
+"crest": "no crest ornament          A       talbot's head",
+"raw_arms": "1 OS              antler enrolled",
+"parse": "single"
+},
+{
+"num": 432,
+"name": "bilstain",
+"region": "aut",
+"attr": null,
+"pos": "s2b11b",
+"coats": [
+{
+"codes": "AGV",
+"blazon": "3 roses slipped",
+"repeat": false
+}
+],
+"crest": "no crest ornament          AG      2 bull's horns garnished with roses",
+"raw_arms": "s2b11b 1 A GV     3 roses slipped",
+"parse": "single"
+},
+{
+"num": 433,
+"name": "hugolschoven",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OS",
+"blazon": "lion rampant",
+"repeat": false
+}
+],
+"crest": "no crest ornament          SA      lion's head garnished with plain feathers",
+"raw_arms": "1 OS              lion rampant",
+"parse": "single"
+},
+{
+"num": 434,
+"name": "hegi",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OS",
+"blazon": "lion rampant",
+"repeat": false
+}
+],
+"crest": "no crest ornament          OS      2 antlers garnished with tufts of cock feathers",
+"raw_arms": "1 OS              lion rampant",
+"parse": "single"
+},
+{
+"num": 435,
+"name": "winvelden",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "2 wheel segments addorsed",
+"repeat": false
+}
+],
+"crest": "no crest ornament          =A      figure of arms garnished with tufts of cock feathers",
+"raw_arms": "1 AG              2 wheel segments addorsed",
+"parse": "single"
+},
+{
+"num": 436,
+"name": "oberiedern",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "ASA",
+"blazon": "boat with 2 oars",
+"repeat": false
+}
+],
+"crest": "no crest ornament         B          wolf passt",
+"raw_arms": "1 A SA             boat with 2 oars",
+"parse": "single"
+},
+{
+"num": 437,
+"name": "hatingen",
+"region": "sou",
+"attr": null,
+"pos": "s2b12b",
+"coats": [
+{
+"codes": "GA",
+"blazon": "bend",
+"repeat": false
+}
+],
+"crest": "no crest ornament         G          man's head hatted",
+"raw_arms": "s2b12b 1 G A       bend",
+"parse": "single"
+},
+{
+"num": 438,
+"name": "salenstain",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "XVAG",
+"blazon": "per pale & mount couped",
+"repeat": false
+}
+],
+"crest": "no crest ornament         AG         2 bull's horns crested and ch. fess cch",
+"raw_arms": "1 X V AG per pale & mount couped",
+"parse": "single"
+},
+{
+"num": 439,
+"name": "riefern",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AS",
+"blazon": "barry",
+"repeat": false
+}
+],
+"crest": "no crest ornament         =          2 bull's horns ch. arms",
+"raw_arms": "1 AS               barry",
+"parse": "single"
+},
+{
+"num": 440,
+"name": "zukenriet",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "fess",
+"repeat": false
+}
+],
+"crest": "no crest ornament         S          cock",
+"raw_arms": "1 AG               fess",
+"parse": "single"
+},
+{
+"num": 441,
+"name": "swangow",
+"region": "sou",
+"attr": null,
+"pos": "s2b13b",
+"coats": [
+{
+"codes": "GA",
+"blazon": "swan",
+"repeat": false
+}
+],
+"crest": "no crest ornament         A          swan's head",
+"raw_arms": "s2b13b 1 G A       swan",
+"parse": "single"
+},
+{
+"num": 442,
+"name": "obrahoven",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "fleur-de-lis",
+"repeat": false
+}
+],
+"crest": "no crest ornament         AS         fleur-de-lis tipped with tuft of cock feathers",
+"raw_arms": "1 AG               fleur-de-lis",
+"parse": "single"
+},
+{
+"num": 443,
+"name": "richartzhoven",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AS",
+"blazon": "bear naissant",
+"repeat": false
+}
+],
+"crest": "no crest ornament         SA         bear's head garnished with plain feathers",
+"raw_arms": "1 AS               bear naissant",
+"parse": "single"
+},
+{
+"num": 444,
+"name": "amman von bregenz",
+"region": "aut",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BA",
+"blazon": "decrescent acc. estoile sn",
+"repeat": false
+}
+],
+"crest": "no crest ornament   =S            figure of arms garnished with tufts of cock feathers",
+"raw_arms": "1 BA    decrescent acc. estoile sn",
+"parse": "single"
+},
+{
+"num": 445,
+"name": "kilchain",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "wyvern",
+"repeat": false
+}
+],
+"crest": "no crest ornament   GG            wyvern's head betw wings",
+"raw_arms": "1 AG    wyvern",
+"parse": "single"
+},
+{
+"num": 446,
+"name": "badwegen",
+"region": "sou",
+"attr": null,
+"pos": "s2b14b",
+"coats": [
+{
+"codes": "AB",
+"blazon": "per pale & eagle doubleheaded cch",
+"repeat": false
+}
+],
+"crest": "no crest ornament   AB            2 wings",
+"raw_arms": "s2b14b 1 A B    per pale & eagle doubleheaded cch",
+"parse": "single"
+},
+{
+"num": 447,
+"name": "maier",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GA",
+"blazon": "donkey naissant",
+"repeat": false
+}
+],
+"crest": "no crest ornament   A             donkey isst",
+"raw_arms": "1 GA    donkey naissant",
+"parse": "single"
+},
+{
+"num": 448,
+"name": "walvis",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "ASA",
+"blazon": "chief ch. antler in fess",
+"repeat": false
+}
+],
+"crest": "no crest ornament   AS            2 antlers",
+"raw_arms": "1 A SA  chief ch. antler in fess",
+"parse": "single"
+},
+{
+"num": 449,
+"name": "oltinger",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GA",
+"blazon": "griffin segreant",
+"repeat": false
+}
+],
+"crest": "no crest ornament   A",
+"raw_arms": "1 GA    griffin segreant",
+"parse": "single"
+},
+{
+"num": 450,
+"name": "zurza",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OB",
+"blazon": "lion's head",
+"repeat": false
+}
+],
+"crest": "no crest ornament   BO            lion's head crested",
+"raw_arms": "1 OB    lion's head",
+"parse": "single"
+},
+{
+"num": 451,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": "s4f1a",
+"coats": [
+{
+"codes": "BO",
+"blazon": "3 stars of 8 pt",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "s4f1a 1 B O     3 stars of 8 pt",
+"parse": "single"
+},
+{
+"num": 452,
+"name": "..",
+"region": "fkn",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OGV",
+"blazon": "lion stat on mount",
+"repeat": false
+}
+],
+"crest": "no crest ornament   G                  lion isst cr.",
+"raw_arms": "1 O GV         lion stat on mount",
+"parse": "single"
+},
+{
+"num": 453,
+"name": "..",
+"region": "als",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AGB",
+"blazon": "lion cr., billety",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "1 A GB         lion cr., billety",
+"parse": "single"
+},
+{
+"num": 454,
+"name": "falkenstain",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OGB",
+"blazon": "2 bars arched acc. falcon in betw",
+"repeat": false
+}
+],
+"crest": "no crest ornament   S                  2 cock's heads",
+"raw_arms": "1 O GB         2 bars arched acc. falcon in betw",
+"parse": "single"
+},
+{
+"num": 455,
+"name": "goldenberg",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "ABA",
+"blazon": "bend ch. 3 decrescents",
+"repeat": false
+}
+],
+"crest": "no crest ornament   =S                 cone ch. arms tipped with tuft of cock feathers",
+"raw_arms": "1 A BA         bend ch. 3 decrescents",
+"parse": "single"
+},
+{
+"num": 456,
+"name": "friberg",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BOA",
+"blazon": "3 roundels & chief",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "1 B OA         3 roundels & chief",
+"parse": "single"
+},
+{
+"num": 457,
+"name": "gachnang",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AGV",
+"blazon": "unicorn on mount",
+"repeat": false
+}
+],
+"crest": "no crest ornament   G                  unicorn naissant",
+"raw_arms": "1 A GV         unicorn on mount",
+"parse": "single"
+},
+{
+"num": 458,
+"name": "..",
+"region": "bav",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AS",
+"blazon": "per fess rompu sn",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "1 AS           per fess rompu sn",
+"parse": "single"
+},
+{
+"num": 459,
+"name": "..",
+"region": "fkn",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AS",
+"blazon": "2 lions passt guard cr.",
+"repeat": false
+}
+],
+"crest": "no crest ornament  OO                2 bull's horns garnished with elm branches",
+"raw_arms": "1 AS        2 lions passt guard cr.",
+"parse": "single"
+},
+{
+"num": 460,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GSO",
+"blazon": "pale chevronny",
+"repeat": false
+}
+],
+"crest": "no crest ornament  =                 bust of woman ch. arms",
+"raw_arms": "1 G SO      pale chevronny",
+"parse": "single"
+},
+{
+"num": 461,
+"name": "..",
+"region": "als",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AGB",
+"blazon": "cross acc. 4 eagles",
+"repeat": false
+}
+],
+"crest": "no crest ornament  GA                bust of woman betw 2 escallops",
+"raw_arms": "1 A GB      cross acc. 4 eagles",
+"parse": "single"
+},
+{
+"num": 462,
+"name": "..",
+"region": "als",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AS",
+"blazon": "fess",
+"repeat": false
+}
+],
+"crest": "no crest ornament  AS                plume per pale",
+"raw_arms": "1 AS        fess",
+"parse": "single"
+},
+{
+"num": 463,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GA",
+"blazon": "lady's saddle",
+"repeat": false
+}
+],
+"crest": "no crest ornament  G                 bust of woman",
+"raw_arms": "1 GA        lady's saddle",
+"parse": "single"
+},
+{
+"num": 464,
+"name": "ampringen",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "XOAG",
+"blazon": "paly & 2 bars",
+"repeat": false
+}
+],
+"crest": "no crest ornament  S                 2 arms",
+"raw_arms": "1 X O AG paly & 2 bars",
+"parse": "single"
+},
+{
+"num": 465,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GA",
+"blazon": "viol per bend",
+"repeat": false
+}
+],
+"crest": "no crest ornament  =                 bust of woman ch. arms",
+"raw_arms": "1 GA        viol per bend",
+"parse": "single"
+},
+{
+"num": 466,
+"name": "schwartzenberg",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AS",
+"blazon": "mount couped",
+"repeat": false
+}
+],
+"crest": "no crest ornament  =S                mitre ch. arms and tipped with 2 tufts of cock feathers",
+"raw_arms": "1 AS        mount couped",
+"parse": "single"
+},
+{
+"num": 467,
+"name": "gruenenberg",
+"region": "als",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AVO",
+"blazon": "chief ch. mount",
+"repeat": false
+}
+],
+"crest": "no crest ornament    =S       mitre ch. arms and tipped with 2 tufts of cock feathers",
+"raw_arms": "1 A VO   chief ch. mount",
+"parse": "single"
+},
+{
+"num": 468,
+"name": "..",
+"region": "als",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "stag",
+"repeat": false
+}
+],
+"crest": "no crest ornament    GG       bust of woman and antler sn",
+"raw_arms": "1 AG     stag",
+"parse": "single"
+},
+{
+"num": 469,
+"name": "..",
+"region": "bav",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GA",
+"blazon": "goat's head",
+"repeat": false
+}
+],
+"crest": "no crest ornament    A        goat's head",
+"raw_arms": "1 GA     goat's head",
+"parse": "single"
+},
+{
+"num": 470,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GZ",
+"blazon": "bend",
+"repeat": false
+}
+],
+"crest": "no crest ornament    G        man's head hatted",
+"raw_arms": "1 GZ     bend",
+"parse": "single"
+},
+{
+"num": 471,
+"name": "vo' phirt",
+"region": "als",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "SA",
+"blazon": "lion cr.",
+"repeat": false
+}
+],
+"crest": "no crest ornament    G        bust of man",
+"raw_arms": "1 SA     lion cr.",
+"parse": "single"
+},
+{
+"num": 472,
+"name": "bukhain",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GA",
+"blazon": "per pale",
+"repeat": false
+}
+],
+"crest": "no crest ornament    AG       plume per pale",
+"raw_arms": "1 GA     per pale",
+"parse": "single"
+},
+{
+"num": 473,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AS",
+"blazon": "bend of lozenges",
+"repeat": false
+}
+],
+"crest": "no crest ornament    G        bust of woman",
+"raw_arms": "1 AS     bend of lozenges",
+"parse": "single"
+},
+{
+"num": 474,
+"name": "berenfelz",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OSV",
+"blazon": "bear rampant on mount",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "1 O SV  bear rampant on mount",
+"parse": "single"
+},
+{
+"num": 475,
+"name": "..",
+"region": "als",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "VA",
+"blazon": "lion rampant",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "1 VA    lion rampant",
+"parse": "single"
+},
+{
+"num": 476,
+"name": "..",
+"region": "bav",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GN",
+"blazon": "peacock",
+"repeat": false
+}
+],
+"crest": "no crest ornament       N          peacock",
+"raw_arms": "1 GN    peacock",
+"parse": "single"
+},
+{
+"num": 477,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "SA",
+"blazon": "2 staves flory in saltire",
+"repeat": false
+}
+],
+"crest": "no crest ornament       G          man's head",
+"raw_arms": "1 SA    2 staves flory in saltire",
+"parse": "single"
+},
+{
+"num": 478,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "ASGV",
+"blazon": "squirrel holding nut on mount",
+"repeat": false
+}
+],
+"crest": "no crest ornament",
+"raw_arms": "1 A SGV squirrel holding nut on mount",
+"parse": "single"
+},
+{
+"num": 479,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": "s4f1b",
+"coats": [
+{
+"codes": "AB",
+"blazon": "talbot passt",
+"repeat": false
+}
+],
+"crest": "no crest ornament       A          talbot's head",
+"raw_arms": "s4f1b 1 A B     talbot passt",
+"parse": "single"
+},
+{
+"num": 480,
+"name": "..",
+"region": "aut",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GA",
+"blazon": "3 spearheads bendwise in pale",
+"repeat": false
+}
+],
+"crest": "no crest ornament       A          boar spearhead",
+"raw_arms": "1 GA    3 spearheads bendwise in pale",
+"parse": "single"
+},
+{
+"num": 481,
+"name": "..",
+"region": "hen",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BO",
+"blazon": "bend undy",
+"repeat": false
+}
+],
+"crest": "no crest ornament       O          horse's head",
+"raw_arms": "1 BO    bend undy",
+"parse": "single"
+},
+{
+"num": 482,
+"name": "tribberg",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BO",
+"blazon": "2 bugle horns stringed affronted",
+"repeat": false
+}
+],
+"crest": "no crest ornament    ON             2 bugle horns erect",
+"raw_arms": "1 BO       2 bugle horns stringed affronted",
+"parse": "single"
+},
+{
+"num": 483,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BO",
+"blazon": "lion rampant",
+"repeat": false
+}
+],
+"crest": "no crest ornament    XA AS cone ch. lozengy tipped with feather plume",
+"raw_arms": "1 BO       lion rampant",
+"parse": "single"
+},
+{
+"num": 484,
+"name": "..                                                                                              _DE",
+"region": null,
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OSA",
+"blazon": "antler per pale & chief",
+"repeat": false
+}
+],
+"crest": "no crest ornament    OAS            cap pointed per fess tipped with tuft of cock feathers",
+"raw_arms": "1 O SA     antler per pale & chief",
+"parse": "single"
+},
+{
+"num": 485,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AS",
+"blazon": "bend",
+"repeat": false
+}
+],
+"crest": "no crest ornament    AS             cap pointed tipped tuft of cock feathers",
+"raw_arms": "1 AS       bend",
+"parse": "single"
+},
+{
+"num": 486,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "SXAG",
+"blazon": "bend checky",
+"repeat": false
+}
+],
+"crest": "no crest ornament    GS             fishing hook garnished with cock feathers",
+"raw_arms": "1 S X AG bend checky",
+"parse": "single"
+},
+{
+"num": 487,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "pitcher",
+"repeat": false
+}
+],
+"crest": "no crest ornament    G              2 ibex' horns curled",
+"raw_arms": "1 AG       pitcher",
+"parse": "single"
+},
+{
+"num": 488,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AGAG",
+"blazon": "stag isst ch. estoile acc. crescent betw antlers",
+"repeat": false
+}
+],
+"crest": "no crest ornament    =              figure of arms",
+"raw_arms": "1 A GAG stag isst ch. estoile acc. crescent betw antlers",
+"parse": "single"
+},
+{
+"num": 489,
+"name": "rinach",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OXGB",
+"blazon": "lion hooded",
+"repeat": false
+}
+],
+"crest": "no crest ornament    OGN            lion isst crested and garnished with peacock eyes",
+"raw_arms": "1 O X GB lion hooded",
+"parse": "single"
+},
+{
+"num": 490,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AS",
+"blazon": "spearhead in bend",
+"repeat": false
+}
+],
+"crest": "no crest ornament    GO             man's head hatted",
+"raw_arms": "1 AS       spearhead in bend",
+"parse": "single"
+},
+{
+"num": 491,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AGV",
+"blazon": "bull on mount",
+"repeat": false
+}
+],
+"crest": "no crest ornament   G            bull isst",
+"raw_arms": "1 A GV    bull on mount",
+"parse": "single"
+},
+{
+"num": 492,
+"name": "..",
+"region": "aut",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "SA",
+"blazon": "panther",
+"repeat": false
+}
+],
+"crest": "no crest ornament   AS           panther isst vomiting flames",
+"raw_arms": "1 SA      panther",
+"parse": "single"
+},
+{
+"num": 493,
+"name": "..",
+"region": "aut",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GAB",
+"blazon": "chief ch. panter isst",
+"repeat": false
+}
+],
+"crest": "no crest ornament   BGA          panter isst crested and garnished with tufts of cock feathers",
+"raw_arms": "1 G AB    chief ch. panter isst",
+"parse": "single"
+},
+{
+"num": 494,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GA",
+"blazon": "cock naissant",
+"repeat": false
+}
+],
+"crest": "no crest ornament   AA           cock's head betw wings",
+"raw_arms": "1 GA      cock naissant",
+"parse": "single"
+},
+{
+"num": 495,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AS",
+"blazon": "cockatrice",
+"repeat": false
+}
+],
+"crest": "no crest ornament   AS           cock's head betw wings",
+"raw_arms": "1 AS      cockatrice",
+"parse": "single"
+},
+{
+"num": 496,
+"name": "..",
+"region": "bav",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "per fess & pale cch",
+"repeat": false
+}
+],
+"crest": "no crest ornament   GA           2 swan's heads",
+"raw_arms": "1 AG      per fess & pale cch",
+"parse": "single"
+},
+{
+"num": 497,
+"name": "winterberg",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "SA",
+"blazon": "3 mounts",
+"repeat": false
+}
+],
+"crest": "no crest ornament   SA           cone garnished with roundels",
+"raw_arms": "1 SA      3 mounts",
+"parse": "single"
+},
+{
+"num": 498,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AV",
+"blazon": "lion cr.               bull's horn crested and garnished with tufts of cock feathers",
+"repeat": false
+}
+],
+"crest": "no crest ornament   AGA",
+"raw_arms": "1 AV      lion cr.               bull's horn crested and garnished with tufts of cock feathers",
+"parse": "single"
+},
+{
+"num": 499,
+"name": "regishain",
+"region": "als",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "XOAS",
+"blazon": "per pale & escarbuncle",
+"repeat": false
+}
+],
+"crest": "no crest ornament  =         mitre ch. arms",
+"raw_arms": "1 X O AS per pale & escarbuncle",
+"parse": "single"
+},
+{
+"num": 500,
+"name": "..",
+"region": "als",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "SO",
+"blazon": "bend dancetty",
+"repeat": false
+}
+],
+"crest": "no crest ornament  =         bust of woman ch. arms",
+"raw_arms": "1 SO    bend dancetty",
+"parse": "single"
+},
+{
+"num": 501,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AS",
+"blazon": "checky",
+"repeat": false
+}
+],
+"crest": "no crest ornament  =S        cone ch. arms tipped with tuft of cock feathers",
+"raw_arms": "1 AS    checky",
+"parse": "single"
+},
+{
+"num": 502,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GA",
+"blazon": "unicorn naissant",
+"repeat": false
+}
+],
+"crest": "no crest ornament  A         unicorn naissant",
+"raw_arms": "1 GA    unicorn naissant",
+"parse": "single"
+},
+{
+"num": 503,
+"name": "eptingen",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OS",
+"blazon": "eagle per fess",
+"repeat": false
+}
+],
+"crest": "no crest ornament  S         bust of man hatted",
+"raw_arms": "1 OS    eagle per fess",
+"parse": "single"
+},
+{
+"num": 504,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GO",
+"blazon": "bust of priest holding aspergillum",
+"repeat": false
+}
+],
+"crest": "no crest ornament  O         figure of arms",
+"raw_arms": "1 GO    bust of priest holding aspergillum",
+"parse": "single"
+},
+{
+"num": 505,
+"name": "tierstain",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OGV",
+"blazon": "doe on terrace",
+"repeat": false
+}
+],
+"crest": "no crest ornament  OO        bust of man betw antlers",
+"raw_arms": "1 O GV  doe on terrace",
+"parse": "single"
+},
+{
+"num": 506,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AS",
+"blazon": "lion's head cr.",
+"repeat": false
+}
+],
+"crest": "no crest ornament  S         lion isst cr.",
+"raw_arms": "1 AS    lion's head cr.",
+"parse": "single"
+},
+{
+"num": 507,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BA",
+"blazon": "wing",
+"repeat": false
+}
+],
+"crest": "no crest ornament  GA         2 angle bars tipped with plumes",
+"raw_arms": "1 BA       wing",
+"parse": "single"
+},
+{
+"num": 508,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": "s4b1a",
+"coats": [
+{
+"codes": "XOGZ",
+"blazon": "barry & bend",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "s4b1a 1 X O GZ barry & bend",
+"parse": "single"
+},
+{
+"num": 509,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AS",
+"blazon": "per bend indented",
+"repeat": false
+}
+],
+"crest": "no crest ornament  =S         cone ch. arms tipped with tuft of cock feathers",
+"raw_arms": "1 AS       per bend indented",
+"parse": "single"
+},
+{
+"num": 510,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OS",
+"blazon": "fess",
+"repeat": false
+}
+],
+"crest": "no crest ornament  OO         man's head hatted",
+"raw_arms": "1 OS       fess",
+"parse": "single"
+},
+{
+"num": 511,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BO",
+"blazon": "talbot passt",
+"repeat": false
+}
+],
+"crest": "no crest ornament  O          talbot's head",
+"raw_arms": "1 BO       talbot passt",
+"parse": "single"
+},
+{
+"num": 512,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "ASVO",
+"blazon": "lion passt guard cr. on mount and base",
+"repeat": false
+}
+],
+"crest": "no crest ornament  AG         2 bull's horns crested",
+"raw_arms": "1 A SVO lion passt guard cr. on mount and base",
+"parse": "single"
+},
+{
+"num": 513,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GV",
+"blazon": "duck",
+"repeat": false
+}
+],
+"crest": "no crest ornament  V          heron's head",
+"raw_arms": "1 GV       duck",
+"parse": "single"
+},
+{
+"num": 514,
+"name": "..",
+"region": "aut",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "SA",
+"blazon": "fess",
+"repeat": false
+}
+],
+"crest": "no crest ornament    =             wing extended ch. arms",
+"raw_arms": "1 SA       fess",
+"parse": "single"
+},
+{
+"num": 515,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "SOO",
+"blazon": "axe dx and wing sn",
+"repeat": false
+}
+],
+"crest": "no crest ornament    OS            2 angle bars tipped with roundels cch",
+"raw_arms": "1 S OO     axe dx and wing sn",
+"parse": "single"
+},
+{
+"num": 516,
+"name": "..",
+"region": "aut",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AVQ",
+"blazon": "fess ch. 2 fish in ombre",
+"repeat": false
+}
+],
+"crest": "no crest ornament    AV            2 bull's horns each ch. fess",
+"raw_arms": "1 A VQ     fess ch. 2 fish in ombre",
+"parse": "single"
+},
+{
+"num": 517,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "SXAG",
+"blazon": "bend per pale",
+"repeat": false
+}
+],
+"crest": "no crest ornament    =             2 bull's horns ch. arms",
+"raw_arms": "1 S X AG bend per pale",
+"parse": "single"
+},
+{
+"num": 518,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AS",
+"blazon": "2 horses' heads addorsed",
+"repeat": false
+}
+],
+"crest": "no crest ornament    S             horse's head",
+"raw_arms": "1 AS       2 horses' heads addorsed",
+"parse": "single"
+},
+{
+"num": 519,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GS",
+"blazon": "bull statant",
+"repeat": false
+}
+],
+"crest": "no crest ornament    S             horse isst",
+"raw_arms": "1 GS       bull statant",
+"parse": "single"
+},
+{
+"num": 520,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "ASG",
+"blazon": "horse saillant saddled",
+"repeat": false
+}
+],
+"crest": "no crest ornament    S             horse isst",
+"raw_arms": "1 A SG     horse saillant saddled",
+"parse": "single"
+},
+{
+"num": 521,
+"name": "kienberg",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "SAO",
+"blazon": "per bend a bend sn & plain",
+"repeat": false
+}
+],
+"crest": "no crest ornament    SA            bull's horn crested",
+"raw_arms": "1 S AO     per bend a bend sn & plain",
+"parse": "single"
+},
+{
+"num": 522,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "per saltire",
+"repeat": false
+}
+],
+"crest": "no crest ornament      =            2 bull's horns ch. arms",
+"raw_arms": "1 AG           per saltire",
+"parse": "single"
+},
+{
+"num": 523,
+"name": "..",
+"region": "fkn",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GAV",
+"blazon": "turnip above mount",
+"repeat": false
+}
+],
+"crest": "no crest ornament      AV           turnip on mount",
+"raw_arms": "1 G AV         turnip above mount",
+"parse": "single"
+},
+{
+"num": 524,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GA",
+"blazon": "demi-wheel fesswise",
+"repeat": false
+}
+],
+"crest": "no crest ornament      AS           wheel segment tipped with tuft of cock feathers",
+"raw_arms": "1 GA           demi-wheel fesswise",
+"parse": "single"
+},
+{
+"num": 525,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GAO",
+"blazon": "2 billhooks addorsed above mount",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "1 G AO         2 billhooks addorsed above mount",
+"parse": "single"
+},
+{
+"num": 526,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OG",
+"blazon": "hose",
+"repeat": false
+}
+],
+"crest": "no crest ornament      G            hose",
+"raw_arms": "1 OG           hose",
+"parse": "single"
+},
+{
+"num": 527,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GBA",
+"blazon": "falcon holding horseshoe",
+"repeat": false
+}
+],
+"crest": "no crest ornament      =            figure of arms",
+"raw_arms": "1 G BA         falcon holding horseshoe",
+"parse": "single"
+},
+{
+"num": 528,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AGV",
+"blazon": "3 roses slipped in pairle",
+"repeat": false
+}
+],
+"crest": "no crest ornament           AS      cock's head",
+"raw_arms": "1 A GV         3 roses slipped in pairle",
+"parse": "single"
+},
+{
+"num": 529,
+"name": "..",
+"region": "als",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OB",
+"blazon": "3 bars",
+"repeat": false
+}
+],
+"crest": "no crest ornament      =            bust of man ch. arms with capuchon",
+"raw_arms": "1 OB           3 bars",
+"parse": "single"
+},
+{
+"num": 530,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OGA",
+"blazon": "bend ch. 3 mullets",
+"repeat": false
+}
+],
+"crest": "no crest ornament      =        bust of man ch. arms with mitre ch. arms",
+"raw_arms": "1 O GA      bend ch. 3 mullets",
+"parse": "single"
+},
+{
+"num": 531,
+"name": "..",
+"region": "als",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OS",
+"blazon": "wing fesswise",
+"repeat": false
+}
+],
+"crest": "no crest ornament      =        bust of woman ch. arms",
+"raw_arms": "1 OS        wing fesswise",
+"parse": "single"
+},
+{
+"num": 532,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AB",
+"blazon": "per bend nebuly",
+"repeat": false
+}
+],
+"crest": "no crest ornament      =        wings ch. arms",
+"raw_arms": "1 AB        per bend nebuly",
+"parse": "single"
+},
+{
+"num": 533,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GAS",
+"blazon": "tierced per fess",
+"repeat": false
+}
+],
+"crest": "no crest ornament      SAG      3 feathers",
+"raw_arms": "1 G AS      tierced per fess",
+"parse": "single"
+},
+{
+"num": 534,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": "s4b1b",
+"coats": [
+{
+"codes": "GAS",
+"blazon": "chief ch. moor's head dx",
+"repeat": false
+}
+],
+"crest": "no crest ornament      G        moor's head",
+"raw_arms": "s4b1b 1 G AS        chief ch. moor's head dx",
+"parse": "single"
+},
+{
+"num": 535,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "SA",
+"blazon": "pincers inv",
+"repeat": false
+}
+],
+"crest": "no crest ornament      AS       pincers inv tipped with 2 tufts of cock feathers",
+"raw_arms": "1 SA        pincers inv",
+"parse": "single"
+},
+{
+"num": 536,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OG",
+"blazon": "ibex horn",
+"repeat": false
+}
+],
+"crest": "no crest ornament      O        ibex' horn curled",
+"raw_arms": "1 OG        ibex horn",
+"parse": "single"
+},
+{
+"num": 537,
+"name": "..",
+"region": "bav",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BAS",
+"blazon": "elm leaf slipped crosier-formed garnished with cock feathers",
+"repeat": false
+}
+],
+"crest": "no crest ornament      =        figure of arms",
+"raw_arms": "1 B AS      elm leaf slipped crosier-formed garnished with cock feathers",
+"parse": "single"
+},
+{
+"num": 538,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "VG",
+"blazon": "bull statant",
+"repeat": false
+}
+],
+"crest": "no crest ornament      G        bull isst",
+"raw_arms": "1 VG        bull statant",
+"parse": "single"
+},
+{
+"num": 539,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "XAGV",
+"blazon": "per fess & lion",
+"repeat": false
+}
+],
+"crest": "no crest ornament    AG          cap pointed garnished with roses",
+"raw_arms": "1 X A GV per fess & lion",
+"parse": "single"
+},
+{
+"num": 540,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "SG",
+"blazon": "fess",
+"repeat": false
+}
+],
+"crest": "no crest ornament    =           fan triangular ch. arms",
+"raw_arms": "1 SG      fess",
+"parse": "single"
+},
+{
+"num": 541,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AVS",
+"blazon": "popinjay acc. 2 estoiles in bend",
+"repeat": false
+}
+],
+"crest": "no crest ornament    AVS         2 bull's horns holding star garnished with 2 birds close",
+"raw_arms": "1 A VS    popinjay acc. 2 estoiles in bend",
+"parse": "single"
+},
+{
+"num": 542,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GAV",
+"blazon": "poppy head",
+"repeat": false
+}
+],
+"crest": "no crest ornament    AV          2 poppy heads",
+"raw_arms": "1 G AV    poppy head",
+"parse": "single"
+},
+{
+"num": 543,
+"name": "..",
+"region": "bav",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GOA",
+"blazon": "2 scourges in saltire",
+"repeat": false
+}
+],
+"crest": "no crest ornament    OA          2 scourges",
+"raw_arms": "1 G OA    2 scourges in saltire",
+"parse": "single"
+},
+{
+"num": 544,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "SAA",
+"blazon": "per chevron grady acc. bull's horns with handle in chf",
+"repeat": false
+}
+],
+"crest": null,
+"raw_arms": "1 S AA  per chevron grady acc. bull's horns with handle in chf",
+"parse": "single"
+},
+{
+"num": 545,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "spurwheel",
+"repeat": false
+}
+],
+"crest": "no crest ornament    GA          spurwheel isst garnished with roundels",
+"raw_arms": "1 AG      spurwheel",
+"parse": "single"
+},
+{
+"num": 546,
+"name": "..",
+"region": "fkn",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "per pale & per chevron cch",
+"repeat": false
+}
+],
+"crest": "no crest ornament    =S          cone ch. arms tipped with tuft of cock feathers",
+"raw_arms": "1 AG      per pale & per chevron cch",
+"parse": "single"
+},
+{
+"num": 547,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GO",
+"blazon": "lion naissant",
+"repeat": false
+}
+],
+"crest": "no crest ornament    O           lion isst",
+"raw_arms": "1 GO      lion naissant",
+"parse": "single"
+},
+{
+"num": 548,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GA",
+"blazon": "chevron flory at top",
+"repeat": false
+}
+],
+"crest": "no crest ornament    AS          fleur-de-lis tipped with tuft of cock feathers",
+"raw_arms": "1 GA       chevron flory at top",
+"parse": "single"
+},
+{
+"num": 549,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GA",
+"blazon": "house",
+"repeat": false
+}
+],
+"crest": "no crest ornament    A           house",
+"raw_arms": "1 GA       house",
+"parse": "single"
+},
+{
+"num": 550,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AVG",
+"blazon": "squirrel holding nut",
+"repeat": false
+}
+],
+"crest": "no crest ornament    VG",
+"raw_arms": "1 A VG     squirrel holding nut",
+"parse": "single"
+},
+{
+"num": 551,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OAG",
+"blazon": "bird & border",
+"repeat": false
+}
+],
+"crest": "no crest ornament    A           bird",
+"raw_arms": "1 O AG     bird & border",
+"parse": "single"
+},
+{
+"num": 552,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "GA",
+"blazon": "per pale",
+"repeat": false
+}
+],
+"crest": "no crest ornament    AG          2 staves flory in saltire",
+"raw_arms": "1 GA       per pale",
+"parse": "single"
+},
+{
+"num": 553,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "AG",
+"blazon": "3 stars of 8 pt per bend",
+"repeat": false
+}
+],
+"crest": "no crest ornament    =S          cone ch. arms tipped with tuft of cock feathers",
+"raw_arms": "1 AG       3 stars of 8 pt per bend",
+"parse": "single"
+},
+{
+"num": 554,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BO",
+"blazon": "lion naissant cr.",
+"repeat": false
+}
+],
+"crest": "no crest ornament    A           lion isst cr.",
+"raw_arms": "1 BO       lion naissant cr.",
+"parse": "single"
+},
+{
+"num": 555,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BA",
+"blazon": "ibex naissant",
+"repeat": false
+}
+],
+"crest": "no crest ornament    AG          ibex isst crested",
+"raw_arms": "1 BA       ibex naissant",
+"parse": "single"
+},
+{
+"num": 556,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OZ",
+"blazon": "fess",
+"repeat": false
+}
+],
+"crest": "no crest ornament    =           2 bull's horns crested ch. arms",
+"raw_arms": "1 OZ       fess",
+"parse": "single"
+},
+{
+"num": 557,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OS",
+"blazon": "fess dancetty",
+"repeat": false
+}
+],
+"crest": "no crest ornament  =S         cone ch. arms tipped with tuft of cock feathers",
+"raw_arms": "1 OS    fess dancetty",
+"parse": "single"
+},
+{
+"num": 558,
+"name": "..",
+"region": "sui",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "BAG",
+"blazon": "chief ch. lion passt",
+"repeat": false
+}
+],
+"crest": "no crest ornament  G          bull's head",
+"raw_arms": "1 B AG  chief ch. lion passt",
+"parse": "single"
+},
+{
+"num": 559,
+"name": "..",
+"region": "sou",
+"attr": null,
+"pos": null,
+"coats": [
+{
+"codes": "OGAB",
+"blazon": "per bend lion guard isst & lozangy",
+"repeat": false
+}
+],
+"crest": "no crest ornament  AG         2 bull's horns garnished with roses",
+"raw_arms": "1 O GAB per bend lion guard isst & lozangy",
+"parse": "single"
+}
+]

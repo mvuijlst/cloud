@@ -1,0 +1,171 @@
+{
+ "summary": {
+  "page": "C:/Users/mvuijlst/AppData/Local/Temp/claude/M--dev-cloud/baa015c4-3d32-4bc8-bcab-c418b34deb4e/scratchpad/survey/heraldry/downloads/engraved/rolland03_leaf0021_full.jpg",
+  "size": [
+   1952,
+   2984
+  ],
+  "px_per_mm": 15.75,
+  "n_shields": 1,
+  "grid": {
+   "n_cols": 1,
+   "n_rows": 1,
+   "pitch_x_px": null,
+   "pitch_y_px": null,
+   "pitch_x_mm": null,
+   "pitch_y_mm": null
+  },
+  "w_mm": {
+   "n": 1,
+   "median": 13.0,
+   "q1": 13.0,
+   "q3": 13.0
+  },
+  "h_mm": {
+   "n": 1,
+   "median": 15.4,
+   "q1": 15.4,
+   "q3": 15.4
+  },
+  "H_over_W": {
+   "n": 1,
+   "median": 1.185,
+   "q1": 1.185,
+   "q3": 1.185
+  },
+  "solidity": {
+   "n": 1,
+   "median": 0.894,
+   "q1": 0.894,
+   "q3": 0.894
+  },
+  "outline_px": {
+   "n": 1,
+   "median": 1.0,
+   "q1": 1.0,
+   "q3": 1.0
+  },
+  "outline_mm": {
+   "n": 1,
+   "median": 0.06,
+   "q1": 0.06,
+   "q3": 0.06
+  },
+  "hatch_period_h_px": {
+   "n": 1,
+   "median": 5.0,
+   "q1": 5.0,
+   "q3": 5.0
+  },
+  "hatch_period_v_px": {
+   "n": 1,
+   "median": 5.0,
+   "q1": 5.0,
+   "q3": 5.0
+  },
+  "vrun_median": {
+   "n": 1,
+   "median": 2.0,
+   "q1": 2.0,
+   "q3": 2.0
+  },
+  "hrun_median": {
+   "n": 1,
+   "median": 2.0,
+   "q1": 2.0,
+   "q3": 2.0
+  },
+  "inner_ink_frac": {
+   "n": 1,
+   "median": 0.279,
+   "q1": 0.279,
+   "q3": 0.279
+  },
+  "hatch_period_px_where_strong": {
+   "h": {
+    "n": 1,
+    "median": 5.0
+   },
+   "v": {
+    "n": 1,
+    "median": 5.0
+   }
+  },
+  "dot_pitch_px": {
+   "n": 1,
+   "median": 4.7
+  },
+  "median_profile": {
+   "0.05": 0.852,
+   "0.10": 0.872,
+   "0.15": 0.97,
+   "0.20": 0.985,
+   "0.25": 1.0,
+   "0.30": 0.985,
+   "0.35": 0.995,
+   "0.40": 0.961,
+   "0.45": 0.98,
+   "0.50": 0.966,
+   "0.55": 0.936,
+   "0.60": 0.892,
+   "0.65": 0.97,
+   "0.70": 0.98,
+   "0.75": 0.98,
+   "0.80": 0.995,
+   "0.85": 0.99,
+   "0.90": 0.975,
+   "0.95": 0.867
+  }
+ },
+ "shields": [
+  {
+   "bbox": [
+    1067,
+    1545,
+    1272,
+    1788
+   ],
+   "w_px": 205,
+   "h_px": 243,
+   "w_mm": 13.0,
+   "h_mm": 15.4,
+   "H_over_W": 1.185,
+   "solidity": 0.894,
+   "outline_px": 1.0,
+   "outline_mm": 0.06,
+   "hatch_period_h_px": 5,
+   "hatch_h_strength": 0.677,
+   "hatch_period_v_px": 5,
+   "hatch_v_strength": 0.532,
+   "vrun_median": 2.0,
+   "hrun_median": 2.0,
+   "inner_ink_frac": 0.279,
+   "dots": {
+    "n": 381,
+    "nn_px": 4.7,
+    "area_px": 5.0
+   },
+   "profile": {
+    "0.05": 0.852,
+    "0.10": 0.872,
+    "0.15": 0.97,
+    "0.20": 0.985,
+    "0.25": 1.0,
+    "0.30": 0.985,
+    "0.35": 0.995,
+    "0.40": 0.961,
+    "0.45": 0.98,
+    "0.50": 0.966,
+    "0.55": 0.936,
+    "0.60": 0.892,
+    "0.65": 0.97,
+    "0.70": 0.98,
+    "0.75": 0.98,
+    "0.80": 0.995,
+    "0.85": 0.99,
+    "0.90": 0.975,
+    "0.95": 0.867
+   }
+  }
+ ]
+}

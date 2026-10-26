@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><title>grid</title>
+<style>body{margin:4px;font:10px monospace}.g{display:flex;flex-wrap:wrap;gap:4px}svg{width:380px;height:380px;border:1px solid #ccc}</style></head><body><div class="g" id="g"></div>
+<script src="../geometry.js"></script><script src="../charges.js"></script><script src="../charges-art.js"></script>
+<script>
+const names = (new URLSearchParams(location.search).get('n') || 'lion rampant').split(',');
+for (const n of names) {
+  const a = Heraldry.ART[n]; let s = `<svg viewBox="-0.02 -0.02 1.04 1.04" xmlns="http://www.w3.org/2000/svg">`;
+  for (const L of a.layers) s += `<path d="${Heraldry.P.toD(L.d, 4)}" fill="${L.role === 'body' ? '#f2c230' : L.role === 'white' ? '#fff' : '#000'}"/>`;
+  for (let i = 0; i <= 10; i++) s += `<line x1="${i / 10}" y1="0" x2="${i / 10}" y2="1" stroke="#e00" stroke-width="0.002"/><line y1="${i / 10}" x1="0" y2="${i / 10}" x2="1" stroke="#e00" stroke-width="0.002"/><text x="${i / 10}" y="0.015" font-size="0.02" fill="#e00">${i}</text><text y="${i / 10}" x="0" font-size="0.02" fill="#e00">${i}</text>`;
+  s += '</svg>';
+  const d = document.createElement('div'); d.innerHTML = s + '<div>' + n + ' ' + a.w + 'x' + a.h + '</div>'; document.getElementById('g').appendChild(d);
+}
+</script></body></html>

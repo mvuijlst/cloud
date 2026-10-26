@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><title>charges</title>
+<style>body{margin:6px;font:9px monospace;background:#fff;color:#000}.g{display:grid;grid-template-columns:repeat(auto-fill,96px);gap:4px}
+.c{display:flex;flex-direction:column;align-items:center;gap:4px}.c svg{width:90px;height:90px;border:1px solid #eee}
+.a svg{width:130px;height:156px}.a{grid-template-columns:repeat(auto-fill,136px)}</style></head><body>
+<h3>engraved, gules</h3><div class="g" id="eng"></div>
+<h3>colour, or</h3><div class="g" id="col"></div>
+<h3>arms</h3><div class="g a" id="arms"></div>
+<script src="../geometry.js"></script><script src="../charges.js"></script><script src="../charges-art.js"></script><script src="../render.js"></script>
+<script>
+const H = Heraldry;
+const names = Object.keys(H.CHARGE_INFO);
+for (const [id, style, t] of [['eng','engraved','gules'],['col','colour','or']]) {
+  const el = document.getElementById(id);
+  for (const n of names) { const d = document.createElement('div'); d.className='c'; d.innerHTML = H.drawChargeSVG(n, style, t) + `<span>${n}</span>`; el.appendChild(d); }
+}
+const samples = [
+  {shield:'french', field:{kind:'plain', t:['argent']}, charges:[{charge:'lion rampant', n:1, t:'gules', armed:'azure'}]},
+  {shield:'heater', field:{kind:'plain', t:['or']}, charges:[{charge:'eagle', n:1, t:'sable', opts:{doubleheaded:true}, armed:'gules'}]},
+  {shield:'french', field:{kind:'per pale', t:['or','azure']}, ordinary:{kind:'chevron', t:'gules'}, charges:[{charge:'mullet', n:3, t:'sable'}]},
+  {shield:'round', field:{kind:'plain', t:['azure']}, ordinary:{kind:'fess', t:'or'}, charges:[{charge:'rose', n:3, t:'gules', on:'ordinary'}]},
+  {shield:'french', field:{kind:'barry', n:6, t:['argent','vert']}},
+  {shield:'heater', field:{kind:'plain', t:['gules']}, ordinary:{kind:'bend', t:'argent'}, charges:[{charge:'escallop', n:3, t:'azure', on:'ordinary'}]},
+  {shield:'french', field:{kind:'quarterly', t:['or','gules']}, quarters:[
+     {field:{kind:'plain',t:['or']}, charges:[{charge:'lion rampant',n:1,t:'sable'}]},
+     {field:{kind:'chequy',t:['argent','gules'],n:5}},
+     {field:{kind:'chequy',t:['argent','gules'],n:5}},
+     {field:{kind:'plain',t:['or']}, charges:[{charge:'lion rampant',n:1,t:'sable'}]}]},
+  {shield:'heater', field:{kind:'plain', t:['argent']}, ordinary:{kind:'cross', t:'gules'}, charges:[{charge:'cross crosslet', n:4, t:'sable'}]},
+  {shield:'french', field:{kind:'plain', t:['argent']}, chief:{t:'azure', charges:{charge:'mullet', n:3, t:'argent'}}, charges:[{charge:'heart', n:1, t:'gules'}]},
+  {shield:'heater', field:{kind:'per bend', t:['or','purpure'], line:'indented'}, charges:[{charge:'fleur-de-lis', n:2, t:'counterchanged'}]},
+  {shield:'french', field:{kind:'plain', t:['ermine']}, ordinary:{kind:'saltire', t:'gules'}},
+  {shield:'round', field:{kind:'plain', t:['vair']}, chief:{t:'or'}},
+  {shield:'heater', field:{kind:'gyronny', t:['or','sable']}},
+  {shield:'french', field:{kind:'lozengy', t:['argent','azure']}, bordure:{t:'gules'}},
+  {shield:'heater', field:{kind:'plain', t:['gules']}, ordinary:{kind:'fess', t:'argent', line:'wavy'}, label:{t:'azure'}},
+  {shield:'french', field:{kind:'per fess', t:['argent','gules'], line:'embattled'}, charges:[{charge:'tower', n:1, t:'counterchanged'}]},
+];
+const A = document.getElementById('arms');
+for (const s of samples) for (const style of ['engraved','colour']) { const d = document.createElement('div'); d.className='c'; d.innerHTML = H.renderSVG(s, style); A.appendChild(d); }
+</script></body></html>

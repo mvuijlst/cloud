@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f7f3ea">
+    <link rel="manifest" href="../manifest.json">
+    <title>arms</title>
+    <style>
+        @font-face { font-family: 'IBMPlexMono'; src: url('../IBMPlexMono-Regular.ttf'); }
+        /* IM Fell English by Igino Marini, SIL Open Font License 1.1 (../sigils/fonts/OFL.txt) */
+        @font-face { font-family: 'IM Fell English'; src: url('../sigils/fonts/IMFellEnglish-Regular.ttf') format('truetype'); font-style: normal; font-display: swap; }
+        @font-face { font-family: 'IM Fell English'; src: url('../sigils/fonts/IMFellEnglish-Italic.ttf') format('truetype'); font-style: italic; font-display: swap; }
+        :root { --paper: #f7f3ea; --ink: #141414; --dim: rgba(20, 20, 20, 0.5); }
+        html { background: var(--paper); }
+        body {
+            margin: 0; min-height: 100vh; background: var(--paper); color: var(--ink);
+            font-family: 'IBMPlexMono', monospace; font-size: 13px;
+            display: flex; flex-direction: column; align-items: center;
+            padding: 44px 16px 40px; box-sizing: border-box;
+        }
+        a { color: var(--dim); text-decoration: none; }
+        a:hover, a:focus-visible, a.on { color: var(--ink); }
+        #back { position: fixed; top: 14px; left: 16px; font-size: 16px; }
+        nav { display: flex; flex-wrap: wrap; gap: 6px 18px; justify-content: center; margin-bottom: 18px; }
+        nav span { color: var(--dim); }
+        .one { display: flex; flex-direction: column; align-items: center; gap: 14px; max-width: 640px; }
+        .one svg { width: min(78vw, 46vh, 420px); height: auto; display: block; }
+        .name { font-family: 'IM Fell English', Georgia, serif; font-size: 22px; letter-spacing: 0.22em; text-transform: uppercase; margin-top: 4px; }
+        .blazon { font-family: 'IM Fell English', Georgia, serif; font-style: italic; font-size: 19px; line-height: 1.45; text-align: center; max-width: 34em; }
+        .also { font-family: 'IM Fell English', Georgia, serif; font-size: 15px; color: var(--dim); text-align: center; max-width: 36em; }
+        .plate { width: min(100%, 980px); }
+        .plate header { display: flex; justify-content: flex-end; font-family: 'IM Fell English', Georgia, serif; font-size: 20px; margin: 0 4px 10px; }
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px 16px; }
+        .grid a { color: var(--ink); display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .grid svg { width: 100%; height: auto; display: block; }
+        .grid .name { font-size: clamp(10px, 1.6vw, 15px); letter-spacing: 0.12em; text-align: center; }
+        @media (max-width: 560px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+        .note { margin-top: 26px; max-width: 46em; color: var(--dim); font-size: 12px; line-height: 1.5; text-align: center; }
+    </style>
+</head>
+<body>
+    <a id="back" href="../" aria-label="back to the index">←</a>
+    <nav id="nav" aria-label="controls"></nav>
+    <main id="main"></main>
+    <p class="note" id="note"></p>
+
+    <script src="geometry.js"></script>
+    <script src="charges.js"></script><script src="charges-art.js"></script>
+    <script src="render.js"></script>
+    <script src="arms-data.js"></script>
+    <script src="grammar.js"></script>
+    <script>
+        // One coat per visit (#1234 shows that coat again), or a plate of sixteen (#p1234).
+        // Style and roll are remembered in this browser only.
+        const H = Heraldry;
+        const ROLLS = { grunenberg: 'Grünenberg, 1483', zurich: 'Zürich roll, c. 1340' };
+        const store = { get: k => { try { return localStorage.getItem(k); } catch (e) { return null; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch (e) { } } };
+        let style = store.get('arms-style') === 'colour' ? 'colour' : 'engraved';
+        let roll = store.get('arms-roll') === 'zurich' ? 'zurich' : 'grunenberg';
+        const main = document.getElementById('main'), nav = document.getElementById('nav');
+
+        function state() {
+            const h = location.hash.slice(1);
+            const plate = h.startsWith('p');
+            const n = parseInt(plate ? h.slice(1) : h, 10);
+            return { plate, seed: n >= 0 ? n : null };
+        }
+        function go(plate, seed) { location.hash = (plate ? 'p' : '') + seed; }
+        const fresh = () => Math.floor(Math.random() * 1e9);
+
+        function link(text, title, fn, on) {
+            const a = document.createElement('a'); a.href = '#'; a.textContent = text; a.title = title; if (on) a.className = 'on';
+            a.onclick = e => { e.preventDefault(); fn(); }; return a;
+        }
+        function sep() { const s = document.createElement('span'); s.textContent = '·'; return s; }
+
+        function svgFor(arms, size) {
+            return H.renderSVG(arms, style, { title: H.blazon(arms) });
+        }
+        function alsoText(arms) {
+            const also = H.alsoBorneBy(arms);
+            if (!also.length) return '';
+            const names = [...new Set(also.map(x => H.legend(x.name)).filter(Boolean))].slice(0, 3);
+            const rolls = [...new Set(also.map(x => x.roll === 'zurich' ? 'the Zürich roll' : 'Grünenberg'))];
+            return names.length ? `The same arms are painted in ${rolls.join(' and ')} for ${names.join('; ')}.` : `The same arms are painted in ${rolls.join(' and ')}.`;
+        }
+
+        function render() {
+            const st = state();
+            if (st.seed === null) { history.replaceState(null, '', '#' + fresh()); return render(); }
+            nav.textContent = '';
+            nav.append(link('engraved', 'black ink, tinctures hatched (Petra Sancta)', () => { style = 'engraved'; store.set('arms-style', style); render(); }, style === 'engraved'),
+                link('colour', 'flat tinctures', () => { style = 'colour'; store.set('arms-style', style); render(); }, style === 'colour'), sep(),
+                link('1483', 'proportions of Grünenberg’s Wappenbuch', () => { roll = 'grunenberg'; store.set('arms-roll', roll); render(); }, roll === 'grunenberg'),
+                link('c. 1340', 'proportions of the Zürich roll', () => { roll = 'zurich'; store.set('arms-roll', roll); render(); }, roll === 'zurich'), sep(),
+                link('another', 'new arms', () => go(st.plate, fresh())),
+                link(st.plate ? 'one' : 'plate', st.plate ? 'one coat at a time' : 'a plate of sixteen', () => go(!st.plate, st.seed)),
+                link('svg', 'download', () => download(st)));
+            main.textContent = '';
+            const note = document.getElementById('note');
+            note.textContent = `Arms drawn by a grammar fitted to ${ROLLS[roll]} (Clemmensen’s editions); ${style === 'engraved' ? 'tinctures hatched as on Rolland’s plates' : 'flat tinctures'}. Names are invented. Beasts after Graham Johnston’s drawings for Fox-Davies (1909), traced by szquirrel and RootOfAllLight; `;
+            const cr = document.createElement('a'); cr.href = 'GENERATOR.md#credits'; cr.textContent = 'credits'; note.append(cr, '.');
+            if (st.plate) {
+                const wrap = document.createElement('section'); wrap.className = 'plate';
+                const hd = document.createElement('header'); hd.textContent = `Arms · ${(st.seed % 400) + 1}`; wrap.appendChild(hd);
+                const grid = document.createElement('div'); grid.className = 'grid';
+                for (let i = 0; i < 16; i++) {
+                    const seed = st.seed * 16 + i;
+                    const arms = H.sample(seed, roll);
+                    const a = document.createElement('a'); a.href = '#' + seed; a.title = H.blazon(arms);
+                    a.innerHTML = svgFor(arms) + `<div class="name">${H.nameFor(seed, roll)}</div>`;
+                    grid.appendChild(a);
+                }
+                wrap.appendChild(grid); main.appendChild(wrap);
+                document.title = 'arms · plate';
+            } else {
+                const arms = H.sample(st.seed, roll); const name = H.nameFor(st.seed, roll);
+                const box = document.createElement('div'); box.className = 'one';
+                box.innerHTML = svgFor(arms) + `<div class="name">${name}</div><p class="blazon">${H.blazon(arms)}</p>`;
+                const also = alsoText(arms);
+                if (also) { const p = document.createElement('p'); p.className = 'also'; p.textContent = also; box.appendChild(p); }
+                main.appendChild(box);
+                document.title = `arms · ${name}`;
+            }
+        }
+        function download(st) {
+            const svg = main.querySelector('svg'); if (!svg) return;
+            const blob = new Blob([svg.outerHTML], { type: 'image/svg+xml' });
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `arms-${st.seed}-${style}.svg`; a.click();
+            setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+        }
+        window.addEventListener('hashchange', render);
+        render();
+    </script>
+</body>
+</html>

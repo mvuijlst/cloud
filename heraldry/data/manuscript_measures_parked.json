@@ -1,0 +1,2586 @@
+{
+ "shape_summary": {
+  "Zurich": {
+   "n": 13,
+   "H_over_W0": {
+    "n": 13,
+    "median": 0.884,
+    "min": 0.762,
+    "max": 1.183
+   },
+   "widest_row_frac": {
+    "n": 13,
+    "median": 0.721,
+    "min": 0.483,
+    "max": 0.816
+   },
+   "flank_angle_deg": {
+    "n": 13,
+    "median": 65.0,
+    "min": 48.3,
+    "max": 79.3
+   },
+   "solidity": {
+    "n": 13,
+    "median": 0.638,
+    "min": 0.591,
+    "max": 0.727
+   },
+   "tilt_deg": {
+    "n": 13,
+    "median": 6.3,
+    "min": -2.5,
+    "max": 15.6
+   },
+   "W0_mm": {
+    "n": 13,
+    "median": 36.9,
+    "min": 30.3,
+    "max": 42.2
+   },
+   "H_mm": {
+    "n": 13,
+    "median": 32.5,
+    "min": 28.1,
+    "max": 35.8
+   },
+   "outline_mm": {
+    "n": 13,
+    "median": 0.34,
+    "min": 0.15,
+    "max": 0.64
+   },
+   "median_profile": {
+    "0.05": 0.201,
+    "0.10": 0.287,
+    "0.15": 0.364,
+    "0.20": 0.428,
+    "0.25": 0.498,
+    "0.30": 0.563,
+    "0.35": 0.608,
+    "0.40": 0.664,
+    "0.45": 0.72,
+    "0.50": 0.785,
+    "0.55": 0.903,
+    "0.60": 0.879,
+    "0.65": 0.918,
+    "0.70": 0.954,
+    "0.75": 0.941,
+    "0.80": 0.879,
+    "0.85": 0.806,
+    "0.90": 0.651,
+    "0.95": 0.472
+   }
+  },
+  "Gelre": {
+   "n": 5,
+   "H_over_W0": {
+    "n": 5,
+    "median": 1.032,
+    "min": 0.974,
+    "max": 1.173
+   },
+   "widest_row_frac": {
+    "n": 5,
+    "median": 0.505,
+    "min": 0.415,
+    "max": 0.584
+   },
+   "flank_angle_deg": {
+    "n": 5,
+    "median": 41.2,
+    "min": 31.3,
+    "max": 66.6
+   },
+   "solidity": {
+    "n": 5,
+    "median": 0.763,
+    "min": 0.727,
+    "max": 0.768
+   },
+   "tilt_deg": {
+    "n": 5,
+    "median": 2.8,
+    "min": -21.7,
+    "max": 15.1
+   },
+   "W0_mm": {
+    "n": 5,
+    "median": 28.0,
+    "min": 20.2,
+    "max": 40.4
+   },
+   "H_mm": {
+    "n": 5,
+    "median": 27.2,
+    "min": 23.7,
+    "max": 41.7
+   },
+   "outline_mm": {
+    "n": 5,
+    "median": 0.72,
+    "min": 0.55,
+    "max": 0.76
+   },
+   "median_profile": {
+    "0.05": 0.383,
+    "0.10": 0.529,
+    "0.15": 0.701,
+    "0.20": 0.764,
+    "0.25": 0.887,
+    "0.30": 0.823,
+    "0.35": 0.833,
+    "0.40": 0.915,
+    "0.45": 0.944,
+    "0.50": 0.976,
+    "0.55": 0.965,
+    "0.60": 0.94,
+    "0.65": 0.935,
+    "0.70": 0.922,
+    "0.75": 0.887,
+    "0.80": 0.859,
+    "0.85": 0.773,
+    "0.90": 0.647,
+    "0.95": 0.406
+   }
+  },
+  "Grunenberg": {
+   "n": 7,
+   "H_over_W0": {
+    "n": 7,
+    "median": 1.124,
+    "min": 1.043,
+    "max": 1.207
+   },
+   "widest_row_frac": {
+    "n": 7,
+    "median": 0.276,
+    "min": 0.097,
+    "max": 0.414
+   },
+   "flank_angle_deg": {
+    "n": 7,
+    "median": 6.8,
+    "min": 1.4,
+    "max": 80.6
+   },
+   "solidity": {
+    "n": 7,
+    "median": 0.784,
+    "min": 0.668,
+    "max": 0.816
+   },
+   "tilt_deg": {
+    "n": 7,
+    "median": 0.6,
+    "min": -5.7,
+    "max": 19.6
+   },
+   "W0_mm": {
+    "n": 7,
+    "median": 68.7,
+    "min": 65.8,
+    "max": 82.7
+   },
+   "H_mm": {
+    "n": 7,
+    "median": 79.5,
+    "min": 73.4,
+    "max": 86.4
+   },
+   "outline_mm": {
+    "n": 7,
+    "median": 0.93,
+    "min": 0.7,
+    "max": 1.3
+   },
+   "median_profile": {
+    "0.05": 0.712,
+    "0.10": 0.877,
+    "0.15": 0.87,
+    "0.20": 0.955,
+    "0.25": 0.98,
+    "0.30": 0.964,
+    "0.35": 0.962,
+    "0.40": 0.949,
+    "0.45": 0.918,
+    "0.50": 0.912,
+    "0.55": 0.931,
+    "0.60": 0.9,
+    "0.65": 0.856,
+    "0.70": 0.824,
+    "0.75": 0.786,
+    "0.80": 0.724,
+    "0.85": 0.654,
+    "0.90": 0.544,
+    "0.95": 0.389
+   }
+  }
+ },
+ "palette": {
+  "Zurich": {
+   "gules": {
+    "n": 10,
+    "L": 47.4,
+    "a": 40.1,
+    "b": 34.6
+   },
+   "azure": {
+    "n": 8,
+    "L": 37.7,
+    "a": -8.3,
+    "b": 2.2
+   },
+   "sable/dark": {
+    "n": 10,
+    "L": 29.1,
+    "a": 3.0,
+    "b": 6.6
+   },
+   "argent": {
+    "n": 3,
+    "L": 69.3,
+    "a": 2.8,
+    "b": 13.3
+   },
+   "other": {
+    "n": 13,
+    "L": 67.9,
+    "a": 2.1,
+    "b": 19.3
+   },
+   "or": {
+    "n": 11,
+    "L": 67.7,
+    "a": 8.8,
+    "b": 34.3
+   }
+  },
+  "Gelre": {
+   "sable/dark": {
+    "n": 8,
+    "L": 29.4,
+    "a": 3.3,
+    "b": 15.1
+   },
+   "argent": {
+    "n": 1,
+    "L": 57.4,
+    "a": 0.4,
+    "b": 10.1
+   },
+   "gules": {
+    "n": 5,
+    "L": 30.7,
+    "a": 24.1,
+    "b": 23.9
+   },
+   "or": {
+    "n": 1,
+    "L": 56.9,
+    "a": -2.2,
+    "b": 29.9
+   },
+   "other": {
+    "n": 5,
+    "L": 51.3,
+    "a": 0.1,
+    "b": 17.5
+   }
+  },
+  "Grunenberg": {
+   "other": {
+    "n": 10,
+    "L": 59.0,
+    "a": 9.8,
+    "b": 14.8
+   },
+   "gules": {
+    "n": 7,
+    "L": 48.3,
+    "a": 44.6,
+    "b": 23.6
+   },
+   "azure": {
+    "n": 4,
+    "L": 45.5,
+    "a": 0.7,
+    "b": -18.7
+   },
+   "sable/dark": {
+    "n": 6,
+    "L": 36.9,
+    "a": 3.4,
+    "b": 2.7
+   },
+   "or": {
+    "n": 3,
+    "L": 69.8,
+    "a": 9.4,
+    "b": 35.1
+   },
+   "argent": {
+    "n": 1,
+    "L": 71.5,
+    "a": 3.9,
+    "b": 8.6
+   },
+   "vert": {
+    "n": 1,
+    "L": 60.6,
+    "a": -8.6,
+    "b": 19.4
+   }
+  }
+ },
+ "shields": [
+  {
+   "id": "ZUR:32",
+   "name": "luitringen",
+   "roll": "Zurich",
+   "page": "zur02",
+   "mask_from": "polygon",
+   "colour_only": false,
+   "blazon": "bend",
+   "codes": "GB",
+   "px_per_mm": 36.5,
+   "tilt_deg": 6.3,
+   "W0_mm": 34.8,
+   "H_mm": 31.0,
+   "H_over_W0": 0.893,
+   "widest_row_frac": 0.64,
+   "flank_angle_deg": 79.3,
+   "solidity": 0.711,
+   "profile": {
+    "0.05": 0.169,
+    "0.10": 0.34,
+    "0.15": 0.459,
+    "0.20": 0.56,
+    "0.25": 0.664,
+    "0.30": 0.748,
+    "0.35": 0.805,
+    "0.40": 0.861,
+    "0.45": 0.917,
+    "0.50": 0.947,
+    "0.55": 0.967,
+    "0.60": 0.986,
+    "0.65": 0.992,
+    "0.70": 0.954,
+    "0.75": 0.916,
+    "0.80": 0.878,
+    "0.85": 0.774,
+    "0.90": 0.66,
+    "0.95": 0.484
+   },
+   "outline_px": 7.5,
+   "outline_mm": 0.21,
+   "outline_skel_len": 409,
+   "clusters": [
+    {
+     "i": 0,
+     "frac": 0.457,
+     "L": 46.2,
+     "a": 43.9,
+     "b": 35.5,
+     "tincture": "gules"
+    },
+    {
+     "i": 1,
+     "frac": 0.194,
+     "L": 61.3,
+     "a": -12.2,
+     "b": 3.2,
+     "tincture": "azure"
+    },
+    {
+     "i": 2,
+     "frac": 0.172,
+     "L": 39.0,
+     "a": 14.5,
+     "b": 10.2,
+     "tincture": "sable/dark"
+    },
+    {
+     "i": 3,
+     "frac": 0.177,
+     "L": 75.9,
+     "a": 0.3,
+     "b": 12.7,
+     "tincture": "argent"
+    }
+   ],
+   "ordinary": {
+    "kind": "bend",
+    "tincture": "azure",
+    "angle_deg": 177.1,
+    "band_widths_px": [
+     229.0
+    ],
+    "widths_over_extent": [
+     0.199
+    ],
+    "extent_px": 1147.0,
+    "n_bands": 1
+   }
+  },
+  {
+   "id": "ZUR:33",
+   "name": "buocheg",
+   "roll": "Zurich",
+   "page": "zur02",
+   "mask_from": "polygon",
+   "colour_only": false,
+   "blazon": "pale ch. 3 roses slipped",
+   "codes": "GOGV",
+   "px_per_mm": 36.5,
+   "tilt_deg": 15.6,
+   "W0_mm": 31.2,
+   "H_mm": 28.1,
+   "H_over_W0": 0.901,
+   "widest_row_frac": 0.483,
+   "flank_angle_deg": 61.6,
+   "solidity": 0.727,
+   "profile": {
+    "0.05": 0.25,
+    "0.10": 0.412,
+    "0.15": 0.558,
+    "0.20": 0.655,
+    "0.25": 0.743,
+    "0.30": 0.83,
+    "0.35": 0.885,
+    "0.40": 0.928,
+    "0.45": 0.971,
+    "0.50": 0.998,
+    "0.55": 0.992,
+    "0.60": 0.982,
+    "0.65": 0.96,
+    "0.70": 0.932,
+    "0.75": 0.869,
+    "0.80": 0.801,
+    "0.85": 0.711,
+    "0.90": 0.581,
+    "0.95": 0.412
+   },
+   "outline_px": 7.2,
+   "outline_mm": 0.2,
+   "outline_skel_len": 837,
+   "clusters": [
+    {
+     "i": 0,
+     "frac": 0.284,
+     "L": 74.9,
+     "a": 4.7,
+     "b": 20.1,
+     "tincture": "other"
+    },
+    {
+     "i": 1,
+     "frac": 0.396,
+     "L": 47.1,
+     "a": 43.6,
+     "b": 34.9,
+     "tincture": "gules"
+    },
+    {
+     "i": 2,
+     "frac": 0.145,
+     "L": 35.2,
+     "a": 13.1,
+     "b": 13.6,
+     "tincture": "sable/dark"
+    },
+    {
+     "i": 3,
+     "frac": 0.175,
+     "L": 61.9,
+     "a": 18.6,
+     "b": 22.9,
+     "tincture": "gules"
+    }
+   ],
+   "ordinary": {
+    "kind": "pale",
+    "tincture": "pale_band",
+    "angle_deg": 29.8,
+    "band_widths_px": [
+     369.0,
+     96.0,
+     201.0
+    ],
+    "widths_over_extent": [
+     0.4,
+     0.104,
+     0.217
+    ],
+    "extent_px": 922.0,
+    "n_bands": 3
+   }
+  },
+  {
+   "id": "ZUR:34",
+   "name": "hapspurg",
+   "roll": "Zurich",
+   "page": "zur02",
+   "mask_from": "polygon",
+   "colour_only": false,
+   "blazon": "lion rampant",
+   "codes": "OG",
+   "px_per_mm": 36.5,
+   "tilt_deg": 6.0,
+   "W0_mm": 36.9,
+   "H_mm": 32.5,
+   "H_over_W0": 0.88,
+   "widest_row_frac": 0.668,
+   "flank_angle_deg": 74.4,
+   "solidity": 0.689,
+   "profile": {
+    "0.05": 0.181,
+    "0.10": 0.355,
+    "0.15": 0.447,
+    "0.20": 0.53,
+    "0.25": 0.612,
+    "0.30": 0.692,
+    "0.35": 0.751,
+    "0.40": 0.807,
+    "0.45": 0.861,
+    "0.50": 0.914,
+    "0.55": 0.939,
+    "0.60": 0.966,
+    "0.65": 0.99,
+    "0.70": 0.972,
+    "0.75": 0.925,
+    "0.80": 0.871,
+    "0.85": 0.772,
+    "0.90": 0.651,
+    "0.95": 0.472
+   },
+   "outline_px": 5.3,
+   "outline_mm": 0.15,
+   "outline_skel_len": 2340,
+   "clusters": [
+    {
+     "i": 0,
+     "frac": 0.541,
+     "L": 76.4,
+     "a": 2.4,
+     "b": 22.4,
+     "tincture": "other"
+    },
+    {
+     "i": 1,
+     "frac": 0.333,
+     "L": 48.9,
+     "a": 42.0,
+     "b": 35.1,
+     "tincture": "gules"
+    },
+    {
+     "i": 2,
+     "frac": 0.075,
+     "L": 40.8,
+     "a": 5.0,
+     "b": 12.4,
+     "tincture": "other"
+    },
+    {
+     "i": 3,
+     "frac": 0.052,
+     "L": 58.9,
+     "a": 26.8,
+     "b": 29.3,
+     "tincture": "gules"
+    }
+   ],
+   "charge": {
+    "tincture": "gules",
+    "area_frac": 0.37,
+    "n_components": 1,
+    "axis": {
+     "axis_deg": 19.6,
+     "elongation": 1.4
+    },
+    "bbox_w_frac": 0.902,
+    "bbox_h_frac": 0.795,
+    "centre_offset": [
+     0.024,
+     -0.015
+    ]
+   }
+  },
+  {
+   "id": "ZUR:35",
+   "name": "toggenburg",
+   "roll": "Zurich",
+   "page": "zur02",
+   "mask_from": "polygon",
+   "colour_only": false,
+   "blazon": "talbot gorged",
+   "codes": "OS",
+   "px_per_mm": 36.5,
+   "tilt_deg": 8.6,
+   "W0_mm": 32.5,
+   "H_mm": 28.5,
+   "H_over_W0": 0.875,
+   "widest_row_frac": 0.628,
+   "flank_angle_deg": 76.0,
+   "solidity": 0.703,
+   "profile": {
+    "0.05": 0.171,
+    "0.10": 0.337,
+    "0.15": 0.439,
+    "0.20": 0.539,
+    "0.25": 0.638,
+    "0.30": 0.704,
+    "0.35": 0.765,
+    "0.40": 0.828,
+    "0.45": 0.891,
+    "0.50": 0.928,
+    "0.55": 0.956,
+    "0.60": 0.984,
+    "0.65": 0.993,
+    "0.70": 0.978,
+    "0.75": 0.937,
+    "0.80": 0.895,
+    "0.85": 0.806,
+    "0.90": 0.677,
+    "0.95": 0.494
+   },
+   "outline_px": 8.0,
+   "outline_mm": 0.22,
+   "outline_skel_len": 1489,
+   "clusters": [
+    {
+     "i": 0,
+     "frac": 0.557,
+     "L": 76.8,
+     "a": 1.2,
+     "b": 22.9,
+     "tincture": "other"
+    },
+    {
+     "i": 1,
+     "frac": 0.283,
+     "L": 30.5,
+     "a": 0.2,
+     "b": 6.8,
+     "tincture": "sable/dark"
+    },
+    {
+     "i": 2,
+     "frac": 0.132,
+     "L": 48.0,
+     "a": 0.5,
+     "b": 13.8,
+     "tincture": "other"
+    },
+    {
+     "i": 3,
+     "frac": 0.028,
+     "L": 48.4,
+     "a": 37.6,
+     "b": 32.3,
+     "tincture": "gules"
+    }
+   ]
+  },
+  {
+   "id": "ZUR:26",
+   "name": "wirtenberg?",
+   "roll": "Zurich",
+   "page": "zur03",
+   "mask_from": "auto",
+   "colour_only": false,
+   "blazon": "per bend sinister argent and gules (legend WIRTENBERG on strip; Clemmensen 26 wirtenberg = OS 3 antlers, so this legend/position needs checking)",
+   "codes": "?",
+   "px_per_mm": 36.5,
+   "tilt_deg": 6.3,
+   "W0_mm": 37.4,
+   "H_mm": 32.2,
+   "H_over_W0": 0.86,
+   "widest_row_frac": 0.801,
+   "flank_angle_deg": 66.7,
+   "solidity": 0.603,
+   "profile": {
+    "0.05": 0.162,
+    "0.10": 0.236,
+    "0.15": 0.343,
+    "0.20": 0.42,
+    "0.25": 0.483,
+    "0.30": 0.542,
+    "0.35": 0.606,
+    "0.40": 0.662,
+    "0.45": 0.707,
+    "0.50": 0.753,
+    "0.55": 0.797,
+    "0.60": 0.847,
+    "0.65": 0.887,
+    "0.70": 0.917,
+    "0.75": 0.958,
+    "0.80": 0.999,
+    "0.85": 0.85,
+    "0.90": 0.597,
+    "0.95": 0.229
+   },
+   "outline_px": 21.9,
+   "outline_mm": 0.6,
+   "outline_skel_len": 4246,
+   "clusters": [
+    {
+     "i": 0,
+     "frac": 0.418,
+     "L": 45.3,
+     "a": 43.9,
+     "b": 38.9,
+     "tincture": "gules"
+    },
+    {
+     "i": 1,
+     "frac": 0.177,
+     "L": 66.3,
+     "a": 2.5,
+     "b": 19.1,
+     "tincture": "other"
+    },
+    {
+     "i": 2,
+     "frac": 0.076,
+     "L": 23.2,
+     "a": 2.4,
+     "b": 4.5,
+     "tincture": "sable/dark"
+    },
+    {
+     "i": 3,
+     "frac": 0.328,
+     "L": 74.0,
+     "a": 1.5,
+     "b": 17.3,
+     "tincture": "other"
+    }
+   ]
+  },
+  {
+   "id": "ZUR:27",
+   "name": "nellenburg",
+   "roll": "Zurich",
+   "page": "zur03",
+   "mask_from": "auto",
+   "colour_only": false,
+   "blazon": "3 antlers in pale",
+   "codes": "OS",
+   "px_per_mm": 36.5,
+   "tilt_deg": 11.7,
+   "W0_mm": 36.8,
+   "H_mm": 32.5,
+   "H_over_W0": 0.884,
+   "widest_row_frac": 0.816,
+   "flank_angle_deg": 52.3,
+   "solidity": 0.597,
+   "profile": {
+    "0.05": 0.161,
+    "0.10": 0.188,
+    "0.15": 0.243,
+    "0.20": 0.342,
+    "0.25": 0.389,
+    "0.30": 0.467,
+    "0.35": 0.535,
+    "0.40": 0.595,
+    "0.45": 0.648,
+    "0.50": 0.699,
+    "0.55": 0.757,
+    "0.60": 0.817,
+    "0.65": 0.865,
+    "0.70": 0.896,
+    "0.75": 0.94,
+    "0.80": 0.987,
+    "0.85": 0.939,
+    "0.90": 0.795,
+    "0.95": 0.556
+   },
+   "outline_px": 13.0,
+   "outline_mm": 0.36,
+   "outline_skel_len": 6887,
+   "clusters": [
+    {
+     "i": 0,
+     "frac": 0.055,
+     "L": 47.4,
+     "a": 2.8,
+     "b": 16.6,
+     "tincture": "other"
+    },
+    {
+     "i": 1,
+     "frac": 0.346,
+     "L": 27.3,
+     "a": 0.5,
+     "b": 4.6,
+     "tincture": "sable/dark"
+    },
+    {
+     "i": 2,
+     "frac": 0.39,
+     "L": 74.1,
+     "a": 4.9,
+     "b": 33.0,
+     "tincture": "or"
+    },
+    {
+     "i": 3,
+     "frac": 0.209,
+     "L": 67.3,
+     "a": 8.4,
+     "b": 35.6,
+     "tincture": "or"
+    }
+   ],
+   "charge": {
+    "tincture": "dark",
+    "area_frac": 0.339,
+    "n_components": 5,
+    "axis": {
+     "axis_deg": 48.6,
+     "elongation": 1.24
+    },
+    "bbox_w_frac": 0.896,
+    "bbox_h_frac": 0.963,
+    "centre_offset": [
+     -0.016,
+     -0.003
+    ]
+   }
+  },
+  {
+   "id": "ZUR:28",
+   "name": "froburg",
+   "roll": "Zurich",
+   "page": "zur03",
+   "mask_from": "auto",
+   "colour_only": false,
+   "blazon": "3 antlers in pale? painted blue-green",
+   "codes": "OB",
+   "px_per_mm": 36.5,
+   "tilt_deg": 5.8,
+   "W0_mm": 37.9,
+   "H_mm": 33.9,
+   "H_over_W0": 0.893,
+   "widest_row_frac": 0.763,
+   "flank_angle_deg": 62.6,
+   "solidity": 0.603,
+   "profile": {
+    "0.05": 0.208,
+    "0.10": 0.282,
+    "0.15": 0.287,
+    "0.20": 0.321,
+    "0.25": 0.411,
+    "0.30": 0.505,
+    "0.35": 0.57,
+    "0.40": 0.639,
+    "0.45": 0.702,
+    "0.50": 0.753,
+    "0.55": 0.809,
+    "0.60": 0.866,
+    "0.65": 0.918,
+    "0.70": 0.977,
+    "0.75": 0.992,
+    "0.80": 0.959,
+    "0.85": 0.897,
+    "0.90": 0.597,
+    "0.95": 0.264
+   },
+   "outline_px": 12.5,
+   "outline_mm": 0.34,
+   "outline_skel_len": 7520,
+   "clusters": [
+    {
+     "i": 0,
+     "frac": 0.213,
+     "L": 40.0,
+     "a": -8.1,
+     "b": 2.5,
+     "tincture": "azure"
+    },
+    {
+     "i": 1,
+     "frac": 0.605,
+     "L": 72.6,
+     "a": 5.5,
+     "b": 33.3,
+     "tincture": "or"
+    },
+    {
+     "i": 2,
+     "frac": 0.101,
+     "L": 28.3,
+     "a": -0.7,
+     "b": 4.6,
+     "tincture": "sable/dark"
+    },
+    {
+     "i": 3,
+     "frac": 0.082,
+     "L": 51.5,
+     "a": 1.5,
+     "b": 16.4,
+     "tincture": "other"
+    }
+   ],
+   "charge": {
+    "tincture": "azure",
+    "area_frac": 0.218,
+    "n_components": 4,
+    "axis": {
+     "axis_deg": 23.7,
+     "elongation": 1.19
+    },
+    "bbox_w_frac": 0.568,
+    "bbox_h_frac": 0.633,
+    "centre_offset": [
+     -0.017,
+     0.037
+    ]
+   }
+  },
+  {
+   "id": "ZUR:29",
+   "name": "rotteln",
+   "roll": "Zurich",
+   "page": "zur03",
+   "mask_from": "auto",
+   "colour_only": false,
+   "blazon": "eagle (blue)",
+   "codes": "OB",
+   "px_per_mm": 36.5,
+   "tilt_deg": -2.5,
+   "W0_mm": 30.3,
+   "H_mm": 35.8,
+   "H_over_W0": 1.183,
+   "widest_row_frac": 0.721,
+   "flank_angle_deg": 64.6,
+   "solidity": 0.651,
+   "profile": {
+    "0.05": 0.213,
+    "0.10": 0.311,
+    "0.15": 0.364,
+    "0.20": 0.501,
+    "0.25": 0.59,
+    "0.30": 0.687,
+    "0.35": 0.748,
+    "0.40": 0.792,
+    "0.45": 0.854,
+    "0.50": 0.885,
+    "0.55": 0.903,
+    "0.60": 0.872,
+    "0.65": 0.897,
+    "0.70": 0.988,
+    "0.75": 0.961,
+    "0.80": 0.864,
+    "0.85": 0.712,
+    "0.90": 0.476,
+    "0.95": 0.341
+   },
+   "outline_px": 12.4,
+   "outline_mm": 0.34,
+   "outline_skel_len": 3899,
+   "clusters": [
+    {
+     "i": 0,
+     "frac": 0.166,
+     "L": 47.0,
+     "a": -5.7,
+     "b": 5.5,
+     "tincture": "azure"
+    },
+    {
+     "i": 1,
+     "frac": 0.34,
+     "L": 69.2,
+     "a": 8.2,
+     "b": 34.3,
+     "tincture": "or"
+    },
+    {
+     "i": 2,
+     "frac": 0.264,
+     "L": 63.5,
+     "a": 1.9,
+     "b": 14.2,
+     "tincture": "argent"
+    },
+    {
+     "i": 3,
+     "frac": 0.231,
+     "L": 28.7,
+     "a": -0.1,
+     "b": 5.4,
+     "tincture": "sable/dark"
+    }
+   ],
+   "charge": {
+    "tincture": "azure",
+    "area_frac": 0.264,
+    "n_components": 1,
+    "axis": {
+     "axis_deg": 128.3,
+     "elongation": 1.48
+    },
+    "bbox_w_frac": 0.778,
+    "bbox_h_frac": 0.763,
+    "centre_offset": [
+     -0.008,
+     -0.033
+    ]
+   }
+  },
+  {
+   "id": "ZUR:b27",
+   "name": "gutingen",
+   "roll": "Zurich",
+   "page": "zur03",
+   "mask_from": "auto",
+   "colour_only": true,
+   "blazon": "bendy? 3 bends sable? (bottom row)",
+   "codes": "OS",
+   "px_per_mm": 36.5,
+   "tilt_deg": 13.4,
+   "W0_mm": 20.7,
+   "H_mm": 23.9,
+   "H_over_W0": 1.151,
+   "widest_row_frac": 0.517,
+   "flank_angle_deg": 50.8,
+   "solidity": 0.645,
+   "profile": {
+    "0.05": 0.049,
+    "0.10": 0.383,
+    "0.15": 0.609,
+    "0.20": 0.708,
+    "0.25": 0.791,
+    "0.30": 0.89,
+    "0.35": 0.976,
+    "0.40": 0.992,
+    "0.45": 0.989,
+    "0.50": 0.984,
+    "0.55": 0.917,
+    "0.60": 0.774,
+    "0.65": 0.766,
+    "0.70": 0.742,
+    "0.75": 0.622,
+    "0.80": 0.552,
+    "0.85": 0.469,
+    "0.90": 0.4,
+    "0.95": 0.26
+   },
+   "outline_px": 18.1,
+   "outline_mm": 0.5,
+   "outline_skel_len": 7082,
+   "clusters": [
+    {
+     "i": 0,
+     "frac": 0.261,
+     "L": 59.9,
+     "a": 13.2,
+     "b": 35.5,
+     "tincture": "or"
+    },
+    {
+     "i": 1,
+     "frac": 0.363,
+     "L": 24.9,
+     "a": 0.1,
+     "b": 4.0,
+     "tincture": "sable/dark"
+    },
+    {
+     "i": 2,
+     "frac": 0.333,
+     "L": 67.4,
+     "a": 10.3,
+     "b": 37.0,
+     "tincture": "or"
+    },
+    {
+     "i": 3,
+     "frac": 0.043,
+     "L": 44.9,
+     "a": 4.0,
+     "b": 15.7,
+     "tincture": "other"
+    }
+   ],
+   "ordinary": {
+    "kind": "bars",
+    "tincture": "sable",
+    "angle_deg": -33.8,
+    "band_widths_px": [
+     205.0
+    ],
+    "widths_over_extent": [
+     0.302
+    ],
+    "extent_px": 679.0,
+    "n_bands": 1
+   }
+  },
+  {
+   "id": "ZUR:b29",
+   "name": "griesenberg",
+   "roll": "Zurich",
+   "page": "zur03",
+   "mask_from": "auto",
+   "colour_only": false,
+   "blazon": "per pale lion & bendy (bottom row)",
+   "codes": "OGB",
+   "px_per_mm": 36.5,
+   "tilt_deg": 1.6,
+   "W0_mm": 37.9,
+   "H_mm": 34.7,
+   "H_over_W0": 0.915,
+   "widest_row_frac": 0.684,
+   "flank_angle_deg": 62.8,
+   "solidity": 0.626,
+   "profile": {
+    "0.05": 0.205,
+    "0.10": 0.29,
+    "0.15": 0.318,
+    "0.20": 0.387,
+    "0.25": 0.488,
+    "0.30": 0.563,
+    "0.35": 0.583,
+    "0.40": 0.601,
+    "0.45": 0.702,
+    "0.50": 0.766,
+    "0.55": 0.824,
+    "0.60": 0.879,
+    "0.65": 0.934,
+    "0.70": 0.986,
+    "0.75": 0.941,
+    "0.80": 0.879,
+    "0.85": 0.821,
+    "0.90": 0.766,
+    "0.95": 0.497
+   },
+   "outline_px": 10.7,
+   "outline_mm": 0.29,
+   "outline_skel_len": 4895,
+   "clusters": [
+    {
+     "i": 0,
+     "frac": 0.28,
+     "L": 60.0,
+     "a": 1.0,
+     "b": 16.0,
+     "tincture": "other"
+    },
+    {
+     "i": 1,
+     "frac": 0.236,
+     "L": 66.6,
+     "a": 11.8,
+     "b": 36.3,
+     "tincture": "or"
+    },
+    {
+     "i": 2,
+     "frac": 0.165,
+     "L": 45.9,
+     "a": 39.8,
+     "b": 36.9,
+     "tincture": "gules"
+    },
+    {
+     "i": 3,
+     "frac": 0.32,
+     "L": 34.9,
+     "a": -5.8,
+     "b": 4.8,
+     "tincture": "azure"
+    }
+   ]
+  },
+  {
+   "id": "ZUR:b30",
+   "name": "bu..",
+   "roll": "Zurich",
+   "page": "zur03",
+   "mask_from": "auto",
+   "colour_only": false,
+   "blazon": "per bend? (bottom row)",
+   "codes": "BO",
+   "px_per_mm": 36.5,
+   "tilt_deg": -1.0,
+   "W0_mm": 31.7,
+   "H_mm": 32.6,
+   "H_over_W0": 1.03,
+   "widest_row_frac": 0.55,
+   "flank_angle_deg": 72.9,
+   "solidity": 0.591,
+   "profile": {
+    "0.05": 0.247,
+    "0.10": 0.287,
+    "0.15": 0.375,
+    "0.20": 0.468,
+    "0.25": 0.581,
+    "0.30": 0.659,
+    "0.35": 0.72,
+    "0.40": 0.779,
+    "0.45": 0.843,
+    "0.50": 0.903,
+    "0.55": 1.0,
+    "0.60": 0.96,
+    "0.65": 0.786,
+    "0.70": 0.731,
+    "0.75": 0.703,
+    "0.80": 0.592,
+    "0.85": 0.518,
+    "0.90": 0.425,
+    "0.95": 0.246
+   },
+   "outline_px": 15.1,
+   "outline_mm": 0.41,
+   "outline_skel_len": 6394,
+   "clusters": [
+    {
+     "i": 0,
+     "frac": 0.089,
+     "L": 56.0,
+     "a": 6.0,
+     "b": 21.5,
+     "tincture": "other"
+    },
+    {
+     "i": 1,
+     "frac": 0.309,
+     "L": 38.0,
+     "a": -9.0,
+     "b": 1.9,
+     "tincture": "azure"
+    },
+    {
+     "i": 2,
+     "frac": 0.335,
+     "L": 65.1,
+     "a": 11.7,
+     "b": 35.9,
+     "tincture": "or"
+    },
+    {
+     "i": 3,
+     "frac": 0.267,
+     "L": 26.2,
+     "a": -6.0,
+     "b": 3.4,
+     "tincture": "azure"
+    }
+   ]
+  },
+  {
+   "id": "ZUR:13",
+   "name": "franckreich",
+   "roll": "Zurich",
+   "page": "zur_x0",
+   "mask_from": "auto",
+   "colour_only": false,
+   "blazon": "semy of fleurs-de-lis (legend franckreich)",
+   "codes": "BO",
+   "px_per_mm": 36.5,
+   "tilt_deg": 4.6,
+   "W0_mm": 42.2,
+   "H_mm": 32.2,
+   "H_over_W0": 0.762,
+   "widest_row_frac": 0.772,
+   "flank_angle_deg": 74.9,
+   "solidity": 0.641,
+   "profile": {
+    "0.05": 0.234,
+    "0.10": 0.27,
+    "0.15": 0.348,
+    "0.20": 0.424,
+    "0.25": 0.498,
+    "0.30": 0.555,
+    "0.35": 0.607,
+    "0.40": 0.664,
+    "0.45": 0.716,
+    "0.50": 0.769,
+    "0.55": 0.846,
+    "0.60": 0.868,
+    "0.65": 0.905,
+    "0.70": 0.944,
+    "0.75": 0.984,
+    "0.80": 0.981,
+    "0.85": 0.915,
+    "0.90": 0.727,
+    "0.95": 0.472
+   },
+   "outline_px": 23.4,
+   "outline_mm": 0.64,
+   "outline_skel_len": 9927,
+   "clusters": [
+    {
+     "i": 0,
+     "frac": 0.45,
+     "L": 38.1,
+     "a": -10.8,
+     "b": -0.2,
+     "tincture": "azure"
+    },
+    {
+     "i": 1,
+     "frac": 0.213,
+     "L": 68.3,
+     "a": 7.7,
+     "b": 32.7,
+     "tincture": "or"
+    },
+    {
+     "i": 2,
+     "frac": 0.237,
+     "L": 25.4,
+     "a": -7.5,
+     "b": -0.7,
+     "tincture": "azure"
+    },
+    {
+     "i": 3,
+     "frac": 0.1,
+     "L": 48.9,
+     "a": -1.2,
+     "b": 12.7,
+     "tincture": "other"
+    }
+   ],
+   "charge": {
+    "tincture": "or",
+    "area_frac": 0.2,
+    "n_components": 14,
+    "axis": {
+     "axis_deg": 14.2,
+     "elongation": 1.21
+    },
+    "bbox_w_frac": 0.803,
+    "bbox_h_frac": 0.906,
+    "centre_offset": [
+     -0.028,
+     -0.004
+    ]
+   },
+   "seme": {
+    "n_lis": 6,
+    "lis_area_frac_each": 0.0263,
+    "nn_spacing_over_W0": 0.198
+   }
+  },
+  {
+   "id": "ZUR:14",
+   "name": "behem",
+   "roll": "Zurich",
+   "page": "zur_x0",
+   "mask_from": "auto",
+   "colour_only": false,
+   "blazon": "lion rampant q.f. (legend BEHAM)",
+   "codes": "GA",
+   "px_per_mm": 36.5,
+   "tilt_deg": 11.3,
+   "W0_mm": 41.2,
+   "H_mm": 34.8,
+   "H_over_W0": 0.844,
+   "widest_row_frac": 0.776,
+   "flank_angle_deg": 48.3,
+   "solidity": 0.638,
+   "profile": {
+    "0.05": 0.201,
+    "0.10": 0.262,
+    "0.15": 0.38,
+    "0.20": 0.421,
+    "0.25": 0.455,
+    "0.30": 0.523,
+    "0.35": 0.592,
+    "0.40": 0.646,
+    "0.45": 0.699,
+    "0.50": 0.755,
+    "0.55": 0.814,
+    "0.60": 0.848,
+    "0.65": 0.893,
+    "0.70": 0.921,
+    "0.75": 0.967,
+    "0.80": 0.965,
+    "0.85": 0.862,
+    "0.90": 0.79,
+    "0.95": 0.618
+   },
+   "outline_px": 19.6,
+   "outline_mm": 0.54,
+   "outline_skel_len": 4281,
+   "clusters": [
+    {
+     "i": 0,
+     "frac": 0.532,
+     "L": 43.5,
+     "a": 41.1,
+     "b": 34.7,
+     "tincture": "gules"
+    },
+    {
+     "i": 1,
+     "frac": 0.098,
+     "L": 25.4,
+     "a": 6.4,
+     "b": 7.1,
+     "tincture": "sable/dark"
+    },
+    {
+     "i": 2,
+     "frac": 0.274,
+     "L": 70.6,
+     "a": 5.2,
+     "b": 12.7,
+     "tincture": "argent"
+    },
+    {
+     "i": 3,
+     "frac": 0.096,
+     "L": 55.7,
+     "a": 18.6,
+     "b": 16.2,
+     "tincture": "gules"
+    }
+   ],
+   "charge": {
+    "tincture": "argent",
+    "area_frac": 0.273,
+    "n_components": 2,
+    "axis": {
+     "axis_deg": 33.2,
+     "elongation": 1.45
+    },
+    "bbox_w_frac": 0.824,
+    "bbox_h_frac": 0.929,
+    "centre_offset": [
+     0.012,
+     -0.0
+    ]
+   }
+  },
+  {
+   "id": "ZUR:b15",
+   "name": "volkirch",
+   "roll": "Zurich",
+   "page": "zur_x0",
+   "mask_from": "auto",
+   "colour_only": false,
+   "blazon": "letter-like charge with roundels (legend VOLKIRCH / TETNANG)",
+   "codes": "OG",
+   "px_per_mm": 36.5,
+   "tilt_deg": 10.5,
+   "W0_mm": 40.4,
+   "H_mm": 31.0,
+   "H_over_W0": 0.766,
+   "widest_row_frac": 0.728,
+   "flank_angle_deg": 65.0,
+   "solidity": 0.626,
+   "profile": {
+    "0.05": 0.103,
+    "0.10": 0.236,
+    "0.15": 0.352,
+    "0.20": 0.428,
+    "0.25": 0.475,
+    "0.30": 0.553,
+    "0.35": 0.608,
+    "0.40": 0.652,
+    "0.45": 0.72,
+    "0.50": 0.785,
+    "0.55": 0.934,
+    "0.60": 0.954,
+    "0.65": 0.97,
+    "0.70": 0.99,
+    "0.75": 0.949,
+    "0.80": 0.871,
+    "0.85": 0.792,
+    "0.90": 0.64,
+    "0.95": 0.481
+   },
+   "outline_px": 10.5,
+   "outline_mm": 0.29,
+   "outline_skel_len": 4406,
+   "clusters": [
+    {
+     "i": 0,
+     "frac": 0.314,
+     "L": 59.2,
+     "a": 12.8,
+     "b": 33.9,
+     "tincture": "or"
+    },
+    {
+     "i": 1,
+     "frac": 0.312,
+     "L": 45.7,
+     "a": 41.9,
+     "b": 38.0,
+     "tincture": "gules"
+    },
+    {
+     "i": 2,
+     "frac": 0.097,
+     "L": 31.1,
+     "a": 4.7,
+     "b": 11.5,
+     "tincture": "sable/dark"
+    },
+    {
+     "i": 3,
+     "frac": 0.278,
+     "L": 67.3,
+     "a": 7.0,
+     "b": 31.2,
+     "tincture": "or"
+    }
+   ],
+   "charge": {
+    "tincture": "gules",
+    "area_frac": 0.304,
+    "n_components": 1,
+    "axis": {
+     "axis_deg": 7.6,
+     "elongation": 1.34
+    },
+    "bbox_w_frac": 0.666,
+    "bbox_h_frac": 0.646,
+    "centre_offset": [
+     -0.062,
+     0.002
+    ]
+   }
+  },
+  {
+   "id": "GEL:83r-5",
+   "name": "antoing",
+   "roll": "Gelre",
+   "page": "gelre83r",
+   "mask_from": "auto",
+   "colour_only": false,
+   "blazon": "qtly lions",
+   "codes": null,
+   "px_per_mm": 12.3,
+   "tilt_deg": -4.8,
+   "W0_mm": 20.2,
+   "H_mm": 23.7,
+   "H_over_W0": 1.173,
+   "widest_row_frac": 0.476,
+   "flank_angle_deg": 31.3,
+   "solidity": 0.768,
+   "profile": {
+    "0.05": 0.403,
+    "0.10": 0.581,
+    "0.15": 0.738,
+    "0.20": 0.867,
+    "0.25": 0.887,
+    "0.30": 0.823,
+    "0.35": 0.758,
+    "0.40": 0.915,
+    "0.45": 0.944,
+    "0.50": 0.976,
+    "0.55": 0.96,
+    "0.60": 0.94,
+    "0.65": 0.935,
+    "0.70": 0.94,
+    "0.75": 0.883,
+    "0.80": 0.863,
+    "0.85": 0.754,
+    "0.90": 0.597,
+    "0.95": 0.423
+   },
+   "outline_px": 7.0,
+   "outline_mm": 0.57,
+   "outline_skel_len": 1259,
+   "clusters": [
+    {
+     "i": 0,
+     "frac": 0.207,
+     "L": 20.8,
+     "a": 3.9,
+     "b": 5.2,
+     "tincture": "sable/dark"
+    },
+    {
+     "i": 1,
+     "frac": 0.322,
+     "L": 57.4,
+     "a": 0.4,
+     "b": 10.1,
+     "tincture": "argent"
+    },
+    {
+     "i": 2,
+     "frac": 0.373,
+     "L": 32.0,
+     "a": 22.1,
+     "b": 22.8,
+     "tincture": "gules"
+    },
+    {
+     "i": 3,
+     "frac": 0.098,
+     "L": 56.9,
+     "a": -2.2,
+     "b": 29.9,
+     "tincture": "or"
+    }
+   ]
+  },
+  {
+   "id": "GEL:83r-8",
+   "name": "arkel",
+   "roll": "Gelre",
+   "page": "gelre83r",
+   "mask_from": "auto",
+   "colour_only": false,
+   "blazon": "argent 2 bars embattled gules",
+   "codes": null,
+   "px_per_mm": 12.3,
+   "tilt_deg": 3.0,
+   "W0_mm": 40.4,
+   "H_mm": 41.7,
+   "H_over_W0": 1.032,
+   "widest_row_frac": 0.527,
+   "flank_angle_deg": 66.6,
+   "solidity": 0.727,
+   "profile": {
+    "0.05": 0.161,
+    "0.10": 0.336,
+    "0.15": 0.501,
+    "0.20": 0.563,
+    "0.25": 0.668,
+    "0.30": 0.771,
+    "0.35": 0.833,
+    "0.40": 0.865,
+    "0.45": 0.982,
+    "0.50": 0.968,
+    "0.55": 1.0,
+    "0.60": 0.986,
+    "0.65": 0.96,
+    "0.70": 0.922,
+    "0.75": 0.887,
+    "0.80": 0.861,
+    "0.85": 0.819,
+    "0.90": 0.748,
+    "0.95": 0.567
+   },
+   "outline_px": 9.1,
+   "outline_mm": 0.74,
+   "outline_skel_len": 8401,
+   "clusters": [
+    {
+     "i": 0,
+     "frac": 0.101,
+     "L": 19.5,
+     "a": 3.8,
+     "b": 12.6,
+     "tincture": "sable/dark"
+    },
+    {
+     "i": 1,
+     "frac": 0.486,
+     "L": 53.6,
+     "a": -0.2,
+     "b": 16.6,
+     "tincture": "other"
+    },
+    {
+     "i": 2,
+     "frac": 0.2,
+     "L": 32.4,
+     "a": 24.2,
+     "b": 24.5,
+     "tincture": "gules"
+    },
+    {
+     "i": 3,
+     "frac": 0.213,
+     "L": 40.0,
+     "a": 4.5,
+     "b": 17.4,
+     "tincture": "other"
+    }
+   ],
+   "ordinary": {
+    "kind": "bars",
+    "tincture": "gules",
+    "angle_deg": 175.6,
+    "band_widths_px": [
+     273.0
+    ],
+    "widths_over_extent": [
+     0.531
+    ],
+    "extent_px": 514.0,
+    "n_bands": 1
+   }
+  },
+  {
+   "id": "GEL:83r-9",
+   "name": "haverets",
+   "roll": "Gelre",
+   "page": "gelre83r",
+   "mask_from": "auto",
+   "colour_only": false,
+   "blazon": "gyronny or and gules",
+   "codes": null,
+   "px_per_mm": 12.3,
+   "tilt_deg": -21.7,
+   "W0_mm": 33.4,
+   "H_mm": 34.0,
+   "H_over_W0": 1.017,
+   "widest_row_frac": 0.415,
+   "flank_angle_deg": 41.2,
+   "solidity": 0.763,
+   "profile": {
+    "0.05": 0.389,
+    "0.10": 0.596,
+    "0.15": 0.618,
+    "0.20": 0.764,
+    "0.25": 0.893,
+    "0.30": 0.971,
+    "0.35": 0.981,
+    "0.40": 0.995,
+    "0.45": 0.944,
+    "0.50": 0.954,
+    "0.55": 0.92,
+    "0.60": 0.82,
+    "0.65": 0.852,
+    "0.70": 0.883,
+    "0.75": 0.854,
+    "0.80": 0.859,
+    "0.85": 0.779,
+    "0.90": 0.708,
+    "0.95": 0.406
+   },
+   "outline_px": 9.4,
+   "outline_mm": 0.76,
+   "outline_skel_len": 2693,
+   "clusters": [
+    {
+     "i": 0,
+     "frac": 0.293,
+     "L": 39.7,
+     "a": 2.1,
+     "b": 20.9,
+     "tincture": "sable/dark"
+    },
+    {
+     "i": 1,
+     "frac": 0.425,
+     "L": 52.3,
+     "a": -0.2,
+     "b": 21.4,
+     "tincture": "other"
+    },
+    {
+     "i": 2,
+     "frac": 0.158,
+     "L": 32.6,
+     "a": 23.0,
+     "b": 23.2,
+     "tincture": "gules"
+    },
+    {
+     "i": 3,
+     "frac": 0.123,
+     "L": 18.9,
+     "a": 4.7,
+     "b": 13.6,
+     "tincture": "sable/dark"
+    }
+   ]
+  },
+  {
+   "id": "GEL:83r-10",
+   "name": "asperen",
+   "roll": "Gelre",
+   "page": "gelre83r",
+   "mask_from": "auto",
+   "colour_only": false,
+   "blazon": "qtly with letters?",
+   "codes": null,
+   "px_per_mm": 12.3,
+   "tilt_deg": 2.8,
+   "W0_mm": 24.0,
+   "H_mm": 25.4,
+   "H_over_W0": 1.058,
+   "widest_row_frac": 0.505,
+   "flank_angle_deg": 45.4,
+   "solidity": 0.763,
+   "profile": {
+    "0.05": 0.383,
+    "0.10": 0.437,
+    "0.15": 0.719,
+    "0.20": 0.824,
+    "0.25": 0.888,
+    "0.30": 0.929,
+    "0.35": 0.953,
+    "0.40": 0.98,
+    "0.45": 0.929,
+    "0.50": 0.993,
+    "0.55": 0.997,
+    "0.60": 0.925,
+    "0.65": 0.837,
+    "0.70": 0.895,
+    "0.75": 0.898,
+    "0.80": 0.827,
+    "0.85": 0.773,
+    "0.90": 0.647,
+    "0.95": 0.349
+   },
+   "outline_px": 6.8,
+   "outline_mm": 0.55,
+   "outline_skel_len": 3765,
+   "clusters": [
+    {
+     "i": 0,
+     "frac": 0.33,
+     "L": 53.7,
+     "a": -0.4,
+     "b": 12.6,
+     "tincture": "other"
+    },
+    {
+     "i": 1,
+     "frac": 0.38,
+     "L": 28.9,
+     "a": 25.9,
+     "b": 24.4,
+     "tincture": "gules"
+    },
+    {
+     "i": 2,
+     "frac": 0.12,
+     "L": 16.5,
+     "a": 5.6,
+     "b": 9.2,
+     "tincture": "sable/dark"
+    },
+    {
+     "i": 3,
+     "frac": 0.17,
+     "L": 35.5,
+     "a": 6.2,
+     "b": 13.5,
+     "tincture": "sable/dark"
+    }
+   ]
+  },
+  {
+   "id": "GEL:83r-11",
+   "name": "brederode",
+   "roll": "Gelre",
+   "page": "gelre83r",
+   "mask_from": "auto",
+   "colour_only": false,
+   "blazon": "or lion gules, label azure",
+   "codes": null,
+   "px_per_mm": 12.3,
+   "tilt_deg": 15.1,
+   "W0_mm": 28.0,
+   "H_mm": 27.2,
+   "H_over_W0": 0.974,
+   "widest_row_frac": 0.584,
+   "flank_angle_deg": 35.2,
+   "solidity": 0.746,
+   "profile": {
+    "0.05": 0.343,
+    "0.10": 0.529,
+    "0.15": 0.701,
+    "0.20": 0.706,
+    "0.25": 0.759,
+    "0.30": 0.814,
+    "0.35": 0.817,
+    "0.40": 0.878,
+    "0.45": 0.983,
+    "0.50": 0.98,
+    "0.55": 0.965,
+    "0.60": 0.997,
+    "0.65": 0.98,
+    "0.70": 0.953,
+    "0.75": 0.913,
+    "0.80": 0.799,
+    "0.85": 0.773,
+    "0.90": 0.596,
+    "0.95": 0.404
+   },
+   "outline_px": 8.8,
+   "outline_mm": 0.72,
+   "outline_skel_len": 4737,
+   "clusters": [
+    {
+     "i": 0,
+     "frac": 0.487,
+     "L": 51.6,
+     "a": -0.9,
+     "b": 18.5,
+     "tincture": "other"
+    },
+    {
+     "i": 1,
+     "frac": 0.092,
+     "L": 25.4,
+     "a": 26.2,
+     "b": 26.0,
+     "tincture": "gules"
+    },
+    {
+     "i": 2,
+     "frac": 0.122,
+     "L": 20.2,
+     "a": 2.8,
+     "b": 15.0,
+     "tincture": "sable/dark"
+    },
+    {
+     "i": 3,
+     "frac": 0.299,
+     "L": 38.4,
+     "a": 1.1,
+     "b": 21.0,
+     "tincture": "sable/dark"
+    }
+   ],
+   "charge": {
+    "tincture": "gules",
+    "area_frac": 0.066,
+    "n_components": 2,
+    "axis": {
+     "axis_deg": 88.0,
+     "elongation": 3.53
+    },
+    "bbox_w_frac": 0.187,
+    "bbox_h_frac": 0.53,
+    "centre_offset": [
+     -0.265,
+     -0.078
+    ]
+   }
+  },
+  {
+   "id": "GRU:811",
+   "name": "freiburg",
+   "roll": "Grunenberg",
+   "page": "gru162",
+   "mask_from": "auto",
+   "colour_only": false,
+   "blazon": "azure bordure nebuly, or eagle gules (Fürstenberg)",
+   "codes": null,
+   "px_per_mm": 16.6,
+   "tilt_deg": -2.6,
+   "W0_mm": 66.7,
+   "H_mm": 80.5,
+   "H_over_W0": 1.207,
+   "widest_row_frac": 0.114,
+   "flank_angle_deg": 6.8,
+   "solidity": 0.787,
+   "profile": {
+    "0.05": 0.712,
+    "0.10": 0.977,
+    "0.15": 0.958,
+    "0.20": 0.993,
+    "0.25": 0.987,
+    "0.30": 0.964,
+    "0.35": 0.962,
+    "0.40": 0.949,
+    "0.45": 0.918,
+    "0.50": 0.912,
+    "0.55": 0.909,
+    "0.60": 0.9,
+    "0.65": 0.879,
+    "0.70": 0.848,
+    "0.75": 0.801,
+    "0.80": 0.724,
+    "0.85": 0.616,
+    "0.90": 0.466,
+    "0.95": 0.226
+   },
+   "outline_px": 12.6,
+   "outline_mm": 0.76,
+   "outline_skel_len": 5933,
+   "clusters": [
+    {
+     "i": 0,
+     "frac": 0.368,
+     "L": 72.4,
+     "a": 7.8,
+     "b": 16.3,
+     "tincture": "other"
+    },
+    {
+     "i": 1,
+     "frac": 0.278,
+     "L": 40.5,
+     "a": 4.8,
+     "b": 5.5,
+     "tincture": "other"
+    },
+    {
+     "i": 2,
+     "frac": 0.095,
+     "L": 45.7,
+     "a": 40.8,
+     "b": 20.1,
+     "tincture": "gules"
+    },
+    {
+     "i": 3,
+     "frac": 0.259,
+     "L": 43.5,
+     "a": 2.3,
+     "b": -17.9,
+     "tincture": "azure"
+    }
+   ]
+  },
+  {
+   "id": "GRU:813",
+   "name": "toggenburg",
+   "roll": "Grunenberg",
+   "page": "gru162",
+   "mask_from": "auto",
+   "colour_only": false,
+   "blazon": "qtly talbot & per pale lion/eagle",
+   "codes": "OS,AGAB",
+   "px_per_mm": 16.6,
+   "tilt_deg": 0.6,
+   "W0_mm": 68.7,
+   "H_mm": 79.5,
+   "H_over_W0": 1.158,
+   "widest_row_frac": 0.097,
+   "flank_angle_deg": 4.0,
+   "solidity": 0.773,
+   "profile": {
+    "0.05": 0.501,
+    "0.10": 0.999,
+    "0.15": 0.944,
+    "0.20": 0.982,
+    "0.25": 0.922,
+    "0.30": 0.919,
+    "0.35": 0.912,
+    "0.40": 0.922,
+    "0.45": 0.917,
+    "0.50": 0.908,
+    "0.55": 0.896,
+    "0.60": 0.877,
+    "0.65": 0.856,
+    "0.70": 0.824,
+    "0.75": 0.777,
+    "0.80": 0.718,
+    "0.85": 0.627,
+    "0.90": 0.484,
+    "0.95": 0.284
+   },
+   "outline_px": 15.4,
+   "outline_mm": 0.93,
+   "outline_skel_len": 6548,
+   "clusters": [
+    {
+     "i": 0,
+     "frac": 0.271,
+     "L": 65.2,
+     "a": 14.4,
+     "b": 15.7,
+     "tincture": "other"
+    },
+    {
+     "i": 1,
+     "frac": 0.414,
+     "L": 39.1,
+     "a": 5.2,
+     "b": 3.1,
+     "tincture": "sable/dark"
+    },
+    {
+     "i": 2,
+     "frac": 0.117,
+     "L": 48.5,
+     "a": 42.8,
+     "b": 21.0,
+     "tincture": "gules"
+    },
+    {
+     "i": 3,
+     "frac": 0.197,
+     "L": 67.4,
+     "a": 12.3,
+     "b": 35.3,
+     "tincture": "or"
+    }
+   ]
+  },
+  {
+   "id": "GRU:814",
+   "name": "lutzelstein",
+   "roll": "Grunenberg",
+   "page": "gru162",
+   "mask_from": "auto",
+   "colour_only": false,
+   "blazon": "qtly lion & chevrons",
+   "codes": null,
+   "px_per_mm": 16.6,
+   "tilt_deg": -2.2,
+   "W0_mm": 71.7,
+   "H_mm": 79.8,
+   "H_over_W0": 1.113,
+   "widest_row_frac": 0.276,
+   "flank_angle_deg": 1.5,
+   "solidity": 0.784,
+   "profile": {
+    "0.05": 0.867,
+    "0.10": 0.835,
+    "0.15": 0.87,
+    "0.20": 0.91,
+    "0.25": 0.947,
+    "0.30": 0.941,
+    "0.35": 0.94,
+    "0.40": 0.928,
+    "0.45": 0.879,
+    "0.50": 0.879,
+    "0.55": 0.877,
+    "0.60": 0.866,
+    "0.65": 0.844,
+    "0.70": 0.818,
+    "0.75": 0.786,
+    "0.80": 0.73,
+    "0.85": 0.655,
+    "0.90": 0.55,
+    "0.95": 0.397
+   },
+   "outline_px": 14.6,
+   "outline_mm": 0.88,
+   "outline_skel_len": 2910,
+   "clusters": [
+    {
+     "i": 0,
+     "frac": 0.294,
+     "L": 68.7,
+     "a": 11.3,
+     "b": 14.1,
+     "tincture": "other"
+    },
+    {
+     "i": 1,
+     "frac": 0.318,
+     "L": 47.3,
+     "a": 45.6,
+     "b": 22.7,
+     "tincture": "gules"
+    },
+    {
+     "i": 2,
+     "frac": 0.193,
+     "L": 69.0,
+     "a": 11.3,
+     "b": 34.0,
+     "tincture": "or"
+    },
+    {
+     "i": 3,
+     "frac": 0.195,
+     "L": 40.7,
+     "a": 6.0,
+     "b": 2.6,
+     "tincture": "other"
+    }
+   ]
+  },
+  {
+   "id": "GRU:816",
+   "name": "sponheim",
+   "roll": "Grunenberg",
+   "page": "gru162",
+   "mask_from": "auto",
+   "colour_only": false,
+   "blazon": "chequy gules and or / azure and or",
+   "codes": null,
+   "px_per_mm": 16.6,
+   "tilt_deg": 2.0,
+   "W0_mm": 67.7,
+   "H_mm": 78.6,
+   "H_over_W0": 1.16,
+   "widest_row_frac": 0.324,
+   "flank_angle_deg": 1.4,
+   "solidity": 0.816,
+   "profile": {
+    "0.05": 0.743,
+    "0.10": 0.877,
+    "0.15": 0.935,
+    "0.20": 0.996,
+    "0.25": 0.994,
+    "0.30": 0.997,
+    "0.35": 0.999,
+    "0.40": 0.964,
+    "0.45": 0.997,
+    "0.50": 0.941,
+    "0.55": 0.949,
+    "0.60": 0.927,
+    "0.65": 0.921,
+    "0.70": 0.866,
+    "0.75": 0.808,
+    "0.80": 0.743,
+    "0.85": 0.657,
+    "0.90": 0.549,
+    "0.95": 0.383
+   },
+   "outline_px": 11.6,
+   "outline_mm": 0.7,
+   "outline_skel_len": 5832,
+   "clusters": [
+    {
+     "i": 0,
+     "frac": 0.389,
+     "L": 70.5,
+     "a": 9.0,
+     "b": 23.8,
+     "tincture": "other"
+    },
+    {
+     "i": 1,
+     "frac": 0.242,
+     "L": 51.7,
+     "a": 44.4,
+     "b": 25.3,
+     "tincture": "gules"
+    },
+    {
+     "i": 2,
+     "frac": 0.193,
+     "L": 47.6,
+     "a": -0.8,
+     "b": -19.7,
+     "tincture": "azure"
+    },
+    {
+     "i": 3,
+     "frac": 0.176,
+     "L": 39.2,
+     "a": 4.9,
+     "b": 4.6,
+     "tincture": "sable/dark"
+    }
+   ]
+  },
+  {
+   "id": "GRU:p164-abenberg",
+   "name": "abenberg",
+   "roll": "Grunenberg",
+   "page": "gru164",
+   "mask_from": "auto",
+   "colour_only": false,
+   "blazon": "azure semy of ? two lions? (legend Graf von Abemberg)",
+   "codes": null,
+   "px_per_mm": 16.6,
+   "tilt_deg": 19.6,
+   "W0_mm": 82.7,
+   "H_mm": 86.4,
+   "H_over_W0": 1.045,
+   "widest_row_frac": 0.414,
+   "flank_angle_deg": 80.6,
+   "solidity": 0.668,
+   "profile": {
+    "0.05": 0.194,
+    "0.10": 0.361,
+    "0.15": 0.414,
+    "0.20": 0.604,
+    "0.25": 0.645,
+    "0.30": 0.847,
+    "0.35": 0.94,
+    "0.40": 0.947,
+    "0.45": 1.0,
+    "0.50": 0.926,
+    "0.55": 0.931,
+    "0.60": 0.869,
+    "0.65": 0.829,
+    "0.70": 0.803,
+    "0.75": 0.728,
+    "0.80": 0.673,
+    "0.85": 0.608,
+    "0.90": 0.527,
+    "0.95": 0.393
+   },
+   "outline_px": 15.7,
+   "outline_mm": 0.95,
+   "outline_skel_len": 9237,
+   "clusters": [
+    {
+     "i": 0,
+     "frac": 0.165,
+     "L": 54.3,
+     "a": 8.0,
+     "b": 9.4,
+     "tincture": "other"
+    },
+    {
+     "i": 1,
+     "frac": 0.327,
+     "L": 37.2,
+     "a": 1.8,
+     "b": -1.1,
+     "tincture": "sable/dark"
+    },
+    {
+     "i": 2,
+     "frac": 0.302,
+     "L": 46.6,
+     "a": 0.3,
+     "b": -21.3,
+     "tincture": "azure"
+    },
+    {
+     "i": 3,
+     "frac": 0.206,
+     "L": 71.5,
+     "a": 3.9,
+     "b": 8.6,
+     "tincture": "argent"
+    }
+   ]
+  },
+  {
+   "id": "GRU:826",
+   "name": "nellenburg",
+   "roll": "Grunenberg",
+   "page": "gru164",
+   "mask_from": "auto",
+   "colour_only": false,
+   "blazon": "3 antlers in pale (painted azure on or)",
+   "codes": "OB",
+   "px_per_mm": 16.6,
+   "tilt_deg": -5.7,
+   "W0_mm": 70.4,
+   "H_mm": 73.4,
+   "H_over_W0": 1.043,
+   "widest_row_frac": 0.274,
+   "flank_angle_deg": 35.7,
+   "solidity": 0.729,
+   "profile": {
+    "0.05": 0.416,
+    "0.10": 0.616,
+    "0.15": 0.783,
+    "0.20": 0.955,
+    "0.25": 0.981,
+    "0.30": 0.999,
+    "0.35": 0.999,
+    "0.40": 0.98,
+    "0.45": 0.795,
+    "0.50": 0.804,
+    "0.55": 0.946,
+    "0.60": 0.959,
+    "0.65": 0.713,
+    "0.70": 0.559,
+    "0.75": 0.575,
+    "0.80": 0.665,
+    "0.85": 0.667,
+    "0.90": 0.562,
+    "0.95": 0.389
+   },
+   "outline_px": 17.5,
+   "outline_mm": 1.05,
+   "outline_skel_len": 3441,
+   "clusters": [
+    {
+     "i": 0,
+     "frac": 0.363,
+     "L": 51.2,
+     "a": 15.1,
+     "b": 24.2,
+     "tincture": "other"
+    },
+    {
+     "i": 1,
+     "frac": 0.131,
+     "L": 44.0,
+     "a": 0.9,
+     "b": -12.9,
+     "tincture": "azure"
+    },
+    {
+     "i": 2,
+     "frac": 0.311,
+     "L": 33.6,
+     "a": 2.4,
+     "b": 1.2,
+     "tincture": "sable/dark"
+    },
+    {
+     "i": 3,
+     "frac": 0.195,
+     "L": 72.9,
+     "a": 4.6,
+     "b": 36.0,
+     "tincture": "or"
+    }
+   ],
+   "charge": {
+    "tincture": "azure",
+    "area_frac": 0.131,
+    "n_components": 17,
+    "axis": {
+     "axis_deg": 111.5,
+     "elongation": 1.2
+    },
+    "bbox_w_frac": 0.877,
+    "bbox_h_frac": 0.846,
+    "centre_offset": [
+     -0.064,
+     -0.017
+    ]
+   }
+  },
+  {
+   "id": "GRU:827",
+   "name": "rapperswil",
+   "roll": "Grunenberg",
+   "page": "gru164",
+   "mask_from": "auto",
+   "colour_only": true,
+   "blazon": "3 rose branches in pale (field painted white)",
+   "codes": "OVG",
+   "px_per_mm": 16.6,
+   "tilt_deg": 7.6,
+   "W0_mm": 22.1,
+   "H_mm": 25.1,
+   "H_over_W0": 1.136,
+   "widest_row_frac": 0.529,
+   "flank_angle_deg": 58.4,
+   "solidity": 0.613,
+   "profile": {
+    "0.05": 0.025,
+    "0.10": 0.106,
+    "0.15": 0.316,
+    "0.20": 0.662,
+    "0.25": 0.638,
+    "0.30": 0.668,
+    "0.35": 0.779,
+    "0.40": 0.828,
+    "0.45": 0.804,
+    "0.50": 0.899,
+    "0.55": 0.981,
+    "0.60": 0.926,
+    "0.65": 0.907,
+    "0.70": 0.88,
+    "0.75": 0.714,
+    "0.80": 0.542,
+    "0.85": 0.736,
+    "0.90": 0.485,
+    "0.95": 0.243
+   },
+   "outline_px": 8.8,
+   "outline_mm": 0.53,
+   "outline_skel_len": 686,
+   "clusters": [
+    {
+     "i": 0,
+     "frac": 0.281,
+     "L": 60.6,
+     "a": -8.6,
+     "b": 19.4,
+     "tincture": "vert"
+    },
+    {
+     "i": 1,
+     "frac": 0.444,
+     "L": 49.7,
+     "a": 46.4,
+     "b": 25.4,
+     "tincture": "gules"
+    },
+    {
+     "i": 2,
+     "frac": 0.158,
+     "L": 36.9,
+     "a": 4.8,
+     "b": 8.0,
+     "tincture": "sable/dark"
+    },
+    {
+     "i": 3,
+     "frac": 0.117,
+     "L": 38.6,
+     "a": 32.4,
+     "b": 15.6,
+     "tincture": "gules"
+    }
+   ]
+  },
+  {
+   "id": "GRU:p164-glattbach",
+   "name": "glattbach",
+   "roll": "Grunenberg",
+   "page": "gru164",
+   "mask_from": "auto",
+   "colour_only": false,
+   "blazon": "per pale sable and gules, roundels / letter-like",
+   "codes": null,
+   "px_per_mm": 16.6,
+   "tilt_deg": 1.7,
+   "W0_mm": 65.8,
+   "H_mm": 74.0,
+   "H_over_W0": 1.124,
+   "widest_row_frac": 0.286,
+   "flank_angle_deg": 11.0,
+   "solidity": 0.815,
+   "profile": {
+    "0.05": 0.854,
+    "0.10": 0.89,
+    "0.15": 0.824,
+    "0.20": 0.952,
+    "0.25": 0.98,
+    "0.30": 0.996,
+    "0.35": 0.964,
+    "0.40": 0.959,
+    "0.45": 0.952,
+    "0.50": 0.941,
+    "0.55": 0.935,
+    "0.60": 0.928,
+    "0.65": 0.919,
+    "0.70": 0.869,
+    "0.75": 0.802,
+    "0.80": 0.736,
+    "0.85": 0.654,
+    "0.90": 0.544,
+    "0.95": 0.393
+   },
+   "outline_px": 21.6,
+   "outline_mm": 1.3,
+   "outline_skel_len": 10538,
+   "clusters": [
+    {
+     "i": 0,
+     "frac": 0.294,
+     "L": 35.3,
+     "a": 2.3,
+     "b": 3.8,
+     "tincture": "sable/dark"
+    },
+    {
+     "i": 1,
+     "frac": 0.223,
+     "L": 49.5,
+     "a": 48.5,
+     "b": 26.8,
+     "tincture": "gules"
+    },
+    {
+     "i": 2,
+     "frac": 0.273,
+     "L": 65.9,
+     "a": 10.5,
+     "b": 12.6,
+     "tincture": "other"
+    },
+    {
+     "i": 3,
+     "frac": 0.21,
+     "L": 42.4,
+     "a": 8.2,
+     "b": 10.4,
+     "tincture": "other"
+    }
+   ]
+  }
+ ]
+}

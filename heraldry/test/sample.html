@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><title>samples</title>
+<style>body{margin:6px;font:10px Georgia,serif;background:#fff}.g{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.c{display:flex;flex-direction:column;align-items:center;gap:2px}.c svg{width:150px;height:180px}.b{width:180px;text-align:center;line-height:1.25}.n{font-variant:small-caps;letter-spacing:.08em;font-size:12px}</style></head><body>
+<div class="g" id="g"></div>
+<script src="../geometry.js"></script><script src="../charges.js"></script><script src="../charges-art.js"></script><script src="../render.js"></script><script src="../arms-data.js"></script><script src="../grammar.js"></script>
+<script>
+const q = new URLSearchParams(location.search);
+const start = +(q.get('s') || 1), n = +(q.get('n') || 16), roll = q.get('r') || 'grunenberg', style = q.get('st') || 'engraved';
+const H = Heraldry, g = document.getElementById('g');
+for (let i = 0; i < n; i++) {
+  const seed = start + i; const a = H.sample(seed, roll); const d = document.createElement('div'); d.className = 'c';
+  let svg = ''; try { svg = H.renderSVG(a, style, { shield: style === 'engraved' ? 'french' : 'heater' }); } catch (e) { svg = '<pre>' + e.message + '</pre>'; console.error(seed, e); }
+  const also = H.alsoBorneBy(a).map(x => x.name).join('; ');
+  d.innerHTML = svg + `<div class="n">${H.nameFor(seed, roll)}</div><div class="b">${H.blazon(a)}${also ? '<br><i>also: ' + also + '</i>' : ''}</div><div>#${seed}</div>`;
+  g.appendChild(d);
+}
+</script></body></html>
