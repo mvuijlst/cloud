@@ -177,9 +177,15 @@
       if (xs.length < 2) return 0;
       return (Math.max(...xs) - Math.min(...xs)) / 2;
     };
-    return (shieldCache[kind] = { kind, path, poly, fess: [50, cy], area: Math.abs(A), halfAt });
+    return (shieldCache[kind] = { kind, path, poly, fess: [50, cy], area: Math.abs(A), halfAt, H: kind.startsWith('rect:') ? +kind.slice(5) : SH });
   }
   H.shield = shield;
+  // a quarter: a rectangle 100 wide and h high, so a sub-coat fills its quarter exactly
+  H.rectShield = h => {
+    const k = 'rect:' + (Math.round(h * 100) / 100);
+    if (!SHIELDS[k]) SHIELDS[k] = [['M', 0, 0], ['L', 100, 0], ['L', 100, +k.slice(5)], ['L', 0, +k.slice(5)], ['Z']];
+    return shield(k);
+  };
   H.SW = SW; H.SH = SH;
 
   // inward offset of a polygon (smooth convex shields), for the bordure's inner edge
@@ -242,9 +248,15 @@
         }
       }
     } else if (type === 'nebuly') {
-      for (let s = s0; s <= L + period; s += period / 20) {
-        const t = (s - s0) / period * 2 * Math.PI;
-        out.push(at(s + 0.35 * period / (2 * Math.PI) * Math.sin(t) * 2.2, amp * Math.sin(t)));
+      // alternate bulbous lobes on narrow necks, the necks of neighbouring lobes sharing a wall
+      const n = period / 4, R = n * 1.3, beta = Math.acos(n / R), hc = R * Math.sin(beta) + n * 0.45;
+      for (let s = s0, k = 0; s <= L + period; s += period / 2, k++) {
+        const sg = k % 2 ? -1 : 1, cx = s + n;
+        out.push(at(s, 0));
+        for (let i = 0; i <= 18; i++) {
+          const th = Math.PI + beta - (Math.PI + 2 * beta) * i / 18;
+          out.push(at(cx + R * Math.cos(th), sg * (hc + R * Math.sin(th))));
+        }
       }
     }
     // trim to the segment's extent (keep a little beyond; the shield clip hides the rest)
@@ -268,6 +280,8 @@
   const M = 8; // margin beyond the shield
   const box = [[-M, -M], [SW + M, -M], [SW + M, SH + M], [-M, SH + M]];
   function division(kind, sh, opt = {}) {
+    const SH = sh.H || 120;
+    const box = [[-M, -M], [SW + M, -M], [SW + M, SH + M], [-M, SH + M]];
     const lt = opt.line || 'plain';
     const [fx, fy] = sh.fess;
     const out = { regions: [], lines: [] };
@@ -311,32 +325,38 @@
         add([c, [c[0] + R * Math.cos(a0), c[1] + R * Math.sin(a0)], [c[0] + R * Math.cos(a1), c[1] + R * Math.sin(a1)]], 1);
       }
       for (let k = 0; k < 4; k++) { const a = -Math.PI / 2 + k * Math.PI / 4; ink([[c[0] - R * Math.cos(a), c[1] - R * Math.sin(a)], [c[0] + R * Math.cos(a), c[1] + R * Math.sin(a)]]); }
-    } else if (kind === 'barry' || kind === 'paly' || kind === 'bendy' || kind === 'bendy sinister') {
+    } else if (kind === 'barry' || kind === 'paly') {
+      // n bands; each odd band is bounded by its two partition lines, drawn with the same phase so the
+      // band keeps its width (wavy, nebuly, indented and dancetty lines run in parallel)
       const n = opt.n || 6; add(box, 0);
-      if (kind === 'barry') {
-        const h = SH / n;
-        for (let i = 1; i < n; i += 2) add([[-M, i * h], [SW + M, i * h], [SW + M, (i + 1) * h], [-M, (i + 1) * h]], 1);
-        for (let i = 1; i < n; i++) ink(linePts([-M, i * h], [SW + M, i * h], lt, 1, 0));
-      } else if (kind === 'paly') {
-        const w = SW / n;
-        for (let i = 1; i < n; i += 2) add([[i * w, -M], [(i + 1) * w, -M], [(i + 1) * w, SH + M], [i * w, SH + M]], 1);
-        for (let i = 1; i < n; i++) ink([[i * w, -M], [i * w, SH + M]]);
-      } else {
-        const sin = kind === 'bendy sinister'; const span = SW + SH; const w = span / n / Math.SQRT2 * 1.0;
-        for (let i = 0; i < n + 2; i++) {
-          const o = (i - 1) * (SW * 1.0 / n) * Math.SQRT2;
-          const band = [[o, -M], [o + SW / n * Math.SQRT2, -M], [o + SW / n * Math.SQRT2 + 200, 200 - M], [o + 200, 200 - M]];
-          // bands run from dexter chief to sinister base (+x +y)
-          const bb = band.map(q => sin ? [SW - q[0], q[1]] : q);
-          if (i % 2) add(bb.map(q => [q[0] - 60, q[1] - 60 + 0]), 1);
-          ink([[o - 60, -M - 60], [o + 200 - 60, 200 - M - 60]].map(q => sin ? [SW - q[0], q[1]] : q));
-        }
-        void w;
+      const across = kind === 'barry' ? SH : SW, w = across / n;
+      const edge = (c) => kind === 'barry' ? linePts([-M, c], [SW + M, c], lt, 1, 0) : linePts([c, -M], [c, SH + M], lt, -1, 0);
+      const lines = []; for (let i = 1; i < n; i++) lines.push(edge(i * w));
+      for (let i = 1; i < n; i += 2) {
+        const top = lines[i - 1], bot = i < n - 1 ? lines[i] : null;
+        const far = kind === 'barry' ? [[SW + M, SH + M + 20], [-M, SH + M + 20]] : [[SW + M + 20, SH + M], [SW + M + 20, -M]];
+        add(top.concat(bot ? bot.slice().reverse() : far), 1);
       }
+      for (const l of lines) ink(l);
+    } else if (kind === 'bendy' || kind === 'bendy sinister') {
+      // bands between the lines x - y = c, spread evenly over the shield's own extent of x - y
+      const n = opt.n || 6; add(box, 0);
+      const sin = kind === 'bendy sinister';
+      const cs = sh.poly.map(q => (sin ? SW - q[0] : q[0]) - q[1]);
+      const c0 = Math.min(...cs), c1 = Math.max(...cs), step = (c1 - c0) / n;
+      const fl = q => sin ? [SW - q[0], q[1]] : q;
+      const lineAt = c => linePts([c - M, -M], [c + SH + M, SH + M], lt, -1, 0).map(fl);
+      const lines = []; for (let i = 1; i < n; i++) lines.push(lineAt(c0 + i * step));
+      for (let i = 1; i < n; i += 2) {
+        const a = lines[i - 1], bb = i < n - 1 ? lines[i] : [[c1 + SH + 3 * M, SH + M], [c1 - 3 * M, -M]].map(fl);
+        add(a.concat(i < n - 1 ? bb.slice().reverse() : bb), 1);
+      }
+      for (const l of lines) ink(l);
     } else if (kind === 'tierced per fess') {
       const h = SH / 3; add(box, 0);
-      add([[-M, h], [SW + M, h], [SW + M, 2 * h], [-M, 2 * h]], 1); add([[-M, 2 * h], [SW + M, 2 * h], [SW + M, SH + M], [-M, SH + M]], 2);
-      ink(linePts([-M, h], [SW + M, h], lt, 1)); ink(linePts([-M, 2 * h], [SW + M, 2 * h], lt, 1));
+      const l1 = linePts([-M, h], [SW + M, h], lt, 1, 0), l2 = linePts([-M, 2 * h], [SW + M, 2 * h], lt, 1, 0);
+      add(l1.concat(l2.slice().reverse()), 1); add(l2.concat([[SW + M, SH + M + 20], [-M, SH + M + 20]]), 2);
+      ink(l1); ink(l2);
     } else if (kind === 'tierced per pale') {
       const w = SW / 3; add(box, 0);
       add([[w, -M], [2 * w, -M], [2 * w, SH + M], [w, SH + M]], 1); add([[2 * w, -M], [SW + M, -M], [SW + M, SH + M], [2 * w, SH + M]], 2);
@@ -371,6 +391,7 @@
   // ---------- ordinaries ----------
   // Each returns {poly (or path), axis: points for charges laid on it, n: normal for counting}.
   function ordinary(kind, sh, opt = {}) {
+    const SH = sh.H || 120;
     const lt = opt.line || 'plain';
     const [fx, fy] = sh.fess;
     const o = { kind };
@@ -401,8 +422,19 @@
       o.poly = e.poly.map(fl); o.lines = [e.a.map(fl), e.b.map(fl)];
       o.angle = sin ? -Math.PI / 4 : Math.PI / 4;
       o.slots = (n) => {
-        const out = []; const span = 64; const size = w * 0.74;
-        for (let i = 0; i < n; i++) { const t = n === 1 ? 0 : -span / 2 + span * i / (n - 1); out.push({ c: fl([fx + t * d, fy + t * d]), s: size, rot: o.angle }); }
+        // spread the charges over the stretch of the bend that lies inside the shield, a charge's width from its ends
+        let size = w * 0.74;
+        // the charge's square, turned with the bend, must lie wholly inside the shield
+        const okAt = tt => [[-1, -1], [1, -1], [1, 1], [-1, 1], [0, 1], [0, -1]].every(([a, b]) => {
+          const along = tt + a * size * 0.55, across = b * size * 0.55;
+          return inPoly(fl([fx + along * d - across * d, fy + along * d + across * d]), sh.poly);
+        });
+        let t0 = 0, t1 = 0;
+        while (t0 > -140 && okAt(t0 - 1)) t0 -= 1;
+        while (t1 < 140 && okAt(t1 + 1)) t1 += 1;
+        const room = t1 - t0; if (n > 1) size = Math.min(size, room / (n - 1) * 0.86);
+        const out = [];
+        for (let i = 0; i < n; i++) { const tt = n === 1 ? (t0 + t1) / 2 : t0 + room * i / (n - 1); out.push({ c: fl([fx + tt * d, fy + tt * d]), s: size, rot: o.angle }); }
         return out;
       };
       o.sin = sin;
@@ -503,6 +535,7 @@
   H.ordinary = ordinary;
   // squares along an ordinary's axis (compony: one row; checky: two or three rows), for patterned ordinaries
   function ordinaryChecks(kind, sh, rows = 2) {
+    const SH = sh.H || 120; void SH;
     const [fx, fy] = sh.fess; const out = [];
     const grid = (c, ang, w, len) => {
       const s = w / rows; const ux = Math.cos(ang), uy = Math.sin(ang), nx = -uy, ny = ux;
@@ -540,6 +573,7 @@
   // Slots for n charges on the field, given what the field already holds (ordinary, chief).
   // Returns [{c:[x,y], s:size, rot}] ; size is the side of the square the charge is fitted into.
   function arrangement(n, sh, ctx = {}) {
+    const SH = sh.H || 120;
     const [fx, fy] = sh.fess;
     const top = ctx.chief ? 34 : 0; // a chief takes the top
     const ord = ctx.ord;
@@ -603,8 +637,54 @@
   }
   H.arrangement = arrangement;
 
+  // A principal charge (or group) with accompanying charges and no ordinary between them: the principal
+  // group is shrunk toward the fess point and the accompanying ones take the space it gives up, where the
+  // blazon puts them (in chief, in base, dexter or sinister chief) or round about it.
+  function flankLayout(sh, gMain, gAr, ctx = {}) {
+    const SH = sh.H || 120; const [fx, fy] = sh.fess;
+    const top = ctx.chief ? 36 : 4; const na = gAr.n || 1;
+    const where = gAr.where || 'betw';
+    let f = 0.68, dx = 0, dy = 0, around = [];
+    const inside = (x, y, s) => {
+      // pull a slot inward until its box lies inside the shield
+      for (let k = 0; k < 20; k++) {
+        const half = sh.halfAt(Math.min(SH - 2, y + s / 2));
+        if (Math.abs(x - 50) + s / 2 <= half - 3 && y - s / 2 >= top) break;
+        s *= 0.92; x = 50 + (x - 50) * 0.96;
+      }
+      return { c: [x, y], s };
+    };
+    if (where === 'in chf' || where === 'in base') {
+      const s = Math.min(22, 80 / Math.max(na, 1)); const y = where === 'in chf' ? top + 12 : fy + 40;
+      around = Array.from({ length: na }, (_, i) => inside(50 + (i - (na - 1) / 2) * (s + 6), y, s));
+      f = 0.72; dy = where === 'in chf' ? 10 : -10;
+    } else if (where === 'dx' || where === 'sn' || na === 1) {
+      const x = where === 'sn' ? 82 : 18;
+      around = [inside(x, top + 13, 20)];
+      f = 0.8; dx = where === 'sn' ? -5 : 5; dy = 5;
+    } else if (na === 2) {
+      around = [inside(14, fy, 18), inside(86, fy, 18)]; f = 0.66;
+    } else if (na === 3) {
+      around = [inside(17, top + 14, 18), inside(83, top + 14, 18), inside(50, fy + 42, 18)]; f = 0.66; dy = 2;
+    } else if (na === 4) {
+      around = [inside(17, top + 14, 17), inside(83, top + 14, 17), inside(17, fy + 22, 15), inside(83, fy + 22, 15)]; f = 0.64;
+    } else {
+      // an orle of small charges round the edge
+      const mid = P.flatten(P.map(sh.path, [0.82, 0, 0, 0.82, 9, 9]), 24)[0]; const L = [0];
+      for (let i = 1; i < mid.length; i++) L.push(L[i - 1] + Math.hypot(mid[i][0] - mid[i - 1][0], mid[i][1] - mid[i - 1][1]));
+      const tot = L[L.length - 1];
+      for (let k = 0; k < na; k++) { const s = (k + 0.5) / na * tot; let i = 1; while (i < L.length - 1 && L[i] < s) i++; around.push({ c: mid[i], s: 11 }); }
+      f = 0.6;
+    }
+    const base = arrangement(gMain.n, sh, { chief: ctx.chief, bordure: ctx.bordure, inPale: gMain.inPale, inFess: gMain.inFess });
+    const main = base.map(sl => ({ c: [fx + (sl.c[0] - fx) * f + dx, fy + (sl.c[1] - fy) * f + dy], s: sl.s * f, rot: sl.rot }));
+    return { main, around };
+  }
+  H.flankLayout = flankLayout;
+
   // semy: a staggered lattice of small charges over the whole field
   function semy(sh, size = 11) {
+    const SH = sh.H || 120;
     const out = []; const dx = size * 1.75, dy = size * 1.55;
     for (let j = 0, y = size * 0.75; y < SH; j++, y += dy) for (let x = (j % 2 ? dx / 2 : 0) + size * 0.7; x < SW; x += dx) out.push({ c: [x, y], s: size });
     return out;

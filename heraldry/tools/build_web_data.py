@@ -86,7 +86,7 @@ def main():
             def cmeta(c):
                 if not c: return None
                 cl = cls_of(c.get('charge'))
-                return dict(n=c.get('n', 1), c=cl, arr=c.get('arr'), iss=1 if c.get('mods', {}).get('issuant') else 0,
+                return dict(n=c.get('n', 1), c=cl, arr=c.get('arr'), w=c.get('where'), iss=1 if c.get('mods', {}).get('issuant') else 0,
                             chg=1 if c.get('charged') else 0, cch=1 if c.get('t') == 'counterchanged' else 0)
             tpl = dict(
                 f=dict(k=f['kind'] if not f.get('semy') else 'semy', n=f.get('n'), l=f.get('line')),

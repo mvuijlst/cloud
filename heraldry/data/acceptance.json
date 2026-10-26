@@ -100,42 +100,42 @@
   },
   "test4_distribution": {
    "n": 500,
-   "energy": 0.1684,
+   "energy": 0.1795,
    "energy_threshold": 0.0461,
    "max_ks": 0.204,
    "ks_threshold": 0.0681,
    "passed": false,
    "largest_mean_gaps": {
     "m_other": 0.209,
-    "n_tinct": 0.129,
-    "m_beast": 0.075,
-    "m_lion": 0.044,
-    "m_object": 0.024,
-    "m_bird": 0.023,
-    "m_geometric": 0.022,
-    "m_none": 0.015
+    "n_tinct": 0.155,
+    "m_beast": 0.069,
+    "f_party": 0.036,
+    "m_bird": 0.031,
+    "m_lion": 0.024,
+    "m_geometric": 0.024,
+    "f_plain": 0.022
    }
   },
   "test4_secondary_library_coats_only": {
    "n": 500,
-   "energy": 0.0491,
+   "energy": 0.0477,
    "energy_threshold": 0.0442,
-   "max_ks": 0.071,
+   "max_ks": 0.077,
    "ks_threshold": 0.064,
    "passed": false,
    "largest_mean_gaps": {
-    "n_tinct": 0.087,
-    "m_none": 0.072,
-    "m_beast": 0.046,
-    "m_n": 0.045,
-    "o_none": 0.031,
-    "f_plain": 0.026
+    "n_tinct": 0.113,
+    "m_none": 0.078,
+    "f_plain": 0.042,
+    "o_none": 0.041,
+    "m_beast": 0.04,
+    "m_n": 0.039
    }
   },
   "test5_diversity": {
-   "generated": 8.157,
+   "generated": 8.454,
    "corpus": 7.817,
-   "ratio": 1.044,
+   "ratio": 1.081,
    "passed": true
   },
   "test5_repetition": {
@@ -147,7 +147,7 @@
   },
   "test5_matches": {
    "no_match_share": 0.948,
-   "no_match_without_redraw": 0.658,
+   "no_match_without_redraw": 0.662,
    "target": 0.7,
    "passed": true,
    "note": "index = development coats of both rolls only; the Clemmensen Ordinary, Papworth and Rietstap were not indexed"

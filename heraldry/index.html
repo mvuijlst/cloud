@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#f7f3ea">
+    <meta name="theme-color" content="#000000">
     <link rel="manifest" href="../manifest.json">
     <title>arms</title>
     <style>
@@ -11,7 +11,11 @@
         /* IM Fell English by Igino Marini, SIL Open Font License 1.1 (../sigils/fonts/OFL.txt) */
         @font-face { font-family: 'IM Fell English'; src: url('../sigils/fonts/IMFellEnglish-Regular.ttf') format('truetype'); font-style: normal; font-display: swap; }
         @font-face { font-family: 'IM Fell English'; src: url('../sigils/fonts/IMFellEnglish-Italic.ttf') format('truetype'); font-style: italic; font-display: swap; }
-        :root { --paper: #f7f3ea; --ink: #141414; --dim: rgba(20, 20, 20, 0.5); }
+        /* dark by default; light when chosen (remembered in this browser) */
+        :root { --paper: #000; --ink: #f1ede4; --dim: rgba(241, 237, 228, 0.45); }
+        :root[data-theme="light"] { --paper: #f7f3ea; --ink: #141414; --dim: rgba(20, 20, 20, 0.5); }
+        /* the engraved plates are black ink on white; on a dark page they are printed in reverse */
+        :root:not([data-theme="light"]) main.eng svg { filter: invert(1); }
         html { background: var(--paper); }
         body {
             margin: 0; min-height: 100vh; background: var(--paper); color: var(--ink);
@@ -36,14 +40,12 @@
         .grid svg { width: 100%; height: auto; display: block; }
         .grid .name { font-size: clamp(10px, 1.6vw, 15px); letter-spacing: 0.12em; text-align: center; }
         @media (max-width: 560px) { .grid { grid-template-columns: repeat(2, 1fr); } }
-        .note { margin-top: 26px; max-width: 46em; color: var(--dim); font-size: 12px; line-height: 1.5; text-align: center; }
     </style>
 </head>
 <body>
     <a id="back" href="../" aria-label="back to the index">←</a>
     <nav id="nav" aria-label="controls"></nav>
     <main id="main"></main>
-    <p class="note" id="note"></p>
 
     <script src="geometry.js"></script>
     <script src="charges.js"></script><script src="charges-art.js"></script>
@@ -58,6 +60,12 @@
         const store = { get: k => { try { return localStorage.getItem(k); } catch (e) { return null; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch (e) { } } };
         let style = store.get('arms-style') === 'colour' ? 'colour' : 'engraved';
         let roll = store.get('arms-roll') === 'zurich' ? 'zurich' : 'grunenberg';
+        let theme = store.get('arms-theme') === 'light' ? 'light' : 'dark';
+        function applyTheme() {
+            document.documentElement.dataset.theme = theme;
+            document.querySelector('meta[name="theme-color"]').content = theme === 'light' ? '#f7f3ea' : '#000000';
+        }
+        applyTheme();
         const main = document.getElementById('main'), nav = document.getElementById('nav');
 
         function state() {
@@ -96,11 +104,13 @@
                 link('c. 1340', 'proportions of the Zürich roll', () => { roll = 'zurich'; store.set('arms-roll', roll); render(); }, roll === 'zurich'), sep(),
                 link('another', 'new arms', () => go(st.plate, fresh())),
                 link(st.plate ? 'one' : 'plate', st.plate ? 'one coat at a time' : 'a plate of sixteen', () => go(!st.plate, st.seed)),
-                link('svg', 'download', () => download(st)));
+                link('svg', 'download', () => download(st)), sep(),
+                link(theme === 'dark' ? 'light' : 'dark', 'page colour', () => { theme = theme === 'dark' ? 'light' : 'dark'; store.set('arms-theme', theme); applyTheme(); render(); }));
+            // the drawings' licences ask for credit (CC BY-SA); the credits are in GENERATOR.md
+            const cr = document.createElement('a'); cr.href = 'GENERATOR.md#credits'; cr.textContent = 'credits'; cr.title = 'who drew the charges, and their licences';
+            nav.append(cr);
             main.textContent = '';
-            const note = document.getElementById('note');
-            note.textContent = `Arms drawn by a grammar fitted to ${ROLLS[roll]} (Clemmensen’s editions); ${style === 'engraved' ? 'tinctures hatched as on Rolland’s plates' : 'flat tinctures'}. Names are invented. Beasts after Graham Johnston’s drawings for Fox-Davies (1909), traced by szquirrel and RootOfAllLight; `;
-            const cr = document.createElement('a'); cr.href = 'GENERATOR.md#credits'; cr.textContent = 'credits'; note.append(cr, '.');
+            main.className = style === 'engraved' ? 'eng' : '';
             if (st.plate) {
                 const wrap = document.createElement('section'); wrap.className = 'plate';
                 const hd = document.createElement('header'); hd.textContent = `Arms · ${(st.seed % 400) + 1}`; wrap.appendChild(hd);

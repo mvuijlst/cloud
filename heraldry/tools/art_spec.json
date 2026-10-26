@@ -13,26 +13,30 @@
   "source": "https://openclipart.org/detail/18016",
   "crown_at": [
    [
-    0.5,
-    0.05,
-    0.15
+    0.47,
+    0.005,
+    0.21,
+    -0.2
    ]
-  ]
+  ],
+  "dir": "art"
  },
  {
   "charge": "lion passant",
   "file": "Coa Illustration Elements Animal Lion Passant.svg",
   "luma": 0.5,
-  "credit": "RootOfAllLight, traced from Fox-Davies (1909)",
-  "licence": "Public domain",
+  "credit": "RootOfAllLight, traced from Fox-Davies (1909); the trace also published by heraldicart.org",
+  "licence": "Public domain (PD-old on Commons); heraldicart.org publishes its collection under CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Animal_Lion_Passant.svg",
   "crown_at": [
    [
-    0.37,
-    0.235,
-    0.13
+    0.365,
+    0.165,
+    0.19,
+    -0.1
    ]
-  ]
+  ],
+  "dir": "art"
  },
  {
   "charge": "lion's head",
@@ -48,7 +52,8 @@
   ],
   "credit": "Syryatsu (Projet Blasons)",
   "licence": "Public domain",
-  "source": "https://commons.wikimedia.org/wiki/File:Meuble_h%C3%A9raldique_T%C3%AAte_(lion).svg"
+  "source": "https://commons.wikimedia.org/wiki/File:Meuble_h%C3%A9raldique_T%C3%AAte_(lion).svg",
+  "dir": "art"
  },
  {
   "charge": "eagle",
@@ -64,111 +69,126 @@
   "source": "https://openclipart.org/detail/18023",
   "crown_at": [
    [
-    0.435,
-    0.105,
-    0.11
+    0.44,
+    0.04,
+    0.17,
+    -0.12
    ]
-  ]
+  ],
+  "dir": "art"
  },
  {
   "charge": "eagle doubleheaded",
   "file": "Coa Illustration Elements Animal Double-Headed Eagle Displayed.svg",
   "luma": 0.5,
-  "credit": "RootOfAllLight, traced from Fox-Davies (1909)",
-  "licence": "Public domain",
+  "credit": "RootOfAllLight, traced from Fox-Davies (1909); the trace also published by heraldicart.org",
+  "licence": "Public domain (PD-old on Commons); heraldicart.org publishes its collection under CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Animal_Double-Headed_Eagle_Displayed.svg",
   "crown_at": [
    [
-    0.335,
-    0.115,
-    0.09
+    0.343,
+    0.055,
+    0.14,
+    -0.15
    ],
    [
-    0.6,
-    0.115,
-    0.09
+    0.575,
+    0.055,
+    0.14,
+    0.15
    ]
-  ]
+  ],
+  "dir": "art"
  },
  {
   "charge": "griffin rampant",
   "file": "Coa Illustration Elements Animal Griffin 1.svg",
   "luma": 0.5,
-  "credit": "RootOfAllLight, traced from Fox-Davies (1909)",
-  "licence": "Public domain",
-  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Animal_Griffin_1.svg"
+  "credit": "RootOfAllLight, traced from Fox-Davies (1909); the trace also published by heraldicart.org",
+  "licence": "Public domain (PD-old on Commons); heraldicart.org publishes its collection under CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Animal_Griffin_1.svg",
+  "dir": "art"
  },
  {
   "charge": "stag passant",
   "file": "Coa Illustration Elements Animal Stag Trippant.svg",
   "luma": 0.5,
-  "credit": "RootOfAllLight, traced from Fox-Davies (1909)",
-  "licence": "Public domain",
-  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Animal_Stag_Trippant.svg"
+  "credit": "RootOfAllLight, traced from Fox-Davies (1909); the trace also published by heraldicart.org",
+  "licence": "Public domain (PD-old on Commons); heraldicart.org publishes its collection under CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Animal_Stag_Trippant.svg",
+  "dir": "art"
  },
  {
   "charge": "boar passant",
   "file": "Coa Illustration Elements Animal Boar Passant.svg",
   "luma": 0.5,
-  "credit": "RootOfAllLight, traced from Fox-Davies (1909)",
-  "licence": "Public domain",
-  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Animal_Boar_Passant.svg"
+  "credit": "RootOfAllLight, traced from Fox-Davies (1909); the trace also published by heraldicart.org",
+  "licence": "Public domain (PD-old on Commons); heraldicart.org publishes its collection under CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Animal_Boar_Passant.svg",
+  "dir": "art"
  },
  {
   "charge": "boar's head",
   "file": "Coa Illustration Elements Animal Boar's Head Erased.svg",
   "luma": 0.5,
-  "credit": "RootOfAllLight, traced from Fox-Davies (1909)",
-  "licence": "Public domain",
-  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Animal_Boar%27s_Head_Erased.svg"
+  "credit": "RootOfAllLight, traced from Fox-Davies (1909); the trace also published by heraldicart.org",
+  "licence": "Public domain (PD-old on Commons); heraldicart.org publishes its collection under CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Animal_Boar%27s_Head_Erased.svg",
+  "dir": "art"
  },
  {
   "charge": "bear passant",
   "file": "Coa Illustration Elements Animal Bear Passant.svg",
   "luma": 0.5,
-  "credit": "RootOfAllLight, traced from Fox-Davies (1909)",
-  "licence": "Public domain",
-  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Animal_Bear_Passant.svg"
+  "credit": "RootOfAllLight, traced from Fox-Davies (1909); the trace also published by heraldicart.org",
+  "licence": "Public domain (PD-old on Commons); heraldicart.org publishes its collection under CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Animal_Bear_Passant.svg",
+  "dir": "art"
  },
  {
   "charge": "wolf passant",
   "file": "Coa Illustration Elements Animal Wolf Passant.svg",
   "luma": 0.5,
-  "credit": "RootOfAllLight, traced from Fox-Davies (1909)",
-  "licence": "Public domain",
-  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Animal_Wolf_Passant.svg"
+  "credit": "RootOfAllLight, traced from Fox-Davies (1909); the trace also published by heraldicart.org",
+  "licence": "Public domain (PD-old on Commons); heraldicart.org publishes its collection under CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Animal_Wolf_Passant.svg",
+  "dir": "art"
  },
  {
   "charge": "talbot passant",
   "file": "Coa Illustration Elements Animal Talbot Passant.svg",
   "luma": 0.5,
-  "credit": "RootOfAllLight, traced from Fox-Davies (1909)",
-  "licence": "Public domain",
-  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Animal_Talbot_Passant.svg"
+  "credit": "RootOfAllLight, traced from Fox-Davies (1909); the trace also published by heraldicart.org",
+  "licence": "Public domain (PD-old on Commons); heraldicart.org publishes its collection under CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Animal_Talbot_Passant.svg",
+  "dir": "art"
  },
  {
   "charge": "bull passant",
   "file": "Coa Illustration Elements Animal Bull Passant.svg",
   "luma": 0.5,
-  "credit": "RootOfAllLight, traced from Fox-Davies (1909)",
-  "licence": "Public domain",
-  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Animal_Bull_Passant.svg"
+  "credit": "RootOfAllLight, traced from Fox-Davies (1909); the trace also published by heraldicart.org",
+  "licence": "Public domain (PD-old on Commons); heraldicart.org publishes its collection under CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Animal_Bull_Passant.svg",
+  "dir": "art"
  },
  {
   "charge": "bull's head",
   "file": "Coa Illustration Elements Animal Bull's Head Caboshed.svg",
   "luma": 0.5,
-  "credit": "RootOfAllLight, traced from Fox-Davies (1909)",
-  "licence": "Public domain",
-  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Animal_Bull%27s_Head_Caboshed.svg"
+  "credit": "RootOfAllLight, traced from Fox-Davies (1909); the trace also published by heraldicart.org",
+  "licence": "Public domain (PD-old on Commons); heraldicart.org publishes its collection under CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Animal_Bull%27s_Head_Caboshed.svg",
+  "dir": "art"
  },
  {
   "charge": "goat passant",
   "file": "Coa Illustration Elements Animal Goat Passant.svg",
   "luma": 0.5,
-  "credit": "RootOfAllLight, traced from Fox-Davies (1909)",
-  "licence": "Public domain",
-  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Animal_Goat_Passant.svg"
+  "credit": "RootOfAllLight, traced from Fox-Davies (1909); the trace also published by heraldicart.org",
+  "licence": "Public domain (PD-old on Commons); heraldicart.org publishes its collection under CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Animal_Goat_Passant.svg",
+  "dir": "art"
  },
  {
   "charge": "goat rampant",
@@ -181,7 +201,8 @@
   ],
   "credit": "szquirrel, after Fox-Davies (1909)",
   "licence": "Public domain (Openclipart)",
-  "source": "https://openclipart.org/detail/18020"
+  "source": "https://openclipart.org/detail/18020",
+  "dir": "art"
  },
  {
   "charge": "horse rampant",
@@ -194,28 +215,17 @@
   ],
   "credit": "szquirrel, after Fox-Davies (1909)",
   "licence": "Public domain (Openclipart)",
-  "source": "https://openclipart.org/detail/18018"
+  "source": "https://openclipart.org/detail/18018",
+  "dir": "art"
  },
  {
   "charge": "unicorn rampant",
   "file": "Coa Illustration Elements Animal Unicorn.svg",
   "luma": 0.5,
-  "credit": "RootOfAllLight, traced from John Vinycomb, Fictitious and Symbolic Creatures in Art (1906)",
-  "licence": "Public domain",
-  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Animal_Unicorn.svg"
- },
- {
-  "charge": "martlet",
-  "file": "OC-18015-martlet-volant.svg",
-  "body": [
-   "#ffff00"
-  ],
-  "ink": [
-   "#000000"
-  ],
-  "credit": "szquirrel, after Fox-Davies (1909)",
-  "licence": "Public domain (Openclipart)",
-  "source": "https://openclipart.org/detail/18015"
+  "credit": "RootOfAllLight, traced from John Vinycomb, Fictitious and Symbolic Creatures in Art (1906); the trace also published by heraldicart.org",
+  "licence": "Public domain (PD-old on Commons); heraldicart.org publishes its collection under CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Animal_Unicorn.svg",
+  "dir": "art"
  },
  {
   "charge": "swan",
@@ -231,7 +241,8 @@
   ],
   "credit": "element of 'Flagge Schwanheide.svg' (Commons), extracted by Ilzolende",
   "licence": "Public domain (PD-Flag-Germany)",
-  "source": "https://commons.wikimedia.org/wiki/File:Swan_standing_with_wings_displayed_and_elevated.svg"
+  "source": "https://commons.wikimedia.org/wiki/File:Swan_standing_with_wings_displayed_and_elevated.svg",
+  "dir": "art"
  },
  {
   "charge": "dolphin",
@@ -244,7 +255,8 @@
   ],
   "credit": "szquirrel, after Fox-Davies (1909)",
   "licence": "Public domain (Openclipart)",
-  "source": "https://openclipart.org/detail/18025"
+  "source": "https://openclipart.org/detail/18025",
+  "dir": "art"
  },
  {
   "charge": "fish",
@@ -257,28 +269,316 @@
   ],
   "credit": "Mrmw",
   "licence": "CC0",
-  "source": "https://commons.wikimedia.org/wiki/File:Heraldry_Fish_056.svg"
+  "source": "https://commons.wikimedia.org/wiki/File:Heraldry_Fish_056.svg",
+  "dir": "art"
  },
  {
   "charge": "tree",
   "file": "Coa Illustration Elements Plant Oak Tree Fructed and Eradicated.svg",
   "luma": 0.5,
-  "credit": "RootOfAllLight, traced from Fox-Davies (1909)",
-  "licence": "Public domain",
-  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Plant_Oak_Tree_Fructed_and_Eradicated.svg"
+  "credit": "RootOfAllLight, traced from Fox-Davies (1909); the trace also published by heraldicart.org",
+  "licence": "Public domain (PD-old on Commons); heraldicart.org publishes its collection under CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Plant_Oak_Tree_Fructed_and_Eradicated.svg",
+  "dir": "art"
  },
  {
-  "charge": "wing",
-  "file": "OC-63607-wing-sinister.svg",
+  "charge": "escallop",
+  "file": "Coa Illustration Elements Animal Escallop.svg",
+  "dir": "art2",
+  "credit": "Graham Johnston for Fox-Davies, A Complete Guide to Heraldry (1909); trace from heraldicart.org (Book of Traceable Heraldic Art), on Commons",
+  "licence": "Public domain (PD-old); heraldicart publishes its collection under CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Animal_Escallop.svg",
+  "luma": 0.5
+ },
+ {
+  "charge": "fleur-de-lis",
+  "file": "HA-fleur-de-lys__fleur-de-lys-3.svg",
+  "dir": "art2",
+  "credit": "Graham Johnston for Fox-Davies, A Complete Guide to Heraldry (1909); trace by heraldicart.org (Book of Traceable Heraldic Art)",
+  "licence": "CC BY-SA 4.0",
+  "source": "https://heraldicart.org/",
+  "luma": 0.5,
+  "crop": [
+   0,
+   0,
+   0.8,
+   1
+  ]
+ },
+ {
+  "charge": "rose",
+  "file": "Coa Illustration Elements Plant Rose.svg",
+  "dir": "art2",
+  "credit": "Graham Johnston for Fox-Davies, A Complete Guide to Heraldry (1909); trace from heraldicart.org (Book of Traceable Heraldic Art), on Commons",
+  "licence": "Public domain (PD-old)",
+  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Plant_Rose.svg",
+  "luma": 0.5
+ },
+ {
+  "charge": "tower",
+  "file": "Coa Illustration Elements Building Tower 1.svg",
+  "dir": "art2",
+  "credit": "Graham Johnston for Fox-Davies, A Complete Guide to Heraldry (1909); trace from heraldicart.org (Book of Traceable Heraldic Art), on Commons",
+  "licence": "Public domain (PD-old)",
+  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Building_Tower_1.svg",
+  "luma": 0.5
+ },
+ {
+  "charge": "castle",
+  "file": "HA-tower__tower-triple-towered-2.svg",
+  "dir": "art2",
+  "credit": "Jérôme de Bara, Le Blason des Armoiries (1581); trace by heraldicart.org (Book of Traceable Heraldic Art)",
+  "licence": "CC BY-SA 4.0",
+  "source": "https://heraldicart.org/",
+  "luma": 0.5
+ },
+ {
+  "charge": "crown",
+  "file": "Corona heráldica.svg",
+  "dir": "art2",
+  "credit": "Asqueladd",
+  "licence": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Corona_her%C3%A1ldica.svg",
   "body": [
-   "#a0a0a0"
+   "#eac102"
   ],
   "ink": [
    "#000000"
   ],
-  "flip": true,
-  "credit": "paxed",
-  "licence": "Public domain (Openclipart)",
-  "source": "https://openclipart.org/detail/63607"
+  "white": [
+   "#e7e7e7",
+   "#ed1c24",
+   "#008f4c"
+  ]
+ },
+ {
+  "charge": "key",
+  "file": "Meuble héraldique - Clé.svg",
+  "dir": "art2",
+  "credit": "Jérôme Blum (Wagner51)",
+  "licence": "CC BY-SA 2.0 FR",
+  "source": "https://commons.wikimedia.org/wiki/File:Meuble_h%C3%A9raldique_-_Cl%C3%A9.svg",
+  "body": [
+   "#fffdfd"
+  ],
+  "ink": [
+   "#000000"
+  ]
+ },
+ {
+  "charge": "bugle horn",
+  "file": "Coa Illustration Elements Hunting Horn Stringed.svg",
+  "dir": "art2",
+  "credit": "Graham Johnston for Fox-Davies, A Complete Guide to Heraldry (1909); trace from heraldicart.org (Book of Traceable Heraldic Art), on Commons",
+  "licence": "Public domain (PD-old)",
+  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Hunting_Horn_Stringed.svg",
+  "luma": 0.5
+ },
+ {
+  "charge": "antler",
+  "file": "HA-stag__stags-attire-2.svg",
+  "dir": "art2",
+  "credit": "engraver of Guillim, A Display of Heraldry; trace by heraldicart.org (Book of Traceable Heraldic Art)",
+  "licence": "CC BY-SA 4.0",
+  "source": "https://heraldicart.org/",
+  "luma": 0.5
+ },
+ {
+  "charge": "sword",
+  "file": "Coa Illustration Elements Arms Sword v2.svg",
+  "dir": "art2",
+  "credit": "Graham Johnston for Fox-Davies, A Complete Guide to Heraldry (1909); trace from heraldicart.org (Book of Traceable Heraldic Art), on Commons",
+  "licence": "Public domain (PD-old)",
+  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Arms_Sword_v2.svg",
+  "luma": 0.5
+ },
+ {
+  "charge": "arrow",
+  "file": "Coa Illustration Elements Arms Arrow.svg",
+  "dir": "art2",
+  "credit": "Madboy74",
+  "licence": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Arms_Arrow.svg",
+  "body": [
+   "#e9e9e9"
+  ],
+  "ink": [
+   "#000000"
+  ],
+  "rotate": -45
+ },
+ {
+  "charge": "axe",
+  "file": "Coa Illustration Elements Battle-Axe.svg",
+  "dir": "art2",
+  "credit": "Graham Johnston for Fox-Davies, A Complete Guide to Heraldry (1909); trace from heraldicart.org (Book of Traceable Heraldic Art), on Commons",
+  "licence": "Public domain (PD-old)",
+  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Battle-Axe.svg",
+  "luma": 0.5
+ },
+ {
+  "charge": "anchor",
+  "file": "Coa Illustration Elements Anchor.svg",
+  "dir": "art2",
+  "credit": "Graham Johnston for Fox-Davies, A Complete Guide to Heraldry (1909); trace from heraldicart.org (Book of Traceable Heraldic Art), on Commons",
+  "licence": "Public domain (PD-old)",
+  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Anchor.svg",
+  "luma": 0.5
+ },
+ {
+  "charge": "buckle",
+  "file": "HA-buckle__buckle-2.svg",
+  "dir": "art2",
+  "credit": "Graham Johnston for Fox-Davies, A Complete Guide to Heraldry (1909); trace by heraldicart.org (Book of Traceable Heraldic Art)",
+  "licence": "CC BY-SA 4.0",
+  "source": "https://heraldicart.org/",
+  "luma": 0.5
+ },
+ {
+  "charge": "horseshoe",
+  "file": "HA-horseshoe__horseshoe-4.svg",
+  "dir": "art2",
+  "credit": "Some Feudal Lords and Their Seals (1903); trace by heraldicart.org (Book of Traceable Heraldic Art)",
+  "licence": "CC BY-SA 4.0",
+  "source": "https://heraldicart.org/",
+  "luma": 0.5
+ },
+ {
+  "charge": "wheel",
+  "file": "Mainzer Rad.svg",
+  "dir": "art2",
+  "credit": "David Liuzzo",
+  "licence": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Mainzer_Rad.svg",
+  "body": [
+   "#f5f5f4"
+  ],
+  "ink": [
+   "#000000"
+  ]
+ },
+ {
+  "charge": "chess rook",
+  "file": "Coa Illustration Elements Chess Rook.svg",
+  "dir": "art2",
+  "credit": "Graham Johnston for Fox-Davies, A Complete Guide to Heraldry (1909); trace from heraldicart.org (Book of Traceable Heraldic Art), on Commons",
+  "licence": "Public domain (PD-old)",
+  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Chess_Rook.svg",
+  "luma": 0.5
+ },
+ {
+  "charge": "sun",
+  "file": "Coa Illustration Elements Planet Sun in his Splendor.svg",
+  "dir": "art2",
+  "credit": "Graham Johnston for Fox-Davies, A Complete Guide to Heraldry (1909); trace from heraldicart.org (Book of Traceable Heraldic Art), on Commons",
+  "licence": "Public domain (PD-old)",
+  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Planet_Sun_in_his_Splendor.svg",
+  "luma": 0.5
+ },
+ {
+  "charge": "cinquefoil",
+  "file": "Coa Illustration Elements Plant Cinquefoil.svg",
+  "dir": "art2",
+  "credit": "Graham Johnston for Fox-Davies, A Complete Guide to Heraldry (1909); trace from heraldicart.org (Book of Traceable Heraldic Art), on Commons",
+  "licence": "Public domain (PD-old)",
+  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Plant_Cinquefoil.svg",
+  "luma": 0.5
+ },
+ {
+  "charge": "trefoil",
+  "file": "Coa Illustration Elements Plant Trefoil.svg",
+  "dir": "art2",
+  "credit": "Graham Johnston for Fox-Davies, A Complete Guide to Heraldry (1909); trace from heraldicart.org (Book of Traceable Heraldic Art), on Commons",
+  "licence": "Public domain (PD-old)",
+  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Plant_Trefoil.svg",
+  "luma": 0.5
+ },
+ {
+  "charge": "leaf",
+  "file": "Coa Illustration Elements Plant Leave Tilia.svg",
+  "dir": "art2",
+  "credit": "Madboy74",
+  "licence": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Plant_Leave_Tilia.svg",
+  "body": [
+   "#e9e9e9"
+  ],
+  "ink": [
+   "#000000"
+  ]
+ },
+ {
+  "charge": "mallet",
+  "file": "Coa Illustration Elements Tool Mallet.svg",
+  "dir": "art2",
+  "credit": "engraver of Guillim, A Display of Heraldry; trace from heraldicart.org (Book of Traceable Heraldic Art), on Commons",
+  "licence": "Public domain (PD-old)",
+  "source": "https://commons.wikimedia.org/wiki/File:Coa_Illustration_Elements_Tool_Mallet.svg",
+  "luma": 0.5
+ },
+ {
+  "charge": "spearhead",
+  "file": "HA-spear__spearhead-2.svg",
+  "dir": "art2",
+  "credit": "Fox-Davies, The Art of Heraldry (1904); trace by heraldicart.org (Book of Traceable Heraldic Art)",
+  "licence": "CC BY-SA 4.0",
+  "source": "https://heraldicart.org/",
+  "luma": 0.5
+ },
+ {
+  "charge": "mill-rind",
+  "file": "HA-millrind__millrind-1.svg",
+  "dir": "art2",
+  "credit": "Graham Johnston for Fox-Davies, A Complete Guide to Heraldry (1909); trace by heraldicart.org (Book of Traceable Heraldic Art)",
+  "licence": "CC BY-SA 4.0",
+  "source": "https://heraldicart.org/",
+  "luma": 0.5
+ },
+ {
+  "charge": "gonfanon",
+  "file": "Héraldique meuble Gonfanon.svg",
+  "dir": "art2",
+  "credit": "Syryatsu",
+  "licence": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:H%C3%A9raldique_meuble_Gonfanon.svg",
+  "body": [
+   "#e20909"
+  ],
+  "ink": [
+   "#000000",
+   "#5ab532"
+  ]
+ },
+ {
+  "charge": "martlet",
+  "file": "HA-martlet__martlet-2.svg",
+  "dir": "art2",
+  "credit": "Graham Johnston for Fox-Davies, A Complete Guide to Heraldry (1909); trace by heraldicart.org (Book of Traceable Heraldic Art)",
+  "licence": "CC BY-SA 4.0",
+  "source": "https://heraldicart.org/",
+  "luma": 0.5
+ },
+ {
+  "charge": "estoile",
+  "file": "HA-estoile__estoile-3.svg",
+  "dir": "art2",
+  "credit": "woodcut in Gerard Legh, The Accedens of Armory (1562); trace by heraldicart.org (Book of Traceable Heraldic Art)",
+  "licence": "CC BY-SA 4.0",
+  "source": "https://heraldicart.org/",
+  "luma": 0.5
+ },
+ {
+  "charge": "wing",
+  "file": "SinisterWing InHeraldry.svg",
+  "dir": "art2",
+  "credit": "Lobsterthermidor (Commons), amended from an earlier Commons drawing",
+  "licence": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:SinisterWing_InHeraldry.svg",
+  "body": [
+   "#ffffff"
+  ],
+  "ink": [
+   "#000000"
+  ]
  }
 ]

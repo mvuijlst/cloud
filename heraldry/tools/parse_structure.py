@@ -231,6 +231,8 @@ def parse_coat(blz, codes):
             if sub['charge'] is None: bucket('charged with: ' + sub.get('noun', ''))
         if ar:
             a2 = charge_phrase(re.sub(r'\b(in chf|in base|dx|sn|in fess|in pale)\b', '', ar)); a2['t'] = (take(1) or [None])[0]
+            w = re.search(r'\b(in chf|in base|dx|sn)\b', ar)
+            a2['where'] = w.group(1) if w else 'betw'
             out['around'] = a2
             if a2['charge'] is None: bucket('around: ' + a2['noun'])
         if out['main']: out_('two principal charge groups'); continue

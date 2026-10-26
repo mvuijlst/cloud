@@ -149,11 +149,23 @@
   C.escutcheon = () => ({ parts: [part(P.map(H.shield('heater').path, [0.0084, 0, 0, 0.0084, 0.08, 0]))] });
   C.billet = C.billet;
   C.trimount = () => {
-    const pts = [[0, 1], [0, 0.62]];
-    const hill = (x0, x1, top) => { for (let k = 0; k <= 12; k++) { const t = k / 12; pts.push([x0 + (x1 - x0) * t, 1 - (1 - top) * Math.sin(Math.PI * t) ** 0.7]); } };
-    hill(0, 0.38, 0.45); hill(0.31, 0.69, 0.0); hill(0.62, 1, 0.45);
-    pts.push([1, 0.62], [1, 1]);
-    return { parts: [part(P.poly(pts))] };
+    // three hills, the middle one higher, on a level base; contour lines as an engraver would cut them
+    const base = 1;
+    const dome = (x0, x1, top) => {
+      const w = x1 - x0, h = base - top, xm = (x0 + x1) / 2;
+      return [['M', x0, base], ['C', x0 + 0.1 * w, base - 0.62 * h, xm - 0.3 * w, top, xm, top], ['C', xm + 0.3 * w, top, x1 - 0.1 * w, base - 0.62 * h, x1, base], ['Z']];
+    };
+    const hills = [[-0.02, 0.44, 0.64], [0.18, 0.82, 0.42], [0.56, 1.02, 0.64]];
+    const parts = hills.map(([x0, x1, top]) => part(dome(x0, x1, top)));
+    const details = [];
+    for (const [x0, x1, top] of hills) {
+      const w = x1 - x0, h = base - top, xm = (x0 + x1) / 2;
+      for (const f of [0.22, 0.42]) {
+        const y = top + h * f, half = w * (0.18 + 0.32 * f);
+        details.push(curve([[xm - half, y + h * 0.1], [xm, y], [xm + half, y + h * 0.1]], 0.7));
+      }
+    }
+    return { parts, details };
   };
   C.tower = () => {
     const parts = [part(P.poly([[0.18, 0.22], [0.82, 0.22], [0.82, 1], [0.18, 1]]))];
@@ -686,12 +698,12 @@
   // the heraldic words for what the drawings show
   const SING = {
     'stag passant': 'stag trippant', 'griffin rampant': 'griffin segreant', "lion's head": "lion's head erased", "boar's head": "boar's head erased",
-    "bull's head": "bull's head caboshed", martlet: 'martlet volant', tree: 'oak tree fructed and eradicated', fish: 'barbel naiant', dolphin: 'dolphin embowed',
+    "bull's head": "bull's head caboshed", tree: 'oak tree fructed and eradicated', fish: 'barbel naiant', dolphin: 'dolphin embowed',
     swan: 'swan rousant',
   };
   const PLUR = {
     'stag passant': 'stags trippant', 'griffin rampant': 'griffins segreant', "lion's head": "lions' heads erased", "boar's head": "boars' heads erased",
-    "bull's head": "bulls' heads caboshed", martlet: 'martlets volant', tree: 'oak trees fructed and eradicated', fish: 'barbels naiant', dolphin: 'dolphins embowed',
+    "bull's head": "bulls' heads caboshed", tree: 'oak trees fructed and eradicated', fish: 'barbels naiant', dolphin: 'dolphins embowed',
     swan: 'swans rousant',
   };
   H.CHARGES = C;

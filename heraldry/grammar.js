@@ -77,7 +77,9 @@
     else fieldT = (pick(rt, D.tinctures.pairs, k => !/mixed|proper|null/.test(k) && k.split('/')[0] !== k.split('/')[1]) || 'argent/gules').split('/');
     const party = fieldT.length > 1;
     const under = party ? 'party' : fieldT[0];
-    arms.field = { kind: fk === 'semy' ? 'plain' : fk, t: fieldT, line: sk.f.l || null, n: sk.f.n || undefined };
+    // only divisions drawn with a patterned line keep one, so the blazon never names a line that is not drawn
+    const LINED = new Set(['per pale', 'per fess', 'per bend', 'per bend sinister', 'per chevron', 'barry', 'paly', 'bendy', 'bendy sinister', 'tierced per fess']);
+    arms.field = { kind: fk === 'semy' ? 'plain' : fk, t: fieldT, line: LINED.has(fk) ? sk.f.l || null : null, n: sk.f.n || undefined };
     if (fk === 'semy') {
       const ch = chargeFor(rng, D, 'semy', sk.f.s || 'flower');
       arms.semy = { charge: ch, t: tinctureOn(rt, D, 'semy', fieldT[0]) };
@@ -125,7 +127,7 @@
     if (sk.ar) {
       const ch = chargeFor(rng, D, 'around', sk.ar.c);
       arms.charges = arms.charges || [];
-      arms.charges.push({ charge: ch, n: sk.ar.n, t: tinctureOn(rt, D, 'around', under, ordT ? [ordT] : []), around: true });
+      arms.charges.push({ charge: ch, n: sk.ar.n, t: tinctureOn(rt, D, 'around', under, ordT ? [ordT] : []), around: true, where: sk.ar.w || 'betw' });
     }
     if (sk.c) {
       arms.chief = { t: tinctureOn(rt, D, 'chief', under), line: sk.c.l || null };
@@ -283,7 +285,8 @@
       parts.push(s);
       if (main) parts.push(chargeWords(main));
     } else {
-      if (main) parts.push(chargeWords(main) + (ar ? `, accompanied by ${chargeWords(ar)}` : ''));
+      const WHERE = { 'in chf': ' in chief', 'in base': ' in base', dx: ' in dexter chief', sn: ' in sinister chief' };
+      if (main) parts.push(chargeWords(main) + (ar ? `, accompanied by ${chargeWords(ar)}${WHERE[ar.where] || ''}` : ''));
       else if (ar) parts.push(chargeWords(ar));
       if (a.ordinary) parts.push(`overall ${ordinaryWords(a.ordinary)}` + (on ? ` charged with ${chargeWords(on)}` : ''));
     }

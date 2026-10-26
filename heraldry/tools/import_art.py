@@ -164,12 +164,27 @@ def norm_colour(c):
     return c
 
 
+def css_rules(root):
+    rules = {}
+    for el in root.iter():
+        if el.tag.split('}')[-1] == 'style' and el.text:
+            for sel, body in re.findall(r'([^{}]+)\{([^}]*)\}', el.text):
+                for s in sel.split(','):
+                    s = s.strip()
+                    if s.startswith('.'): rules.setdefault(s[1:], []).append(body)
+    return rules
+
+
 def walk(root):
     ids = {el.get('id'): el for el in root.iter() if el.get('id')}
+    rules = css_rules(root)
     out = []
     def visit(el, M, st):
         tag = el.tag.split('}')[-1]
         if tag in ('defs', 'clipPath', 'mask', 'metadata', 'title', 'desc', 'style', 'pattern', 'linearGradient', 'radialGradient', 'symbol'): return
+        if el.get('class') and rules:
+            extra = ';'.join(b for c in el.get('class').split() for b in rules.get(c, []))
+            if extra: el.set('style', extra + ';' + (el.get('style') or ''))
         st2 = style_of(el, st)
         if st2.get('display') == 'none' or st2.get('visibility') == 'hidden': return
         M2 = mul(M, parse_transform(el.get('transform')))
@@ -235,6 +250,25 @@ def main():
     for e in spec:
         root = ET.parse(e['file']).getroot()
         items = walk(root)
+        if e.get('rotate'):
+            a = math.radians(e['rotate']); R = [math.cos(a), math.sin(a), -math.sin(a), math.cos(a), 0, 0]
+            for it in items:
+                it['segs'] = [s if s[0] == 'Z' else tuple([s[0]] + [v for k in range(1, len(s), 2) for v in ap(R, s[k], s[k + 1])]) for s in it['segs']]
+        if e.get('crop'):
+            # keep only what lies inside a window of the drawing's bounds (drops signatures and stray marks)
+            b0 = bounds(items); fx0, fy0, fx1, fy1 = e['crop']
+            X0, Y0 = b0[0] + fx0 * (b0[2] - b0[0]), b0[1] + fy0 * (b0[3] - b0[1]); X1, Y1 = b0[0] + fx1 * (b0[2] - b0[0]), b0[1] + fy1 * (b0[3] - b0[1])
+            def inside(it):
+                xs = [v for s in it['segs'] if s[0] != 'Z' for v in s[1::2]]; ys = [v for s in it['segs'] if s[0] != 'Z' for v in s[2::2]]
+                return xs and X0 <= (min(xs) + max(xs)) / 2 <= X1 and Y0 <= (min(ys) + max(ys)) / 2 <= Y1
+            items = [it for it in items if inside(it)]
+        if e.get('split'):
+            # keep one half of a symmetric drawing (a single wing out of a pair)
+            b0 = bounds(items); mid = (b0[0] + b0[2]) / 2
+            def cx(it):
+                xs = [v for s in it['segs'] if s[0] != 'Z' for v in s[1::2]]
+                return (min(xs) + max(xs)) / 2 if xs else mid
+            items = [it for it in items if (cx(it) < mid) == (e['split'] == 'left')]
         roles = []
         for it in items:
             f, s = it['fill'], it['stroke']

@@ -193,10 +193,10 @@
     if (spec.crowned && ch.art.crown) {
       // a crown of our own on each of the artist's heads, where the import spec put it
       const saved = pen.M;
-      for (const [x, y, s] of ch.art.crown) {
+      for (const [x, y, s, r] of ch.art.crown) {
         const c = P.mapPt([x, y], saved);
         pen.M = P.mat.id();
-        drawCharge(pen, { charge: 'crown' }, { c, s: s * k }, spec.crowned, clip);
+        drawCharge(pen, { charge: 'crown' }, { c, s: s * k, rot: r || 0 }, spec.crowned, clip);
       }
       pen.M = saved;
     }
@@ -215,21 +215,14 @@
       const q = arms.quarters; const [fx, fy] = sh.fess;
       const boxes = [[0, 0, fx, fy], [fx, 0, 100, fy], [0, fy, fx, 120], [fx, fy, 100, 120]];
       boxes.forEach((bx, i) => {
+        // each quarter is a rectangular sub-shield as wide as the quarter and as high, uniformly scaled,
+        // so its field, partitions and ordinaries reach the quarter's edges
         const saved = pen.M;
-        const sx = (bx[2] - bx[0]) / 100, sy = (bx[3] - bx[1]) / 120;
-        const k = Math.min(sx, sy);
-        // each quarter is a rectangular sub-shield, uniformly scaled and centred in its box
-        pen.M = P.mat.mul(saved, P.mat.mul(P.mat.tr(bx[0] + ((bx[2] - bx[0]) - 100 * k) / 2, bx[1] + ((bx[3] - bx[1]) - 120 * k) / 2), P.mat.sc(k)));
-        const qc = pen.clip(P.poly([[-100, -100], [200, -100], [200, 220], [-100, 220]]));
-        void qc;
-        const savedM = pen.M;
-        // clip to the box in shield coordinates
-        pen.M = saved; const bc = pen.clip(P.poly([[bx[0], bx[1]], [bx[2], bx[1]], [bx[2], bx[3]], [bx[0], bx[3]]])); pen.M = savedM;
+        const k = (bx[2] - bx[0]) / 100, subH = (bx[3] - bx[1]) / k;
+        const bc = pen.clip(P.poly([[bx[0], bx[1]], [bx[2], bx[1]], [bx[2], bx[3]], [bx[0], bx[3]]]));
         pen.out.push(`<g clip-path="url(#${bc})">`);
-        // fill the whole box first (the scaled sub-shield may not cover it), then the sub-coat
-        const subField = q[i].field;
-        pen.M = saved; pen.fill(P.poly([[bx[0], bx[1]], [bx[2], bx[1]], [bx[2], bx[3]], [bx[0], bx[3]]]), subField.t[0]); pen.M = savedM;
-        drawCoat(pen, q[i], H.shield('rect'));
+        pen.M = P.mat.mul(saved, P.mat.mul(P.mat.tr(bx[0], bx[1]), P.mat.sc(k)));
+        drawCoat(pen, q[i], H.rectShield(subH));
         pen.out.push('</g>');
         pen.M = saved;
       });
@@ -260,9 +253,15 @@
     if (ord && !ao.over) paintOrd();
     // charges: on the ordinary, around it, or on the field
     const chief = arms.chief ? H.ordinary('chief', sh, { line: arms.chief.line }) : null;
-    for (const g of arms.charges || []) {
+    const gs = arms.charges || [];
+    const gMain = gs.find(g => !g.on && !g.around), gAr = gs.find(g => g.around);
+    // a principal charge accompanied by others, with no ordinary between them: the principal one gives way
+    const flank = gMain && gAr && (!ord || ao.over) ? H.flankLayout(sh, gMain, gAr, { chief: !!arms.chief, bordure: !!arms.bordure }) : null;
+    for (const g of gs) {
       let slots;
-      if (g.on === 'ordinary' && ord && ord.slots) slots = ord.slots(g.n);
+      if (flank && g === gMain) slots = flank.main;
+      else if (flank && g === gAr) slots = flank.around;
+      else if (g.on === 'ordinary' && ord && ord.slots) slots = ord.slots(g.n);
       else if (g.issuant) slots = [{ c: [sh.fess[0], div && /per fess|tierced per fess/.test(field.kind) ? sh.fess[1] : sh.fess[1] + 26], s: 92 }];
       else slots = H.arrangement(g.n, sh, { ord: ord && !ao.over && (g.around || g.on !== 'ordinary') ? ord : null, chief: !!arms.chief, bordure: !!arms.bordure, inPale: g.inPale, inFess: g.inFess, div: field.kind });
       if (ord && (ord.kind === 'bend' || ord.kind === 'bend sinister') && g.on === 'ordinary') {
