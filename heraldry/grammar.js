@@ -103,10 +103,12 @@
   const ON_N = { fess: [3, 3, 1], bend: [3, 3, 2], pale: [3, 3, 1], chevron: [3, 3, 1], cross: [5, 1], saltire: [5, 1] };
   // fields whose pieces are counted from the top (barry of six, tierced per fess): a chief would hide some
   const COUNTED = H.COUNTED = /^(barry|bendy|bendy sinister|chevronny|tierced per fess)$/;
+  // fields of many pieces: with an ordinary on them, or a fur among their tinctures, a coat soon reads as noise
+  const PATTERNED = /^(barry|paly|bendy|bendy sinister|chequy|lozengy|chevronny|gyronny|vair)$/;
   const AR_N = { fess: [3, 6, 2], bend: [2, 6, 3], pale: [2, 4], chevron: [3, 3, 2], cross: [4], saltire: [4] };
   H.DIFF_W = {   // fitted by tools/fit_differencing.js (14 rounds, seeds 1 to 3000), 27 October 2026
-    zurich: { divide: 0.41, multiply: 0.363, charge: 0.045, ordinary: 1.038, on: 0.012, between: 0.076, accompanied: 0.076, chief: 0.261, chiefCharges: 10.511, bordure: 0.019, label: 0.023, canton: 0.01 },
-    grunenberg: { divide: 0.388, multiply: 0.397, charge: 0.07, ordinary: 0.718, on: 0.01, between: 0.049, accompanied: 0.049, chief: 0.289, chiefCharges: 7.915, bordure: 0.011, label: 0.011, canton: 0.01 },
+    zurich: { divide: 0.417, multiply: 0.354, charge: 0.046, ordinary: 1.04, on: 0.012, between: 0.079, accompanied: 0.079, chief: 0.25, chiefCharges: 10.73, bordure: 0.019, label: 0.022, canton: 0.01 },
+    grunenberg: { divide: 0.398, multiply: 0.388, charge: 0.07, ordinary: 0.715, on: 0.01, between: 0.051, accompanied: 0.051, chief: 0.259, chiefCharges: 8.085, bordure: 0.011, label: 0.011, canton: 0.01 },
   };
   // the roll's divided and patterned fields, its numbers of principal charges above one, and how often a
   // principal charge on a field party per something is counterchanged
@@ -147,7 +149,7 @@
       // accompanying charges only on a plain or semy field: on a divided one they crowd the partition
       if (!sk.o && sk.m && !sk.ar && (plainField || sk.f.k === 'semy')) moves.push(['accompanied', W.accompanied]);
       // a plain field divided or patterned as the roll's fields are, unless accompanying charges stand on it
-      if (plainField && !sk.q && !sk.ar) moves.push(['divide', W.divide]);
+      if (plainField && !sk.q && !sk.ar && !(sk.o && sk.o.p)) moves.push(['divide', W.divide]);
       // one principal charge made two, three or more, as often as the roll has each number; not where the
       // charges would then stand between an ordinary under a chief, or above a partition under one
       const upperIfMany = sk.c && (sk.o || sk.f.k === 'per fess' || sk.f.k === 'per chevron');
@@ -164,14 +166,15 @@
       if (mv === 'chief') sk.c = { l: null, on: null, p: null, add: 1 };
       else if (mv === 'chief charges') sk.c.on = { n: rng() < 0.75 ? 3 : 1, c: null, iss: 0, add: 1 };
       else if (mv === 'on') sk.on = { n: pickOf(ON_N[sk.o.k]), c: 'small', add: 1 };
-      else if (mv === 'between') sk.ar = { n: pickOf(AR_N[sk.o.k]), c: 'small', w: 'betw', add: 1 };
+      else if (mv === 'between') { const ns = AR_N[sk.o.k].filter(x => plainField || x <= 3); sk.ar = { n: pickOf(ns.length ? ns : [2]), c: 'small', w: 'betw', add: 1 }; }
       else if (mv === 'ordinary') sk.o = { k: sk.m.n === 3 ? pickOf(['chevron', 'chevron', 'fess', 'bend']) : pickOf(['bend', 'fess', 'chevron']), n: null, l: null, p: null, add: 1 };
       else if (mv === 'accompanied') sk.ar = { n: pickOf([1, 2, 3, 3]), c: 'small', w: sk.cn || sk.lb ? 'in base' : sk.c ? pickOf(['betw', 'in base']) : pickOf(['betw', 'in chf', 'in chf', 'betw']), add: 1 };
       else if (mv === 'charge') sk.m = { n: sk.f.k === 'plain' || sk.f.k === 'semy' ? pickOf([1, 1, 3]) : 1, c: null, arr: null, cch: sk.f.k.startsWith('per ') && rng() < T.pCch ? 1 : 0, add: 1 };
       else if (mv === 'divide') {
         // a division from the roll's own fields; under a chief none of counted pieces, and with principal
         // charges and a chief not per fess or per chevron
-        const ok = T.fields.filter(([f]) => !(sk.c && COUNTED.test(f.k)) && !(sk.c && sk.m && sk.m.n >= 2 && (f.k === 'per fess' || f.k === 'per chevron')));
+        const ok = T.fields.filter(([f]) => !(sk.c && COUNTED.test(f.k)) && !(sk.c && sk.m && sk.m.n >= 2 && (f.k === 'per fess' || f.k === 'per chevron'))
+          && !(sk.o && PATTERNED.test(f.k)) && !(sk.m && sk.m.arr && /^(per saltire|gyronny|quarterly)$/.test(f.k)));
         sk.f = Object.assign({}, weighted(ok), { add: 1 });
         if (sk.m && /^per /.test(sk.f.k)) sk.m.cch = rng() < T.pCch ? 1 : 0;
       }
@@ -196,7 +199,10 @@
     if (fk === 'plain' || fk === 'semy') fieldT = [pick(rt, D.tinctures.field, k => k !== 'mixed' && k !== 'proper')];
     else if (fk === 'tierced per fess' || fk === 'tierced per pale') fieldT = (pick(rt, D.tinctures.triples) || 'or/gules/argent').split('/');
     else if (fk === 'vair') fieldT = ['vair'];
-    else fieldT = (pick(rt, D.tinctures.pairs, k => !/mixed|proper|null/.test(k) && k.split('/')[0] !== k.split('/')[1]) || 'argent/gules').split('/');
+    else {
+      const noFur = PATTERNED.test(fk) && (sk.o || sk.m);
+      fieldT = (pick(rt, D.tinctures.pairs, k => !/mixed|proper|null/.test(k) && k.split('/')[0] !== k.split('/')[1] && !(noFur && /vair|ermine/.test(k))) || 'argent/gules').split('/');
+    }
     const party = fieldT.length > 1;
     const under = party ? 'party' : fieldT[0];
     const onField = party ? fieldT.slice() : [];
@@ -229,8 +235,8 @@
       const ch = chargeFor(rng, D, 'main', sk.m.c);
       const g = { charge: ch, n: sk.m.n };
       g.t = sk.m.cch && party ? 'counterchanged' : tinctureOn(rt, D, 'main', under, onField, !!sk.m.add);
-      if (sk.m.arr === 'in pale') g.inPale = true;
-      if (sk.m.arr === 'in fess') g.inFess = true;
+      if (sk.m.arr === 'in pale' && fk !== 'per saltire') g.inPale = true;
+      if (sk.m.arr === 'in fess' && fk !== 'per saltire') g.inFess = true;
       if (sk.m.iss && /^(lion|bear|wolf|stag|goat|horse|unicorn|griffin|bull|eagle)/.test(ch) && sk.m.n === 1) g.issuant = true;
       const kind = ch.split(' ')[0];
       const mods = D.mods || {};

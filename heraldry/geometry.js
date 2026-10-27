@@ -314,7 +314,7 @@
     } else if (kind === 'per saltire') {
       add(box, 0);
       const c = [fx, fy];
-      add([[-M, -M * 0 - fy - M], c, [-M, fy + fx + M]], 1); // dexter flank
+      add([[-M, fy - fx - M], c, [-M, fy + fx + M]], 1); // dexter flank
       add([[SW + M, fy - (SW - fx) - M], c, [SW + M, fy + (SW - fx) + M]], 1); // sinister flank
       ink([[-M, fy - fx - M], [SW + M, fy + (SW - fx) + M]]); ink([[SW + M, fy - (SW - fx) - M], [-M, fy + fx + M]]);
     } else if (kind === 'gyronny') {
@@ -697,7 +697,11 @@
     }
     // a divided field with no chief: two or three charges stand clear of the partition line, one in each part
     // (per pale side by side; per fess and per chevron two above, one below)
-    const dv = !ctx.chief && !ctx.inPale && !ctx.inFess ? ctx.div : null;
+    const dv = ctx.div === 'per saltire' && !ctx.chief ? ctx.div : !ctx.chief && !ctx.inPale && !ctx.inFess ? ctx.div : null;
+    if (dv === 'per saltire' && n >= 2 && n <= 4) {
+      // the flanks, then base, then chief: each charge wholly within one of the four parts
+      return [[16, fy + 2, 24], [84, fy + 2, 24], [50, fy + 38, 24], [50, 16, 22]].slice(0, n).map(([x, y, s]) => ({ c: [x, y], s }));
+    }
     if (dv && n >= 2 && n <= 3) {
       if (dv === 'per pale' && n === 2) return [{ c: [28, fy], s: 36 }, { c: [72, fy], s: 36 }];
       if (dv === 'per fess' && n === 2) return [{ c: [50, 28], s: 34 }, { c: [50, 82], s: 32 }];
@@ -705,7 +709,15 @@
       if (dv === 'per chevron' && n === 2) return [{ c: [50, 21], s: 26 }, { c: [50, 88], s: 28 }];
       if (dv === 'per chevron') return [{ c: [24, 26], s: 28 }, { c: [76, 26], s: 28 }, { c: [50, 88], s: 28 }];
     }
-    // plain field (possibly under a chief)
+    // Under a chief, on a plain field or one divided only by lines the chief leaves whole (per pale, per bend),
+    // the layout of a shield without a chief is set in the space below it, scaled to fit, so the charges keep
+    // their proportions and never reach into the chief.
+    if (ctx.chief && !ord && (!ctx.div || /^(plain|per pale|per bend|per bend sinister|tierced per pale|paly|barry|bendy|bendy sinister|chevronny|tierced per fess)$/.test(ctx.div))) {
+      const k = (SH - 34) / SH;
+      return arrangement0(n, sh, Object.assign({}, ctx, { chief: false, div: ctx.div && /^per |^tierced per pale$/.test(ctx.div) ? null : ctx.div }))
+        .map(sl => Object.assign({}, sl, { c: [sl.c[0], 34 + sl.c[1] * k], s: sl.s * k }));
+    }
+    // plain field
     const shrink = 1;
     const midY = ctx.chief ? cy + 2 : fy;
     if (n === 1) return [{ c: [fx, midY], s: (ctx.chief ? 62 : 80) * shrink }];
