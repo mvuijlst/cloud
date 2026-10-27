@@ -272,7 +272,11 @@
       arms.charges.push(g);
     }
     if (sk.ar) {
-      const ch = chargeFor(rng, D, 'around', sk.ar.c);
+      // never the principal charge again ("two crescents, accompanied by six crescents" is eight crescents):
+      // redrawn from the class, then from the small charges heralds differenced with
+      const mainCh = ((arms.charges || []).find(g => !g.on && !g.around) || {}).charge;
+      let ch = chargeFor(rng, D, 'around', sk.ar.c);
+      for (let i = 0; i < 12 && ch === mainCh; i++) ch = chargeFor(rng, D, 'around', i < 3 ? sk.ar.c : 'small');
       arms.charges = arms.charges || [];
       const room = sk.o ? { cross: 4, saltire: 4 }[sk.o.k] || 6 : 8;
       arms.charges.push({ charge: ch, n: Math.min(sk.ar.n, room), t: tinctureOn(rt, D, 'around', under, onField.concat(ordT ? [ordT] : []), !!sk.ar.add), around: true, where: sk.ar.w || 'betw' });

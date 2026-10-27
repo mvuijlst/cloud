@@ -488,8 +488,9 @@
       o.zone = [0, fy - h / 2, SW, fy + h / 2];
     } else if (kind === 'bars') {
       const n = opt.n || 2; const h = 13; const ys = n === 2 ? [fy - 15, fy + 15] : [fy - 26, fy, fy + 26];
-      o.polys = ys.map(y => [[-M, y - h / 2], [SW + M, y - h / 2], [SW + M, y + h / 2], [-M, y + h / 2]]);
-      o.lines = ys.flatMap(y => [[[-M, y - h / 2], [SW + M, y - h / 2]], [[-M, y + h / 2], [SW + M, y + h / 2]]]);
+      // each bar a band with the blazon's line, as the fess is (bars wavy, dancetty, embattled)
+      const es = ys.map(y => bandEdges([-M, y], [SW + M, y], h, lt));
+      o.polys = es.map(e => e.poly); o.lines = es.flatMap(e => [e.a, e.b]);
       o.zone = [0, ys[0] - h / 2, SW, ys[ys.length - 1] + h / 2];
     } else if (kind === 'pale') {
       const w = 28; const e = bandEdges([fx, -M], [fx, SH + M], w, lt);
@@ -546,14 +547,20 @@
       o.zone = [0, 0, SW, h]; o.h = h;
     } else if (kind === 'cross') {
       const w = 24, cy = fy - 6;
-      o.polys = [[[fx - w / 2, -M], [fx + w / 2, -M], [fx + w / 2, SH + M], [fx - w / 2, SH + M]], [[-M, cy - w / 2], [SW + M, cy - w / 2], [SW + M, cy + w / 2], [-M, cy + w / 2]]];
-      o.lines = [[[fx - w / 2, -M], [fx - w / 2, cy - w / 2], [-M, cy - w / 2]], [[fx + w / 2, -M], [fx + w / 2, cy - w / 2], [SW + M, cy - w / 2]],
-        [[-M, cy + w / 2], [fx - w / 2, cy + w / 2], [fx - w / 2, SH + M]], [[SW + M, cy + w / 2], [fx + w / 2, cy + w / 2], [fx + w / 2, SH + M]]];
+      if (lt === 'plain') {
+        o.polys = [[[fx - w / 2, -M], [fx + w / 2, -M], [fx + w / 2, SH + M], [fx - w / 2, SH + M]], [[-M, cy - w / 2], [SW + M, cy - w / 2], [SW + M, cy + w / 2], [-M, cy + w / 2]]];
+        o.lines = [[[fx - w / 2, -M], [fx - w / 2, cy - w / 2], [-M, cy - w / 2]], [[fx + w / 2, -M], [fx + w / 2, cy - w / 2], [SW + M, cy - w / 2]],
+          [[-M, cy + w / 2], [fx - w / 2, cy + w / 2], [fx - w / 2, SH + M]], [[SW + M, cy + w / 2], [fx + w / 2, cy + w / 2], [fx + w / 2, SH + M]]];
+      } else {
+        // with a line (a cross engrailed): two bands with patterned edges, outlined as a union (render.js)
+        o.polys = [bandEdges([fx, -M], [fx, SH + M], w, lt).poly, bandEdges([-M, cy], [SW + M, cy], w, lt).poly];
+        o.lines = []; o.union = true;
+      }
       o.slots = (n) => [{ c: [fx, cy], s: w * 0.78 }, { c: [fx, cy - 30], s: w * 0.7 }, { c: [fx - 32, cy], s: w * 0.7 }, { c: [fx + 32, cy], s: w * 0.7 }, { c: [fx, cy + 34], s: w * 0.7 }].slice(0, n);
       o.centre = [fx, cy]; o.w = w;
     } else if (kind === 'saltire') {
       const w = 20; const c = [fx, fy]; const d = Math.SQRT1_2; const L = 140;
-      const band = (s) => { const u = [d * s, d], nn = [-d, d * s]; return [[c[0] - u[0] * L + nn[0] * w / 2, c[1] - u[1] * L + nn[1] * w / 2], [c[0] + u[0] * L + nn[0] * w / 2, c[1] + u[1] * L + nn[1] * w / 2], [c[0] + u[0] * L - nn[0] * w / 2, c[1] + u[1] * L - nn[1] * w / 2], [c[0] - u[0] * L - nn[0] * w / 2, c[1] - u[1] * L - nn[1] * w / 2]]; };
+      const band = (s) => { const u = [d * s, d]; return bandEdges([c[0] - u[0] * L, c[1] - u[1] * L], [c[0] + u[0] * L, c[1] + u[1] * L], w, lt).poly; };
       o.polys = [band(1), band(-1)];
       o.lines = o.polys.map(p => p.concat([p[0]]));
       o.slots = (n) => [{ c, s: w * 0.75 }, { c: [c[0] - 22, c[1] - 22], s: w * 0.62 }, { c: [c[0] + 22, c[1] - 22], s: w * 0.62 }, { c: [c[0] - 22, c[1] + 22], s: w * 0.62 }, { c: [c[0] + 22, c[1] + 22], s: w * 0.62 }].slice(0, n);
@@ -587,8 +594,8 @@
     } else if (kind === 'pales') {
       const n = opt.n || 3, w = 11; const step = SW / (n + 1) * (n === 2 ? 1 : 1);
       const xs = Array.from({ length: n }, (_, i) => (i + 1) * SW / (n + 1));
-      o.polys = xs.map(x => [[x - w / 2, -M], [x + w / 2, -M], [x + w / 2, SH + M], [x - w / 2, SH + M]]);
-      o.lines = xs.flatMap(x => [[[x - w / 2, -M], [x - w / 2, SH + M]], [[x + w / 2, -M], [x + w / 2, SH + M]]]);
+      const es = xs.map(x => bandEdges([x, -M], [x, SH + M], w, lt));
+      o.polys = es.map(e => e.poly); o.lines = es.flatMap(e => [e.a, e.b]);
       void step;
     } else if (kind === 'bends' || kind === 'bends sinister') {
       const n = opt.n || 2, w = 10, gap = 21; const sin = kind === 'bends sinister'; const d = Math.SQRT1_2; const L = 150;
@@ -596,9 +603,9 @@
       o.polys = []; o.lines = [];
       for (let i = 0; i < n; i++) {
         const off = (i - (n - 1) / 2) * gap; const c = [fx + -d * off, fy + d * off];
-        const a = [c[0] - L * d, c[1] - L * d], b = [c[0] + L * d, c[1] + L * d], nn = [-d, d];
-        const poly = [[a[0] + nn[0] * w / 2, a[1] + nn[1] * w / 2], [b[0] + nn[0] * w / 2, b[1] + nn[1] * w / 2], [b[0] - nn[0] * w / 2, b[1] - nn[1] * w / 2], [a[0] - nn[0] * w / 2, a[1] - nn[1] * w / 2]].map(fl);
-        o.polys.push(poly); o.lines.push([poly[0], poly[1]], [poly[2], poly[3]]);
+        const a = [c[0] - L * d, c[1] - L * d], b = [c[0] + L * d, c[1] + L * d];
+        const e = bandEdges(a, b, w, lt);
+        o.polys.push(e.poly.map(fl)); o.lines.push(e.a.map(fl), e.b.map(fl));
       }
     } else if (kind === 'chevrons') {
       const n = opt.n || 2, w = 11, gap = 21;
@@ -852,11 +859,34 @@
     } else if (na === 4) {
       around = [inside(17, top + 14, 17), inside(83, top + 14, 17), inside(17, fy + 22, 15), inside(83, fy + 22, 15)]; f = 0.64;
     } else {
-      // an orle of small charges round the edge
+      // An orle of small charges round the edge: spaced evenly along an outline inside the shield's edge,
+      // measured from the top centre, so they fall in pairs about the pale line (and one in base if odd);
+      // under a chief, in the space below it. They used to be measured from the outline's first corner and
+      // put on the outline's next point, so on the straight sides, one segment each, several fell together.
       const mid = P.flatten(P.map(sh.path, [0.82, 0, 0, 0.82, 9, 9]), 24)[0]; const L = [0];
-      for (let i = 1; i < mid.length; i++) L.push(L[i - 1] + Math.hypot(mid[i][0] - mid[i - 1][0], mid[i][1] - mid[i - 1][1]));
+      for (let i = 1; i <= mid.length; i++) { const a = mid[i - 1], b = mid[i % mid.length]; L.push(L[i - 1] + Math.hypot(b[0] - a[0], b[1] - a[1])); }
       const tot = L[L.length - 1];
-      for (let k = 0; k < na; k++) { const s = (k + 0.5) / na * tot; let i = 1; while (i < L.length - 1 && L[i] < s) i++; around.push({ c: mid[i], s: 11 }); }
+      const at = (s) => {
+        s = ((s % tot) + tot) % tot;
+        let i = 1; while (i < L.length - 1 && L[i] < s) i++;
+        const a = mid[i - 1], b = mid[i % mid.length], u = (s - L[i - 1]) / ((L[i] - L[i - 1]) || 1);
+        return [a[0] + (b[0] - a[0]) * u, a[1] + (b[1] - a[1]) * u];
+      };
+      let s0 = 0, y0 = Infinity;
+      for (let i = 1; i < L.length; i++) {
+        const a = mid[i - 1], b = mid[i % mid.length];
+        if ((a[0] - fx) * (b[0] - fx) > 0 || a[0] === b[0]) continue;
+        const u = (fx - a[0]) / (b[0] - a[0]), y = a[1] + (b[1] - a[1]) * u;
+        if (y < y0) { y0 = y; s0 = L[i - 1] + u * (L[i] - L[i - 1]); }
+      }
+      const k = ctx.chief ? (SH - 34) / SH : 1;
+      for (let j = 0; j < na; j++) {
+        const c = at(s0 + (j + 0.5) / na * tot), s = 11 * Math.min(1, k + 0.1);
+        let x = c[0], y = (ctx.chief ? 34 : 0) + c[1] * k;
+        // one that would reach past the edge (in base, by the point) is drawn in toward the fess point
+        for (let i = 0; i < 20 && !(Math.abs(x - 50) + s / 2 <= sh.halfAt(Math.min(SH - 2, y + s / 2)) - inset && y + s / 2 <= SH - inset - 6); i++) { x += (fx - x) * 0.06; y += (fy - y) * 0.06; }
+        around.push({ c: [x, y], s });
+      }
       f = 0.6;
     }
     // a label hangs in chief: the principal charge is not raised into it

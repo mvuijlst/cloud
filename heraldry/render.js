@@ -172,9 +172,9 @@
       const col = opt.color || (this.style === 'engraved' ? '#000' : DARK);
       this.out.push(`<path d="${this.d(path)}" fill="none" stroke="${col}" stroke-width="${w}" stroke-linejoin="round" stroke-linecap="round"${opt.clip ? ` clip-path="url(#${opt.clip})"` : ''}${opt.opacity ? ` stroke-opacity="${opt.opacity}"` : ''}/>`);
     }
-    clip(path) {
+    clip(path, evenodd = false) {
       const cid = `${this.id}-c${this.clipN++}`;
-      this.defs.push(`<clipPath id="${cid}"><path d="${this.d(path)}"${''}/></clipPath>`);
+      this.defs.push(`<clipPath id="${cid}"><path d="${this.d(path)}"${evenodd ? ' clip-rule="evenodd"' : ''}/></clipPath>`);
       return cid;
     }
     open(clip) { this.out.push(`<g clip-path="url(#${clip})">`); }
@@ -259,6 +259,17 @@
     }
   }
 
+  // how far a drawing's black underlay shows round its body pieces: the median of the four sides of their
+  // bounds, in the drawing's unit box (0.5 to 3% on the traces), kept within reason
+  function artRim(art) {
+    if (art.rim !== undefined) return art.rim;
+    const i = art.layers.findIndex(L => L.role === 'body');
+    const under = art.layers.slice(0, Math.max(0, i)).filter(L => L.role === 'ink');
+    if (!under.length || i < 0) return (art.rim = 0.01);
+    const ub = P.bounds(P.concat(...under.map(L => L.d))), bb = P.bounds(P.concat(...art.layers.filter(L => L.role === 'body').map(L => L.d)));
+    const s = [bb[0] - ub[0], bb[1] - ub[1], ub[2] - bb[2], ub[3] - bb[3]].sort((a, b) => a - b);
+    return (art.rim = Math.min(0.03, Math.max(0.004, (s[1] + s[2]) / 2)));
+  }
   function drawArt(pen, ch, spec, tinct, clip) {
     const eng = pen.style === 'engraved';
     const k = Math.sqrt(Math.abs(pen.M[0] * pen.M[3] - pen.M[1] * pen.M[2]));
@@ -275,6 +286,14 @@
         pen.out.push(`<path d="${d}" fill="${paint(t, pen.style, pen.id, true)}"${fr}${cl}/>`);
       } else if (L.role === 'white') {
         pen.out.push(`<path d="${d}" fill="#fff"${fr}${cl}/>`);
+      } else if (L.role === 'ink' && sable && !seenBody) {
+        // The traced drawings lay one black shape under the body pieces; the gaps between the pieces are the
+        // engraver's lines. On a sable body it would leave a silhouette, so it is drawn white (grey in colour),
+        // and its edge stroked black over the rim it shows round the pieces, to keep the outline; the stroke
+        // is clipped to the shape, so the silhouette does not grow.
+        pen.out.push(`<path d="${d}" fill="${eng ? '#fff' : '#8a8a8a'}"${fr}${cl}/>`);
+        const own = pen.clip(L.d, !!L.evenodd);
+        pen.out.push(`<g${cl}><path d="${d}" fill="none" stroke="${eng ? '#000' : DARK}" stroke-width="${(2.2 * artRim(ch.art) * k).toFixed(3)}" stroke-linejoin="round" clip-path="url(#${own})"/></g>`);
       } else if (L.role === 'ink') {
         // ink drawn over a sable body would vanish: draw it in white (engraved) or grey (colour)
         const col = sable && seenBody ? (eng ? '#fff' : '#8a8a8a') : (eng ? '#000' : DARK);
@@ -588,14 +607,13 @@
     if (ord.poly) pen.fill(P.poly(ord.poly), t);
     if (ord.polys) for (const p of ord.polys) pen.fill(P.poly(p), t);
     if (ord.path) pen.fill(ord.path, t, { evenodd: true });
-    if (ord.kind === 'cross' || ord.kind === 'saltire') {
-      // outline the union, not the overlap
-      if (ord.kind === 'saltire') {
-        const stroked = ord.polys.map(p => P.poly(p));
-        for (const s of stroked) pen.out.push(`<path d="${pen.d(s)}" fill="none" stroke="${pen.style === 'engraved' ? '#000' : DARK}" stroke-width="${plw}"/>`);
-        for (const p of ord.polys) pen.fill(P.poly(p), t);
-        return;
-      }
+    if (ord.kind === 'saltire' || ord.union) {
+      // outline the union, not the overlap: each band stroked twice the line's width, its inner half covered
+      // by the fills (a saltire, or a cross with a line)
+      const stroked = ord.polys.map(p => P.poly(p));
+      for (const s of stroked) pen.out.push(`<path d="${pen.d(s)}" fill="none" stroke="${pen.style === 'engraved' ? '#000' : DARK}" stroke-width="${2 * plw}" stroke-linejoin="round"/>`);
+      for (const p of ord.polys) pen.fill(P.poly(p), t);
+      return;
     }
     for (const l of ord.lines || []) pen.stroke(l, plw);
   }
