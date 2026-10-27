@@ -115,9 +115,6 @@
                 link(st.plate ? 'one' : 'plate', st.plate ? 'one coat at a time' : 'a plate of sixteen', () => go(!st.plate, st.seed)),
                 link('svg', 'download', () => download(st)), sep(),
                 link(theme === 'dark' ? 'light' : 'dark', 'page colour', () => { theme = theme === 'dark' ? 'light' : 'dark'; store.set('arms-theme', theme); applyTheme(); render(); }));
-            // the drawings' licences ask for credit (CC BY-SA); the credits are in GENERATOR.md
-            const cr = document.createElement('a'); cr.href = 'GENERATOR.md#credits'; cr.textContent = 'credits'; cr.title = 'who drew the charges, and their licences';
-            nav.append(cr);
             main.textContent = '';
             main.className = style === 'engraved' ? 'eng' : '';
             if (st.plate) {
