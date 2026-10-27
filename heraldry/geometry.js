@@ -485,7 +485,9 @@
       // the inner edge: the shield's own outline shrunk about its top centre, a little more at the base
       // than at the flanks so the bordure keeps its width round the point (an offset curve would loop there)
       const w = 11;
-      const inner = P.flatten(P.map(sh.path, [(SW - 2 * w) / SW, 0, 0, (SH - 2.35 * w) / SH, w, w]), 24)[0];
+      // the inner edge is the shield itself under this map: render.js draws the coat within it as a whole shield
+      o.innerMat = [(SW - 2 * w) / SW, 0, 0, (SH - 2.35 * w) / SH, w, w];
+      const inner = P.flatten(P.map(sh.path, o.innerMat), 24)[0];
       o.path = P.concat(P.poly(sh.poly.map(q => q.slice())), P.poly(inner.slice().reverse()));
       o.lines = [inner.concat([inner[0]])];
       o.inner = inner;
@@ -594,13 +596,14 @@
   // Slots for n charges on the field, given what the field already holds (ordinary, chief).
   // Returns [{c:[x,y], s:size, rot}] ; size is the side of the square the charge is fitted into.
   // Charges set between an ordinary stand near the edges: each box is shrunk, and drawn a little toward the
-  // fess point, until it lies inside the field, inside a bordure (11 wide) when there is one.
+  // fess point, until it lies inside the field. (Within a bordure the field is the bordure's inner outline,
+  // drawn as a whole shield, so nothing here needs to know of it.)
   function arrangement(n, sh, ctx = {}) {
     const out = arrangement0(n, sh, ctx);
     if (!ctx.ord || ctx.ord.kind === 'canton') return out;
-    const SH = sh.H || 120, [fx, fy] = sh.fess, b = ctx.bordure;
-    const halfIn = y => b ? 0.78 * sh.halfAt(Math.min(SH, Math.max(0, (y - 11) / 0.785))) - 1.5 : sh.halfAt(Math.min(SH, y)) - 2;
-    const top = (ctx.chief ? 34 : 0) + (b ? 12.5 : 2);
+    const SH = sh.H || 120, [fx, fy] = sh.fess;
+    const halfIn = y => sh.halfAt(Math.min(SH, y)) - 2;
+    const top = (ctx.chief ? 34 : 0) + 2;
     return out.map(sl => {
       let [x, y] = sl.c, s = sl.s;
       for (let k = 0; k < 24; k++) {
@@ -696,15 +699,14 @@
     // (per pale side by side; per fess and per chevron two above, one below)
     const dv = !ctx.chief && !ctx.inPale && !ctx.inFess ? ctx.div : null;
     if (dv && n >= 2 && n <= 3) {
-      const k = ctx.bordure ? 0.86 : 1;
-      if (dv === 'per pale' && n === 2) return [{ c: [28, fy], s: 36 * k }, { c: [72, fy], s: 36 * k }];
-      if (dv === 'per fess' && n === 2) return [{ c: [50, 28], s: 34 * k }, { c: [50, 82], s: 32 * k }];
-      if (dv === 'per fess') return [{ c: [27, 30], s: 28 * k }, { c: [73, 30], s: 28 * k }, { c: [50, 83], s: 30 * k }];
-      if (dv === 'per chevron' && n === 2) return [{ c: [50, 21], s: 26 * k }, { c: [50, 88], s: 28 * k }];
-      if (dv === 'per chevron') return [{ c: [24, 26], s: 28 * k }, { c: [76, 26], s: 28 * k }, { c: [50, 88], s: 28 * k }];
+      if (dv === 'per pale' && n === 2) return [{ c: [28, fy], s: 36 }, { c: [72, fy], s: 36 }];
+      if (dv === 'per fess' && n === 2) return [{ c: [50, 28], s: 34 }, { c: [50, 82], s: 32 }];
+      if (dv === 'per fess') return [{ c: [27, 30], s: 28 }, { c: [73, 30], s: 28 }, { c: [50, 83], s: 30 }];
+      if (dv === 'per chevron' && n === 2) return [{ c: [50, 21], s: 26 }, { c: [50, 88], s: 28 }];
+      if (dv === 'per chevron') return [{ c: [24, 26], s: 28 }, { c: [76, 26], s: 28 }, { c: [50, 88], s: 28 }];
     }
-    // plain field (possibly under a chief, or inside a bordure)
-    const shrink = ctx.bordure ? 0.84 : 1;
+    // plain field (possibly under a chief)
+    const shrink = 1;
     const midY = ctx.chief ? cy + 2 : fy;
     if (n === 1) return [{ c: [fx, midY], s: (ctx.chief ? 62 : 80) * shrink }];
     if (n === 2) return ctx.inFess ? [{ c: [fx - 23, midY], s: 40 * shrink }, { c: [fx + 23, midY], s: 40 * shrink }] : [{ c: [fx, midY - 22], s: 40 * shrink }, { c: [fx, midY + 24], s: 36 * shrink }];
@@ -726,7 +728,7 @@
   // blazon puts them (in chief, in base, dexter or sinister chief) or round about it.
   function flankLayout(sh, gMain, gAr, ctx = {}) {
     const SH = sh.H || 120; const [fx, fy] = sh.fess;
-    const top = ctx.chief ? 36 : 4; const na = gAr.n || 1; const inset = ctx.bordure ? 10 : 3;
+    const top = ctx.chief ? 36 : 4; const na = gAr.n || 1; const inset = 3;
     const where = gAr.where || 'betw';
     let f = 0.68, dx = 0, dy = 0, around = [];
     const inside = (x, y, s) => {
@@ -739,7 +741,7 @@
       return { c: [x, y], s };
     };
     if (where === 'in chf' || where === 'in base') {
-      const s = Math.min(22, 80 / Math.max(na, 1)); const y = where === 'in chf' ? top + 12 + (ctx.bordure ? 4 : 0) : fy + (ctx.bordure ? 34 : 40);
+      const s = Math.min(22, 80 / Math.max(na, 1)); const y = where === 'in chf' ? top + 13 : fy + 40;
       around = Array.from({ length: na }, (_, i) => inside(50 + (i - (na - 1) / 2) * (s + 6), y, s));
       f = 0.72; dy = where === 'in chf' ? 10 : -10;
     } else if (where === 'dx' || where === 'sn' || na === 1) {
@@ -762,7 +764,7 @@
     }
     // a label hangs in chief: the principal charge is not raised into it
     if (ctx.label) dy = Math.max(dy, 2);
-    const base = arrangement(gMain.n, sh, { chief: ctx.chief, bordure: ctx.bordure, inPale: gMain.inPale, inFess: gMain.inFess, div: ctx.div });
+    const base = arrangement(gMain.n, sh, { chief: ctx.chief, inPale: gMain.inPale, inFess: gMain.inFess, div: ctx.div });
     // on a divided field each charge keeps its part, shrinking about its own centre
     const own = /^per (pale|fess|chevron)$/.test(ctx.div || '') && gMain.n >= 2 && gMain.n <= 3;
     const main = base.map(sl => own ? { c: sl.c.slice(), s: sl.s * f, rot: sl.rot } : { c: [fx + (sl.c[0] - fx) * f + dx, fy + (sl.c[1] - fy) * f + dy], s: sl.s * f, rot: sl.rot });

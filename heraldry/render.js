@@ -208,9 +208,42 @@
   }
 
   // ---------- the field, ordinaries, charges ----------
+  // the bordure, over the edge of the shield
+  function drawBordure(pen, arms, sh, b, plw) {
+    pen.fill(b.path, arms.bordure.t, { evenodd: true });
+    if (arms.bordure.pattern === 'compony') {
+      // alternate segments of the bordure in the second tincture
+      const outer = sh.poly, inner = b.inner, N = outer.length, seg = 16;
+      for (let k = 1; k < seg; k += 2) {
+        const i0 = Math.floor(k * N / seg), i1 = Math.floor((k + 1) * N / seg);
+        const q = outer.slice(i0, i1 + 1).concat(inner.slice(i0, i1 + 1).reverse());
+        pen.fill(P.poly(q), arms.bordure.t2);
+        pen.stroke([outer[i0], inner[i0]], plw); pen.stroke([outer[Math.min(i1, N - 1)], inner[Math.min(i1, N - 1)]], plw);
+      }
+    }
+    for (const l of b.lines) pen.stroke(l, plw);
+    if (arms.bordure.charges) for (const s of b.slots(arms.bordure.charges.n)) drawCharge(pen, arms.bordure.charges, s, arms.bordure.charges.t);
+  }
+
   function drawCoat(pen, arms, sh) {
     const eng = pen.style === 'engraved';
     const plw = eng ? ENG.partLine : 0.45;
+    if (arms.bordure) {
+      // Within a bordure the coat is a whole shield of its own: the bordure's inner outline is the shield
+      // under a map, so field, ordinary, charges, chief, canton and label are drawn through that map and laid
+      // out as on a shield without one. The field's first tincture lies under the join, so no gap shows.
+      const b = H.ordinary('bordure', sh);
+      const outer = pen.clip(sh.path);
+      pen.open(outer);
+      pen.fill(sh.path, arms.field.t[0]);
+      const saved = pen.M;
+      pen.M = P.mat.mul(saved, b.innerMat);
+      drawCoat(pen, Object.assign({}, arms, { bordure: null }), sh);
+      pen.M = saved;
+      drawBordure(pen, arms, sh, b, plw);
+      pen.close();
+      return;
+    }
     const field = arms.field;
     const shClip = pen.clip(sh.path);
     pen.open(shClip);
@@ -261,13 +294,13 @@
     const gs = arms.charges || [];
     const gMain = gs.find(g => !g.on && !g.around), gAr = gs.find(g => g.around);
     // a principal charge accompanied by others, with no ordinary between them: the principal one gives way
-    const flank = gMain && gAr && (!ord || ao.over) ? H.flankLayout(sh, gMain, gAr, { chief: !!arms.chief, bordure: !!arms.bordure, label: !!arms.label, div: field.kind }) : null;
+    const flank = gMain && gAr && (!ord || ao.over) ? H.flankLayout(sh, gMain, gAr, { chief: !!arms.chief, label: !!arms.label, div: field.kind }) : null;
     const slotsFor = (g) => {
       if (flank && g === gMain) return flank.main;
       if (flank && g === gAr) return flank.around;
       if (g.on === 'ordinary' && ord && ord.slots) return ord.slots(g.n);
       if (g.issuant) return [{ c: [sh.fess[0], div && /per fess|tierced per fess/.test(field.kind) ? sh.fess[1] : sh.fess[1] + 26], s: 92 }];
-      return H.arrangement(g.n, sh, { ord: ord && !ao.over && (g.around || g.on !== 'ordinary') ? ord : null, chief: !!arms.chief, bordure: !!arms.bordure, inPale: g.inPale, inFess: g.inFess, div: field.kind });
+      return H.arrangement(g.n, sh, { ord: ord && !ao.over && (g.around || g.on !== 'ordinary') ? ord : null, chief: !!arms.chief, inPale: g.inPale, inFess: g.inFess, div: field.kind });
     };
     const slotMap = new Map(gs.map(g => [g, slotsFor(g)]));
     if (arms.canton) {
@@ -321,23 +354,6 @@
     }
     // canton
     if (arms.canton && !chief) drawCanton();
-    // bordure
-    if (arms.bordure) {
-      const b = H.ordinary('bordure', sh);
-      pen.fill(b.path, arms.bordure.t, { evenodd: true });
-      if (arms.bordure.pattern === 'compony') {
-        // alternate segments of the bordure in the second tincture
-        const outer = sh.poly, inner = b.inner, N = outer.length, seg = 16;
-        for (let k = 1; k < seg; k += 2) {
-          const i0 = Math.floor(k * N / seg), i1 = Math.floor((k + 1) * N / seg);
-          const q = outer.slice(i0, i1 + 1).concat(inner.slice(i0, i1 + 1).reverse());
-          pen.fill(P.poly(q), arms.bordure.t2);
-          pen.stroke([outer[i0], inner[i0]], plw); pen.stroke([outer[Math.min(i1, N - 1)], inner[Math.min(i1, N - 1)]], plw);
-        }
-      }
-      for (const l of b.lines) pen.stroke(l, plw);
-      if (arms.bordure.charges) for (const s of b.slots(arms.bordure.charges.n)) drawCharge(pen, arms.bordure.charges, s, arms.bordure.charges.t);
-    }
     // label (a brisure)
     if (arms.label) { const lb = H.ordinary('label', sh); for (const p of lb.polys) pen.fill(P.poly(p), arms.label.t); for (const l of lb.lines) pen.stroke(l, plw); }
     pen.close();
