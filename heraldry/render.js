@@ -30,7 +30,7 @@
 
   // pitch and line: closer and thinner than Rolland's 2.0 and 0.62 at the user's request (27 Oct 2026), near the
   // large cells of the Italian plate (4.5 px on 315 px, 1.4 per 100); the dot density is that of the old 3.4 lattice
-  const ENG = { pitch: 1.5, line: 0.4, dot: 3.4, dotR: 0.42, outline: 1.0, partLine: 0.55, chargeLine: 0.55, detail: 0.42 };
+  const ENG = { pitch: 1.5, line: 0.4, dot: 3.4, dotR: 0.28, outline: 1.0, partLine: 0.55, chargeLine: 0.55, detail: 0.42 };
 
   // ---------- engraved hatching, cut by hand ----------
   // On the user's Italian plate (Primi elementi delle croci, a tincture key above crosses on hatched fields) the
@@ -41,7 +41,7 @@
   // places, widths and slight bends are drawn from the coat's seed; the bends and the swelling along a line repeat
   // a whole number of times per tile, so tiles join without a seam, and the tile's period of 24 units is lost
   // among the irregular gaps.
-  const HATCH = { gapSd: 0.09, widthSd: 0.08, swell: 0.06, bend: 0.015, n: 16, dotMin: 2.6, dotW: 47, dotH: 53 };
+  const HATCH = { gapSd: 0.09, widthSd: 0.08, swell: 0.06, bend: 0.015, n: 16, dotMin: 1.6, dotW: 47, dotH: 53 };
   function rngFrom(seed) {
     let a = seed >>> 0;
     return () => { a = (a + 0x6D2B79F5) >>> 0; let x = a; x = Math.imul(x ^ (x >>> 15), x | 1); x ^= x + Math.imul(x ^ (x >>> 7), x | 61); return ((x ^ (x >>> 14)) >>> 0) / 4294967296; };
@@ -74,9 +74,9 @@
     return d;
   }
   // Or: dots thrown at random into a tile of 47 by 53 units (two tiles to the shield), each kept only if it is at
-  // least dotMin (2.6) from every other, measured across the tile's edges too, until the tile is full: every dot
-  // then stands about the same distance from its neighbours, at the density of the old 3.4 lattice, without its
-  // rows. (A Poisson stipple, kept only from touching, was tried and judged to look bad.) Dots are round caps on
+  // least dotMin (1.6) from every other, measured across the tile's edges too, until the tile is full: every dot
+  // then stands about the same distance from its neighbours, without a lattice's rows. Fine and dense, so a small
+  // charge or reads as stippled gold, not spotted (at 2.6 apart a talbot or read as a dalmatian). (A Poisson stipple, kept only from touching, was tried and judged to look bad.) Dots are round caps on
   // zero-length strokes, in three sizes. A grid of cells dotMin wide finds the neighbours to test.
   function stipple(r, W, Hh, rDot) {
     const dm = HATCH.dotMin, nx = Math.floor(W / dm), ny = Math.floor(Hh / dm), cw = W / nx, ch = Hh / ny;
@@ -98,7 +98,7 @@
       const key = Math.floor(x / cw) + ',' + Math.floor(y / ch);
       (grid.get(key) || grid.set(key, []).get(key)).push([x, y]);
     }
-    const cls = [0.8, 1.0, 1.2].map(f => ({ w: f2(2 * rDot * f), d: '' }));
+    const cls = [0.85, 1.0, 1.15].map(f => ({ w: f2(2 * rDot * f), d: '' }));
     for (const [x, y] of pts) {
       const c = cls[Math.floor(r() * 3)], m = rDot * 1.3;
       for (const [ox, oy] of [[0, 0], [W, 0], [-W, 0], [0, Hh], [0, -Hh]]) {
