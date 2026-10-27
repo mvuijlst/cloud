@@ -23,36 +23,36 @@
   },
   "test4_distribution": {
    "n": 260,
-   "energy": 4.2805,
+   "energy": 3.1882,
    "energy_threshold": 0.0813,
-   "max_ks": 0.7192,
+   "max_ks": 0.7404,
    "ks_threshold": 0.0846,
    "passed": false,
    "largest_mean_gaps": {
-    "n_tinct": 1.014,
-    "ar_n": 0.525,
-    "chief": 0.391,
-    "bordure": 0.329,
+    "n_tinct": 1.04,
+    "f_plain": 0.421,
+    "chief": 0.369,
+    "ar_n": 0.355,
     "m_other": 0.227,
-    "on_n": 0.179,
-    "chief_ch": 0.175,
-    "o_none": 0.123
+    "o_none": 0.219,
+    "f_party": 0.214,
+    "chief_ch": 0.209
    }
   },
   "test4_secondary_library_coats_only": {
    "n": 184,
-   "energy": 3.8697,
+   "energy": 2.7444,
    "energy_threshold": 0.1292,
-   "max_ks": 0.712,
+   "max_ks": 0.7283,
    "ks_threshold": 0.1087,
    "passed": false,
    "largest_mean_gaps": {
-    "n_tinct": 1.016,
-    "ar_n": 0.523,
-    "chief": 0.377,
-    "bordure": 0.323,
-    "on_n": 0.171,
-    "chief_ch": 0.169
+    "n_tinct": 1.042,
+    "f_plain": 0.408,
+    "chief": 0.355,
+    "ar_n": 0.353,
+    "f_party": 0.223,
+    "chief_ch": 0.203
    }
   },
   "test4_band_three_or_more_unquartered": {
@@ -64,12 +64,12 @@
    "ks_threshold": null,
    "passed": false,
    "largest_mean_gaps": {
-    "n_tinct": 0.832,
-    "f_plain": 0.544,
-    "ar_n": 0.449,
-    "f_party": 0.307,
-    "bordure": 0.278,
-    "f_pattern": 0.237
+    "n_tinct": 0.858,
+    "o_none": 0.32,
+    "ar_n": 0.277,
+    "line": 0.16,
+    "chief_ch": 0.152,
+    "f_plain": 0.139
    },
    "complexity_corpus": {
     "1": 0.631,
@@ -78,15 +78,16 @@
     "4": 0.004
    },
    "complexity_generated": {
-    "2": 0.086,
-    "3": 0.628,
-    "4": 0.286
+    "2": 0.148,
+    "3": 0.55,
+    "4": 0.3,
+    "5": 0.002
    }
   },
   "test5_diversity": {
-   "generated": 16.992,
+   "generated": 14.666,
    "corpus": 7.524,
-   "ratio": 2.258,
+   "ratio": 1.949,
    "passed": true
   },
   "test5_repetition": {
@@ -98,7 +99,7 @@
   },
   "test5_matches": {
    "no_match_share": 1.0,
-   "no_match_without_redraw": 1.0,
+   "no_match_without_redraw": 0.998,
    "target": 0.7,
    "passed": true,
    "note": "index = development coats of both rolls only; the Clemmensen Ordinary, Papworth and Rietstap were not indexed"
@@ -128,53 +129,53 @@
   },
   "test4_distribution": {
    "n": 500,
-   "energy": 2.1665,
+   "energy": 1.7585,
    "energy_threshold": 0.0461,
-   "max_ks": 0.62,
+   "max_ks": 0.626,
    "ks_threshold": 0.0681,
    "passed": false,
    "largest_mean_gaps": {
-    "n_tinct": 0.957,
-    "ar_n": 0.469,
-    "chief": 0.363,
-    "bordure": 0.267,
-    "chief_ch": 0.211,
+    "n_tinct": 1.003,
+    "f_plain": 0.408,
+    "chief": 0.391,
+    "ar_n": 0.248,
+    "chief_ch": 0.223,
     "m_other": 0.209,
-    "on_n": 0.15,
-    "label": 0.085
+    "f_pattern": 0.196,
+    "f_party": 0.166
    }
   },
   "test4_secondary_library_coats_only": {
    "n": 500,
-   "energy": 1.9038,
+   "energy": 1.4862,
    "energy_threshold": 0.0442,
-   "max_ks": 0.624,
+   "max_ks": 0.63,
    "ks_threshold": 0.064,
    "passed": false,
    "largest_mean_gaps": {
-    "n_tinct": 0.915,
-    "ar_n": 0.48,
-    "chief": 0.348,
-    "bordure": 0.264,
-    "chief_ch": 0.207,
-    "on_n": 0.149
+    "n_tinct": 0.961,
+    "f_plain": 0.388,
+    "chief": 0.376,
+    "ar_n": 0.259,
+    "chief_ch": 0.219,
+    "f_pattern": 0.174
    }
   },
   "test4_band_three_or_more_unquartered": {
    "corpus_coats": 102,
    "n": 51,
-   "energy": 1.1364,
+   "energy": 0.786,
    "energy_threshold": 0.6559,
-   "max_ks": 0.3922,
+   "max_ks": 0.3333,
    "ks_threshold": 0.2549,
    "passed": false,
    "largest_mean_gaps": {
-    "n_tinct": 0.636,
-    "ar_n": 0.393,
-    "f_plain": 0.243,
-    "bordure": 0.186,
-    "m_n": 0.149,
-    "f_party": 0.134
+    "n_tinct": 0.684,
+    "f_plain": 0.161,
+    "ar_n": 0.161,
+    "m_n": 0.138,
+    "m_flower": 0.129,
+    "chief": 0.121
    },
    "complexity_corpus": {
     "0": 0.002,
@@ -185,15 +186,15 @@
     "5": 0.005
    },
    "complexity_generated": {
-    "2": 0.052,
-    "3": 0.644,
-    "4": 0.304
+    "2": 0.096,
+    "3": 0.58,
+    "4": 0.324
    }
   },
   "test5_diversity": {
-   "generated": 12.771,
+   "generated": 11.912,
    "corpus": 7.971,
-   "ratio": 1.602,
+   "ratio": 1.494,
    "passed": true
   },
   "test5_repetition": {

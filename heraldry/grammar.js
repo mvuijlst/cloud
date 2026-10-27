@@ -94,14 +94,37 @@
   }
   H.complexity = complexity;
   // The rolls' coats are simple (in Grünenberg 57% have one element), and simple arms are taken: Or, a lion
-  // rampant sable is Flanders. So a coat is differenced, as heralds differenced arms, until it has three to five
-  // elements: a chief (charged or not), charges laid on the ordinary or set between it, accompanying charges,
-  // a bordure, a canton, a label, each with a weight near its share in the rolls, never two of a kind.
+  // rampant sable is Flanders. So a coat is differenced, as heralds differenced arms, until it has three or four
+  // elements, one move at a time: divide the field, multiply the principal charge, set an ordinary between
+  // principal charges, lay charges on the ordinary or between it, add accompanying charges, a chief (and its
+  // charges), a bordure, a canton or a label, never two of a kind. The moves' weights are fitted per roll by
+  // tools/fit_differencing.js, so the differenced coats carry each element about as often as the rolls' own
+  // coats of three elements or more (unquartered, both rolls pooled: 115 coats).
   const ON_N = { fess: [3, 3, 1], bend: [3, 3, 2], pale: [3, 3, 1], chevron: [3, 3, 1], cross: [5, 1], saltire: [5, 1] };
   const AR_N = { fess: [3, 6, 2], bend: [2, 6, 3], pale: [2, 4], chevron: [3, 3, 2], cross: [4], saltire: [4] };
-  function difference(rng, sk, target) {
+  H.DIFF_W = {   // fitted by tools/fit_differencing.js (14 rounds, seeds 1 to 3000), 27 October 2026
+    zurich: { divide: 0.378, multiply: 0.376, charge: 0.052, ordinary: 0.898, on: 0.013, between: 0.068, accompanied: 0.068, chief: 0.186, chiefCharges: 10.449, bordure: 0.024, label: 0.029, canton: 0.01 },
+    grunenberg: { divide: 0.332, multiply: 0.435, charge: 0.08, ordinary: 0.582, on: 0.01, between: 0.049, accompanied: 0.049, chief: 0.176, chiefCharges: 9.923, bordure: 0.015, label: 0.016, canton: 0.01 },
+  };
+  // the roll's divided and patterned fields, its numbers of principal charges above one, and how often a
+  // principal charge on a field party per something is counterchanged
+  const rollTables = {};
+  function tablesOf(D) {
+    if (rollTables[D.n_dev]) return rollTables[D.n_dev];
+    const fields = [], nums = {}; let per = 0, cch = 0;
+    for (const [s, c] of D.skeletons) {
+      if (s.q) continue;
+      if (s.f.k !== 'plain') fields.push([{ k: s.f.k, n: s.f.n || null, l: null, s: s.f.s || null }, c]);
+      if (s.m && s.m.n > 1 && s.m.n <= 6) nums[s.m.n] = (nums[s.m.n] || 0) + c;
+      if (s.m && /^per /.test(s.f.k)) { per += c; if (s.m.cch) cch += c; }
+    }
+    return (rollTables[D.n_dev] = { fields, nums, pCch: per ? cch / per : 0.5 });
+  }
+  function difference(rng, sk, target, W, D) {
     sk = JSON.parse(JSON.stringify(sk));
     const pickOf = a => a[Math.floor(rng() * a.length)];
+    const T = tablesOf(D);
+    const weighted = (pairs) => { let tot = 0; for (const [, w] of pairs) tot += w; let r = rng() * tot; for (const [x, w] of pairs) { r -= w; if (r <= 0) return x; } return pairs[pairs.length - 1][0]; };
     for (let guard = 0; guard < 12 && complexity(sk) < target; guard++) {
       const moves = [];
       const plainField = sk.f.k === 'plain';
@@ -109,20 +132,26 @@
       const between = sk.o && (sk.ar || (sk.m && sk.m.n >= 2));
       // nor over charges set in the upper part of a field divided per fess or per chevron
       const upperPart = sk.m && sk.m.n >= 2 && (sk.f.k === 'per fess' || sk.f.k === 'per chevron');
-      if (!sk.c && !sk.cn && !sk.q && !sk.lb && !(sk.ar && sk.ar.w === 'in chf') && !between && !upperPart) moves.push(['chief', 3.5]);
+      if (!sk.c && !sk.cn && !sk.q && !sk.lb && !(sk.ar && sk.ar.w === 'in chf') && !between && !upperPart) moves.push(['chief', W.chief]);
       // a field with nothing on it: a principal charge, or three
-      if (!sk.m && !sk.o && !sk.q) moves.push(['charge', 6]);
-      if (sk.c && !sk.c.on) moves.push(['chief charges', 6]);
-      if (sk.o && ON_N[sk.o.k] && !sk.on && !sk.o.p) moves.push(['on', 7]);
-      if (sk.o && AR_N[sk.o.k] && !sk.ar && !sk.m && !sk.cn && !sk.c) moves.push(['between', 5]);
+      if (!sk.m && !sk.o && !sk.q) moves.push(['charge', W.charge]);
+      if (sk.c && !sk.c.on) moves.push(['chief charges', W.chiefCharges]);
+      if (sk.o && ON_N[sk.o.k] && !sk.on && !sk.o.p) moves.push(['on', W.on]);
+      if (sk.o && AR_N[sk.o.k] && !sk.ar && !sk.m && !sk.cn && !sk.c) moves.push(['between', W.between]);
       // two or three principal charges on a plain field: an ordinary between them (a chevron between three ...)
-      if (!sk.o && sk.m && [2, 3].includes(sk.m.n) && plainField && !sk.ar && !sk.m.iss && !sk.c && !sk.cn) moves.push(['ordinary', 5]);
+      if (!sk.o && sk.m && [2, 3].includes(sk.m.n) && plainField && !sk.ar && !sk.m.iss && !sk.c && !sk.cn) moves.push(['ordinary', W.ordinary]);
       // accompanying charges only on a plain or semy field: on a divided one they crowd the partition
-      if (!sk.o && sk.m && !sk.ar && (plainField || sk.f.k === 'semy')) moves.push(['accompanied', 3]);
-      if (!sk.b && !sk.q && !sk.lb) moves.push(['bordure', 1.6]);
+      if (!sk.o && sk.m && !sk.ar && (plainField || sk.f.k === 'semy')) moves.push(['accompanied', W.accompanied]);
+      // a plain field divided or patterned as the roll's fields are, unless accompanying charges stand on it
+      if (plainField && !sk.q && !sk.ar) moves.push(['divide', W.divide]);
+      // one principal charge made two, three or more, as often as the roll has each number; not where the
+      // charges would then stand between an ordinary under a chief, or above a partition under one
+      const upperIfMany = sk.c && (sk.o || sk.f.k === 'per fess' || sk.f.k === 'per chevron');
+      if (sk.m && sk.m.n === 1 && !sk.m.iss && !sk.m.chg && !upperIfMany) moves.push(['multiply', W.multiply]);
+      if (!sk.b && !sk.q && !sk.lb) moves.push(['bordure', W.bordure]);
       const chfTaken = sk.ar && sk.ar.w === 'in chf';
-      if (!sk.cn && !sk.c && !sk.q && !sk.b && !sk.lb && !sk.ar) moves.push(['canton', 1]);
-      if (!sk.lb && !sk.q && !sk.b && !sk.c && !sk.cn && !chfTaken) moves.push(['label', 1]);
+      if (!sk.cn && !sk.c && !sk.q && !sk.b && !sk.lb && !sk.ar) moves.push(['canton', W.canton]);
+      if (!sk.lb && !sk.q && !sk.b && !sk.c && !sk.cn && !chfTaken) moves.push(['label', W.label]);
       if (!moves.length) break;
       let tot = 0; for (const [, w] of moves) tot += w;
       let r = rng() * tot, mv = moves[0][0];
@@ -134,7 +163,18 @@
       else if (mv === 'between') sk.ar = { n: pickOf(AR_N[sk.o.k]), c: 'small', w: 'betw', add: 1 };
       else if (mv === 'ordinary') sk.o = { k: sk.m.n === 3 ? pickOf(['chevron', 'chevron', 'fess', 'bend']) : pickOf(['bend', 'fess', 'chevron']), n: null, l: null, p: null, add: 1 };
       else if (mv === 'accompanied') sk.ar = { n: pickOf([1, 2, 3, 3]), c: 'small', w: sk.cn || sk.lb ? 'in base' : sk.c ? pickOf(['betw', 'in base']) : pickOf(['betw', 'in chf', 'in chf', 'betw']), add: 1 };
-      else if (mv === 'charge') sk.m = { n: sk.f.k === 'plain' || sk.f.k === 'semy' ? pickOf([1, 1, 3]) : 1, c: null, arr: null, cch: sk.f.k.startsWith('per ') && rng() < 0.3 ? 1 : 0, add: 1 };
+      else if (mv === 'charge') sk.m = { n: sk.f.k === 'plain' || sk.f.k === 'semy' ? pickOf([1, 1, 3]) : 1, c: null, arr: null, cch: sk.f.k.startsWith('per ') && rng() < T.pCch ? 1 : 0, add: 1 };
+      else if (mv === 'divide') {
+        // a division from the roll's own fields; with principal charges and a chief, not per fess or per chevron
+        const ok = T.fields.filter(([f]) => !(sk.c && sk.m && sk.m.n >= 2 && (f.k === 'per fess' || f.k === 'per chevron')));
+        sk.f = Object.assign({}, weighted(ok), { add: 1 });
+        if (sk.m && /^per /.test(sk.f.k)) sk.m.cch = rng() < T.pCch ? 1 : 0;
+      }
+      else if (mv === 'multiply') {
+        sk.m.n = +weighted(Object.entries(T.nums)); sk.m.arr = null;
+        // per fess or per chevron with a chief: no charges in the upper part
+        if (sk.c && (sk.f.k === 'per fess' || sk.f.k === 'per chevron')) sk.m.n = 1;
+      }
       else if (mv === 'bordure') sk.b = { p: null, add: 1 };
       else if (mv === 'canton') { sk.cn = 'canton'; sk.cnAdd = 1; }
       else if (mv === 'label') sk.lb = 2;
@@ -217,7 +257,7 @@
       arms.charges.push({ charge: ch, n: Math.min(sk.ar.n, room), t: tinctureOn(rt, D, 'around', under, onField.concat(ordT ? [ordT] : []), !!sk.ar.add), around: true, where: sk.ar.w || 'betw' });
     }
     if (sk.c) {
-      arms.chief = { t: tinctureOn(rt, D, 'chief', under, onField, !!sk.c.add), line: sk.c.l || null };
+      arms.chief = { t: tinctureOn(rt, D, 'chief', under, onField.concat(ordT ? [ordT] : []), !!sk.c.add), line: sk.c.l || null };
       if (sk.c.on) {
         const ch = chargeFor(rng, D, 'chief', sk.c.on.c);
         arms.chief.charges = { charge: ch, n: sk.c.on.n, t: tinctureOn(rt, D, 'chiefon', arms.chief.t, [], !!sk.c.on.add) };
@@ -257,9 +297,10 @@
     return (METALS.has(f[0]) && METALS.has(first)) || (COLOURS.has(f[0]) && COLOURS.has(first));
   }
   H.breaksRule = breaksRule;
-  function sampleOnce(seed, rollName, k) {
+  // the differenced skeleton of a seed (its own stream), and the chooser the quarters draw from
+  function skeletonFor(seed, rollName) {
     const D = H.DATA[rollName];
-    const rs = stream(seed, 1), rt = stream(seed, 2 + 10 * k), rc = stream(seed, 3 + 10 * k);
+    const rs = stream(seed, 1);
     const sks = D.skeletons;
     const choose = (pred, wf = () => 1) => {
       const pool = sks.filter(([s]) => pred(s)).map(([s, w]) => [s, w * wf(s)]); let tot = 0; for (const [, w] of pool) tot += w;
@@ -268,7 +309,13 @@
     // the target: three elements most often, otherwise four; skeletons above five are left out
     const tr = rs(); const target = tr < 0.6 ? 3 : 4;
     const CW = [0.3, 1, 2.5, 5, 5, 4, 2];
-    const sk = difference(rs, choose(s => complexity(s) <= 5, s => s.q ? 1 : CW[complexity(s)]), target);
+    const sk = difference(rs, choose(s => complexity(s) <= 5, s => s.q ? 1 : CW[complexity(s)]), target, H.DIFF_W[rollName], D);
+    return { sk, choose, D };
+  }
+  H.skeletonFor = (seed, rollName = 'grunenberg') => skeletonFor(seed, rollName).sk;
+  function sampleOnce(seed, rollName, k) {
+    const rt = stream(seed, 2 + 10 * k), rc = stream(seed, 3 + 10 * k);
+    const { sk, choose, D } = skeletonFor(seed, rollName);
     let arms;
     if (sk.q) {
       // a quartered coat: two coats of this roll, 1 and 4, 2 and 3
