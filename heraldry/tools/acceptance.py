@@ -16,6 +16,9 @@ Test 4  distribution: one feature vector per coat; energy distance and the large
 Test 5  diversity (mean pairwise feature distance, at least 0.8 of the corpus's), repetition (share
         of the commonest canonical key, not above the corpus's own), and exact matches with real
         coats in the rolls' index (target: at least 70% of outputs match none).
+Since 27 Oct 2026 the generator has one roll, 'late': Grünenberg (development coats), Rugen and St. Gallen-Haggenberg
+pooled. Test 1 runs on each parsed roll, test 2 on the two rolls with held-out items, tests 4 and 5 on the generated
+roll against the pooled corpus.
 Writes data/acceptance.json.
 """
 import json, sys, math, random, collections, importlib.util
@@ -120,20 +123,27 @@ def main():
     G = json.loads(SAMPLES.read_text(encoding='utf-8'))
     ho = json.loads((D / 'data' / 'holdout_items.json').read_text(encoding='utf-8'))
     report = {}
-    for roll in ('zurich', 'grunenberg'):
+    S['late'] = [r for x in ('grunenberg', 'rugen', 'sanktgallen') for r in S[x]]
+    for roll in ('zurich', 'grunenberg', 'rugen', 'sanktgallen', 'late'):
         rows = S[roll]; R = {}
         st = collections.Counter(r['status'] for r in rows)
         R['test1_fit'] = dict(n=len(rows), ok=st['ok'], bucket=st['bucket'], out=st['out'], structure_covered=round((st['ok'] + st['bucket']) / len(rows), 4),
                               library_covered=round(st['ok'] / len(rows), 4), gate=0.95, passed=(st['ok'] + st['bucket']) / len(rows) >= 0.95)
         # test 2: held-out items through the frozen parser; counts only
-        items = {it['num']: it for it in json.loads((D / 'data' / f'{roll}_items.json').read_text(encoding='utf-8'))}
+        items = {it['num']: it for it in json.loads((D / 'data' / f'{roll}_items.json').read_text(encoding='utf-8'))} if roll in ho else {}
         hs = collections.Counter(); hn = 0
-        for num in ho[roll]:
+        for num in ho.get(roll, []):
             it = items.get(num)
             if not it or not it['coats'] or not it['coats'][0].get('blazon'): hs['no blazon in edition'] += 1; continue
             hn += 1; hs[ps.parse_coat(it['coats'][0]['blazon'], it['coats'][0].get('codes'))['status']] += 1
-        R['test2_holdout'] = dict(items=len(ho[roll]), with_blazon=hn, ok=hs['ok'], bucket=hs['bucket'], out=hs['out'], no_blazon=hs['no blazon in edition'],
+        R['test2_holdout'] = dict(items=len(ho.get(roll, [])), with_blazon=hn, ok=hs['ok'], bucket=hs['bucket'], out=hs['out'], no_blazon=hs['no blazon in edition'],
                                   structure_covered=round((hs['ok'] + hs['bucket']) / hn, 4) if hn else None, gate=0.95, passed=hn > 0 and (hs['ok'] + hs['bucket']) / hn >= 0.95)
+        if roll not in ho: R.pop('test2_holdout', None)
+        if roll not in G:
+            report[roll] = R
+            print(f'== {roll}')
+            for k, v in R.items(): print(f'  {k}: {json.dumps(v, ensure_ascii=False)}')
+            continue
         # test 4: distribution
         C = np.array([corpus_vec(r) for r in rows], float)
         Gv = np.array([gen_vec(x['arms']) for x in G[roll]], float)
@@ -194,7 +204,7 @@ def main():
         R['test5_repetition'] = dict(generated_top_share=round(keys.most_common(1)[0][1] / len(G[roll]), 4), generated_top=keys.most_common(1)[0][0],
                                      corpus_top_share=round(ckeys.most_common(1)[0][1] / nck, 4), corpus_top=ckeys.most_common(1)[0][0], passed=keys.most_common(1)[0][1] / len(G[roll]) <= ckeys.most_common(1)[0][1] / nck)
         R['test5_matches'] = dict(no_match_share=round(1 - matched / len(G[roll]), 4), no_match_without_redraw=round(1 - raw / len(G[roll]), 4), target=0.7,
-                                  passed=1 - matched / len(G[roll]) >= 0.7, note='index = development coats of both rolls only; the Clemmensen Ordinary, Papworth and Rietstap were not indexed')
+                                  passed=1 - matched / len(G[roll]) >= 0.7, note='index = the parsed coats of Zürich, Grünenberg (development), Rugen and St. Gallen-Haggenberg; the Clemmensen Ordinary, Papworth and Rietstap were not indexed')
         report[roll] = R
         print(f'== {roll}')
         for k, v in R.items(): print(f'  {k}: {json.dumps(v, ensure_ascii=False)}')

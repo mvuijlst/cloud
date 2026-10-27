@@ -86,3 +86,7 @@ Measured on 5,000 seeds per roll:
 | plates of sixteen with a repeated determinant, in 1,000 | 0 | 0 |
 
 Zürich's pool is small: its roll gives 185 compound names. One visitor seeing many coats will meet the same name again, about once in 150 coats for the commonest.
+
+## One pooled roll (27 October 2026)
+
+The page now has one roll, Grünenberg, Rugen and St. Gallen-Haggenberg pooled (GENERATOR.md, "Rolls"), and the names follow it. `build_names.py` draws on the three rolls' place names together (4,037, giving 1,398 determinants and 17,390 options) and their legend forms together (*von* 1,084, *grauff von* 270, *-er* 188, *her von* 174, *frÿ von* 96 ...). It keeps out the names of all four rolls and every GeoNames word, as before. On 5,000 seeds: 3,854 distinct names, none a GeoNames word, no plate of sixteen sharing a determinant, outside judge median -2.61. Zürich mode, with its bare names and small pool, is gone.

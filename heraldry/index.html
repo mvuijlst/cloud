@@ -58,10 +58,11 @@
         // One coat per visit (#1234 shows that coat again), or a plate of sixteen (#p1234).
         // Style and roll are remembered in this browser only.
         const H = Heraldry;
-        const ROLLS = { grunenberg: 'Grünenberg, 1483', zurich: 'Zürich roll, c. 1340' };
+        // one roll: the German armorials of 1470 to 1499 pooled (Grünenberg, Rugen, St. Gallen-Haggenberg)
+        const roll = 'late';
+        const ROLL_NAMES = { zurich: 'the Zürich roll', grunenberg: 'Grünenberg’s Wappenbuch', rugen: 'Rugen’s Wappenbuch', sanktgallen: 'the St. Gallen-Haggenberg armorial' };
         const store = { get: k => { try { return localStorage.getItem(k); } catch (e) { return null; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch (e) { } } };
         let style = store.get('arms-style') === 'colour' ? 'colour' : 'engraved';
-        let roll = store.get('arms-roll') === 'zurich' ? 'zurich' : 'grunenberg';
         let theme = store.get('arms-theme') === 'light' ? 'light' : 'dark';
         function applyTheme() {
             document.documentElement.dataset.theme = theme;
@@ -89,7 +90,7 @@
         // keeps that line, so the names stand level
         function nameHTML(seed, onPlate) {
             const p = H.nameParts(seed, roll);
-            const ti = p.title || (onPlate && roll === 'grunenberg' ? '&nbsp;' : '');
+            const ti = p.title || (onPlate ? '&nbsp;' : '');
             return `<div class="name">${ti ? `<span class="ti">${ti}</span>` : ''}${p.name}</div>`;
         }
         function svgFor(arms, size) {
@@ -99,8 +100,9 @@
             const also = H.alsoBorneBy(arms);
             if (!also.length) return '';
             const names = [...new Set(also.map(x => H.legend(x.name)).filter(Boolean))].slice(0, 3);
-            const rolls = [...new Set(also.map(x => x.roll === 'zurich' ? 'the Zürich roll' : 'Grünenberg'))];
-            return names.length ? `The same arms are painted in ${rolls.join(' and ')} for ${names.join('; ')}.` : `The same arms are painted in ${rolls.join(' and ')}.`;
+            const rolls = [...new Set(also.map(x => ROLL_NAMES[x.roll] || x.roll))];
+            const inRolls = rolls.length > 1 ? rolls.slice(0, -1).join(', ') + ' and ' + rolls[rolls.length - 1] : rolls[0];
+            return names.length ? `The same arms are painted in ${inRolls} for ${names.join('; ')}.` : `The same arms are painted in ${inRolls}.`;
         }
 
         function render() {
@@ -109,8 +111,6 @@
             nav.textContent = '';
             nav.append(link('engraved', 'black ink, tinctures hatched (Petra Sancta)', () => { style = 'engraved'; store.set('arms-style', style); render(); }, style === 'engraved'),
                 link('colour', 'flat tinctures', () => { style = 'colour'; store.set('arms-style', style); render(); }, style === 'colour'), sep(),
-                link('1483', 'proportions of Grünenberg’s Wappenbuch', () => { roll = 'grunenberg'; store.set('arms-roll', roll); render(); }, roll === 'grunenberg'),
-                link('c. 1340', 'proportions of the Zürich roll', () => { roll = 'zurich'; store.set('arms-roll', roll); render(); }, roll === 'zurich'), sep(),
                 link('another', 'new arms', () => go(st.plate, fresh())),
                 link(st.plate ? 'one' : 'plate', st.plate ? 'one coat at a time' : 'a plate of sixteen', () => go(!st.plate, st.seed)),
                 link('svg', 'download', () => download(st)), sep(),

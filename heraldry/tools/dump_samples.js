@@ -6,7 +6,7 @@ for (const f of ['geometry', 'charges', 'charges-art', 'render', 'arms-data', 'n
 const H = global.Heraldry;
 const out = process.argv[2], n = +(process.argv[3] || 500), first = +(process.argv[4] || 1);
 const res = {};
-for (const roll of ['zurich', 'grunenberg']) {
+for (const roll of ['late']) {
   res[roll] = [];
   const t0 = Date.now();
   for (let s = first; s < first + n; s++) {

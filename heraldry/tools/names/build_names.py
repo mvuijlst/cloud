@@ -118,12 +118,16 @@ def build(roll, names, forms, banned, rng):
 
 if __name__ == '__main__':
     geo = nm.geo_words(GEO_DIR)
-    rolls = {r: legends(r) for r in ('zurich', 'grunenberg')}
+    rolls = {r: legends(r) for r in ('zurich', 'grunenberg', 'rugen', 'sanktgallen')}
     banned = set(key(n) for r, (names, _) in rolls.items() for n in names) | geo
+    # the generator's one roll: the German armorials of 1470 to 1499 pooled, their place names and legend forms
+    # together (kings and towns are not families); every roll's names are kept out
+    POOL = ('grunenberg', 'rugen', 'sanktgallen')
+    names = sorted(set(n for r in POOL for n in rolls[r][0])); forms = collections.Counter()
+    for r in POOL: forms.update(rolls[r][1])
+    for r in POOL: print(r, 'place names', len(rolls[r][0]), 'forms', rolls[r][1].most_common(8))
     out = {}
-    for roll, (names, forms) in rolls.items():
-        # Zürich gives bare place names; Grünenberg its legend forms (kings and towns are not families)
-        f = collections.Counter({'': 1}) if roll == 'zurich' else forms
+    for roll, names, f in (('late', names, forms),):
         out[roll] = build(roll, names, f, banned, random.Random(20261027))
         o = out[roll]
         print(f"{roll}: {len(names)} place names, {len(o['dets'])} determinants, {sum(len(x) for x in o['opt'])} options, "

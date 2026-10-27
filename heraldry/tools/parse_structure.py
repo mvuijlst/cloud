@@ -247,9 +247,11 @@ def parse_coat(blz, codes):
 def main():
     ho = json.loads((D / 'data' / 'holdout_items.json').read_text(encoding='utf-8'))
     res = {}
-    for roll in ('zurich', 'grunenberg'):
+    # the two rolls of the study, and two later editions of the same series (Rugen 1493-99, St. Gallen-Haggenberg
+    # 1470) that the generator pools with Grünenberg; only the first two have held-out items
+    for roll in ('zurich', 'grunenberg', 'rugen', 'sanktgallen'):
         items = json.loads((D / 'data' / f'{roll}_items.json').read_text(encoding='utf-8'))
-        excl = set(ho[roll])
+        excl = set(ho.get(roll, []))
         rows = []
         for it in items:
             if it['num'] in excl: continue

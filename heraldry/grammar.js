@@ -9,7 +9,8 @@
    built by tools/build_web_data.py). The rule of tincture is not imposed: the tables
    carry it, about 97 coats in 100 (STUDY.md 4.2); a tincture is never laid on itself.
 
-   Rolls: 'zurich' (c. 1340) and 'grunenberg' (1483). */
+   One roll, 'late': the German armorials of 1470 to 1499 in Clemmensen's editions, pooled (Grünenberg 1483,
+   Rugen 1493-99, St. Gallen-Haggenberg 1470). */
 (function (root) {
   'use strict';
   const H = root.Heraldry = root.Heraldry || {};
@@ -107,8 +108,7 @@
   const PATTERNED = /^(barry|paly|bendy|bendy sinister|chequy|lozengy|chevronny|gyronny|vair)$/;
   const AR_N = { fess: [3, 6, 2], bend: [2, 6, 3], pale: [2, 4], chevron: [3, 3, 2], cross: [4], saltire: [4] };
   H.DIFF_W = {   // fitted by tools/fit_differencing.js (14 rounds, seeds 1 to 3000), 27 October 2026
-    zurich: { divide: 0.417, multiply: 0.354, charge: 0.046, ordinary: 1.04, on: 0.012, between: 0.079, accompanied: 0.079, chief: 0.25, chiefCharges: 10.73, bordure: 0.019, label: 0.022, canton: 0.01 },
-    grunenberg: { divide: 0.398, multiply: 0.388, charge: 0.07, ordinary: 0.715, on: 0.01, between: 0.051, accompanied: 0.051, chief: 0.259, chiefCharges: 8.085, bordure: 0.011, label: 0.011, canton: 0.01 },
+    late: { divide: 0.345, multiply: 0.546, charge: 0.242, ordinary: 0.219, on: 0.01, between: 0.024, accompanied: 0.024, chief: 0.175, chiefCharges: 29.663, bordure: 0.01, label: 0.01, canton: 0.01 },
   };
   // the roll's divided and patterned fields, its numbers of principal charges above one, and how often a
   // principal charge on a field party per something is counterchanged
@@ -287,7 +287,7 @@
 
   // A coat whose canonical key is that of a coat in the rolls is redrawn, its tinctures and charges
   // from the next streams, up to six times; if it still matches, it is kept and the page says who bore it.
-  function sample(seed, rollName = 'grunenberg', opt = {}) {
+  function sample(seed, rollName = 'late', opt = {}) {
     const tries = opt.redraw === false ? 1 : 7;
     let a = null, first = null;
     for (let k = 0; k < tries; k++) {
@@ -323,7 +323,7 @@
     const sk = difference(rs, choose(s => complexity(s) <= 5, s => s.q ? 1 : CW[complexity(s)]), target, H.DIFF_W[rollName], D);
     return { sk, choose, D };
   }
-  H.skeletonFor = (seed, rollName = 'grunenberg') => skeletonFor(seed, rollName).sk;
+  H.skeletonFor = (seed, rollName = 'late') => skeletonFor(seed, rollName).sk;
   function sampleOnce(seed, rollName, k) {
     const rt = stream(seed, 2 + 10 * k), rc = stream(seed, 3 + 10 * k);
     const { sk, choose, D } = skeletonFor(seed, rollName);
@@ -365,7 +365,8 @@
   H.canonical = canonical;
   H.alsoBorneBy = (arms) => {
     const key = canonical(arms); const out = [];
-    for (const r of ['zurich', 'grunenberg']) for (const [name, num] of (H.DATA[r].index[key] || [])) out.push({ roll: r, name, num });
+    // the index of the pooled roll covers every roll parsed: Zürich, Grünenberg, Rugen, St. Gallen-Haggenberg
+    for (const D of Object.values(H.DATA)) for (const [name, num, roll] of (D.index[key] || [])) out.push({ roll, name, num });
     return out;
   };
   // a legend from the rolls, tidied for display: "grauff von touggenburg her imm ..." -> "Grauff von Touggenburg"
@@ -462,7 +463,7 @@
   // in GeoNames (Germany, Austria, Switzerland) were left out there. Grünenberg names take a legend form
   // at the roll's rates: von, a title before von (grauff, her, frÿ, herczog ...), or a family name in -er.
   const TITLES = { von: 'von', grauff: 'grauff von', her: 'her von', 'frÿ': 'frÿ von', herczog: 'herczog von', truchsaes: 'truchsaes von', schenk: 'schenk von', margrauff: 'margrauff von', marschalk: 'marschalk von' };
-  function nameParts(seed, roll = 'grunenberg') {
+  function nameParts(seed, roll = 'late') {
     const N = H.NAMES && H.NAMES[roll];
     if (!N) return { title: '', name: 'Ungenannt' };
     const rng = stream(seed, 4);
@@ -484,5 +485,5 @@
   }
   H.nameParts = nameParts;
   // the whole legend: "Grauff von Hennenburg", "von Loubenstain", "Kuirndorf"
-  H.nameFor = (seed, roll = 'grunenberg') => { const p = nameParts(seed, roll); return p.title === 'von' ? `von ${p.name}` : p.title ? `${cap(p.title)} ${p.name}` : p.name; };
+  H.nameFor = (seed, roll = 'late') => { const p = nameParts(seed, roll); return p.title === 'von' ? `von ${p.name}` : p.title ? `${cap(p.title)} ${p.name}` : p.name; };
 })(typeof self !== 'undefined' ? self : globalThis);

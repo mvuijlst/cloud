@@ -2,8 +2,8 @@
 //
 // node tools/fit_differencing.js [iterations=14] [seeds=3000]
 //
-// Target: the unquartered development coats of both rolls with three elements or more (complexity() in
-// grammar.js), pooled, since Zürich alone has 14 such coats. For each element, the share of those coats that
+// Target: the unquartered coats of the generator's roll (the pooled late-fifteenth-century armorials) with
+// three elements or more (complexity() in grammar.js). For each element, the share of those coats that
 // carry it. Each roll's weights start at 1; every round draws the differenced skeletons of seeds 1..n,
 // measures the same shares on the unquartered ones, and scales the weight of each move by
 // (target / generated)^0.8, kept within a factor of two per round, for the element that move adds.
@@ -39,12 +39,12 @@ const shares = (list) => {
 };
 
 const pool = [];
-for (const r of ['zurich', 'grunenberg']) for (const [s, c] of H.DATA[r].skeletons) if (!s.q && H.complexity(s) >= 3) pool.push([s, c]);
+for (const [s, c] of H.DATA.late.skeletons) if (!s.q && H.complexity(s) >= 3) pool.push([s, c]);
 const target = shares(pool);
 console.log('target from', pool.reduce((a, [, c]) => a + c, 0), 'roll coats:', JSON.stringify(Object.fromEntries(Object.entries(target).map(([k, v]) => [k, +v.toFixed(3)]))));
 
 const fitted = {};
-for (const roll of ['zurich', 'grunenberg']) {
+for (const roll of ['late']) {
   const W = Object.fromEntries(Object.keys(MOVE_FEATURE).map(k => [k, 1]));
   let gen;
   for (let it = 0; it <= iters; it++) {

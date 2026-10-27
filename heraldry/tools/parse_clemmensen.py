@@ -2,6 +2,9 @@
 into item records: number, name, region, position code, coats (tincture codes + blazon), crest.
 
 usage: python parse_clemmensen.py <zurich.txt> <grunenberg.txt> <out_dir>
+       python parse_clemmensen.py --more <out_dir> rugen=<RugenWB.txt>:3619 sanktgallen=<SanktGallen.txt>:1611
+         (other editions of the same series, http://www.armorial.dk/german/; their coat lines may start at the
+          margin, so a looser line pattern is used for them; the Zürich and Grünenberg parse is unchanged)
 
 Clemmensen's conventions (bhm.txt p.252 legend): A argent, O or; B azure, G gules, S sable,
 V vert; P purple; N proper; E ermine; X = mixed, Z = vair; '=' repeats the previous coat.
@@ -16,6 +19,8 @@ HDR_ZUR = re.compile(r'^(\d{1,3}) (\S.*?)(?:\s{2,}([a-z]{3}))?\s*$')
 HDR_GRU = re.compile(r'^\s{0,8}(\d{1,4}) ([a-z.\'][^0-9]*?)(?:\s+([a-z]{3}))?\s*$')
 POS = r'(s\d[fb]\d+[ab]|\d+[a-z]\d*)'
 ARMS = re.compile(r'^\s*' + POS + r'?\s*(\d+)?\s+([A-Z=]{1,2}(?:\s+[A-Z=]{1,3})*)\s+([a-z0-9].*?)(?:\s{2,}\d{1,4})?\s*$')
+# for the later editions: codes may start at the margin, and are then followed by two spaces or more
+ARMS_MORE = re.compile(r'^\s*' + POS + r'?\s*(\d+)?\s*([A-Z=]{1,2}(?:\s[A-Z=+]{1,3})*)\s{2,}([a-z0-9].*?)(?:\s{2,}\d{1,4})?\s*$')
 ARMS_NOCODE = re.compile(r'^\s*' + POS + r'?\s*(\d+)?\s+([a-z].*?)(?:\s{2,}\d{1,4})?\s*$')
 BRACES = re.compile(r'^\s*' + POS + r'?\s*(.*?)\s*\{([^}]*)\}\s*(\d+)?\s*$')
 CREST = re.compile(r'crest ornament')
@@ -25,7 +30,8 @@ def read(p):
     return Path(p).read_bytes().decode('cp1252', errors='replace').replace('\x0c', '\n').splitlines()
 
 
-def parse(lines, hdr_re, nmax, start=0, max_jump=0):
+def parse(lines, hdr_re, nmax, start=0, max_jump=0, arms_re=None):
+    arms_re = arms_re or ARMS
     items = []
     i = start; expect = 1
     while i < len(lines) and expect <= nmax:
@@ -61,7 +67,7 @@ def parse(lines, hdr_re, nmax, start=0, max_jump=0):
                             last = dict(codes=c, blazon=t, repeat=False); coats.append(last)
                     rec['coats'] = coats; rec['parse'] = 'multi'
                 else:
-                    ma = ARMS.match(raw)
+                    ma = ARMS.match(raw) or (arms_re.match(raw) if arms_re is not ARMS else None)
                     if ma:
                         rec['pos'] = ma.group(1)
                         rec['coats'] = [dict(codes=ma.group(3).replace(' ', ''), blazon=ma.group(4), repeat=False)]
@@ -93,7 +99,24 @@ def parse(lines, hdr_re, nmax, start=0, max_jump=0):
     return items
 
 
+def parse_more(out, specs):
+    """name=path:nmax ... -> <out>/<name>_items.json; the item list starts at the first '1 <name>' header
+    after the introduction"""
+    out.mkdir(parents=True, exist_ok=True)
+    for spec in specs:
+        name, rest = spec.split('=', 1); path, nmax = rest.rsplit(':', 1)
+        lines = read(path)
+        start = next(i for i, l in enumerate(lines) if i > 300 and re.match(r'^\s{0,8}1 (\.|[a-z])', l))
+        items = parse(lines, HDR_GRU, int(nmax), start=start, max_jump=60, arms_re=ARMS_MORE)
+        (out / f'{name}_items.json').write_text(json.dumps(items, indent=0, ensure_ascii=False), encoding='utf-8', newline='\n')
+        kinds = {}
+        for it in items: kinds[it['parse']] = kinds.get(it['parse'], 0) + 1
+        print(name, 'items', len(items), 'last', items[-1]['num'] if items else None, 'parse kinds', kinds)
+
+
 def main():
+    if sys.argv[1] == '--more':
+        return parse_more(Path(sys.argv[2]), sys.argv[3:])
     zur, gru, out = sys.argv[1], sys.argv[2], Path(sys.argv[3])
     out.mkdir(parents=True, exist_ok=True)
     z = parse(read(zur), HDR_ZUR, 559)
