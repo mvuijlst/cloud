@@ -101,10 +101,12 @@
   // tools/fit_differencing.js, so the differenced coats carry each element about as often as the rolls' own
   // coats of three elements or more (unquartered, both rolls pooled: 115 coats).
   const ON_N = { fess: [3, 3, 1], bend: [3, 3, 2], pale: [3, 3, 1], chevron: [3, 3, 1], cross: [5, 1], saltire: [5, 1] };
+  // fields whose pieces are counted from the top (barry of six, tierced per fess): a chief would hide some
+  const COUNTED = H.COUNTED = /^(barry|bendy|bendy sinister|chevronny|tierced per fess)$/;
   const AR_N = { fess: [3, 6, 2], bend: [2, 6, 3], pale: [2, 4], chevron: [3, 3, 2], cross: [4], saltire: [4] };
   H.DIFF_W = {   // fitted by tools/fit_differencing.js (14 rounds, seeds 1 to 3000), 27 October 2026
-    zurich: { divide: 0.378, multiply: 0.376, charge: 0.052, ordinary: 0.898, on: 0.013, between: 0.068, accompanied: 0.068, chief: 0.186, chiefCharges: 10.449, bordure: 0.024, label: 0.029, canton: 0.01 },
-    grunenberg: { divide: 0.332, multiply: 0.435, charge: 0.08, ordinary: 0.582, on: 0.01, between: 0.049, accompanied: 0.049, chief: 0.176, chiefCharges: 9.923, bordure: 0.015, label: 0.016, canton: 0.01 },
+    zurich: { divide: 0.41, multiply: 0.363, charge: 0.045, ordinary: 1.038, on: 0.012, between: 0.076, accompanied: 0.076, chief: 0.261, chiefCharges: 10.511, bordure: 0.019, label: 0.023, canton: 0.01 },
+    grunenberg: { divide: 0.388, multiply: 0.397, charge: 0.07, ordinary: 0.718, on: 0.01, between: 0.049, accompanied: 0.049, chief: 0.289, chiefCharges: 7.915, bordure: 0.011, label: 0.011, canton: 0.01 },
   };
   // the roll's divided and patterned fields, its numbers of principal charges above one, and how often a
   // principal charge on a field party per something is counterchanged
@@ -130,9 +132,11 @@
       const plainField = sk.f.k === 'plain';
       // a chief, unless charges already stand in chief or a label or canton takes the top
       const between = sk.o && (sk.ar || (sk.m && sk.m.n >= 2));
-      // nor over charges set in the upper part of a field divided per fess or per chevron
+      // nor over charges set in the upper part of a field divided per fess or per chevron, nor over a field
+      // of counted pieces, whose top pieces it would hide (barry of six would read as two bars; the rolls
+      // almost never have the pair: 0.0% in Zürich, 0.3% in Grünenberg)
       const upperPart = sk.m && sk.m.n >= 2 && (sk.f.k === 'per fess' || sk.f.k === 'per chevron');
-      if (!sk.c && !sk.cn && !sk.q && !sk.lb && !(sk.ar && sk.ar.w === 'in chf') && !between && !upperPart) moves.push(['chief', W.chief]);
+      if (!sk.c && !sk.cn && !sk.q && !sk.lb && !(sk.ar && sk.ar.w === 'in chf') && !between && !upperPart && !COUNTED.test(sk.f.k)) moves.push(['chief', W.chief]);
       // a field with nothing on it: a principal charge, or three
       if (!sk.m && !sk.o && !sk.q) moves.push(['charge', W.charge]);
       if (sk.c && !sk.c.on) moves.push(['chief charges', W.chiefCharges]);
@@ -165,8 +169,9 @@
       else if (mv === 'accompanied') sk.ar = { n: pickOf([1, 2, 3, 3]), c: 'small', w: sk.cn || sk.lb ? 'in base' : sk.c ? pickOf(['betw', 'in base']) : pickOf(['betw', 'in chf', 'in chf', 'betw']), add: 1 };
       else if (mv === 'charge') sk.m = { n: sk.f.k === 'plain' || sk.f.k === 'semy' ? pickOf([1, 1, 3]) : 1, c: null, arr: null, cch: sk.f.k.startsWith('per ') && rng() < T.pCch ? 1 : 0, add: 1 };
       else if (mv === 'divide') {
-        // a division from the roll's own fields; with principal charges and a chief, not per fess or per chevron
-        const ok = T.fields.filter(([f]) => !(sk.c && sk.m && sk.m.n >= 2 && (f.k === 'per fess' || f.k === 'per chevron')));
+        // a division from the roll's own fields; under a chief none of counted pieces, and with principal
+        // charges and a chief not per fess or per chevron
+        const ok = T.fields.filter(([f]) => !(sk.c && COUNTED.test(f.k)) && !(sk.c && sk.m && sk.m.n >= 2 && (f.k === 'per fess' || f.k === 'per chevron')));
         sk.f = Object.assign({}, weighted(ok), { add: 1 });
         if (sk.m && /^per /.test(sk.f.k)) sk.m.cch = rng() < T.pCch ? 1 : 0;
       }

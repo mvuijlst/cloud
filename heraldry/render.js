@@ -267,6 +267,13 @@
       pen.stroke([[sh.fess[0], -5], [sh.fess[0], 125]], plw); pen.stroke([[-5, sh.fess[1]], [105, sh.fess[1]]], plw);
     } else {
       div = H.division(field.kind, sh, { line: field.line, n: field.n });
+      // a field of counted pieces under a chief (barry of six, tierced per fess) is laid out in the space below
+      // the chief, so every piece shows and the drawing reads back to its blazon
+      if (arms.chief && H.COUNTED && H.COUNTED.test(field.kind)) {
+        const SH = sh.H || 120, top = H.ordinary('chief', sh, { line: arms.chief.line }).h, k = (SH - top) / SH;
+        const sq = q => [q[0], top + q[1] * k];
+        div = Object.assign({}, div, { regions: div.regions.map(r => Object.assign({}, r, { poly: r.poly.map(sq) })), lines: div.lines.map(l => l.map(sq)) });
+      }
       div.regions.forEach((r, i) => pen.fill(P.poly(r.poly), field.t[r.t]));
       for (const l of div.lines) pen.stroke(l, plw);
     }
