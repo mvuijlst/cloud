@@ -397,37 +397,34 @@
   }
   H.blazon = blazon;
 
-  // ---------- names ----------
-  // an order-2 letter model over the family names of the chosen roll; a name is kept only if it is
-  // at least two edits from every name of both rolls and contains none of them of five letters or more
-  const models = {};
-  function model(roll) {
-    if (models[roll]) return models[roll];
-    const names = H.DATA[roll].names; const m = {};
-    for (const nm of names) {
-      const w = '^^' + nm + '$';
-      for (let i = 2; i < w.length; i++) { const k = w.slice(i - 2, i); (m[k] = m[k] || {}); m[k][w[i]] = (m[k][w[i]] || 0) + 1; }
-    }
-    const all = new Set(H.DATA.zurich.names.concat(H.DATA.grunenberg.names));
-    return (models[roll] = { m, all: [...all] });
+  // ---------- names (NAMES.md) ----------
+  // A place name as the rolls make them: the determinant of one of the roll's compound place names
+  // (Falken-, Regens-) with a generic element in the roll's own spelling (-stain, -perg, -haim, -hoven),
+  // from names-data.js (tools/names/build_names.py). Pairs the roll has, names in either roll and places
+  // in GeoNames (Germany, Austria, Switzerland) were left out there. Grünenberg names take a legend form
+  // at the roll's rates: von, a title before von (grauff, her, frÿ, herczog ...), or a family name in -er.
+  const TITLES = { von: 'von', grauff: 'grauff von', her: 'her von', 'frÿ': 'frÿ von', herczog: 'herczog von', truchsaes: 'truchsaes von', schenk: 'schenk von', margrauff: 'margrauff von', marschalk: 'marschalk von' };
+  function nameParts(seed, roll = 'grunenberg') {
+    const N = H.NAMES && H.NAMES[roll];
+    if (!N) return { title: '', name: 'Ungenannt' };
+    const rng = stream(seed, 4);
+    // the determinant: seed times a stride coprime to their number, so the sixteen consecutive seeds of a
+    // plate never share one, plus an offset drawn per plate, so plates do not repeat one sequence
+    const n = N.dets.length, s = seed >>> 0;
+    const i = (s * N.stride + Math.floor(stream(Math.floor(s / 16), 5)() * n)) % n;
+    const d = N.dets[i], opts = N.opt[i];
+    let tot = 0; for (const o of opts) tot += o[1];
+    let r = rng() * tot, o = opts[opts.length - 1];
+    for (const x of opts) { r -= x[1]; if (r <= 0) { o = x; break; } }
+    const name = (o[2] ? d.slice(0, -1) + 'm' : d) + N.sp[o[0]];
+    let ft = 0; for (const [, w] of N.forms) ft += w;
+    let f = N.forms[0][0]; r = rng() * ft;
+    for (const [k, w] of N.forms) { r -= w; if (r <= 0) { f = k; break; } }
+    // a family name in -er only from the generic elements the roll forms them from (Schroffenstainer)
+    if (f === '-er') { if (N.er.includes(o[0])) return { title: '', name: cap(name + 'er') }; f = 'von'; }
+    return { title: TITLES[f] || '', name: cap(name) };
   }
-  function edit(a, b) {
-    const d = Array.from({ length: a.length + 1 }, (_, i) => [i]);
-    for (let j = 1; j <= b.length; j++) d[0][j] = j;
-    for (let i = 1; i <= a.length; i++) for (let j = 1; j <= b.length; j++) d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
-    return d[a.length][b.length];
-  }
-  function nameFor(seed, roll = 'grunenberg') {
-    const { m, all } = model(roll); const rng = stream(seed, 4);
-    for (let tries = 0; tries < 200; tries++) {
-      let w = '^^';
-      while (w.length < 16) { const nx = pick(rng, m[w.slice(-2)] || { $: 1 }); if (nx === '$') break; w += nx; }
-      const nm = w.slice(2);
-      if (nm.length < 5 || nm.length > 12) continue;
-      if (all.some(r => edit(r, nm) < 2 || (r.length >= 5 && nm.includes(r)))) continue;
-      return nm.charAt(0).toUpperCase() + nm.slice(1);
-    }
-    return 'Ungenannt';
-  }
-  H.nameFor = nameFor;
+  H.nameParts = nameParts;
+  // the whole legend: "Grauff von Hennenburg", "von Loubenstain", "Kuirndorf"
+  H.nameFor = (seed, roll = 'grunenberg') => { const p = nameParts(seed, roll); return p.title === 'von' ? `von ${p.name}` : p.title ? `${cap(p.title)} ${p.name}` : p.name; };
 })(typeof self !== 'undefined' ? self : globalThis);

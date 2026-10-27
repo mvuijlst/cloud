@@ -29,7 +29,9 @@
         nav span { color: var(--dim); }
         .one { display: flex; flex-direction: column; align-items: center; gap: 14px; max-width: 640px; }
         .one svg { width: min(78vw, 46vh, 420px); height: auto; display: block; }
-        .name { font-family: 'IM Fell English', Georgia, serif; font-size: 22px; letter-spacing: 0.22em; text-transform: uppercase; margin-top: 4px; }
+        .name { font-family: 'IM Fell English', Georgia, serif; font-size: 22px; letter-spacing: 0.22em; text-transform: uppercase; margin-top: 4px; text-align: center; }
+        /* the title as the roll writes it (grauff von, her von, von), small and in italic above the name */
+        .name .ti { display: block; font-style: italic; text-transform: none; letter-spacing: 0.03em; font-size: 0.74em; margin-bottom: 1px; }
         .blazon { font-family: 'IM Fell English', Georgia, serif; font-style: italic; font-size: 19px; line-height: 1.45; text-align: center; max-width: 34em; }
         .also { font-family: 'IM Fell English', Georgia, serif; font-size: 15px; color: var(--dim); text-align: center; max-width: 36em; }
         .plate { width: min(100%, 980px); }
@@ -50,6 +52,7 @@
     <script src="charges.js"></script><script src="charges-art.js"></script>
     <script src="render.js"></script>
     <script src="arms-data.js"></script>
+    <script src="names-data.js"></script>
     <script src="grammar.js"></script>
     <script>
         // One coat per visit (#1234 shows that coat again), or a plate of sixteen (#p1234).
@@ -82,6 +85,13 @@
         }
         function sep() { const s = document.createElement('span'); s.textContent = '·'; return s; }
 
+        // the name, its title (if any) on a line of its own; on a plate of a roll with titles every name
+        // keeps that line, so the names stand level
+        function nameHTML(seed, onPlate) {
+            const p = H.nameParts(seed, roll);
+            const ti = p.title || (onPlate && roll === 'grunenberg' ? '&nbsp;' : '');
+            return `<div class="name">${ti ? `<span class="ti">${ti}</span>` : ''}${p.name}</div>`;
+        }
         function svgFor(arms, size) {
             return H.renderSVG(arms, style, { title: H.blazon(arms) });
         }
@@ -118,7 +128,7 @@
                     const seed = st.seed * 16 + i;
                     const arms = H.sample(seed, roll);
                     const a = document.createElement('a'); a.href = '#' + seed; a.title = H.blazon(arms);
-                    a.innerHTML = svgFor(arms) + `<div class="name">${H.nameFor(seed, roll)}</div>`;
+                    a.innerHTML = svgFor(arms) + nameHTML(seed, true);
                     grid.appendChild(a);
                 }
                 wrap.appendChild(grid); main.appendChild(wrap);
@@ -126,7 +136,7 @@
             } else {
                 const arms = H.sample(st.seed, roll); const name = H.nameFor(st.seed, roll);
                 const box = document.createElement('div'); box.className = 'one';
-                box.innerHTML = svgFor(arms) + `<div class="name">${name}</div><p class="blazon">${H.blazon(arms)}</p>`;
+                box.innerHTML = svgFor(arms) + nameHTML(st.seed, false) + `<p class="blazon">${H.blazon(arms)}</p>`;
                 const also = alsoText(arms);
                 if (also) { const p = document.createElement('p'); p.className = 'also'; p.textContent = also; box.appendChild(p); }
                 main.appendChild(box);

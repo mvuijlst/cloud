@@ -2,7 +2,7 @@
 // Draws n coats per roll with the browser's own code and writes them with their blazon, key and matches.
 global.self = global;
 const path = require('path');
-for (const f of ['geometry', 'charges', 'charges-art', 'render', 'arms-data', 'grammar']) require(path.join(__dirname, '..', f + '.js'));
+for (const f of ['geometry', 'charges', 'charges-art', 'render', 'arms-data', 'names-data', 'grammar']) require(path.join(__dirname, '..', f + '.js'));
 const H = global.Heraldry;
 const out = process.argv[2], n = +(process.argv[3] || 500), first = +(process.argv[4] || 1);
 const res = {};
