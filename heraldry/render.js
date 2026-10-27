@@ -337,6 +337,12 @@
     const field = arms.field;
     const shClip = pen.clip(sh.path);
     pen.open(shClip);
+    // Under a chief the field is the space below it: partitions and ordinaries that are placed by the fess point
+    // (a fess, bars, a chevron, a cross, a saltire, per fess, per bend, quarterly) take the fess point of that space,
+    // where the shield's own fess point falls when the space below the chief is scaled to the whole shield. Their
+    // widths are unchanged; charges are laid out in the space below the chief by arrangement() itself.
+    const SHh = sh.H || 120, chiefTop = arms.chief ? H.ordinary('chief', sh, { line: arms.chief.line }).h : 0;
+    const shF = arms.chief ? Object.assign({}, sh, { fess: [sh.fess[0], chiefTop + sh.fess[1] * (SHh - chiefTop) / SHh] }) : sh;
     // field
     let div = null;
     if (arms.quarters) {
@@ -356,7 +362,7 @@
       });
       pen.stroke([[sh.fess[0], -5], [sh.fess[0], 125]], plw); pen.stroke([[-5, sh.fess[1]], [105, sh.fess[1]]], plw);
     } else {
-      div = H.division(field.kind, sh, { line: field.line, n: field.n });
+      div = H.division(field.kind, shF, { line: field.line, n: field.n });
       // a field of counted pieces under a chief (barry of six, tierced per fess) is laid out in the space below
       // the chief, so every piece shows and the drawing reads back to its blazon
       if (arms.chief && H.COUNTED && H.COUNTED.test(field.kind)) {
@@ -371,7 +377,7 @@
     if (arms.semy) for (const s of H.semy(sh, 11)) drawCharge(pen, { charge: arms.semy.charge }, s, arms.semy.t);
     // ordinary (unless it lies over the charges)
     const ao = arms.ordinary;
-    const ord = ao ? H.ordinary(ao.kind, sh, { line: ao.line, n: ao.n }) : null;
+    const ord = ao ? H.ordinary(ao.kind, shF, { line: ao.line, n: ao.n }) : null;
     const paintOrd = () => {
       if (ao.t === 'counterchanged' && div && div.regions.length > 1) {
         div.regions.forEach((r, i) => {
