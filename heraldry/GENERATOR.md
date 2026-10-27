@@ -133,6 +133,7 @@ How the drawings are used:
 - **A field per saltire** is four triangles meeting at the fess point. Two to four charges on it stand one to a part: the flanks, then base, then chief.
 - **A canton** with a chief stands below the chief. Charges on the field are drawn together toward sinister base, by the least amount that clears the canton, so their arrangement keeps its shape.
 - **Within a bordure** the coat is a whole shield of its own. The bordure's inner outline is the shield under a map (scaled to 0.78 of the width and 0.78 of the height, set 11 units in). Field, ordinary, charges, chief, canton and label are drawn through that map, laid out as on a shield without a bordure, and nothing reaches under it. Hatching keeps its pitch, since geometry is mapped point by point. This replaced separate shrink rules for each layout, which had let charges in chief run under the bordure.
+- **A bordure compony** has sixteen pieces of equal length along the shield's edge, the first centred at the top, so they run all round and fall symmetrically about the pale line; each runs from the outer edge to the inner one along the bordure's own map. They used to be spaced by outline point, and since the outline has 95 of its 99 points on the curved base, all of them fell there.
 
 ## Page
 

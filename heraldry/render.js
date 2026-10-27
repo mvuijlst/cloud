@@ -302,13 +302,48 @@
   function drawBordure(pen, arms, sh, b, plw) {
     pen.fill(b.path, arms.bordure.t, { evenodd: true });
     if (arms.bordure.pattern === 'compony') {
-      // alternate segments of the bordure in the second tincture
-      const outer = sh.poly, inner = b.inner, N = outer.length, seg = 16;
-      for (let k = 1; k < seg; k += 2) {
-        const i0 = Math.floor(k * N / seg), i1 = Math.floor((k + 1) * N / seg);
-        const q = outer.slice(i0, i1 + 1).concat(inner.slice(i0, i1 + 1).reverse());
-        pen.fill(P.poly(q), arms.bordure.t2);
-        pen.stroke([outer[i0], inner[i0]], plw); pen.stroke([outer[Math.min(i1, N - 1)], inner[Math.min(i1, N - 1)]], plw);
+      // Sixteen pieces of equal length along the shield's edge, the first centred at the top of the shield, so the
+      // pieces run all round and fall symmetrically about the pale line. (They were spaced by outline point; the
+      // outline has 95 of its 99 points on the curved base, so every other piece fell there.) Each piece runs from
+      // the outer edge to the inner one along the bordure's own map, which takes the edge to the inner edge.
+      const N = 16, m = b.innerMat;
+      let outer = P.flatten(sh.path, 48)[0].slice();
+      const last = outer[outer.length - 1];
+      if (Math.hypot(last[0] - outer[0][0], last[1] - outer[0][1]) < 1e-6) outer.pop();
+      // start where the outline crosses the pale line at the top, a point spliced into the edge it lies on
+      let bi = -1, bp = null;
+      for (let i = 0; i < outer.length; i++) {
+        const a = outer[i], c = outer[(i + 1) % outer.length];
+        if (a[0] === c[0] || (a[0] - 50) * (c[0] - 50) > 0) continue;
+        const y = a[1] + (c[1] - a[1]) * (50 - a[0]) / (c[0] - a[0]);
+        if (!bp || y < bp[1]) { bp = [50, y]; bi = i; }
+      }
+      outer = [bp].concat(outer.slice(bi + 1), outer.slice(0, bi + 1));
+      const L = [0];
+      for (let i = 1; i <= outer.length; i++) { const a = outer[i - 1], c = outer[i % outer.length]; L.push(L[i - 1] + Math.hypot(c[0] - a[0], c[1] - a[1])); }
+      const total = L[L.length - 1];
+      const inMap = ([x, y]) => [m[0] * x + m[2] * y + m[4], m[1] * x + m[3] * y + m[5]];
+      const at = s => {
+        s = ((s % total) + total) % total;
+        let i = 1; while (i < L.length - 1 && L[i] < s) i++;
+        const a = outer[i - 1], c = outer[i % outer.length], f = (s - L[i - 1]) / ((L[i] - L[i - 1]) || 1);
+        return [a[0] + (c[0] - a[0]) * f, a[1] + (c[1] - a[1]) * f];
+      };
+      const between = (s1, s2) => {
+        // the outline from length s1 to s2, with the outline's own corners in between
+        const pts = [at(s1)];
+        for (let k = 1; k < outer.length + 1; k++) {
+          const sk = L[k] + (L[k] < s1 ? total : 0);
+          if (sk > s1 && sk < s2) pts.push(outer[k % outer.length]);
+        }
+        pts.push(at(s2));
+        return pts;
+      };
+      for (let k = 1; k < N; k += 2) {
+        const a = (k - 0.5) / N * total, c = (k + 0.5) / N * total;
+        const edge = between(a, c);
+        pen.fill(P.poly(edge.concat(edge.map(inMap).reverse())), arms.bordure.t2);
+        for (const s of [a, c]) pen.stroke([at(s), inMap(at(s))], plw);
       }
     }
     for (const l of b.lines) pen.stroke(l, plw);
