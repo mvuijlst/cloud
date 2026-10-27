@@ -41,6 +41,8 @@
         .grid svg { width: 100%; height: auto; display: block; }
         .grid .name { font-size: clamp(10px, 1.6vw, 15px); letter-spacing: 0.12em; text-align: center; }
         @media (max-width: 560px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+        /* on a phone the menu keeps style, another and plate/one; the svg download and the page colour go */
+        @media (max-width: 640px) { nav .desk { display: none; } }
     </style>
 </head>
 <body>
@@ -85,6 +87,7 @@
             a.onclick = e => { e.preventDefault(); fn(); }; return a;
         }
         function sep() { const s = document.createElement('span'); s.textContent = '·'; return s; }
+        const desk = el => { el.classList.add('desk'); return el; };   // left out of the menu on a phone
 
         // the name, its title (if any) on a line of its own; on a plate of a roll with titles every name
         // keeps that line, so the names stand level
@@ -113,8 +116,8 @@
                 link('colour', 'flat tinctures', () => { style = 'colour'; store.set('arms-style', style); render(); }, style === 'colour'), sep(),
                 link('another', 'new arms', () => go(st.plate, fresh())),
                 link(st.plate ? 'one' : 'plate', st.plate ? 'one coat at a time' : 'a plate of sixteen', () => go(!st.plate, st.seed)),
-                link('svg', 'download', () => download(st)), sep(),
-                link(theme === 'dark' ? 'light' : 'dark', 'page colour', () => { theme = theme === 'dark' ? 'light' : 'dark'; store.set('arms-theme', theme); applyTheme(); render(); }));
+                desk(link('svg', 'download', () => download(st))), desk(sep()),
+                desk(link(theme === 'dark' ? 'light' : 'dark', 'page colour', () => { theme = theme === 'dark' ? 'light' : 'dark'; store.set('arms-theme', theme); applyTheme(); render(); })));
             main.textContent = '';
             main.className = style === 'engraved' ? 'eng' : '';
             if (st.plate) {
@@ -147,6 +150,9 @@
             setTimeout(() => URL.revokeObjectURL(a.href), 2000);
         }
         window.addEventListener('hashchange', render);
+        // A reload draws new arms (a new plate, on a plate); a link followed or typed with #seed shows that coat.
+        const nav0 = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+        if (nav0 && nav0.type === 'reload') history.replaceState(null, '', '#' + (state().plate ? 'p' : '') + fresh());
         render();
     </script>
 </body>
