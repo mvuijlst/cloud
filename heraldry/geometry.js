@@ -295,12 +295,15 @@
       const l = linePts([-M, fy], [SW + M, fy], lt, -1);
       add(box, 0); add(l.concat([[SW + M, SH + M], [-M, SH + M]]), 1); ink(l);
     } else if (kind === 'per bend' || kind === 'per bend sinister') {
-      const sin = kind === 'per bend sinister';
-      const p = sin ? [SW + M, -M + (fy - 50) * 0] : [-M, -M], q = sin ? [-M, SW + 2 * M] : [SW + M, SW + 2 * M];
+      // the partition runs through the fess point at 45 degrees, as the centre line of a bend does, so that a bend
+      // counterchanged on it is split down its middle (and under a chief both move to the space below it)
+      const sin = kind === 'per bend sinister', L = 95;
+      const p = sin ? [fx + L, fy - L] : [fx - L, fy - L], q = sin ? [fx - L, fy + L] : [fx + L, fy + L];
       const l = linePts(p, q, lt, sin ? 1 : -1);
-      add(box, 0); add(l.concat(sin ? [[-M, SH + M]] : [[SW + M, SH + M]], sin ? [] : []).concat(sin ? [] : []), 1);
-      // the lower region is the one below the line: close along the bottom
-      out.regions[1].poly = sin ? l.concat([[-M, SH + 3 * M], [SW + M, SH + 3 * M]]) : l.concat([[SW + M, SH + 3 * M], [-M, SH + 3 * M]]);
+      add(box, 0); add(l, 1);
+      // the lower region is the one below the line: close it well below the shield
+      const Y = Math.max(SH + 3 * M, fy + L + 3 * M);
+      out.regions[1].poly = l.concat([[q[0], Y], [p[0], Y]]);
       ink(l);
     } else if (kind === 'per chevron') {
       const apex = [fx, fy - 12];
