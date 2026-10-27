@@ -10,7 +10,7 @@ const start = +(q.get('s') || 1), n = +(q.get('n') || 16), roll = q.get('r') || 
 const H = Heraldry, g = document.getElementById('g');
 const list = q.get('seeds') ? q.get('seeds').split(',').map(Number) : Array.from({ length: n }, (_, i) => start + i);
 for (const seed of list) { const a = H.sample(seed, roll); const d = document.createElement('div'); d.className = 'c';
-  let svg = ''; try { svg = H.renderSVG(a, style, { shield: style === 'engraved' ? 'french' : 'heater' }); } catch (e) { svg = '<pre>' + e.message + '</pre>'; console.error(seed, e); }
+  let svg = ''; try { svg = H.renderSVG(a, style); } catch (e) { svg = '<pre>' + e.message + '</pre>'; console.error(seed, e); }
   const also = H.alsoBorneBy(a).map(x => x.name).join('; ');
   d.innerHTML = svg + `<div class="n">${H.nameFor(seed, roll)}</div><div class="b">${H.blazon(a)}${also ? '<br><i>also: ' + also + '</i>' : ''}</div><div>#${seed}</div>`;
   g.appendChild(d);

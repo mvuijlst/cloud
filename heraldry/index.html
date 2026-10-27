@@ -14,8 +14,7 @@
         /* dark by default; light when chosen (remembered in this browser) */
         :root { --paper: #000; --ink: #f1ede4; --dim: rgba(241, 237, 228, 0.45); }
         :root[data-theme="light"] { --paper: #f7f3ea; --ink: #141414; --dim: rgba(20, 20, 20, 0.5); }
-        /* the engraved plates are black ink on white; on a dark page they are printed in reverse */
-        :root:not([data-theme="light"]) main.eng svg { filter: invert(1); }
+        /* the arms are printed black (or in colour) on white paper, on either page */
         html { background: var(--paper); }
         body {
             margin: 0; min-height: 100vh; background: var(--paper); color: var(--ink);

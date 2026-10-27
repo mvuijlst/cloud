@@ -9,6 +9,10 @@ Test 2  held-out reconstruction: the frozen parser on the custodian's held-out i
 Test 4  distribution: one feature vector per coat; energy distance and the largest single-feature
         KS between n generated and n development coats, against the 95th percentile of 200 random
         halvings of the development corpus (n = min(500, half the corpus)).
+        Since 26 Oct 2026 the generator differences coats to three or four elements (GENERATOR.md), so it
+        departs from the whole corpus on purpose; the same test is also run against the corpus coats of
+        three elements or more (complexity from the feature vector, as grammar.js counts it), with the
+        complexity histograms of both.
 Test 5  diversity (mean pairwise feature distance, at least 0.8 of the corpus's), repetition (share
         of the commonest canonical key, not above the corpus's own), and exact matches with real
         coats in the rolls' index (target: at least 70% of outputs match none).
@@ -84,6 +88,14 @@ def gen_vec(a):
                  1 if a.get('chief') else 0, 1 if ch.get('charges') else 0, 1 if a.get('bordure') else 0, 1 if a.get('label') else 0, 1 if a.get('canton') else 0, ts, v, 0)
 
 
+def complexity(v):
+    # elements of a coat from its feature vector, as complexity() in grammar.js counts a skeleton
+    g = dict(zip(FEATS, v))
+    c = (1 - g['f_plain']) + g['line'] + (1 - g['o_none']) + (1 - g['m_none']) + (1 if g['m_n'] > math.log1p(1) + 1e-9 else 0)
+    c += (1 if g['on_n'] > 0 else 0) + (1 if g['ar_n'] > 0 else 0) + g['chief'] + g['chief_ch'] + g['bordure'] + g['label'] + g['canton'] + 2 * g['quartered']
+    return int(round(c))
+
+
 def energy(X, Y):
     def md(A, B): return float(np.mean(np.sqrt(((A[:, None, :] - B[None, :, :]) ** 2).sum(-1))))
     return 2 * md(X, Y) - md(X, X) - md(Y, Y)
@@ -153,6 +165,24 @@ def main():
         R['test4_secondary_library_coats_only'] = dict(n=n2, energy=round(float(np.median(e2)), 4), energy_threshold=round(float(np.percentile(ce, 95)), 4), max_ks=round(float(np.median(k2)), 4),
                                                        ks_threshold=round(float(np.percentile(ck, 95)), 4), passed=bool(np.median(e2) <= np.percentile(ce, 95) and np.median(k2) <= np.percentile(ck, 95)),
                                                        largest_mean_gaps=dict(sorted(per_feature_gap(Gv, Co).items(), key=lambda kv: -kv[1])[:6]))
+        # the generator's band: against the corpus coats of three elements or more
+        cc = np.array([complexity(v) for v in C]); gc = np.array([complexity(v) for v in Gv])
+        hist = lambda a: {int(k): round(float(np.mean(a == k)), 3) for k in sorted(set(a.tolist()))}
+        # quartered coats left out on both sides: in the corpus they make up half the band (a quartering counts two)
+        qi = FEATS.index('quartered'); band = (cc >= 3) & (C[:, qi] == 0); Gb = Gz[Gv[:, qi] == 0]
+        Cb = Cz[band]; n3 = min(500, len(Cb) // 2, len(Gb)); e3, k3, be, bk = [], [], [], []
+        if n3 >= 20:
+            for _ in range(200):
+                idx = list(range(len(Cb))); rng.shuffle(idx)
+                be.append(energy(Cb[idx[:n3]], Cb[idx[n3:2 * n3]])); bk.append(max_ks(Cb[idx[:n3]], Cb[idx[n3:2 * n3]]))
+            for _ in range(20):
+                idx = rng.sample(range(len(Cb)), n3); gi = rng.sample(range(len(Gb)), n3)
+                e3.append(energy(Gb[gi], Cb[idx])); k3.append(max_ks(Gb[gi], Cb[idx]))
+        R['test4_band_three_or_more_unquartered'] = dict(corpus_coats=int(len(Cb)), n=n3, energy=round(float(np.median(e3)), 4) if e3 else None, energy_threshold=round(float(np.percentile(be, 95)), 4) if be else None,
+                                             max_ks=round(float(np.median(k3)), 4) if k3 else None, ks_threshold=round(float(np.percentile(bk, 95)), 4) if bk else None,
+                                             passed=bool(e3 and np.median(e3) <= np.percentile(be, 95) and np.median(k3) <= np.percentile(bk, 95)),
+                                             largest_mean_gaps=dict(sorted(per_feature_gap(Gv[Gv[:, qi] == 0], C[band]).items(), key=lambda kv: -kv[1])[:6]) if len(Cb) else {},
+                                             complexity_corpus=hist(cc), complexity_generated=hist(gc))
         # test 5: diversity, repetition, matches
         def mean_pair(Z):
             Z = Z[:n]; return float(np.mean(np.sqrt(((Z[:, None, :] - Z[None, :, :]) ** 2).sum(-1))))

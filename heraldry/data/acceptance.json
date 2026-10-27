@@ -23,54 +23,82 @@
   },
   "test4_distribution": {
    "n": 260,
-   "energy": 0.2279,
+   "energy": 4.2805,
    "energy_threshold": 0.0813,
-   "max_ks": 0.225,
+   "max_ks": 0.7192,
    "ks_threshold": 0.0846,
    "passed": false,
    "largest_mean_gaps": {
+    "n_tinct": 1.014,
+    "ar_n": 0.525,
+    "chief": 0.391,
+    "bordure": 0.329,
     "m_other": 0.227,
-    "m_beast": 0.083,
-    "n_tinct": 0.082,
-    "m_lion": 0.041,
-    "m_bird": 0.034,
-    "o_none": 0.033,
-    "m_flower": 0.031,
-    "m_n": 0.028
+    "on_n": 0.179,
+    "chief_ch": 0.175,
+    "o_none": 0.123
    }
   },
   "test4_secondary_library_coats_only": {
    "n": 184,
-   "energy": 0.093,
+   "energy": 3.8697,
    "energy_threshold": 0.1292,
-   "max_ks": 0.087,
+   "max_ks": 0.712,
    "ks_threshold": 0.1087,
-   "passed": true,
+   "passed": false,
    "largest_mean_gaps": {
-    "n_tinct": 0.084,
-    "m_none": 0.078,
-    "m_n": 0.069,
-    "o_none": 0.051,
-    "m_beast": 0.039,
-    "m_flower": 0.021
+    "n_tinct": 1.016,
+    "ar_n": 0.523,
+    "chief": 0.377,
+    "bordure": 0.323,
+    "on_n": 0.171,
+    "chief_ch": 0.169
+   }
+  },
+  "test4_band_three_or_more_unquartered": {
+   "corpus_coats": 15,
+   "n": 7,
+   "energy": null,
+   "energy_threshold": null,
+   "max_ks": null,
+   "ks_threshold": null,
+   "passed": false,
+   "largest_mean_gaps": {
+    "n_tinct": 0.832,
+    "f_plain": 0.544,
+    "ar_n": 0.449,
+    "f_party": 0.307,
+    "bordure": 0.278,
+    "f_pattern": 0.237
+   },
+   "complexity_corpus": {
+    "1": 0.631,
+    "2": 0.331,
+    "3": 0.035,
+    "4": 0.004
+   },
+   "complexity_generated": {
+    "2": 0.086,
+    "3": 0.628,
+    "4": 0.286
    }
   },
   "test5_diversity": {
-   "generated": 7.354,
+   "generated": 16.992,
    "corpus": 7.524,
-   "ratio": 0.977,
+   "ratio": 2.258,
    "passed": true
   },
   "test5_repetition": {
-   "generated_top_share": 0.014,
-   "generated_top": "F:plain:::argent|M:goat passant:1:gules:",
+   "generated_top_share": 0.004,
+   "generated_top": "F:plain:::azure|O:bend:1:::argent|A:rose:3:or",
    "corpus_top_share": 0.0129,
    "corpus_top": "F:plain:::or|M:lion rampant:1:sable:",
-   "passed": false
+   "passed": true
   },
   "test5_matches": {
-   "no_match_share": 0.936,
-   "no_match_without_redraw": 0.614,
+   "no_match_share": 1.0,
+   "no_match_without_redraw": 1.0,
    "target": 0.7,
    "passed": true,
    "note": "index = development coats of both rolls only; the Clemmensen Ordinary, Papworth and Rietstap were not indexed"
@@ -100,54 +128,84 @@
   },
   "test4_distribution": {
    "n": 500,
-   "energy": 0.1795,
+   "energy": 2.1665,
    "energy_threshold": 0.0461,
-   "max_ks": 0.204,
+   "max_ks": 0.62,
    "ks_threshold": 0.0681,
    "passed": false,
    "largest_mean_gaps": {
+    "n_tinct": 0.957,
+    "ar_n": 0.469,
+    "chief": 0.363,
+    "bordure": 0.267,
+    "chief_ch": 0.211,
     "m_other": 0.209,
-    "n_tinct": 0.155,
-    "m_beast": 0.069,
-    "f_party": 0.036,
-    "m_bird": 0.031,
-    "m_lion": 0.024,
-    "m_geometric": 0.024,
-    "f_plain": 0.022
+    "on_n": 0.15,
+    "label": 0.085
    }
   },
   "test4_secondary_library_coats_only": {
    "n": 500,
-   "energy": 0.0477,
+   "energy": 1.9038,
    "energy_threshold": 0.0442,
-   "max_ks": 0.077,
+   "max_ks": 0.624,
    "ks_threshold": 0.064,
    "passed": false,
    "largest_mean_gaps": {
-    "n_tinct": 0.113,
-    "m_none": 0.078,
-    "f_plain": 0.042,
-    "o_none": 0.041,
-    "m_beast": 0.04,
-    "m_n": 0.039
+    "n_tinct": 0.915,
+    "ar_n": 0.48,
+    "chief": 0.348,
+    "bordure": 0.264,
+    "chief_ch": 0.207,
+    "on_n": 0.149
+   }
+  },
+  "test4_band_three_or_more_unquartered": {
+   "corpus_coats": 102,
+   "n": 51,
+   "energy": 1.1364,
+   "energy_threshold": 0.6559,
+   "max_ks": 0.3922,
+   "ks_threshold": 0.2549,
+   "passed": false,
+   "largest_mean_gaps": {
+    "n_tinct": 0.636,
+    "ar_n": 0.393,
+    "f_plain": 0.243,
+    "bordure": 0.186,
+    "m_n": 0.149,
+    "f_party": 0.134
+   },
+   "complexity_corpus": {
+    "0": 0.002,
+    "1": 0.58,
+    "2": 0.299,
+    "3": 0.092,
+    "4": 0.021,
+    "5": 0.005
+   },
+   "complexity_generated": {
+    "2": 0.052,
+    "3": 0.644,
+    "4": 0.304
    }
   },
   "test5_diversity": {
-   "generated": 8.454,
-   "corpus": 7.817,
-   "ratio": 1.081,
+   "generated": 12.771,
+   "corpus": 7.971,
+   "ratio": 1.602,
    "passed": true
   },
   "test5_repetition": {
-   "generated_top_share": 0.012,
-   "generated_top": "F:plain:::or|M:lion rampant:1:sable:cr",
+   "generated_top_share": 0.004,
+   "generated_top": "F:plain:::argent|M:rose:3:gules:|CH:chief:::gules",
    "corpus_top_share": 0.0096,
    "corpus_top": "F:plain:::argent|M:lion rampant:1:gules:",
-   "passed": false
+   "passed": true
   },
   "test5_matches": {
-   "no_match_share": 0.948,
-   "no_match_without_redraw": 0.662,
+   "no_match_share": 1.0,
+   "no_match_without_redraw": 0.996,
    "target": 0.7,
    "passed": true,
    "note": "index = development coats of both rolls only; the Clemmensen Ordinary, Papworth and Rietstap were not indexed"

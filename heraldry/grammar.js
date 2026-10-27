@@ -38,10 +38,12 @@
   const NEUTRAL = new Set(['ermine', 'vair', 'proper']);
   const T_ALL = { argent: 30, or: 20, gules: 22, azure: 14, sable: 9, vert: 2, purpure: 0.3 };
 
-  function tinctureOn(rng, D, role, under, avoid = []) {
-    // a tincture for an element lying on 'under' (a tincture, or 'party' for a divided field)
+  function tinctureOn(rng, D, role, under, avoid = [], strict = false) {
+    // a tincture for an element lying on 'under' (a tincture, or 'party' for a divided field); with strict,
+    // as for everything differencing adds, the rule of tincture holds: metal on colour, colour on metal
     const table = D.tinctures.cond[`${role}|${under}`] || D.tinctures.cond[`${role}|party`] || null;
-    const bad = k => avoid.includes(k) || k === under || k === 'mixed' || k === 'proper' || k === 'null';
+    const cls = METALS.has(under) ? COLOURS : COLOURS.has(under) ? METALS : null;
+    const bad = k => avoid.includes(k) || k === under || k === 'mixed' || k === 'proper' || k === 'null' || (strict && cls && !cls.has(k) && !NEUTRAL.has(k));
     let t = table ? pick(rng, table, k => !bad(k)) : null;
     if (!t) {
       // nothing recorded for this pair: any tincture of the other class (rule of tincture)
@@ -59,10 +61,85 @@
     'boar rampant': 'boar passant', 'boar statant': 'boar passant', 'bull rampant': 'bull passant', 'bull statant': 'bull passant', 'goat statant': 'goat passant',
     'horse passant': 'horse rampant', 'horse statant': 'horse rampant', 'unicorn passant': 'unicorn rampant', 'unicorn statant': 'unicorn rampant', 'griffin passant': 'griffin rampant',
   };
+  // charges added in differencing are the small ones heralds used for it: mullets, crescents, martlets,
+  // roundels, annulets, roses, fleurs-de-lis, escallops, crosses; beasts, birds of prey and buildings are left out
+  const BIG = /^(lion|bear|wolf|stag|goat|horse|unicorn|griffin|bull|boar|talbot|eagle|swan|dolphin|fish|barbel|pike|tower|castle|trimount|escutcheon|crown|antler|horn|wing)/;
   function chargeFor(rng, D, slot, cls) {
+    if (cls === 'small') {
+      const t = {};
+      for (const k of [`${slot}|*`, 'around|*', 'on|*']) for (const [c, w] of Object.entries(D.charges[k] || {})) if (!BIG.test(c)) t[c] = (t[c] || 0) + w;
+      if (Object.keys(t).length) return pick(rng, t);
+      cls = null;
+    }
     const t = D.charges[`${slot}|${cls}`] || D.charges[`main|${cls}`] || D.charges[`${slot}|*`] || D.charges['main|*'];
     const c = pick(rng, t);
     return H.ART && DRAWN_AS[c] && H.ART[DRAWN_AS[c]] ? DRAWN_AS[c] : c;
+  }
+
+  // How many elements a skeleton has: a divided or patterned field, a partition line, an ordinary (and its
+  // line or pattern), principal charges (and their number, if more than one), charges on the ordinary,
+  // accompanying charges, a chief (and its charges), canton, bordure, label; a quartered coat counts two more.
+  // only divisions drawn with a patterned line keep one, so the blazon never names a line that is not drawn
+  const LINED = new Set(['per pale', 'per fess', 'per bend', 'per bend sinister', 'per chevron', 'barry', 'paly', 'bendy', 'bendy sinister', 'tierced per fess']);
+  function complexity(s) {
+    let c = 0;
+    if (s.f.k !== 'plain') c++; if (s.f.l && LINED.has(s.f.k)) c++;
+    if (s.o) { c++; if (s.o.l || s.o.p) c++; }
+    if (s.m) { c++; if (s.m.n > 1) c++; if (s.m.chg) c++; }
+    if (s.on) c++; if (s.ar) c++;
+    if (s.c) { c++; if (s.c.on) c++; }
+    if (s.b) c++; if (s.lb) c++; if (s.cn) c++;
+    if (s.q) c += 2;
+    return c;
+  }
+  H.complexity = complexity;
+  // The rolls' coats are simple (in Grünenberg 57% have one element), and simple arms are taken: Or, a lion
+  // rampant sable is Flanders. So a coat is differenced, as heralds differenced arms, until it has three to five
+  // elements: a chief (charged or not), charges laid on the ordinary or set between it, accompanying charges,
+  // a bordure, a canton, a label, each with a weight near its share in the rolls, never two of a kind.
+  const ON_N = { fess: [3, 3, 1], bend: [3, 3, 2], pale: [3, 3, 1], chevron: [3, 3, 1], cross: [5, 1], saltire: [5, 1] };
+  const AR_N = { fess: [3, 6, 2], bend: [2, 6, 3], pale: [2, 4], chevron: [3, 3, 2], cross: [4], saltire: [4] };
+  function difference(rng, sk, target) {
+    sk = JSON.parse(JSON.stringify(sk));
+    const pickOf = a => a[Math.floor(rng() * a.length)];
+    for (let guard = 0; guard < 12 && complexity(sk) < target; guard++) {
+      const moves = [];
+      const plainField = sk.f.k === 'plain';
+      // a chief, unless charges already stand in chief or a label or canton takes the top
+      const between = sk.o && (sk.ar || (sk.m && sk.m.n >= 2));
+      // nor over charges set in the upper part of a field divided per fess or per chevron
+      const upperPart = sk.m && sk.m.n >= 2 && (sk.f.k === 'per fess' || sk.f.k === 'per chevron');
+      if (!sk.c && !sk.cn && !sk.q && !sk.lb && !(sk.ar && sk.ar.w === 'in chf') && !between && !upperPart) moves.push(['chief', 3.5]);
+      // a field with nothing on it: a principal charge, or three
+      if (!sk.m && !sk.o && !sk.q) moves.push(['charge', 6]);
+      if (sk.c && !sk.c.on) moves.push(['chief charges', 6]);
+      if (sk.o && ON_N[sk.o.k] && !sk.on && !sk.o.p) moves.push(['on', 7]);
+      if (sk.o && AR_N[sk.o.k] && !sk.ar && !sk.m && !sk.cn && !sk.c) moves.push(['between', 5]);
+      // two or three principal charges on a plain field: an ordinary between them (a chevron between three ...)
+      if (!sk.o && sk.m && [2, 3].includes(sk.m.n) && plainField && !sk.ar && !sk.m.iss && !sk.c && !sk.cn) moves.push(['ordinary', 5]);
+      // accompanying charges only on a plain or semy field: on a divided one they crowd the partition
+      if (!sk.o && sk.m && !sk.ar && (plainField || sk.f.k === 'semy')) moves.push(['accompanied', 3]);
+      if (!sk.b && !sk.q && !sk.lb) moves.push(['bordure', 1.6]);
+      const chfTaken = sk.ar && sk.ar.w === 'in chf';
+      if (!sk.cn && !sk.c && !sk.q && !sk.b && !sk.lb && !sk.ar) moves.push(['canton', 1]);
+      if (!sk.lb && !sk.q && !sk.b && !sk.c && !sk.cn && !chfTaken) moves.push(['label', 1]);
+      if (!moves.length) break;
+      let tot = 0; for (const [, w] of moves) tot += w;
+      let r = rng() * tot, mv = moves[0][0];
+      for (const [m, w] of moves) { r -= w; if (r <= 0) { mv = m; break; } }
+      // what is added is marked, so its tinctures keep the rule of tincture
+      if (mv === 'chief') sk.c = { l: null, on: null, p: null, add: 1 };
+      else if (mv === 'chief charges') sk.c.on = { n: rng() < 0.75 ? 3 : 1, c: null, iss: 0, add: 1 };
+      else if (mv === 'on') sk.on = { n: pickOf(ON_N[sk.o.k]), c: 'small', add: 1 };
+      else if (mv === 'between') sk.ar = { n: pickOf(AR_N[sk.o.k]), c: 'small', w: 'betw', add: 1 };
+      else if (mv === 'ordinary') sk.o = { k: sk.m.n === 3 ? pickOf(['chevron', 'chevron', 'fess', 'bend']) : pickOf(['bend', 'fess', 'chevron']), n: null, l: null, p: null, add: 1 };
+      else if (mv === 'accompanied') sk.ar = { n: pickOf([1, 2, 3, 3]), c: 'small', w: sk.cn || sk.lb ? 'in base' : sk.c ? pickOf(['betw', 'in base']) : pickOf(['betw', 'in chf', 'in chf', 'betw']), add: 1 };
+      else if (mv === 'charge') sk.m = { n: sk.f.k === 'plain' || sk.f.k === 'semy' ? pickOf([1, 1, 3]) : 1, c: null, arr: null, cch: sk.f.k.startsWith('per ') && rng() < 0.3 ? 1 : 0, add: 1 };
+      else if (mv === 'bordure') sk.b = { p: null, add: 1 };
+      else if (mv === 'canton') { sk.cn = 'canton'; sk.cnAdd = 1; }
+      else if (mv === 'label') sk.lb = 2;
+    }
+    return sk;
   }
 
   // one coat from a skeleton
@@ -77,8 +154,7 @@
     else fieldT = (pick(rt, D.tinctures.pairs, k => !/mixed|proper|null/.test(k) && k.split('/')[0] !== k.split('/')[1]) || 'argent/gules').split('/');
     const party = fieldT.length > 1;
     const under = party ? 'party' : fieldT[0];
-    // only divisions drawn with a patterned line keep one, so the blazon never names a line that is not drawn
-    const LINED = new Set(['per pale', 'per fess', 'per bend', 'per bend sinister', 'per chevron', 'barry', 'paly', 'bendy', 'bendy sinister', 'tierced per fess']);
+    const onField = party ? fieldT.slice() : [];
     arms.field = { kind: fk === 'semy' ? 'plain' : fk, t: fieldT, line: LINED.has(fk) ? sk.f.l || null : null, n: sk.f.n || undefined };
     if (fk === 'semy') {
       const ch = chargeFor(rng, D, 'semy', sk.f.s || 'flower');
@@ -91,21 +167,23 @@
       arms.ordinary = { kind: o.k, n: o.n || undefined, line: o.l || null };
       if (o.p) {
         arms.ordinary.pattern = o.p;
-        const pr = (pick(rt, D.tinctures.cond['ordpattern|*'] || { 'argent/gules': 1 }, k => !/mixed|proper/.test(k)) || 'argent/gules').split('/');
+        const prs = D.tinctures.cond['ordpattern|*'] || { 'argent/gules': 1 };
+        const okPair = k => { const [x, y] = k.split('/'); return !/mixed|proper/.test(k) && x !== y && !(METALS.has(x) && METALS.has(y)) && !(COLOURS.has(x) && COLOURS.has(y)); };
+        const pr = (pick(rt, prs, k => okPair(k) && !k.split('/').some(x => fieldT.includes(x))) || pick(rt, prs, okPair) || 'argent/gules').split('/');
         arms.ordinary.t = pr[0]; arms.ordinary.t2 = pr[1]; ordT = pr[0];
       } else if (o.cch && party) { arms.ordinary.t = 'counterchanged'; }
-      else { ordT = arms.ordinary.t = tinctureOn(rt, D, 'ord', under); }
+      else { ordT = arms.ordinary.t = tinctureOn(rt, D, 'ord', under, onField, !!o.add); }
       if (sk.on) {
         const ch = chargeFor(rng, D, 'on', sk.on.c);
         arms.charges = arms.charges || [];
-        arms.charges.push({ charge: ch, n: sk.on.n, t: ordT ? tinctureOn(rt, D, 'on', ordT) : tinctureOn(rt, D, 'main', under), on: 'ordinary' });
+        arms.charges.push({ charge: ch, n: sk.on.n, t: ordT ? tinctureOn(rt, D, 'on', ordT, [], !!sk.on.add) : tinctureOn(rt, D, 'main', under), on: 'ordinary' });
       }
     }
     // principal charges
     if (sk.m) {
       const ch = chargeFor(rng, D, 'main', sk.m.c);
       const g = { charge: ch, n: sk.m.n };
-      g.t = sk.m.cch && party ? 'counterchanged' : tinctureOn(rt, D, 'main', under, ordT ? [] : []);
+      g.t = sk.m.cch && party ? 'counterchanged' : tinctureOn(rt, D, 'main', under, onField, !!sk.m.add);
       if (sk.m.arr === 'in pale') g.inPale = true;
       if (sk.m.arr === 'in fess') g.inFess = true;
       if (sk.m.iss && /^(lion|bear|wolf|stag|goat|horse|unicorn|griffin|bull|eagle)/.test(ch) && sk.m.n === 1) g.issuant = true;
@@ -120,29 +198,39 @@
         const sub = chargeFor(rng, D, 'charged', 'star');
         g.charged = { charge: sub, t: tinctureOn(rt, D, 'charged', g.t) };
       }
-      if (sk.o && !sk.ar && !sk.on) arms.ordinary.over = true;   // "3 fleurs-de-lis & bend": the bend lies over them
+      if (sk.o && !sk.ar) {
+        // "3 lions & bend" (with or without charges on the bend): the lions are set about it, where they can be seen
+        const room = { bend: 6, 'bend sinister': 6, fess: 6, chevron: 6, pale: 6, bars: 6, cross: 4, saltire: 4 }[sk.o.k];
+        if (sk.m.n >= 2 && room) { g.around = true; g.where = 'betw'; g.n = Math.min(g.n, room); delete g.inPale; delete g.inFess; }   // "3 lions & bend": set the lions about the bend, where they can be seen
+        else {
+          arms.ordinary.over = true;                                  // "lion & bend": a lion debruised by the bend
+          if (arms.ordinary.t === g.t) arms.ordinary.t = tinctureOn(rt, D, 'ord', under, onField.concat([g.t]));
+        }
+      }
       arms.charges = arms.charges || [];
       arms.charges.push(g);
     }
     if (sk.ar) {
       const ch = chargeFor(rng, D, 'around', sk.ar.c);
       arms.charges = arms.charges || [];
-      arms.charges.push({ charge: ch, n: sk.ar.n, t: tinctureOn(rt, D, 'around', under, ordT ? [ordT] : []), around: true, where: sk.ar.w || 'betw' });
+      const room = sk.o ? { cross: 4, saltire: 4 }[sk.o.k] || 6 : 8;
+      arms.charges.push({ charge: ch, n: Math.min(sk.ar.n, room), t: tinctureOn(rt, D, 'around', under, onField.concat(ordT ? [ordT] : []), !!sk.ar.add), around: true, where: sk.ar.w || 'betw' });
     }
     if (sk.c) {
-      arms.chief = { t: tinctureOn(rt, D, 'chief', under), line: sk.c.l || null };
+      arms.chief = { t: tinctureOn(rt, D, 'chief', under, onField, !!sk.c.add), line: sk.c.l || null };
       if (sk.c.on) {
         const ch = chargeFor(rng, D, 'chief', sk.c.on.c);
-        arms.chief.charges = { charge: ch, n: sk.c.on.n, t: tinctureOn(rt, D, 'chiefon', arms.chief.t) };
+        arms.chief.charges = { charge: ch, n: sk.c.on.n, t: tinctureOn(rt, D, 'chiefon', arms.chief.t, [], !!sk.c.on.add) };
         if (sk.c.on.iss && /^(lion|bear|wolf|stag|goat|horse|unicorn|griffin|bull|eagle)/.test(ch)) { arms.chief.charges.issuant = true; arms.chief.charges.n = 1; }
       }
     }
-    if (sk.cn) arms.canton = { kind: sk.cn, t: tinctureOn(rt, D, 'canton', under) };
+    if (sk.cn) arms.canton = { kind: sk.cn, t: tinctureOn(rt, D, 'canton', under, onField, !!sk.cnAdd) };
     if (sk.b) {
-      arms.bordure = { t: tinctureOn(rt, D, 'bordure', under) };
+      // an added bordure keeps the rule and differs from the chief
+      arms.bordure = { t: tinctureOn(rt, D, 'bordure', under, onField.concat(arms.chief ? [arms.chief.t] : []), !!sk.b.add) };
       if (sk.b.p === 'compony') { arms.bordure.pattern = 'compony'; arms.bordure.t2 = arms.bordure.t === 'argent' ? 'gules' : 'argent'; }
     }
-    if (sk.lb) arms.label = { t: tinctureOn(rt, D, 'label', under) };
+    if (sk.lb) arms.label = { t: tinctureOn(rt, D, 'label', under, onField, sk.lb === 2) };
     return arms;
   }
 
@@ -173,15 +261,19 @@
     const D = H.DATA[rollName];
     const rs = stream(seed, 1), rt = stream(seed, 2 + 10 * k), rc = stream(seed, 3 + 10 * k);
     const sks = D.skeletons;
-    const choose = (pred) => {
-      const pool = sks.filter(([s]) => pred(s)); let tot = 0; for (const [, w] of pool) tot += w;
+    const choose = (pred, wf = () => 1) => {
+      const pool = sks.filter(([s]) => pred(s)).map(([s, w]) => [s, w * wf(s)]); let tot = 0; for (const [, w] of pool) tot += w;
       let r = rs() * tot; for (const [s, w] of pool) { r -= w; if (r <= 0) return s; } return pool[pool.length - 1][0];
     };
-    const sk = choose(() => true);
+    // the target: three elements most often, otherwise four; skeletons above five are left out
+    const tr = rs(); const target = tr < 0.6 ? 3 : 4;
+    const CW = [0.3, 1, 2.5, 5, 5, 4, 2];
+    const sk = difference(rs, choose(s => complexity(s) <= 5, s => s.q ? 1 : CW[complexity(s)]), target);
     let arms;
     if (sk.q) {
       // a quartered coat: two coats of this roll, 1 and 4, 2 and 3
-      const simple = s => !s.q && !s.b && !s.lb;
+      // two coats of this roll, each of one or two elements, so the whole stays readable
+      const simple = s => !s.q && !s.b && !s.lb && complexity(s) <= 2;
       const a = fromSkeleton(rc, rt, D, choose(simple)), b = fromSkeleton(rc, rt, D, choose(simple));
       arms = { field: { kind: 'quarterly', t: [a.field.t[0], b.field.t[0]] }, quarters: [a, b, b, a] };
     } else arms = fromSkeleton(rc, rt, D, sk);

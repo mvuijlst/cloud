@@ -7,7 +7,12 @@
    colour    flat tinctures with thin dark outlines, as on the Commons charts.
 
    All geometry is mapped point by point (no SVG transforms), so hatching keeps
-   its pitch and direction in the shield's frame on every charge and quarter. */
+   its pitch and direction in the shield's frame on every charge and quarter.
+
+   Both styles use the same shield, and both are printed: an SVG filter roughens
+   every edge by about a tenth of a hatching line, mottles the ink so solid black
+   and flat colour vary by a few per cent, and lays a faint grain on the paper.
+   It is meant to be seen only from close by. */
 (function (root) {
   'use strict';
   const H = root.Heraldry = root.Heraldry || {};
@@ -256,14 +261,29 @@
     const gs = arms.charges || [];
     const gMain = gs.find(g => !g.on && !g.around), gAr = gs.find(g => g.around);
     // a principal charge accompanied by others, with no ordinary between them: the principal one gives way
-    const flank = gMain && gAr && (!ord || ao.over) ? H.flankLayout(sh, gMain, gAr, { chief: !!arms.chief, bordure: !!arms.bordure }) : null;
-    for (const g of gs) {
-      let slots;
-      if (flank && g === gMain) slots = flank.main;
-      else if (flank && g === gAr) slots = flank.around;
-      else if (g.on === 'ordinary' && ord && ord.slots) slots = ord.slots(g.n);
-      else if (g.issuant) slots = [{ c: [sh.fess[0], div && /per fess|tierced per fess/.test(field.kind) ? sh.fess[1] : sh.fess[1] + 26], s: 92 }];
-      else slots = H.arrangement(g.n, sh, { ord: ord && !ao.over && (g.around || g.on !== 'ordinary') ? ord : null, chief: !!arms.chief, bordure: !!arms.bordure, inPale: g.inPale, inFess: g.inFess, div: field.kind });
+    const flank = gMain && gAr && (!ord || ao.over) ? H.flankLayout(sh, gMain, gAr, { chief: !!arms.chief, bordure: !!arms.bordure, label: !!arms.label, div: field.kind }) : null;
+    const slotsFor = (g) => {
+      if (flank && g === gMain) return flank.main;
+      if (flank && g === gAr) return flank.around;
+      if (g.on === 'ordinary' && ord && ord.slots) return ord.slots(g.n);
+      if (g.issuant) return [{ c: [sh.fess[0], div && /per fess|tierced per fess/.test(field.kind) ? sh.fess[1] : sh.fess[1] + 26], s: 92 }];
+      return H.arrangement(g.n, sh, { ord: ord && !ao.over && (g.around || g.on !== 'ordinary') ? ord : null, chief: !!arms.chief, bordure: !!arms.bordure, inPale: g.inPale, inFess: g.inFess, div: field.kind });
+    };
+    const slotMap = new Map(gs.map(g => [g, slotsFor(g)]));
+    if (arms.canton) {
+      // A canton takes the dexter chief (below a chief, if there is one). The charges on the field are drawn
+      // together toward a point in sinister base, by the least amount that clears every box of the canton,
+      // so they keep their arrangement and do not run into each other.
+      const cb = (chief ? chief.h : 0) + 36, A = [64, (sh.H || 120) * 0.87];
+      const free = (f) => [...slotMap].every(([g, ss]) => g.on === 'ordinary' || ss.every(sl => {
+        const x = A[0] + (sl.c[0] - A[0]) * f, y = A[1] + (sl.c[1] - A[1]) * f, s = sl.s * f;
+        return x - s / 2 >= 36 || y - s / 2 >= cb;
+      }));
+      let f = 1; while (f > 0.45 && !free(f)) f -= 0.02;
+      if (f < 1) for (const [g, ss] of slotMap) if (g.on !== 'ordinary') slotMap.set(g, ss.map(sl => Object.assign({}, sl, { c: [A[0] + (sl.c[0] - A[0]) * f, A[1] + (sl.c[1] - A[1]) * f], s: sl.s * f })));
+    }
+    const drawGroup = (g) => {
+      let slots = slotMap.get(g);
       if (ord && (ord.kind === 'bend' || ord.kind === 'bend sinister') && g.on === 'ordinary') {
         const beastly = /lion|bear|boar|wolf|talbot|stag|horse|goat|eagle|martlet|griffin|unicorn|bull/.test(g.charge);
         if (beastly) slots = slots.map(s => Object.assign({}, s, { rot: 0 }));
@@ -277,8 +297,16 @@
           });
         } else drawCharge(pen, g, s, g.t);
       }
-    }
-    if (ord && ao.over) paintOrd();
+    };
+    // charges laid on an ordinary that lies over the others are drawn after it
+    const over = !!(ao && ao.over);
+    for (const g of gs) if (!(over && g.on === 'ordinary')) drawGroup(g);
+    if (ord && over) { paintOrd(); for (const g of gs) if (g.on === 'ordinary') drawGroup(g); }
+    const drawCanton = () => {
+      const cn = H.ordinary(arms.canton.kind || 'canton', sh, { top: chief ? chief.h : 0 }); drawOrdinary(pen, cn, arms.canton.t, plw);
+      if (arms.canton.charges) drawCharge(pen, arms.canton.charges, cn.slots(1)[0], arms.canton.charges.t);
+    };
+    if (arms.canton && chief) drawCanton();
     // chief
     if (chief) {
       drawOrdinary(pen, chief, arms.chief.t, plw);
@@ -292,10 +320,7 @@
       }
     }
     // canton
-    if (arms.canton) {
-      const cn = H.ordinary(arms.canton.kind || 'canton', sh); drawOrdinary(pen, cn, arms.canton.t, plw);
-      if (arms.canton.charges) drawCharge(pen, arms.canton.charges, cn.slots(1)[0], arms.canton.charges.t);
-    }
+    if (arms.canton && !chief) drawCanton();
     // bordure
     if (arms.bordure) {
       const b = H.ordinary('bordure', sh);
@@ -334,18 +359,40 @@
     for (const l of ord.lines || []) pen.stroke(l, plw);
   }
 
+  // ---------- print ----------
+  // In shield units (100 wide). Fine noise, about one cycle per unit, moves edges by up to a sixth of a unit;
+  // a slow noise, about five units across, lightens the ink by up to five per cent in patches; a fine dark
+  // speckle of at most five per cent greys the paper here and there. The seeds follow the coat, so it prints the same way each time.
+  function printFilter(id, seed, style) {
+    const s = (seed % 9973) + 1;
+    const rag = style === 'engraved' ? 0.32 : 0.4;
+    return `<filter id="${id}-print" filterUnits="userSpaceOnUse" x="-4" y="-4" width="108" height="128" color-interpolation-filters="sRGB">`
+      + `<feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="${s}" result="fine"/>`
+      + `<feDisplacementMap in="SourceGraphic" in2="fine" scale="${rag}" xChannelSelector="R" yChannelSelector="G" result="ragged"/>`
+      + `<feTurbulence type="fractalNoise" baseFrequency="0.2" numOctaves="3" seed="${s + 7}" result="slow"/>`
+      + `<feColorMatrix in="slow" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0.22 0 0 0 -0.11" result="veil"/>`
+      + `<feComposite in="veil" in2="ragged" operator="atop" result="inked"/>`
+      + `<feTurbulence type="fractalNoise" baseFrequency="2.4" numOctaves="1" seed="${s + 13}" result="grain"/>`
+      + `<feColorMatrix in="grain" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0.3 0 0 0 -0.18" result="speck"/>`
+      + `<feComposite in="speck" in2="inked" operator="atop"/>`
+      + `</filter>`;
+  }
+
   // ---------- public ----------
   let uid = 0;
   function renderSVG(arms, style = 'engraved', opt = {}) {
     const id = opt.id || `a${(uid++).toString(36)}`;
-    const shKind = arms.shield || (style === 'engraved' ? 'french' : 'heater');
+    // one shield shape for both styles, the engraved plates' French shield
+    const shKind = arms.shield || opt.shield || 'french';
     const sh = H.shield(shKind);
     const pen = new Pen(style, id);
     drawCoat(pen, arms, sh);
     const eng = style === 'engraved';
     pen.out.push(`<path d="${P.toD(sh.path)}" fill="none" stroke="${eng ? '#000' : DARK}" stroke-width="${eng ? ENG.outline : 0.9}" stroke-linejoin="round"/>`);
     const size = opt.size ? ` width="${opt.size}" height="${Math.round(opt.size * 1.2)}"` : '';
-    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 104 124"${size}${opt.title ? ` role="img" aria-label="${opt.title.replace(/"/g, '&quot;')}"` : ''}><defs>${patternDefs(style, id)}${pen.defs.join('')}</defs>${eng ? '' : ''}${pen.out.join('')}</svg>`;
+    const print = opt.print !== false;
+    const body = print ? `<g filter="url(#${id}-print)">${pen.out.join('')}</g>` : pen.out.join('');
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 104 124"${size}${opt.title ? ` role="img" aria-label="${opt.title.replace(/"/g, '&quot;')}"` : ''}><defs>${patternDefs(style, id)}${pen.defs.join('')}${print ? printFilter(id, arms.seed || 1, style) : ''}</defs>${body}</svg>`;
   }
   H.renderSVG = renderSVG;
   H.drawChargeSVG = function (name, style = 'engraved', t = 'gules', opts = {}) {

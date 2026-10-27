@@ -18,13 +18,21 @@
 
 ## How a coat is made
 
-1. **Skeleton.** A development coat of the chosen roll is drawn at random, weighted by how often its structure occurs: field division and lines, ordinary (with pattern, number, line), the number, class (lion, eagle, beast, bird, fish, flower, star, cross, geometric, object, plant, horn), arrangement and attitude of its principal charges, charges on and around the ordinary, chief, canton, bordure, label, semy, quartering. 162 distinct skeletons for Zürich (from 484 coats), 493 for Grünenberg (from 1,915).
-2. **Charges.** Each charge is redrawn from the roll's library charges of that class in that position (`main|lion`, `on|flower`, `chief|star`…). A charge outside the library in the skeleton (a human figure, a monster) is replaced from the position's whole distribution.
-3. **Tinctures.** The field from the roll's field tinctures (or partition pairs, or triples); every element from the roll's tinctures given the tincture it lies on (`main|argent`, `on|gules`, `chief|party`…). The rule of tincture is carried by these tables, not imposed; a tincture is never laid on itself.
-4. **Novelty.** The coat's canonical key is looked up among the development coats of both rolls. If it matches a real coat it is redrawn (tinctures and charges from the next streams) up to six times; a redraw that breaks the rule of tincture is passed over unless the first draw broke it too, so redrawing does not change the breach rate (it doubled it, 2.4% to 4.6%, before this guard). If it still matches, it is kept and the page names who bore it.
-5. **Text.** The blazon is written from the tree in field, ordinary, charges, chief, canton, bordure, label order. The name comes from an order-2 letter model over the roll's family names, kept only if it is at least two edits from every name in both rolls and contains none of five letters or more.
+1. **Skeleton.** A development coat of the chosen roll is drawn at random, weighted by how often its structure occurs: field division and lines, ordinary (with pattern, number, line), the number, class (lion, eagle, beast, bird, fish, flower, star, cross, geometric, object, plant, horn), arrangement and attitude of its principal charges, charges on and around the ordinary, chief, canton, bordure, label, semy, quartering. 162 distinct skeletons for Zürich (from 484 coats), 493 for Grünenberg (from 1,915). The weight is multiplied by a factor for the skeleton's number of elements (below): 1 for one element, 2.5 for two, 5 for three or four, 4 for five; skeletons of six or more are left out, and quartered skeletons keep their plain weight.
+2. **Differencing.** The rolls' coats are simple: counting a divided field, a partition line, an ordinary (and its line or pattern), principal charges (and their number above one, and a charge on them), charges on the ordinary, accompanying charges, a chief (and its charges), a canton, a bordure and a label as one element each, and a quartering as two, 61% of Zürich's coats and 57% of Grünenberg's have one element and 3.9% and 12% have three or more. Simple arms are taken (Or, a lion rampant sable is Flanders), so each skeleton is now differenced, as heralds differenced arms, until it has a target of three elements (60% of coats) or four (40%). Each step adds one element, weighted: charges on the ordinary (7), charges set between it (5), an ordinary between two or three principal charges (5, "a chevron between three roses"), a principal charge on an empty field (6), a chief (3.5), charges on a chief (6), accompanying charges (3), a bordure (1.6), a label (1), a canton (1). Nothing is added twice, and nothing that would crowd the top of the shield: no chief with charges between an ordinary (no roll coat has both) or over charges in the upper part of a field per fess or per chevron, no canton or label with accompanying charges in chief, no label with a bordure or chief, and accompanying charges only on a plain or semy field. Added charges are the small ones heralds used for differencing (mullets, crescents, martlets, roundels, annulets, roses, fleurs-de-lis, escallops, crosses), from the roll's own accompanying and on-ordinary charges.
+3. **Charges.** Each charge is redrawn from the roll's library charges of that class in that position (`main|lion`, `on|flower`, `chief|star`…). A charge outside the library in the skeleton (a human figure, a monster) is replaced from the position's whole distribution.
+4. **Tinctures.** The field from the roll's field tinctures (or partition pairs, or triples); every element from the roll's tinctures given the tincture it lies on (`main|argent`, `on|gules`, `chief|party`…). For elements of the roll's skeleton the rule of tincture is carried by these tables, not imposed; for elements added in differencing it is imposed (metal on colour, colour on metal, furs either way). A tincture is never laid on itself; an element on a divided field takes neither of its tinctures; a bordure never takes the chief's; a compony or chequy ordinary pairs a metal with a colour, neither of them the field's where the roll allows.
+5. **Novelty.** The coat's canonical key is looked up among the development coats of both rolls. If it matches a real coat it is redrawn (tinctures and charges from the next streams) up to six times; a redraw that breaks the rule of tincture is passed over unless the first draw broke it too, so redrawing does not change the breach rate (it doubled it, 2.4% to 4.6%, before this guard). If it still matches, it is kept and the page names who bore it.
+6. **Text.** The blazon is written from the tree in field, ordinary, charges, chief, canton, bordure, label order. The name comes from an order-2 letter model over the roll's family names, kept only if it is at least two edits from every name in both rolls and contains none of five letters or more.
 
-Rates reproduced without tuning: quartered coats 1.0% (Zürich; data 1.0%) and 7.3% (Grünenberg; data 7.0%); rule-of-tincture breaches 2.5% (data 2.0 to 2.9%).
+Rates on 2,000 coats per roll: quartered coats 0.7% (Zürich; data 1.0%) and 5.6% (Grünenberg; data 7.0%); breaches of the rule of tincture by the first element on the field 2.7% and 2.9% (data 2.0 to 2.9%); coats with a breach anywhere 4.8% and 6.0%, down from 5.9% and 8.0% before differencing, because added elements keep the rule. Elements per coat (counted from the features below, where "a chevron between three roses" counts two):
+
+| elements | 1 | 2 | 3 | 4 | 5 |
+|---|---|---|---|---|---|
+| Zürich roll | 63% | 33% | 3.5% | 0.4% | |
+| generated, Zürich | | 8.6% | 63% | 29% | |
+| Grünenberg | 58% | 30% | 9.2% | 2.1% | 0.5% |
+| generated, Grünenberg | | 5.2% | 64% | 30% | |
 
 ## Held-out material
 
@@ -32,7 +40,7 @@ Drawn by seed 20261026 before any grammar work (`data/holdout.json`). A custodia
 
 ## Results of the pre-registered tests (STUDY.md section 8)
 
-`tools/acceptance.py` on 500 coats per roll (seeds 1 to 500) from `tools/dump_samples.js`, final run after the second round of drawings and the layout fixes (26 October 2026); full output in `data/acceptance.json`.
+`tools/acceptance.py` on 500 coats per roll (seeds 1 to 500) from `tools/dump_samples.js`, run after differencing was added (26 October 2026); full output in `data/acceptance.json`. Differencing moves the coats away from the rolls on purpose, so test 4 now fails by design; the earlier run (before differencing) is given in brackets where it differs.
 
 | test | Zürich | Grünenberg | gate | verdict |
 |---|---|---|---|---|
@@ -40,18 +48,18 @@ Drawn by seed 20261026 before any grammar work (`data/holdout.json`). A custodia
 | 1. of which every charge is in the library | 70.8% | 70.4% | reported | the named bucket is 22% of coats |
 | 2. held-out coats, frozen grammar | 37 of 38 (97.4%) | 33 of 35 (94.3%) | 95% | Zürich **pass**; Grünenberg **fail** by one coat; 4 held-out Grünenberg items have no blazon in the edition |
 | 3. rendering round trip by readers; Rolland held-out leaves | not run | not run | | needs readers, and Rietstap's blazons for the six held-out leaves |
-| 4. distribution against all development coats | energy 0.23 (threshold 0.08), largest KS 0.23 (0.08) | energy 0.18 (0.05), largest KS 0.20 (0.07) | 95th pct of corpus halvings | **fail** |
-| 4. secondary, not pre-registered: against coats whose charges are all in the library | energy 0.093 (0.129), KS 0.087 (0.109) | energy 0.048 (0.044), KS 0.077 (0.064) | same | Zürich pass; Grünenberg fail, narrowly (it passed at 0.041 and 0.060 before swan and dolphin joined the library) |
-| 5. diversity, mean pairwise feature distance | 0.98 of the corpus | 1.08 | at least 0.8 | **pass** |
-| 5. repetition, commonest canonical key | 1.4% (corpus 1.3%) | 1.2% (corpus 0.96%) | not above the corpus | **fail**, by one or two coats in 500 in both rolls; merging attitudes for the art made it slightly worse |
-| 5. exact matches with real coats | 94% match none (61% before redraws) | 95% (66%) | at least 70% | **pass**, against the rolls' own index only |
-| 7. browser | about 2 ms per coat to compose, 2 to 3 ms to render both styles (Node) | | under 100 ms | **pass** |
+| 4. distribution against all development coats | energy 4.28, threshold 0.08, largest KS 0.72, threshold 0.08 (0.23 and 0.23) | energy 2.17 (0.05), largest KS 0.62 (0.07) (0.18 and 0.20) | 95th pct of corpus halvings | **fail**, by design |
+| 4. secondary, not pre-registered: against coats whose charges are all in the library | energy 3.87 (0.13), KS 0.71 (0.11) (0.093 and 0.087: pass) | energy 1.90 (0.04), KS 0.62 (0.06) (0.048 and 0.077) | same | **fail**, by design |
+| 4. secondary, not pre-registered: against unquartered corpus coats of three elements or more | 15 such coats: too few to test | 102 coats: energy 1.14 (0.66), KS 0.39 (0.25) | same | **fail**: generated coats have more tinctures and accompanying charges, and fewer divided fields, than the rolls' own complex coats |
+| 5. diversity, mean pairwise feature distance | 2.26 of the corpus (0.98) | 1.60 (1.08) | at least 0.8 | **pass** |
+| 5. repetition, commonest canonical key | 0.4% (corpus 1.3%) (1.4%: fail) | 0.4% (corpus 0.96%) (1.2%: fail) | not above the corpus | **pass** |
+| 5. exact matches with real coats | 100% match none (94%) | 100% (95%) | at least 70% | **pass**, against the rolls' own index only |
+| 7. browser | about 2 ms per coat to compose, 8 to 11 ms to render both styles (Node) | | under 100 ms | **pass** |
 
 What the failures mean:
-- **Test 4** fails almost entirely on one feature: 21 to 23% of real coats carry a principal charge the library does not draw (human figures, monsters, heads, tools; `largest_mean_gaps.m_other`), which the generator never produces. Where the library does reach, the generator's coats are close to the rolls' by this test (the secondary line: a pass for Zürich, a narrow miss for Grünenberg). The next largest gap is the number of distinct tinctures per coat (generated 2.09, corpus 1.98 to 2.01).
-- **Test 5, repetition** fails because the commonest generated coat appears 6 or 7 times in 500 where the rolls' commonest appears 5 to 6.5 times; the gap is within sampling noise but the gate was set without a noise allowance.
+- **Test 4** measured how close the coats were to the rolls, and the user asked for coats further from them: "more complex but not obscenely complex", since the simple ones are taken. Before differencing it failed almost entirely on one feature, the 21 to 23% of real coats whose principal charge the library does not draw (human figures, monsters, heads, tools), and passed for Zürich on library coats. Now the largest gaps are the ones differencing makes: about one tincture more per coat, accompanying charges, chiefs and bordures. Against the rolls' own complex coats it still fails; those use divided fields more and accompanying charges less than differencing does.
 - **Test 1** fails on pily fields, dimidiated coats (a charge in one half of a party field), cotised ordinaries, ordinaries of lozenges, and a few others; `data/corpus_structures.json` lists every reason.
-- **Test 5, matches** is measured against the 2,584 development coats only. The Clemmensen Ordinary (87,638 medieval coats), Papworth and Rietstap were not indexed, so the true collision rate is higher than 6%.
+- **Test 5, matches** is measured against the 2,584 development coats only. The Clemmensen Ordinary (87,638 medieval coats), Papworth and Rietstap were not indexed, so the true collision rate is higher than measured here; differenced coats are less likely to collide with any of them than the simple coats were.
 - **Tests 3 and 6** (readers) have not been run.
 
 ## Drawings
@@ -75,10 +83,15 @@ How the drawings are used:
 - **Barry, paly, bendy and tierced fields** are built from their partition lines, so a barry nebuly, wavy or embattled has bands of those shapes, and bendy is spread over the shield's own diagonal extent. Nebuly is drawn as alternating bulbous lobes on narrow necks. Divisions drawn only with straight lines (per saltire, gyronny, quarterly, chequy, lozengy) never carry a line in the blazon.
 - **Accompanying charges** with no ordinary between them and the principal charge are placed where the roll's blazon puts them (in chief, in base, dexter or sinister chief) or round about it (two flanking, three, four in the corners, an orle), and the principal charge shrinks to make room.
 - **Charges on a bend** are spread over the stretch of the bend that lies inside the shield, each wholly inside it.
+- **Two or more principal charges with an ordinary** ("three lions & bend" in the rolls' coding) are set between the ordinary, where they can be seen, and blazoned so ("a bend gules between three lions"). A single principal charge stays under an ordinary that lies over it ("overall a bend"), the ordinary then takes a different tincture, and charges on that ordinary are drawn on top of it. Every ordinary has places for one to six charges between it (four for a cross or saltire), each shrunk and drawn in until it lies inside the field and inside a bordure; the one in base under a chevron clears the chevron's inner edges.
+- **Compony and chequy** pieces are squares as wide as the ordinary (two rows of half squares for chequy). On a chevron they run along each arm from the apex, mitred on the pale line, so the first piece is a whole chevron-shaped piece in the first tincture, as DrawShield draws it.
+- **A canton** with a chief stands below the chief. Charges on the field are drawn together toward sinister base, by the least amount that clears the canton, so their arrangement keeps its shape.
 
 ## Page
 
-Dark by default, with a light switch (remembered in the browser); on a dark page the engraved plates are printed in reverse, white ink on black. The svg download is always black ink on white.
+Dark by default, with a light switch (remembered in the browser). Both styles use the same shield, the French one of Rolland's plates. The arms are printed on white paper on either page: the engraved style black ink on white, the colour style flat colour, never reversed.
+
+**Print.** An SVG filter in every coat (and in the svg download) makes it look printed, lightly, far less than the sigil plates: fine noise of about one cycle per shield unit moves edges by up to a sixth of a unit (a hatching line is 0.62 wide); a slow noise about five units across lightens the ink by up to about five per cent in patches; a fine dark speckle of up to five per cent greys the paper here and there. Its seeds follow the coat's seed, so a coat prints the same way each time. `renderSVG(arms, style, { print: false })` leaves it out.
 
 ## Credits
 

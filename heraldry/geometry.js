@@ -477,9 +477,10 @@
       o.poly = [[fx - 26, -M], [fx + 26, -M], [fx, SH * 0.82]]; o.lines = [[[fx - 26, -M], [fx, SH * 0.82], [fx + 26, -M]]];
       o.slots = (n) => [{ c: [fx, 26], s: 20 }, { c: [fx, 52], s: 14 }, { c: [fx, 70], s: 10 }].slice(0, n);
     } else if (kind === 'canton') {
-      const s = 36; o.poly = [[-M, -M], [s, -M], [s, s], [-M, s]]; o.lines = [[[s, -M], [s, s], [-M, s]]];
-      o.slots = () => [{ c: [s / 2, s / 2], s: s * 0.7 }];
-      o.zone = [0, 0, s, s];
+      // with a chief, the canton stands below it (opt.top): it is drawn first and the chief covers its top
+      const s = 36, y0 = opt.top || 0; o.poly = [[-M, -M], [s, -M], [s, y0 + s], [-M, y0 + s]]; o.lines = [[[s, -M], [s, y0 + s], [-M, y0 + s]]];
+      o.slots = () => [{ c: [s / 2, y0 + s / 2], s: s * 0.7 }];
+      o.zone = [0, y0, s, y0 + s];
     } else if (kind === 'bordure') {
       // the inner edge: the shield's own outline shrunk about its top centre, a little more at the base
       // than at the flanks so the bordure keeps its width round the point (an offset curve would loop there)
@@ -537,13 +538,27 @@
   function ordinaryChecks(kind, sh, rows = 2) {
     const SH = sh.H || 120; void SH;
     const [fx, fy] = sh.fess; const out = [];
-    const grid = (c, ang, w, len) => {
+    // keep the part of a polygon on one side of the pale line x = 50 (side -1 dexter, +1 sinister)
+    const half = (poly, side) => {
+      const inside = q => side * (q[0] - 50) >= 0, res = [];
+      for (let k = 0; k < poly.length; k++) {
+        const a = poly[k], b = poly[(k + 1) % poly.length];
+        if (inside(a)) res.push(a);
+        if (inside(a) !== inside(b)) { const f = (50 - a[0]) / (b[0] - a[0]); res.push([50, a[1] + f * (b[1] - a[1])]); }
+      }
+      return res.length >= 3 ? res : null;
+    };
+    // squares of side w/rows along a band of width w through c in direction ang, alternate ones kept;
+    // with an arm (side), the squares start at -w/2 along it and stop at the pale line
+    const grid = (c, ang, w, len, side) => {
       const s = w / rows; const ux = Math.cos(ang), uy = Math.sin(ang), nx = -uy, ny = ux;
-      for (let i = -Math.ceil(len / s); i <= Math.ceil(len / s); i++) for (let j = 0; j < rows; j++) {
-        if ((i + j) % 2 === 0) continue;
-        const a0 = i * s, b0 = -w / 2 + j * s;
-        const P4 = [[a0, b0], [a0 + s, b0], [a0 + s, b0 + s], [a0, b0 + s]].map(q => [c[0] + ux * q[0] + nx * q[1], c[1] + uy * q[0] + ny * q[1]]);
-        out.push(P4);
+      const i0 = side ? 0 : -Math.ceil(len / s), start = side ? -w / 2 : 0;
+      for (let i = i0; i <= Math.ceil(len / s); i++) for (let j = 0; j < rows; j++) {
+        if (((i + j) % 2 + 2) % 2 === 0) continue;
+        const a0 = start + i * s, b0 = -w / 2 + j * s;
+        let P4 = [[a0, b0], [a0 + s, b0], [a0 + s, b0 + s], [a0, b0 + s]].map(q => [c[0] + ux * q[0] + nx * q[1], c[1] + uy * q[0] + ny * q[1]]);
+        if (side) P4 = half(P4, side);
+        if (P4) out.push(P4);
       }
     };
     if (kind === 'fess') grid([fx, fy], 0, 28, 70);
@@ -552,7 +567,13 @@
     else if (kind === 'bend sinister') grid([SW - fx, fy], 3 * Math.PI / 4, 24, 100);
     else if (kind === 'chief') grid([50, 17], 0, 34, 70);
     else if (kind === 'cross') { grid([fx, 60], Math.PI / 2, 24, 80); grid([fx, fy - 6], 0, 24, 70); }
-    else if (kind === 'chevron') { grid([fx - 30, fy - 16 + 30 + 11], Math.PI / 4 + Math.PI / 2, 22 * 1.0, 60); grid([fx + 30, fy - 16 + 30 + 11], Math.PI / 4, 22, 60); }
+    else if (kind === 'chevron') {
+      // the chevron's band is 22 wide across each arm; its centre line meets itself w/sqrt2 below the top.
+      // Along each arm the pieces start half a width above that point, so the first piece of the two arms,
+      // mitred on the pale line, is a whole chevron-shaped piece from the top to the inner corner
+      const apex = [fx, fy - 16 + 22 * Math.SQRT1_2];
+      grid(apex, 3 * Math.PI / 4, 22, 90, -1); grid(apex, Math.PI / 4, 22, 90, 1);
+    }
     return out;
   }
   H.ordinaryChecks = ordinaryChecks;
@@ -572,42 +593,93 @@
   // ---------- arrangements of charges on the field ----------
   // Slots for n charges on the field, given what the field already holds (ordinary, chief).
   // Returns [{c:[x,y], s:size, rot}] ; size is the side of the square the charge is fitted into.
+  // Charges set between an ordinary stand near the edges: each box is shrunk, and drawn a little toward the
+  // fess point, until it lies inside the field, inside a bordure (11 wide) when there is one.
   function arrangement(n, sh, ctx = {}) {
+    const out = arrangement0(n, sh, ctx);
+    if (!ctx.ord || ctx.ord.kind === 'canton') return out;
+    const SH = sh.H || 120, [fx, fy] = sh.fess, b = ctx.bordure;
+    const halfIn = y => b ? 0.78 * sh.halfAt(Math.min(SH, Math.max(0, (y - 11) / 0.785))) - 1.5 : sh.halfAt(Math.min(SH, y)) - 2;
+    const top = (ctx.chief ? 34 : 0) + (b ? 12.5 : 2);
+    return out.map(sl => {
+      let [x, y] = sl.c, s = sl.s;
+      for (let k = 0; k < 24; k++) {
+        if (y - s / 2 >= top && Math.abs(x - 50) + s / 2 <= halfIn(y + s / 2) && Math.abs(x - 50) + s / 2 <= halfIn(y - s / 2)) break;
+        s *= 0.96; x += (fx - x) * 0.03; y += (fy - y) * 0.03;
+      }
+      return Object.assign({}, sl, { c: [x, y], s });
+    });
+  }
+  function arrangement0(n, sh, ctx = {}) {
     const SH = sh.H || 120;
     const [fx, fy] = sh.fess;
     const top = ctx.chief ? 34 : 0; // a chief takes the top
     const ord = ctx.ord;
     const cy = ctx.chief ? (top + (fy + 30)) / 2 + 6 : fy;
+    // pull a slot toward the pale line, shrinking it, until its box lies inside the shield
+    const fitIn = (x, y, s) => {
+      for (let k = 0; k < 16; k++) {
+        const half = sh.halfAt(Math.min(SH - 2, y + s / 2));
+        if (Math.abs(x - 50) + s / 2 <= half - 2 && y - s / 2 >= top + 2) break;
+        s *= 0.93; x = 50 + (x - 50) * 0.97;
+      }
+      return { c: [x, y], s };
+    };
     if (ord && ord.kind === 'fess') {
       const z = ord.zone; const up = (top + z[1]) / 2 + 1, dn = (z[3] + SH * 0.86) / 2;
       if (n === 1) return [{ c: [fx, up], s: 26 }];
       if (n === 2) return [{ c: [fx, up], s: 24 }, { c: [fx, dn], s: 22 }];
       if (n === 3) return [{ c: [fx - 24, up], s: 22 }, { c: [fx + 24, up], s: 22 }, { c: [fx, dn], s: 22 }];
       if (n === 6) return [-30, 0, 30].map(x => ({ c: [fx + x, up], s: 16 })).concat([-18, 18].map(x => ({ c: [fx + x, dn - 3], s: 15 })), [{ c: [fx, dn + 13], s: 13 }]);
-      return [-30, 0, 30].map(x => ({ c: [fx + x, up], s: 16 })).slice(0, n);
+      if (n === 4) return [-22, 22].map(x => fitIn(fx + x, up, 20)).concat([-15, 15].map(x => fitIn(fx + x, dn, 17)));
+      return [-30, 0, 30].map(x => fitIn(fx + x, up, 16)).concat([-15, 15].map(x => fitIn(fx + x, dn, 16))).slice(0, n);
     }
     if (ord && ord.kind === 'bars') {
       if (n === 3) return [{ c: [fx - 24, ord.zone[1] - 12], s: 18 }, { c: [fx + 24, ord.zone[1] - 12], s: 18 }, { c: [fx, ord.zone[3] + 16], s: 18 }];
+      if (n === 2) return [fitIn(fx, ord.zone[1] - 12, 18), fitIn(fx, ord.zone[3] + 16, 18)];
+      if (n > 3) return [-28, 0, 28].map(x => fitIn(fx + x, ord.zone[1] - 12, 15)).concat([-14, 14, 0].map(x => fitIn(fx + x, ord.zone[3] + 14, 14))).slice(0, n);
       return [{ c: [fx, ord.zone[1] - 12], s: 18 }];
     }
     if (ord && (ord.kind === 'bend' || ord.kind === 'bend sinister')) {
+      // above the bend (towards sinister chief) and below it (towards dexter base)
       const sgn = ord.sin ? -1 : 1;
-      const A = [fx + sgn * 22, fy - 28], B = [fx - sgn * 24, fy + 30];
-      if (n === 1) return [{ c: A, s: 24 }];
-      if (n === 2) return [{ c: A, s: 24 }, { c: B, s: 24 }];
-      if (n === 6) return [[30, -42], [40, -24], [18, -30], [-30, 34], [-40, 16], [-18, 22]].map(o => ({ c: [fx + sgn * o[0], fy + o[1]], s: 13 }));
-      return [{ c: A, s: 24 }, { c: B, s: 24 }];
+      const up = [[22, -30], [38, -12], [6, -46]], dn = [[-24, 30], [-38, 12], [-8, 44]];
+      const split = { 1: [1, 0], 2: [1, 1], 3: [2, 1], 4: [2, 2], 5: [3, 2], 6: [3, 3] }[Math.min(n, 6)] || [1, 1];
+      const size = n <= 2 ? 24 : n <= 4 ? 19 : 15;
+      const fit = (o, s) => {
+        let x = fx + sgn * o[0], y = fy + o[1];
+        for (let k = 0; k < 16; k++) {
+          const half = sh.halfAt(Math.min(SH - 2, y + s / 2));
+          if (Math.abs(x - 50) + s / 2 <= half - 2 && y - s / 2 >= 3) break;
+          s *= 0.93; x = 50 + (x - 50) * 0.97;
+        }
+        return { c: [x, y], s };
+      };
+      return up.slice(0, split[0]).concat(dn.slice(0, split[1])).map(o => fit(o, size));
     }
     if (ord && ord.kind === 'chevron') {
       const a = ord.apex;
-      if (n === 3) return [{ c: [a[0] - 28, a[1] - 4], s: 22 }, { c: [a[0] + 28, a[1] - 4], s: 22 }, { c: [a[0], a[1] + 50], s: 26 }];
+      // the one in base clears the chevron's inner edges (lines at 45 degrees through the inner corner, 22 * sqrt2
+      // below the top): a charge of size s centred on the pale line does so s / sqrt2 below that corner
+      const inner = a[1] + 22 * Math.SQRT2, inBase = (s) => fitIn(a[0], inner + s * Math.SQRT1_2 + 3, s);
+      if (n === 3) return [{ c: [a[0] - 28, a[1] - 4], s: 22 }, { c: [a[0] + 28, a[1] - 4], s: 22 }, inBase(24)];
       if (n === 2) return [{ c: [a[0] - 28, a[1] - 4], s: 22 }, { c: [a[0] + 28, a[1] - 4], s: 22 }];
-      return [{ c: [a[0], a[1] + 50], s: 26 }];
+      if (n === 4) return [fitIn(a[0] - 28, a[1] - 4, 20), fitIn(a[0] + 28, a[1] - 4, 20), fitIn(a[0] - 12, a[1] + 56, 15), fitIn(a[0] + 12, a[1] + 56, 15)];
+      if (n >= 5) {
+        // two above each arm, and one or two in base
+        const above = [[-34, -10], [-16, -24], [16, -24], [34, -10]].map(o => fitIn(a[0] + o[0], a[1] + o[1], 15));
+        const base = n === 5 ? [fitIn(a[0], a[1] + 54, 18)] : [fitIn(a[0] - 11, a[1] + 56, 14), fitIn(a[0] + 11, a[1] + 56, 14)];
+        return above.concat(base).slice(0, n);
+      }
+      return [inBase(26)];
     }
     if (ord && ord.kind === 'pale') {
+      if (n === 1) return [{ c: [fx - 31, fy], s: 22 }];
       if (n === 2) return [{ c: [fx - 31, fy], s: 22 }, { c: [fx + 31, fy], s: 22 }];
       if (n === 4) return [[-31, -22], [31, -22], [-31, 24], [31, 24]].map(o => ({ c: [fx + o[0], fy + o[1]], s: 18 }));
-      return [{ c: [fx - 31, fy], s: 22 }, { c: [fx + 31, fy], s: 22 }];
+      if (n === 3) return [[-31, -22], [-31, 24], [31, 0]].map(o => fitIn(fx + o[0], fy + o[1], 18));
+      // five or six: in pale on either side
+      return [[-31, -32], [31, -32], [-31, 0], [31, 0], [-31, 32], [31, 32]].map(o => fitIn(fx + o[0], fy + o[1], 16)).slice(0, n);
     }
     if (ord && ord.kind === 'cross') {
       const c = ord.centre, w = ord.w;
@@ -618,7 +690,18 @@
       return [[0, -34], [-34, 2], [34, 2], [0, 40]].map(o => ({ c: [c[0] + o[0], c[1] + o[1]], s: 18 })).slice(0, n);
     }
     if (ord && ord.kind === 'canton') {
-      return arrangement(n, sh, Object.assign({}, ctx, { ord: null }));
+      return arrangement0(n, sh, Object.assign({}, ctx, { ord: null }));
+    }
+    // a divided field with no chief: two or three charges stand clear of the partition line, one in each part
+    // (per pale side by side; per fess and per chevron two above, one below)
+    const dv = !ctx.chief && !ctx.inPale && !ctx.inFess ? ctx.div : null;
+    if (dv && n >= 2 && n <= 3) {
+      const k = ctx.bordure ? 0.86 : 1;
+      if (dv === 'per pale' && n === 2) return [{ c: [28, fy], s: 36 * k }, { c: [72, fy], s: 36 * k }];
+      if (dv === 'per fess' && n === 2) return [{ c: [50, 28], s: 34 * k }, { c: [50, 82], s: 32 * k }];
+      if (dv === 'per fess') return [{ c: [27, 30], s: 28 * k }, { c: [73, 30], s: 28 * k }, { c: [50, 83], s: 30 * k }];
+      if (dv === 'per chevron' && n === 2) return [{ c: [50, 21], s: 26 * k }, { c: [50, 88], s: 28 * k }];
+      if (dv === 'per chevron') return [{ c: [24, 26], s: 28 * k }, { c: [76, 26], s: 28 * k }, { c: [50, 88], s: 28 * k }];
     }
     // plain field (possibly under a chief, or inside a bordure)
     const shrink = ctx.bordure ? 0.84 : 1;
@@ -627,6 +710,7 @@
     if (n === 2) return ctx.inFess ? [{ c: [fx - 23, midY], s: 40 * shrink }, { c: [fx + 23, midY], s: 40 * shrink }] : [{ c: [fx, midY - 22], s: 40 * shrink }, { c: [fx, midY + 24], s: 36 * shrink }];
     if (n === 3) {
       if (ctx.inPale) return [-30, 0, 30].map(d => ({ c: [fx, midY + d], s: 26 * shrink }));
+      if (ctx.inFess) return [-30, 0, 30].map(d => ({ c: [fx + d, midY], s: 27 * shrink }));
       const dy = ctx.chief ? 15 : 19;
       return [{ c: [fx - 24, midY - dy], s: 36 * shrink }, { c: [fx + 24, midY - dy], s: 36 * shrink }, { c: [fx, midY + dy + 4], s: 36 * shrink }];
     }
@@ -642,20 +726,20 @@
   // blazon puts them (in chief, in base, dexter or sinister chief) or round about it.
   function flankLayout(sh, gMain, gAr, ctx = {}) {
     const SH = sh.H || 120; const [fx, fy] = sh.fess;
-    const top = ctx.chief ? 36 : 4; const na = gAr.n || 1;
+    const top = ctx.chief ? 36 : 4; const na = gAr.n || 1; const inset = ctx.bordure ? 10 : 3;
     const where = gAr.where || 'betw';
     let f = 0.68, dx = 0, dy = 0, around = [];
     const inside = (x, y, s) => {
       // pull a slot inward until its box lies inside the shield
       for (let k = 0; k < 20; k++) {
         const half = sh.halfAt(Math.min(SH - 2, y + s / 2));
-        if (Math.abs(x - 50) + s / 2 <= half - 3 && y - s / 2 >= top) break;
+        if (Math.abs(x - 50) + s / 2 <= half - inset && y - s / 2 >= top && y + s / 2 <= SH - inset - 6) break;
         s *= 0.92; x = 50 + (x - 50) * 0.96;
       }
       return { c: [x, y], s };
     };
     if (where === 'in chf' || where === 'in base') {
-      const s = Math.min(22, 80 / Math.max(na, 1)); const y = where === 'in chf' ? top + 12 : fy + 40;
+      const s = Math.min(22, 80 / Math.max(na, 1)); const y = where === 'in chf' ? top + 12 + (ctx.bordure ? 4 : 0) : fy + (ctx.bordure ? 34 : 40);
       around = Array.from({ length: na }, (_, i) => inside(50 + (i - (na - 1) / 2) * (s + 6), y, s));
       f = 0.72; dy = where === 'in chf' ? 10 : -10;
     } else if (where === 'dx' || where === 'sn' || na === 1) {
@@ -676,8 +760,12 @@
       for (let k = 0; k < na; k++) { const s = (k + 0.5) / na * tot; let i = 1; while (i < L.length - 1 && L[i] < s) i++; around.push({ c: mid[i], s: 11 }); }
       f = 0.6;
     }
-    const base = arrangement(gMain.n, sh, { chief: ctx.chief, bordure: ctx.bordure, inPale: gMain.inPale, inFess: gMain.inFess });
-    const main = base.map(sl => ({ c: [fx + (sl.c[0] - fx) * f + dx, fy + (sl.c[1] - fy) * f + dy], s: sl.s * f, rot: sl.rot }));
+    // a label hangs in chief: the principal charge is not raised into it
+    if (ctx.label) dy = Math.max(dy, 2);
+    const base = arrangement(gMain.n, sh, { chief: ctx.chief, bordure: ctx.bordure, inPale: gMain.inPale, inFess: gMain.inFess, div: ctx.div });
+    // on a divided field each charge keeps its part, shrinking about its own centre
+    const own = /^per (pale|fess|chevron)$/.test(ctx.div || '') && gMain.n >= 2 && gMain.n <= 3;
+    const main = base.map(sl => own ? { c: sl.c.slice(), s: sl.s * f, rot: sl.rot } : { c: [fx + (sl.c[0] - fx) * f + dx, fy + (sl.c[1] - fy) * f + dy], s: sl.s * f, rot: sl.rot });
     return { main, around };
   }
   H.flankLayout = flankLayout;
