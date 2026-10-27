@@ -1,8 +1,11 @@
 /* Renders a coat of arms (the tree made by grammar.js) as SVG, in two styles:
 
    engraved  black ink on white, tinctures in Petra Sancta's hatching (1638), as on
-             Rolland's plates (1903-1926): hatch pitch 2.0 and line 0.65 per 100 of
-             shield width, dots for or on a 3.4 pitch, outline 1.0 (measured, STUDY.md 5.2);
+             Rolland's plates (1903-1926), outline 1.0 (measured, STUDY.md 5.2); hatch pitch
+             1.5 and line 0.4 per 100 of shield width, closer and thinner than Rolland's
+             2.0 and 0.62 at the user's request; the lines are cut by hand,
+             their gaps and widths varying as on the user's Italian plate, and or is a
+             random stipple at the density of a 3.4 dot pitch (see "engraved hatching");
              sable charges are solid black, as on Rolland's plates and the Italian page.
    colour    flat tinctures with thin dark outlines, as on the Commons charts.
 
@@ -25,21 +28,108 @@
   const DARK = '#1c1c1c';
   H.COLOURS = COLOURS;
 
-  const ENG = { pitch: 2.0, line: 0.62, dot: 3.4, dotR: 0.52, outline: 1.0, partLine: 0.55, chargeLine: 0.55, detail: 0.42 };
+  // pitch and line: closer and thinner than Rolland's 2.0 and 0.62 at the user's request (27 Oct 2026), near the
+  // large cells of the Italian plate (4.5 px on 315 px, 1.4 per 100); the dot density is that of the old 3.4 lattice
+  const ENG = { pitch: 1.5, line: 0.4, dot: 3.4, dotR: 0.42, outline: 1.0, partLine: 0.55, chargeLine: 0.55, detail: 0.42 };
 
-  function patternDefs(style, id) {
+  // ---------- engraved hatching, cut by hand ----------
+  // On the user's Italian plate (Primi elementi delle croci, a tincture key above crosses on hatched fields) the
+  // hatching keeps one pitch over the whole plate, about 4.5 px on its key shields and on its large cells alike,
+  // but the lines are not quite evenly spaced: the plate's gap spread (0.71 px on 4.2 px) matches lines each moved
+  // by about 10% of the pitch, once pixel rounding (0.40 px for perfectly regular lines, simulated) is allowed for;
+  // the line widths vary a little too. Each tincture is therefore a tile sixteen pitches square of lines whose
+  // places, widths and slight bends are drawn from the coat's seed; the bends and the swelling along a line repeat
+  // a whole number of times per tile, so tiles join without a seam, and the tile's period of 24 units is lost
+  // among the irregular gaps.
+  const HATCH = { gapSd: 0.09, widthSd: 0.08, swell: 0.06, bend: 0.015, n: 16, dotMin: 2.6, dotW: 47, dotH: 53 };
+  function rngFrom(seed) {
+    let a = seed >>> 0;
+    return () => { a = (a + 0x6D2B79F5) >>> 0; let x = a; x = Math.imul(x ^ (x >>> 15), x | 1); x ^= x + Math.imul(x ^ (x >>> 7), x | 61); return ((x ^ (x >>> 14)) >>> 0) / 4294967296; };
+  }
+  const gauss = r => { let u = 0; while (!u) u = r(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * r()); };
+  const clampN = (v, a) => Math.max(-a, Math.min(a, v));
+  const f2 = v => (Math.round(v * 100) / 100).toString();
+  // a family of lines running along y in a T x T tile (horiz: along x), as filled outlines
+  function lineFamily(r, T, pitch, width, horiz) {
+    const n = HATCH.n, K = 10; let d = '';
+    for (let i = 0; i < n; i++) {
+      const c = (i + 0.5) * pitch + clampN(HATCH.gapSd * gauss(r), 0.4) * pitch;
+      const w = width * Math.max(0.55, 1 + HATCH.widthSd * gauss(r));
+      const k = 1 + Math.floor(r() * 2), ph = r() * 6.283, ph2 = r() * 6.283, bend = HATCH.bend * (0.4 + r()), swell = HATCH.swell * (0.4 + r());
+      const edge = (side, shift) => {
+        const pts = [];
+        for (let j = -1; j <= K + 1; j++) {
+          const s = j / K * T, a = 6.283 * s / T;
+          const x = c + shift + bend * Math.sin(k * a + ph), hw = w / 2 * (1 + swell * Math.sin(2 * a + ph2));
+          pts.push([x + side * hw, s]);
+        }
+        return pts;
+      };
+      // a line near either side of the tile is drawn again one tile over, so the next tile has its other half
+      for (const shift of [0].concat(c < width * 2 ? [T] : [], c > T - width * 2 ? [-T] : [])) {
+        const pts = edge(-1, shift).concat(edge(1, shift).reverse());
+        d += 'M' + pts.map(([x, y]) => horiz ? `${f2(y)} ${f2(x)}` : `${f2(x)} ${f2(y)}`).join('L') + 'Z';
+      }
+    }
+    return d;
+  }
+  // Or: dots thrown at random into a tile of 47 by 53 units (two tiles to the shield), each kept only if it is at
+  // least dotMin (2.6) from every other, measured across the tile's edges too, until the tile is full: every dot
+  // then stands about the same distance from its neighbours, at the density of the old 3.4 lattice, without its
+  // rows. (A Poisson stipple, kept only from touching, was tried and judged to look bad.) Dots are round caps on
+  // zero-length strokes, in three sizes. A grid of cells dotMin wide finds the neighbours to test.
+  function stipple(r, W, Hh, rDot) {
+    const dm = HATCH.dotMin, nx = Math.floor(W / dm), ny = Math.floor(Hh / dm), cw = W / nx, ch = Hh / ny;
+    const grid = new Map(), pts = [];
+    const near = (x, y) => {
+      const gx = Math.floor(x / cw), gy = Math.floor(y / ch);
+      for (let i = -1; i <= 1; i++) for (let j = -1; j <= 1; j++) {
+        for (const [u, v] of grid.get(((gx + i + nx) % nx) + ',' + ((gy + j + ny) % ny)) || []) {
+          const dx = Math.min(Math.abs(u - x), W - Math.abs(u - x)), dy = Math.min(Math.abs(v - y), Hh - Math.abs(v - y));
+          if (dx * dx + dy * dy < dm * dm) return true;
+        }
+      }
+      return false;
+    };
+    for (let k = 0, miss = 0; miss < 600 && k < 40000; k++) {
+      const x = r() * W, y = r() * Hh;
+      if (near(x, y)) { miss++; continue; }
+      miss = 0; pts.push([x, y]);
+      const key = Math.floor(x / cw) + ',' + Math.floor(y / ch);
+      (grid.get(key) || grid.set(key, []).get(key)).push([x, y]);
+    }
+    const cls = [0.8, 1.0, 1.2].map(f => ({ w: f2(2 * rDot * f), d: '' }));
+    for (const [x, y] of pts) {
+      const c = cls[Math.floor(r() * 3)], m = rDot * 1.3;
+      for (const [ox, oy] of [[0, 0], [W, 0], [-W, 0], [0, Hh], [0, -Hh]]) {
+        const cx = x + ox, cy = y + oy;
+        if (cx + m < 0 || cx - m > W || cy + m < 0 || cy - m > Hh) continue;
+        c.d += `M${f2(cx)} ${f2(cy)}h0.01`;
+      }
+    }
+    return cls.map(c => `<path d="${c.d}" stroke="#000" stroke-width="${c.w}" stroke-linecap="round" fill="none"/>`).join('');
+  }
+
+  function patternDefs(style, id, seed = 1, used = null) {
     if (style !== 'engraved') {
       return `<pattern id="${id}-ermine" patternUnits="userSpaceOnUse" width="12" height="14"><rect width="12" height="14" fill="#fff"/>${ermineSpot(6, 3.5, 3.2)}${ermineSpot(0, 10.5, 3.2)}${ermineSpot(12, 10.5, 3.2)}</pattern>`
         + `<pattern id="${id}-vair" patternUnits="userSpaceOnUse" width="16" height="16"><rect width="16" height="16" fill="${COLOURS.azure}"/>${vairBells(16, '#fff')}</pattern>`;
     }
-    const p = ENG.pitch, w = ENG.line;
+    const p = ENG.pitch, w = ENG.line, T = HATCH.n * p;
+    // each tincture from its own stream of the coat's seed; only the tinctures the coat uses are defined
+    const want = k => !used || used.has(k) || (k === 'azure' && used.has('vair'));
+    const tile = (k, inner, tr, W = T, Hh = T) => want(k) ? `<pattern id="${id}-${k}" patternUnits="userSpaceOnUse" width="${W}" height="${Hh}"${tr ? ` patternTransform="${tr}"` : ''}><rect width="${W}" height="${Hh}" fill="#fff"/>${inner()}</pattern>` : '';
+    // each family of lines is a path of its own: the outlines of crossing families wind in opposite senses, and in
+    // one path their crossings would cancel to white
+    const lines = (r, horiz) => `<path d="${lineFamily(r, T, p, w, horiz)}" fill="#000"/>`;
+    const rs = k => rngFrom(Math.imul(seed >>> 0, 2654435761) ^ Math.imul(k, 40503));
     return [
-      `<pattern id="${id}-gules" patternUnits="userSpaceOnUse" width="${p}" height="${p}"><rect width="${p}" height="${p}" fill="#fff"/><rect x="${(p - w) / 2}" width="${w}" height="${p}" fill="#000"/></pattern>`,
-      `<pattern id="${id}-azure" patternUnits="userSpaceOnUse" width="${p}" height="${p}"><rect width="${p}" height="${p}" fill="#fff"/><rect y="${(p - w) / 2}" width="${p}" height="${w}" fill="#000"/></pattern>`,
-      `<pattern id="${id}-sable" patternUnits="userSpaceOnUse" width="${p}" height="${p}"><rect width="${p}" height="${p}" fill="#fff"/><rect x="${(p - w) / 2}" width="${w}" height="${p}" fill="#000"/><rect y="${(p - w) / 2}" width="${p}" height="${w}" fill="#000"/></pattern>`,
-      `<pattern id="${id}-vert" patternUnits="userSpaceOnUse" width="${p * 1.41}" height="${p * 1.41}" patternTransform="rotate(-45)"><rect width="${p * 1.41}" height="${p * 1.41}" fill="#fff"/><rect x="${(p * 1.41 - w) / 2}" width="${w}" height="${p * 1.41}" fill="#000"/></pattern>`,
-      `<pattern id="${id}-purpure" patternUnits="userSpaceOnUse" width="${p * 1.41}" height="${p * 1.41}" patternTransform="rotate(45)"><rect width="${p * 1.41}" height="${p * 1.41}" fill="#fff"/><rect x="${(p * 1.41 - w) / 2}" width="${w}" height="${p * 1.41}" fill="#000"/></pattern>`,
-      `<pattern id="${id}-or" patternUnits="userSpaceOnUse" width="${ENG.dot}" height="${ENG.dot * 1.732}"><rect width="${ENG.dot}" height="${ENG.dot * 1.732}" fill="#fff"/><circle cx="${ENG.dot / 2}" cy="${ENG.dot * 0.433}" r="${ENG.dotR}" fill="#000"/><circle cx="0" cy="${ENG.dot * 1.299}" r="${ENG.dotR}" fill="#000"/><circle cx="${ENG.dot}" cy="${ENG.dot * 1.299}" r="${ENG.dotR}" fill="#000"/></pattern>`,
+      tile('gules', () => lines(rs(1), false)),
+      tile('azure', () => lines(rs(2), true)),
+      tile('sable', () => lines(rs(3), false) + lines(rs(4), true)),
+      tile('vert', () => lines(rs(5), false), 'rotate(-45)'),
+      tile('purpure', () => lines(rs(6), false), 'rotate(45)'),
+      tile('or', () => stipple(rs(7), HATCH.dotW, HATCH.dotH, ENG.dotR), null, HATCH.dotW, HATCH.dotH),
       `<pattern id="${id}-ermine" patternUnits="userSpaceOnUse" width="12" height="14"><rect width="12" height="14" fill="#fff"/>${ermineSpot(6, 3.5, 3.2)}${ermineSpot(0, 10.5, 3.2)}${ermineSpot(12, 10.5, 3.2)}</pattern>`,
       `<pattern id="${id}-vair" patternUnits="userSpaceOnUse" width="16" height="16"><rect width="16" height="16" fill="url(#${id}-azure)"/>${vairBells(16, '#fff', '#000')}</pattern>`,
       `<pattern id="${id}-proper" patternUnits="userSpaceOnUse" width="${p * 2}" height="${p * 2}"><rect width="${p * 2}" height="${p * 2}" fill="#fff"/><circle cx="${p}" cy="${p}" r="0.35" fill="#000"/></pattern>`,
@@ -388,7 +478,7 @@
   // speckle of at most five per cent greys the paper here and there. The seeds follow the coat, so it prints the same way each time.
   function printFilter(id, seed, style) {
     const s = (seed % 9973) + 1;
-    const rag = style === 'engraved' ? 0.32 : 0.4;
+    const rag = style === 'engraved' ? 0.14 : 0.4;
     return `<filter id="${id}-print" filterUnits="userSpaceOnUse" x="-4" y="-4" width="108" height="128" color-interpolation-filters="sRGB">`
       + `<feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="${s}" result="fine"/>`
       + `<feDisplacementMap in="SourceGraphic" in2="fine" scale="${rag}" xChannelSelector="R" yChannelSelector="G" result="ragged"/>`
@@ -414,8 +504,10 @@
     pen.out.push(`<path d="${P.toD(sh.path)}" fill="none" stroke="${eng ? '#000' : DARK}" stroke-width="${eng ? ENG.outline : 0.9}" stroke-linejoin="round"/>`);
     const size = opt.size ? ` width="${opt.size}" height="${Math.round(opt.size * 1.2)}"` : '';
     const print = opt.print !== false;
-    const body = print ? `<g filter="url(#${id}-print)">${pen.out.join('')}</g>` : pen.out.join('');
-    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 104 124"${size}${opt.title ? ` role="img" aria-label="${opt.title.replace(/"/g, '&quot;')}"` : ''}><defs>${patternDefs(style, id)}${pen.defs.join('')}${print ? printFilter(id, arms.seed || 1, style) : ''}</defs>${body}</svg>`;
+    const inner = pen.out.join('');
+    const body = print ? `<g filter="url(#${id}-print)">${inner}</g>` : inner;
+    const used = new Set([...inner.matchAll(new RegExp(`url\\(#${id}-([a-z]+)\\)`, 'g'))].map(m => m[1]));
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 104 124"${size}${opt.title ? ` role="img" aria-label="${opt.title.replace(/"/g, '&quot;')}"` : ''}><defs>${patternDefs(style, id, arms.seed || 1, used)}${pen.defs.join('')}${print ? printFilter(id, arms.seed || 1, style) : ''}</defs>${body}</svg>`;
   }
   H.renderSVG = renderSVG;
   H.drawChargeSVG = function (name, style = 'engraved', t = 'gules', opts = {}) {
