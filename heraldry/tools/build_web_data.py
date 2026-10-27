@@ -39,6 +39,7 @@ HORN = {'antler', 'bugle horn'}
 def cls_of(name):
     if name is None: return None
     if name in CLASS: return CLASS[name]
+    if name.startswith('lion '): return 'lion'
     if name in GEOM: return 'geometric'
     if name in STAR: return 'star'
     if name in CROSS: return 'cross'
@@ -56,7 +57,7 @@ def canon(st):
     if f.get('semy'):
         parts.append(f"F:semy:{f['semy']}:{','.join(ft)}:{(st.get('semy') or {}).get('t')}")
     else:
-        parts.append(f"F:{f['kind']}:{f.get('n') or ''}:{f.get('line') or ''}:{','.join(x or '?' for x in ft)}")
+        parts.append(f"F:{f['kind']}:{f.get('n') or ''}:{f.get('line') or ''}:{','.join(x or '?' for x in ft)}" + (':ms' if f.get('masoned') and f['kind'] == 'per fess' else ''))
     o = st.get('ordinary')
     if o:
         t = o.get('t'); t = ','.join(t) if isinstance(t, list) else t
@@ -66,6 +67,8 @@ def canon(st):
     if m: parts.append(f"M:{m.get('charge')}:{m.get('n')}:{m.get('t')}:{'cr' if m.get('mods', {}).get('crowned') else ''}{'dh' if m.get('mods', {}).get('doubleheaded') else ''}{'is' if m.get('mods', {}).get('issuant') else ''}")
     a = st.get('around')
     if a: parts.append(f"A:{a.get('charge')}:{a.get('n')}:{a.get('t')}")
+    b = st.get('base')
+    if b: parts.append(f"BS:{b['kind']}:{b.get('t')}")
     for k in ('chief', 'bordure', 'label', 'canton'):
         e = st.get(k)
         if e:
@@ -110,6 +113,11 @@ def main():
                 q=r.get('quartered', 0) if r.get('quartered', 0) >= 2 else 0,
             )
             if tpl['f']['k'] == 'semy': tpl['f']['s'] = cls_of(f.get('semy'))
+            # masoned: the lower part of a field per fess embattled (a wall), or an ordinary; a base: a mount or a
+            # terrace in base, the principal charges standing on it (on) or above it
+            if f.get('masoned') and f['kind'] == 'per fess': tpl['f']['ms'] = 1
+            if o and o.get('masoned'): tpl['o']['ms'] = 1
+            if r.get('base'): tpl['bs'] = dict(k=r['base']['kind'], on=r['base'].get('on', 1))
             sk[json.dumps(tpl, sort_keys=True)] += 1
             # charges per slot and class (library charges only; others count toward the bucket)
             for slot, c in (('main', m), ('on', o.get('on') if o else None), ('around', a), ('chief', (r.get('chief') or {}).get('on')),
@@ -143,6 +151,7 @@ def main():
             if r.get('bordure') and isinstance(r['bordure'].get('t'), str): cond[f'bordure|{under}'][r['bordure']['t']] += 1
             if r.get('label') and isinstance(r['label'].get('t'), str): cond[f'label|{under}'][r['label']['t']] += 1
             if r.get('canton') and isinstance(r['canton'].get('t'), str): cond[f'canton|{under}'][r['canton']['t']] += 1
+            if r.get('base') and r['base'].get('t'): cond[f'base|{under}'][r['base']['t']] += 1
             if f.get('semy') and (r.get('semy') or {}).get('t'): cond[f'semy|{under}'][r['semy']['t']] += 1
         out[roll] = dict(
             n_dev=len(rows), n_covered=len(cov), n_ok=sum(1 for r in rows if r['status'] == 'ok'),

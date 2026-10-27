@@ -407,6 +407,13 @@
       }
       div.regions.forEach((r, i) => pen.fill(P.poly(r.poly), field.t[r.t]));
       for (const l of div.lines) pen.stroke(l, plw);
+      // masoned: the lower part of a field per fess embattled is a wall
+      if (field.masoned && div.regions[1]) {
+        drawMasonry(pen, pen.clip(P.poly(div.regions[1].poly)), [-5, 0, 105, 125], field.masoned, 6.5);
+        for (const l of div.lines) pen.stroke(l, plw);
+      }
+      // fretty: the fret over the field
+      if (field.kind === 'fretty') drawFret(pen, null, [-5, -5, 105, 125], field.t[1], 17, 4.2);
     }
     // semy
     if (arms.semy) for (const s of H.semy(sh, 11)) drawCharge(pen, { charge: arms.semy.charge }, s, arms.semy.t);
@@ -420,13 +427,21 @@
           pen.out.push(`<g clip-path="url(#${rc})">`); drawOrdinary(pen, ord, field.t[1 - r.t], plw); pen.out.push('</g>');
         });
       } else drawOrdinary(pen, ord, ao.t, plw);
-      if (ao.pattern) {
+      if (ao.pattern === 'fretty' || ao.masoned) {
+        const oc = pen.clip(ordPath(ord)), bb = P.bounds(ordPath(ord));
+        if (ao.pattern === 'fretty') drawFret(pen, oc, bb, ao.t2, 11, 2.7);
+        if (ao.masoned) drawMasonry(pen, oc, bb, ao.masoned, 4.5);
+        for (const l of ord.lines || []) pen.stroke(l, plw);
+      } else if (ao.pattern) {
         const oc = pen.clip(ord.path || P.concat(...(ord.polys || [ord.poly]).map(q => P.poly(q))));
         for (const q of H.ordinaryChecks(ao.kind, sh, ao.pattern === 'compony' ? 1 : 2)) pen.fill(P.poly(q), ao.t2, { clip: oc });
         for (const l of ord.lines || []) pen.stroke(l, plw);
       }
     };
     if (ord && !ao.over) paintOrd();
+    // a base: a trimount or a terrace issuing from the base of the shield
+    const bs = arms.base ? H.base(arms.base.kind, sh) : null;
+    if (bs) drawBase(pen, bs, arms.base.t, plw);
     // charges: on the ordinary, around it, or on the field
     const chief = arms.chief ? H.ordinary('chief', sh, { line: arms.chief.line }) : null;
     const gs = arms.charges || [];
@@ -441,6 +456,20 @@
       return H.arrangement(g.n, sh, { ord: ord && !ao.over && (g.around || g.on !== 'ordinary') ? ord : null, chief: !!arms.chief, inPale: g.inPale, inFess: g.inFess, div: field.kind });
     };
     const slotMap = new Map(gs.map(g => [g, slotsFor(g)]));
+    if (bs) {
+      // The field above the base is laid out as the whole field was, from the top (or the chief) down to the
+      // base. Principal charges in one row stand on it, each with its foot on the ground below its centre.
+      const top = chief ? chief.h : 0, k = Math.min(1, (bs.top + 4 - top) / (104 - top));
+      for (const [g, ss] of slotMap) {
+        if (g.on === 'ordinary') continue;
+        let s2 = ss.map(sl => Object.assign({}, sl, { c: [sl.c[0], top + (sl.c[1] - top) * k], s: sl.s * k }));
+        if (g === gMain && arms.base.on && new Set(s2.map(sl => Math.round(sl.c[1]))).size === 1) {
+          const hh = chargeHeight(g) / 2;
+          s2 = s2.map(sl => Object.assign({}, sl, { c: [sl.c[0], bs.surface(sl.c[0]) - sl.s * hh + 1.5] }));
+        }
+        slotMap.set(g, s2);
+      }
+    }
     if (arms.canton) {
       // A canton takes the dexter chief (below a chief, if there is one). The charges on the field are drawn
       // together toward a point in sinister base, by the least amount that clears every box of the canton,
@@ -481,6 +510,10 @@
     // chief
     if (chief) {
       drawOrdinary(pen, chief, arms.chief.t, plw);
+      if (arms.chief.pattern === 'fretty') {
+        drawFret(pen, pen.clip(ordPath(chief)), P.bounds(ordPath(chief)), arms.chief.t2, 11, 2.7);
+        for (const l of chief.lines || []) pen.stroke(l, plw);
+      }
       if (arms.chief.charges) {
         const cs = arms.chief.charges;
         if (cs.issuant) {
@@ -495,6 +528,60 @@
     // label (a brisure)
     if (arms.label) { const lb = H.ordinary('label', sh); for (const p of lb.polys) pen.fill(P.poly(p), arms.label.t); for (const l of lb.lines) pen.stroke(l, plw); }
     pen.close();
+  }
+
+  const ordPath = o => o.path || P.concat(...(o.polys || [o.poly]).map(q => P.poly(q)));
+  // Fretty: bendlets and bendlets sinister d apart, w wide, interlaced: the bendlet sinister passes over at every
+  // other crossing (drawn last), the bendlet at the others (a piece of it redrawn across, with its edges only).
+  function drawFret(pen, clip, bb, t, d, w) {
+    const lw = pen.style === 'engraved' ? ENG.partLine : 0.45, cl = clip ? { clip } : {};
+    const [x0, y0, x1, y1] = bb, cx = (x0 + x1) / 2, cy = (y0 + y1) / 2, R = Math.hypot(x1 - x0, y1 - y0) / 2 + d;
+    const r = Math.SQRT1_2, h = w / 2, ed = [r, r], es = [r, -r], nd = [-r, r], ns = [r, r];
+    const band = (p, e, L) => {
+      const n = [-e[1], e[0]];
+      return [[p[0] - e[0] * L + n[0] * h, p[1] - e[1] * L + n[1] * h], [p[0] + e[0] * L + n[0] * h, p[1] + e[1] * L + n[1] * h],
+        [p[0] + e[0] * L - n[0] * h, p[1] + e[1] * L - n[1] * h], [p[0] - e[0] * L - n[0] * h, p[1] - e[1] * L - n[1] * h]];
+    };
+    const drawBand = (q) => { pen.fill(P.poly(q), t, cl); pen.stroke([q[0], q[1]], lw, cl); pen.stroke([q[3], q[2]], lw, cl); };
+    const K = Math.ceil(R / d) + 1;
+    for (let i = -K; i <= K; i++) drawBand(band([cx + nd[0] * i * d, cy + nd[1] * i * d], ed, 2 * R));
+    for (let j = -K; j <= K; j++) drawBand(band([cx + ns[0] * j * d, cy + ns[1] * j * d], es, 2 * R));
+    for (let i = -K; i <= K; i++) for (let j = -K; j <= K; j++) {
+      if (((i + j) % 2 + 2) % 2 === 0) continue;
+      const p = [cx + (nd[0] * i + ns[0] * j) * d, cy + (nd[1] * i + ns[1] * j) * d];
+      if (p[0] < x0 - d || p[0] > x1 + d || p[1] < y0 - d || p[1] > y1 + d) continue;
+      drawBand(band(p, ed, h + lw));
+    }
+  }
+  // Masoned: courses of stone h high in lines of the masoning tincture, each course's joints midway between
+  // those of the next
+  function drawMasonry(pen, clip, bb, t, h) {
+    const eng = pen.style === 'engraved';
+    const col = t === 'argent' ? '#fff' : eng || t === 'sable' ? (eng ? '#000' : DARK) : COLOURS[t] || DARK;
+    const lw = eng ? 0.45 : 0.55, cl = { clip, color: col }, L = h * 2.2;
+    const [x0, y0, x1, y1] = bb;
+    for (let r = Math.floor(y0 / h); r * h < y1; r++) {
+      const y = r * h;
+      pen.stroke([[x0, y], [x1, y]], lw, cl);
+      const off = (r % 2 ? L / 2 : 0);
+      for (let x = Math.floor((x0 - off) / L) * L + off; x < x1; x += L) pen.stroke([[x, y], [x, y + h]], lw, cl);
+    }
+  }
+  // a base: the trimount's hills or the terrace's ground, outlined as a union, with its contour lines
+  function drawBase(pen, bs, t, plw) {
+    const eng = pen.style === 'engraved';
+    for (const p of bs.parts) pen.out.push(`<path d="${pen.d(p)}" fill="none" stroke="${eng ? '#000' : DARK}" stroke-width="${plw * 2}" stroke-linejoin="round"/>`);
+    for (const p of bs.parts) pen.fill(p, t);
+    const col = t === 'sable' ? (eng ? '#fff' : '#9a9a9a') : (eng ? '#000' : DARK);
+    for (const dt of bs.details) pen.stroke(dt, eng ? ENG.detail : 0.4, { color: col });
+  }
+  // the height of a charge as drawn in a slot, over the slot's size (chargeMatrix scales the larger side to it)
+  function chargeHeight(spec) {
+    const art = artFor(spec);
+    if (art) return art.h / Math.max(art.w, art.h) * (spec.fit || 1);
+    const b = H.CHARGES[spec.charge]; if (!b) return 1;
+    const bb = P.bounds(P.concat(...b(spec.opts || {}).parts.map(p => p.path)));
+    return (bb[3] - bb[1]) / Math.max(bb[2] - bb[0], bb[3] - bb[1]) * (spec.fit || 1);
   }
 
   function drawOrdinary(pen, ord, t, plw) {

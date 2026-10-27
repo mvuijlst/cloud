@@ -29,6 +29,10 @@ PARTITIONS = [  # (regex at the start of the field phrase, kind, n)
     (r'^barry of (\d+)', 'barry', 'g'), (r'^barry', 'barry', 6), (r'^barruly', 'barry', 10), (r'^paly of (\d+)', 'paly', 'g'), (r'^paly', 'paly', 6),
     (r'^bendy sn', 'bendy sinister', 6), (r'^bendy of (\d+)', 'bendy', 'g'), (r'^bendy', 'bendy', 6), (r'^(checky|chequy) of (\d+)', 'chequy', 'g2'), (r'^(checky|chequy)', 'chequy', 6),
     (r'^(lozengy|lozangy)', 'lozengy', 5), (r'^vairy', 'vair', None), (r'^chevronny', 'chevronny', 6),
+    # pily: piles counterposed, counted in pieces (pile and interval both), palewise unless barry or bendy (Parker:
+    # "paly pily is only another name for pily"); fretty, a field with a fret of bendlets interlaced over it
+    (r'^pily-paly of (\d+)', 'pily', 'g'), (r'^pily-paly', 'pily', 6), (r'^pily-barry of (\d+)', 'pily barry', 'g'), (r'^pily-barry', 'pily barry', 6),
+    (r'^pily-bendy of (\d+)', 'pily bendy', 'g'), (r'^pily-bendy', 'pily bendy', 6), (r'^fretty\b', 'fretty', None),
 ]
 ORDS = [  # ordinaries that can stand as the main element
     (r'^(\d) bars', 'bars', 'g'), (r'^bar\b', 'bars', 1), (r'^(\d) pales', 'pales', 'g'), (r'^(\d) bends sn', 'bends sinister', 'g'), (r'^(\d) bends', 'bends', 'g'),
@@ -37,7 +41,8 @@ ORDS = [  # ordinaries that can stand as the main element
     (r'^saltire\b(?! couped)', 'saltire', 1), (r'^pile\b', 'pile', 1), (r'^chief\b', 'chief', 1), (r'^(border|bordure)\b', 'bordure', 1), (r'^label\b', 'label', 1),
     (r'^canton\b|^quarter\b', 'canton', 1),
 ]
-LINES = {'indented': 'indented', 'dancetty': 'dancetty', 'undy': 'wavy', 'wavy': 'wavy', 'embattled': 'embattled', 'engrailed': 'engrailed', 'invected': 'invected', 'nebuly': 'nebuly'}
+LINES = {'indented': 'indented', 'dancetty': 'dancetty', 'undy': 'wavy', 'wavy': 'wavy', 'embattled': 'embattled', 'crenelated': 'embattled', 'crenellated': 'embattled',
+         'crenely': 'embattled', 'engrailed': 'engrailed', 'invected': 'invected', 'nebuly': 'nebuly'}
 UNSUPPORTED_LINES = ['embattled-counterembattled', 'raguly', 'grady', 'potenty', 'flory', 'compony', 'checky', 'cotised', 'fimbriated', 'voided', 'couped', 'humetty', 'trefly', 'per pale', 'qtly', 'per fess']
 
 # charge nouns -> library charge (exact) or None (bucket); order matters (longest first)
@@ -83,9 +88,13 @@ def charge_phrase(s):
             if re.search(r'\bcr\.|crowned', tail): mods['crowned'] = True
             if re.search(r'doubleheaded', tail): mods['doubleheaded'] = True
             if re.search(r'\bguard\b', tail): mods['guardant'] = True
+            if re.search(r'\breguard', tail): mods['reguardant'] = True
+            # standing on a mount (the rolls' Dreiberg) or a terrace: a base of its own, not a charge
+            bm = re.search(r'\bon (a )?(mount|trimount|hill|terrace)s?\b', tail)
+            base = ('terrace' if bm.group(2) == 'terrace' else 'trimount') if bm else None
             if re.search(r'q\.f\.', tail): mods['queue fourchy'] = True
             att = None
-            for a, k in (('passt', 'passant'), ('passant', 'passant'), ('statant', 'statant'), ('stat\\b', 'statant'), ('rampant', 'rampant'), ('salient|saillant|segreant', 'rampant'),
+            for a, k in (('passt', 'passant'), ('passant', 'passant'), ('statant', 'statant'), ('stat\\b', 'statant'), ('rampant', 'rampant'), ('salient|saillant|springing', 'salient'), ('segreant', 'rampant'),
                          ('sejt|sejant', 'sejant'), ('couchant|couched', 'couchant'), ('naissant|isst', 'issuant'), ('embowed', 'embowed'), ('naiant', 'naiant'), ('addorsed', 'addorsed'), ('fitchy', 'fitchy')):
                 if re.search(r'\b' + a, tail): att = att or k; mods[k] = True
             arr = None
@@ -97,9 +106,12 @@ def charge_phrase(s):
             if mods.get('sejant') or mods.get('couchant'): unsupported.append('attitude')
             if re.search(r'\bholding\b|\bch\.|winged|hooded|(?<!double)(?<!triple)headed|tripleheaded|collared|saddled|with\b', tail) and lib != 'trimount': unsupported.append('modifier')
             if lib in BEAST:
-                if lib == 'lion' and (mods.get('passant')): name = 'lion passant'
-                elif lib == 'lion' and mods.get('statant'): name = 'lion statant'
-                elif lib == 'lion': name = 'lion rampant'
+                if lib == 'lion':
+                    name = 'lion passant' if mods.get('passant') else 'lion statant' if mods.get('statant') else 'lion salient' if mods.get('salient') else 'lion rampant'
+                    # looking out of the shield, or back over its shoulder
+                    if mods.get('reguardant'): name += ' reguardant'
+                    elif mods.get('guardant'): name += ' guardant'
+                elif lib != 'griffin' and mods.get('salient'): name = f'{lib} salient'
                 elif lib in ('stag', 'horse', 'goat', 'boar', 'bull', 'unicorn') and mods.get('rampant'): name = f'{lib} rampant'
                 elif lib in ('stag', 'horse', 'goat', 'boar', 'talbot', 'wolf', 'bear', 'bull', 'unicorn', 'griffin') and mods.get('passant'): name = f'{lib} passant'
                 elif lib in ('stag', 'horse', 'goat', 'boar', 'bull') and not mods.get('issuant'): name = f'{lib} statant'
@@ -109,14 +121,14 @@ def charge_phrase(s):
             else: name = lib
             noun = mm.group(1)
             approx = noun not in (lib, lib + 's') and not noun.startswith(lib.split()[0])
-            return dict(charge=name, n=n, mods=mods, arr=arr, noun=noun, unsupported=unsupported, approx=approx, raw=s)
+            return dict(charge=name, n=n, mods=mods, arr=arr, noun=noun, unsupported=unsupported, approx=approx, raw=s, base=base)
     return dict(charge=None, n=n, noun=rest.split(' ')[0] if rest else '', raw=s, unsupported=['not in library'])
 
 
 def parse_coat(blz, codes):
     b = blz.lower().strip()
     b = re.sub(r'\s+', ' ', b)
-    out = dict(field=None, ordinary=None, main=None, on=None, around=None, chief=None, bordure=None, label=None, canton=None, status='ok', reasons=[])
+    out = dict(field=None, ordinary=None, main=None, on=None, around=None, chief=None, bordure=None, label=None, canton=None, base=None, status='ok', reasons=[])
     def out_(r): out['status'] = 'out'; out['reasons'].append(r)
     def bucket(r):
         if out['status'] == 'ok': out['status'] = 'bucket'
@@ -143,6 +155,10 @@ def parse_coat(blz, codes):
             for w, lt in LINES.items():
                 if rest.startswith(w): fk['line'] = lt; rest = rest[len(w):].strip()
             if rest.startswith('plain'): rest = rest[5:].strip()
+            if rest.startswith('masoned'):
+                fk['masoned'] = True; rest = rest[7:].strip()
+                mn = re.match(r'^of (\d+)$', rest)
+                if mn and fk.get('n'): fk['n'] = int(mn.group(1))
             if rest:
                 # a partition carrying charges in one part ("per pale eagle isst") is outside the grammar
                 if re.match(r'^(of \d+|of)\b', rest): rest = ''
@@ -164,6 +180,8 @@ def parse_coat(blz, codes):
         if letters[:1] == ['Z']: take(1)
     else:
         fk['t'] = take(tk)
+        if fk.get('masoned'): fk['ms'] = (take(1) or [None])[0]
+    if fk['kind'].startswith('pily') and fk.get('n') and fk['n'] % 2: fk['n'] *= 2   # "pily of 3": three piles, six pieces
     out['field'] = fk
     if fk.get('semy'):
         out['semy']['t'] = (take(1) or [None])[0]
@@ -187,9 +205,10 @@ def parse_coat(blz, codes):
                 rest = main_part[m.end():].strip()
                 for w, lt in LINES.items():
                     if re.match(w + r'\b', rest): ok['line'] = lt; rest = rest[len(w):].strip()
-                pm = re.match(r'^(checky|compony|counter-?compony|per pale)\b', rest)
+                pm = re.match(r'^(checky|compony|counter-?compony|per pale|fretty)\b', rest)
                 if pm:
-                    ok['pattern'] = {'checky': 'checky', 'compony': 'compony', 'per pale': 'per pale'}.get(pm.group(1), 'checky'); rest = rest[pm.end():].strip()
+                    ok['pattern'] = {'checky': 'checky', 'compony': 'compony', 'per pale': 'per pale', 'fretty': 'fretty'}.get(pm.group(1), 'checky'); rest = rest[pm.end():].strip()
+                if rest.startswith('masoned'): ok['masoned'] = True; rest = rest[7:].strip()
                 if kind == 'canton' and rest.startswith('sn'):
                     ok['kind'] = 'canton sinister'; rest = rest[2:].strip()
                 if rest:
@@ -205,6 +224,7 @@ def parse_coat(blz, codes):
             else:
                 t = None if cch else (take(1) or [None])[0]
                 ok['t'] = t if not cch else 'counterchanged'
+            if ok.get('masoned'): ok['ms'] = (take(1) or [None])[0]
             target = kind if kind in ('chief', 'bordure', 'label') else 'canton' if kind.startswith('canton') else 'ordinary'
             if target == 'ordinary' and out['ordinary']: out_('two ordinaries'); continue
             out[target] = ok
@@ -225,6 +245,7 @@ def parse_coat(blz, codes):
         # otherwise principal charges
         cp = charge_phrase(main_part)
         cp['t'] = 'counterchanged' if cch else (take(1) or [None])[0]
+        if cp.get('base'): out['base'] = dict(kind=cp['base'], t=(take(1) or [None])[0], on=1)
         if on_part:
             sub = charge_phrase(on_part); sub['t'] = (take(1) or [None])[0]
             cp['charged'] = sub
@@ -239,6 +260,10 @@ def parse_coat(blz, codes):
         out['main'] = cp
         if cp['charge'] is None: bucket('main: ' + cp['noun'])
         elif cp['unsupported']: bucket('main: ' + ','.join(cp['unsupported']))
+    # a mount in base that accompanies the principal charge or an ordinary is a base too, the charges above it
+    a = out['around']
+    if a and a.get('charge') == 'trimount' and a.get('where') == 'in base' and a.get('n') == 1 and not out['base']:
+        out['base'] = dict(kind='trimount', t=a.get('t'), on=0); out['around'] = None
     out['tinctures_aligned'] = li == len(letters)
     if not out['field'].get('t') and out['field']['kind'] != 'plain': out['tinctures_aligned'] = False
     return out

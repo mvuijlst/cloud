@@ -2,11 +2,11 @@
  "zurich": {
   "test1_fit": {
    "n": 520,
-   "ok": 368,
-   "bucket": 116,
-   "out": 36,
-   "structure_covered": 0.9308,
-   "library_covered": 0.7077,
+   "ok": 371,
+   "bucket": 114,
+   "out": 35,
+   "structure_covered": 0.9327,
+   "library_covered": 0.7135,
    "gate": 0.95,
    "passed": false
   },
@@ -25,11 +25,11 @@
  "grunenberg": {
   "test1_fit": {
    "n": 2064,
-   "ok": 1452,
-   "bucket": 463,
-   "out": 149,
-   "structure_covered": 0.9278,
-   "library_covered": 0.7035,
+   "ok": 1481,
+   "bucket": 440,
+   "out": 143,
+   "structure_covered": 0.9307,
+   "library_covered": 0.7175,
    "gate": 0.95,
    "passed": false
   },
@@ -48,11 +48,11 @@
  "rugen": {
   "test1_fit": {
    "n": 3307,
-   "ok": 2172,
-   "bucket": 772,
-   "out": 363,
-   "structure_covered": 0.8902,
-   "library_covered": 0.6568,
+   "ok": 2210,
+   "bucket": 746,
+   "out": 351,
+   "structure_covered": 0.8939,
+   "library_covered": 0.6683,
    "gate": 0.95,
    "passed": false
   }
@@ -60,11 +60,11 @@
  "sanktgallen": {
   "test1_fit": {
    "n": 1167,
-   "ok": 807,
-   "bucket": 247,
-   "out": 113,
-   "structure_covered": 0.9032,
-   "library_covered": 0.6915,
+   "ok": 827,
+   "bucket": 230,
+   "out": 110,
+   "structure_covered": 0.9057,
+   "library_covered": 0.7087,
    "gate": 0.95,
    "passed": false
   }
@@ -72,98 +72,98 @@
  "late": {
   "test1_fit": {
    "n": 6538,
-   "ok": 4431,
-   "bucket": 1482,
-   "out": 625,
-   "structure_covered": 0.9044,
-   "library_covered": 0.6777,
+   "ok": 4518,
+   "bucket": 1416,
+   "out": 604,
+   "structure_covered": 0.9076,
+   "library_covered": 0.691,
    "gate": 0.95,
    "passed": false
   },
   "test4_distribution": {
    "n": 500,
-   "energy": 1.5621,
-   "energy_threshold": 0.0463,
-   "max_ks": 0.636,
+   "energy": 1.6083,
+   "energy_threshold": 0.0462,
+   "max_ks": 0.67,
    "ks_threshold": 0.07,
    "passed": false,
    "largest_mean_gaps": {
-    "n_tinct": 0.946,
-    "f_plain": 0.375,
-    "chief": 0.335,
-    "f_party": 0.244,
-    "m_n": 0.224,
-    "m_other": 0.218,
-    "ar_n": 0.185,
-    "chief_ch": 0.183
+    "n_tinct": 0.995,
+    "f_plain": 0.353,
+    "chief": 0.343,
+    "f_party": 0.23,
+    "m_n": 0.217,
+    "m_other": 0.207,
+    "ar_n": 0.206,
+    "chief_ch": 0.187
    }
   },
   "test4_secondary_library_coats_only": {
    "n": 500,
-   "energy": 1.357,
-   "energy_threshold": 0.0458,
-   "max_ks": 0.648,
-   "ks_threshold": 0.07,
+   "energy": 1.4045,
+   "energy_threshold": 0.0463,
+   "max_ks": 0.675,
+   "ks_threshold": 0.068,
    "passed": false,
    "largest_mean_gaps": {
-    "n_tinct": 0.903,
-    "f_plain": 0.364,
-    "chief": 0.322,
-    "f_party": 0.258,
-    "m_n": 0.258,
-    "ar_n": 0.191
+    "n_tinct": 0.953,
+    "f_plain": 0.345,
+    "chief": 0.332,
+    "m_n": 0.253,
+    "f_party": 0.245,
+    "ar_n": 0.213
    }
   },
   "test4_band_three_or_more_unquartered": {
-   "corpus_coats": 326,
-   "n": 163,
-   "energy": 0.6229,
-   "energy_threshold": 0.2032,
-   "max_ks": 0.4018,
-   "ks_threshold": 0.1411,
+   "corpus_coats": 332,
+   "n": 166,
+   "energy": 0.7539,
+   "energy_threshold": 0.1822,
+   "max_ks": 0.4277,
+   "ks_threshold": 0.1446,
    "passed": false,
    "largest_mean_gaps": {
-    "n_tinct": 0.86,
-    "m_other": 0.163,
-    "ar_n": 0.135,
-    "chief_ch": 0.108,
-    "m_lion": 0.106,
-    "m_flower": 0.101
+    "n_tinct": 0.907,
+    "m_other": 0.172,
+    "ar_n": 0.158,
+    "m_flower": 0.119,
+    "line": 0.109,
+    "m_lion": 0.107
    },
    "complexity_corpus": {
-    "0": 0.002,
-    "1": 0.574,
+    "0": 0.011,
+    "1": 0.564,
     "2": 0.282,
-    "3": 0.114,
+    "3": 0.115,
     "4": 0.025,
     "5": 0.003,
     "6": 0.0
    },
    "complexity_generated": {
-    "2": 0.082,
-    "3": 0.598,
-    "4": 0.32
+    "2": 0.124,
+    "3": 0.554,
+    "4": 0.322
    }
   },
   "test5_diversity": {
-   "generated": 12.182,
-   "corpus": 7.911,
-   "ratio": 1.54,
+   "generated": 12.136,
+   "corpus": 7.927,
+   "ratio": 1.531,
    "passed": true
   },
   "test5_repetition": {
    "generated_top_share": 0.004,
-   "generated_top": "F:plain:::or|O:bend:1::compony:argent,gules|M:eagle:1:sable:",
-   "corpus_top_share": 0.011,
-   "corpus_top": "F:plain:::or|M:lion rampant:1:sable:",
+   "generated_top": "F:plain:::gules|M:wing:2:argent:|CH:chief:::argent",
+   "corpus_top_share": 0.0103,
+   "corpus_top": "F:plain:::or|M:eagle:1:sable:",
    "passed": true
   },
   "test5_matches": {
    "no_match_share": 1.0,
-   "no_match_without_redraw": 0.998,
+   "no_match_without_redraw": 0.996,
    "target": 0.7,
    "passed": true,
-   "note": "index = development coats of both rolls only; the Clemmensen Ordinary, Papworth and Rietstap were not indexed"
+   "note": "index = the parsed coats of Zürich, Grünenberg (development), Rugen and St. Gallen-Haggenberg; the Clemmensen Ordinary, Papworth and Rietstap were not indexed"
   }
  }
 }

@@ -691,6 +691,18 @@
     const plural = { lion: 'lions', bear: 'bears', boar: 'boars', wolf: 'wolves', talbot: 'talbots', stag: 'stags', horse: 'horses', goat: 'goats', bull: 'bulls', unicorn: 'unicorns', griffin: 'griffins' }[sp];
     REG[`${sp} ${at}`] = [`${plural} ${at}`, sp === 'lion' ? 'lion' : 'beast'];
   }
+  // lions guardant (looking out of the shield) and reguardant (looking back), and beasts salient (springing,
+  // both hind legs on the ground): the imported art draws them; the drawn fallback is the beast in its plain pose
+  for (const at of ['rampant', 'passant', 'statant', 'salient']) for (const head of ['', ' guardant', ' reguardant']) {
+    const k = `lion ${at}${head}`;
+    if (REG[k]) continue;
+    REG[k] = [`lions ${at}${head}`, 'lion'];
+    C[k] = (o) => beast('lion', POSES[at] ? at : 'rampant', o);
+  }
+  for (const sp of Object.keys(SPECIES)) if (sp !== 'lion' && sp !== 'griffin') {
+    REG[`${sp} salient`] = [`${REG[`${sp} rampant`][0].split(' ')[0]} salient`, 'beast'];
+    C[`${sp} salient`] = (o) => beast(sp, 'rampant', o);
+  }
   // charges that only the imported art draws (charges-art.js); the drawn fallback is the nearest drawn charge
   C.swan = (o) => C.martlet(o);
   C.dolphin = (o) => C.fish(Object.assign({ embowed: true }, o));

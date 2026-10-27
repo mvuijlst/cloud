@@ -23,57 +23,57 @@ All four are Steen Clemmensen's item-level editions, in one coded format, from [
 
 | roll | date | items in the edition | coats parsed | grammar expresses | used for |
 |---|---|---|---|---|---|
-| Grünenberg, Wappenbuch | finished 1483 | 2,293 | 2,064 (development; 39 held out) | 92.8% | the pooled roll |
-| Jörg Rugen, Wappenbuch | probably 1493-1499 | 3,619 | 3,307 | 89.0% | the pooled roll |
-| St. Gallen-Haggenberg | painted 1470 | 1,611 | 1,167 | 90.3% | the pooled roll |
-| Zürich roll | c. 1340 | 559 | 520 (development; 38 held out) | 93.1% | index and held-out test only |
+| Grünenberg, Wappenbuch | finished 1483 | 2,293 | 2,064 (development; 39 held out) | 93.1% | the pooled roll |
+| Jörg Rugen, Wappenbuch | probably 1493-1499 | 3,619 | 3,307 | 89.4% | the pooled roll |
+| St. Gallen-Haggenberg | painted 1470 | 1,611 | 1,167 | 90.6% | the pooled roll |
+| Zürich roll | c. 1340 | 559 | 520 (development; 38 held out) | 93.3% | index and held-out test only |
 
 `parse_clemmensen.py --more` reads the later two editions with the same item pattern as Grünenberg, and a looser coat-line pattern tried after the original one, since Rugen often sets its codes at the margin; the Zürich and Grünenberg parse is unchanged (their structures are identical before and after). The St. Gallen parse finds 1,223 of the 1,611 numbered items: headers in other layouts are skipped. Quartered coats are counted from items with more than one coat, as before. The rolls overlap: 24% of Rugen's items and 43% of St. Gallen's cite a Grünenberg item, many of them the same family; their coats are counted in each roll, as each roll painted them.
 
 ## How a coat is made
 
-1. **Skeleton.** A coat of the pooled roll is drawn at random, weighted by how often its structure occurs: field division and lines, ordinary (with pattern, number, line), the number, class (lion, eagle, beast, bird, fish, flower, star, cross, geometric, object, plant, horn), arrangement and attitude of its principal charges, charges on and around the ordinary, chief, canton, bordure, label, semy, quartering. 848 distinct skeletons from 5,913 coats (Grünenberg 1,915, Rugen 2,944, St. Gallen-Haggenberg 1,054, those the grammar expresses). The weight is multiplied by a factor for the skeleton's number of elements (below): 1 for one element, 2.5 for two, 5 for three or four, 4 for five; skeletons of six or more are left out, and quartered skeletons keep their plain weight.
-2. **Differencing.** The rolls' coats are simple: counting a divided field, a partition line, an ordinary (and its line or pattern), principal charges (and their number above one, and a charge on them), charges on the ordinary, accompanying charges, a chief (and its charges), a canton, a bordure and a label as one element each, and a quartering as two, 57% of the pooled coats have one element and 14% three or more. Simple arms are taken (Or, a lion rampant sable is Flanders), so each skeleton is now differenced, as heralds differenced arms, until it has a target of three elements (60% of coats) or four (40%). Each step adds one element:
+1. **Skeleton.** A coat of the pooled roll is drawn at random, weighted by how often its structure occurs: field division and lines, ordinary (with pattern, number, line), the number, class (lion, eagle, beast, bird, fish, flower, star, cross, geometric, object, plant, horn), arrangement and attitude of its principal charges, charges on and around the ordinary, chief, canton, bordure, label, semy, quartering, a mount or terrace in base. 886 distinct skeletons from 5,934 coats (Grünenberg 1,921, Rugen 2,956, St. Gallen-Haggenberg 1,057, those the grammar expresses). The weight is multiplied by a factor for the skeleton's number of elements (below): 1 for one element, 2.5 for two, 5 for three or four, 4 for five; skeletons of six or more are left out, and quartered skeletons keep their plain weight.
+2. **Differencing.** The rolls' coats are simple: counting a divided field, a partition line, an ordinary (and its line or pattern), principal charges (and their number above one, and a charge on them), charges on the ordinary, accompanying charges, a chief (and its charges), a canton, a bordure, a label, a mount or terrace in base and masoning as one element each, and a quartering as two, 57% of the pooled coats have one element and 14% three or more. Simple arms are taken (Or, a lion rampant sable is Flanders), so each skeleton is now differenced, as heralds differenced arms, until it has a target of three elements (60% of coats) or four (40%). Each step adds one element:
    - divide a plain field, as the roll's fields are divided or patterned, its principal charges then counterchanged at the roll's rate;
    - make one principal charge two, three or more, as often as the roll has each number;
    - set an ordinary between two or three principal charges ("a chevron between three roses");
    - lay charges on the ordinary, or set them between it;
    - add accompanying charges, a principal charge on an empty field, a chief or charges on it, a bordure, a label or a canton.
 
-   The steps' weights are fitted by `tools/fit_differencing.js` and kept in `H.DIFF_W`. The tool repeatedly draws 3,000 differenced coats. After each round it scales every step's weight by how far the share of the element that step adds falls short of, or exceeds, its share among the pooled roll's own unquartered coats of three elements or more (298 coats). Before the fit the weights were set by hand and gave a third of all coats a bordure (table below). Nothing is added twice, and nothing that would crowd the top of the shield: no chief with charges between an ordinary (no roll coat has both) or over charges in the upper part of a field per fess or per chevron, no chief over a field of counted pieces (barry, bendy, chevronny, tierced per fess), whose top pieces it would hide, a pairing the rolls almost never have (0.0% in Zürich, 0.3% in Grünenberg). Nor anything that would read as noise: a field under an ordinary is divided only by lines (per pale, per bend ...), never barry, bendy or chequy, and not at all under a compony or chequy ordinary; charges set between an ordinary on a patterned field are three at most; a patterned field with anything on it takes no fur among its tinctures (no bendy of gules and vair under a bend); charges in fess or in pale are never put on a field per saltire, gyronny or quarterly, where they would stand on the crossing. And no canton or label with accompanying charges in chief, no label with a bordure or chief, and accompanying charges only on a plain or semy field. Added charges are the small ones heralds used for differencing (mullets, crescents, martlets, roundels, annulets, roses, fleurs-de-lis, escallops, crosses), from the roll's own accompanying and on-ordinary charges.
+   The steps' weights are fitted by `tools/fit_differencing.js` and kept in `H.DIFF_W`. The tool repeatedly draws 3,000 differenced coats. After each round it scales every step's weight by how far the share of the element that step adds falls short of, or exceeds, its share among the pooled roll's own unquartered coats of three elements or more (315 coats; 298 before mounts and masoning counted). Before the fit the weights were set by hand and gave a third of all coats a bordure (table below). Nothing is added twice, and nothing that would crowd the top of the shield: no chief with charges between an ordinary (no roll coat has both) or over charges in the upper part of a field per fess or per chevron, no chief over a field of counted pieces (barry, bendy, chevronny, tierced per fess, pily), whose top pieces it would hide, a pairing the rolls almost never have (0.0% in Zürich, 0.3% in Grünenberg). Nor anything that would read as noise: a field under an ordinary is divided only by lines (per pale, per bend ...), never barry, bendy or chequy, and not at all under a compony or chequy ordinary; charges set between an ordinary on a patterned field are three at most; a patterned field with anything on it takes no fur among its tinctures (no bendy of gules and vair under a bend); charges in fess or in pale are never put on a field per saltire, gyronny or quarterly, where they would stand on the crossing. And no canton or label with accompanying charges in chief, no label with a bordure or chief, and accompanying charges only on a plain or semy field. Added charges are the small ones heralds used for differencing (mullets, crescents, martlets, roundels, annulets, roses, fleurs-de-lis, escallops, crosses), from the roll's own accompanying and on-ordinary charges.
 3. **Charges.** Each charge is redrawn from the roll's library charges of that class in that position (`main|lion`, `on|flower`, `chief|star`…). A charge outside the library in the skeleton (a human figure, a monster) is replaced from the position's whole distribution.
 4. **Tinctures.** The field from the roll's field tinctures (or partition pairs, or triples); every element from the roll's tinctures given the tincture it lies on (`main|argent`, `on|gules`, `chief|party`…). For elements of the roll's skeleton the rule of tincture is carried by these tables, not imposed; for elements added in differencing it is imposed (metal on colour, colour on metal, furs either way). A tincture is never laid on itself; an element on a divided field takes neither of its tinctures; a bordure never takes the chief's; a compony or chequy ordinary pairs a metal with a colour, neither of them the field's where the roll allows.
 5. **Novelty.** The coat's canonical key is looked up among the parsed coats of all four rolls whose charges are all in the library (4,799). If it matches a real coat it is redrawn (tinctures and charges from the next streams) up to six times; a redraw that breaks the rule of tincture is passed over unless the first draw broke it too, so redrawing does not change the breach rate (it doubled it, 2.4% to 4.6%, before this guard). If it still matches, it is kept and the page names who bore it.
 6. **Text.** The blazon is written from the tree in field, ordinary, charges, chief, canton, bordure, label order. The name is made as the rolls' place names are made: the determinant of one of the roll's compound names with a generic element in the roll's own spelling (*Hennen-burg*, *Loubens-tain*), never a name in any of the four rolls or a place in GeoNames. Names take the three pooled rolls' legend forms at their rates: *von* 1,084, *grauff von* 270, a family name in *-er* 188, *her von* 174, *frÿ von* 96, *herczog von* 58, and *truchsaes*, *margrauff*, *schenk* and *marschalk von*. [NAMES.md](NAMES.md) gives the method and the checks.
 
-Each element's share among unquartered coats: the pooled roll's own coats of three elements or more (298), and 4,000 generated skeletons. On 26 October, with weights set by hand and no dividing or multiplying steps, a third of all coats had a bordure; in the pooled roll 2.0% of all coats do, and 10% of the generated ones.
+Each element's share among unquartered coats: the pooled roll's own coats of three elements or more (315), and 3,000 generated skeletons (refitted 28 October 2026, after the six elements below were added). On 26 October, with weights set by hand and no dividing or multiplying steps, a third of all coats had a bordure; in the pooled roll 2.0% of all coats do, and 10% of the generated ones.
 
 | element | pooled rolls, 3+ elements | generated |
 |---|---|---|
-| divided or patterned field | 51% | 61% |
-| two or more principal charges | 50% | 58% |
+| divided or patterned field | 51% | 60% |
+| two or more principal charges | 50% | 57% |
 | ordinary | 26% | 31% |
-| chief | 39% | 46% |
-| charges on a chief | 33% | 25% |
-| accompanying charges | 9% | 11% |
+| chief | 37% | 43% |
+| charges on a chief | 31% | 26% |
+| accompanying charges | 10% | 11% |
 | bordure | 9% | 11% |
-| label | 4% | 6% |
-| charges on the ordinary | 3% | 6% |
-| canton | 0% | 4% |
-| no principal charge | 35% | 26% |
+| label | 4% | 7% |
+| charges on the ordinary | 3% | 5.5% |
+| canton | 0% | 5% |
+| no principal charge | 37% | 25% |
 
 Most elements come out a little above their share in the rolls: the generated coats have more elements than the rolls' complex coats (60% three and 40% four, against 80%, 18% and 2% for three, four and five). The cantons (4%) come from the rolls' simpler coats, which keep theirs. Coats that still have a chief over counted pieces come straight from the rolls' skeletons (*Barry of six vert and argent, on a chief or a demi-lion issuant gules*); the field is drawn below the chief (see "Layout").
 
 Rates on 2,000 coats:
-- **Quartered coats:** 5.8% (pooled rolls 9.6%).
-- **Rule of tincture:** the first element on the field breaches it in 2.5% of coats (Zürich and Grünenberg 2.0 to 2.9%); some breach anywhere occurs in 4.4%.
+- **Quartered coats:** 5.7% (pooled rolls 9.6%).
+- **Rule of tincture:** the first element on the field breaches it in 2.0% of coats (Zürich and Grünenberg 2.0 to 2.9%); some breach anywhere occurs in 4.1%.
 
-Elements per coat, counted on the drawn coat, where "a chevron between three roses" counts two:
+Elements per coat, counted on the drawn coat, where "a chevron between three roses" counts two and a mount in base one (generated: unquartered coats of 2,000):
 
 | elements | 1 | 2 | 3 | 4 | 5 |
 |---|---|---|---|---|---|
-| pooled rolls | 57% | 28% | 11% | 2.5% | 0.3% |
-| generated | | 8.2% | 60% | 32% | |
+| pooled rolls | 56% | 28% | 11.5% | 2.5% | 0.3% |
+| generated | | 8.1% | 55% | 37% | 0.1% |
 
 ## Held-out material
 
@@ -81,42 +81,42 @@ Drawn by seed 20261026 before any grammar work (`data/holdout.json`). A custodia
 
 ## Results of the pre-registered tests (STUDY.md section 8)
 
-`tools/acceptance.py` on 500 coats (seeds 1 to 500) from `tools/dump_samples.js`, run on the pooled roll (27 October 2026); full output in `data/acceptance.json`. Test 1 runs on each roll, test 2 on the two with held-out items, tests 4 and 5 on the generated coats against the pooled corpus. Differencing moves the coats away from the rolls on purpose, so test 4 fails by design; earlier runs, per roll, are in the history of this file.
+`tools/acceptance.py` on 500 coats (seeds 1 to 500) from `tools/dump_samples.js`, run on the pooled roll (28 October 2026); full output in `data/acceptance.json`. Test 1 runs on each roll, test 2 on the two with held-out items, tests 4 and 5 on the generated coats against the pooled corpus. Differencing moves the coats away from the rolls on purpose, so test 4 fails by design; earlier runs, per roll, are in the history of this file.
 
 | test | result | gate | verdict |
 |---|---|---|---|
-| 1. fit: coats whose structure the grammar expresses | Zürich 93.1%, Grünenberg 92.8%, Rugen 89.0%, St. Gallen 90.3%; pooled 90.4% | 95% | **fail**, by two to six points |
-| 1. of which every charge is in the library | Zürich 70.8%, Grünenberg 70.4%, Rugen 65.7%, St. Gallen 69.2% | reported | the named bucket is 21 to 23% of coats |
+| 1. fit: coats whose structure the grammar expresses | Zürich 93.3%, Grünenberg 93.1%, Rugen 89.4%, St. Gallen 90.6%; pooled 90.8% | 95% | **fail**, by two to six points |
+| 1. of which every charge is in the library | Zürich 71.4%, Grünenberg 71.8%, Rugen 66.8%, St. Gallen 70.9% | reported | the named bucket is 21 to 23% of coats |
 | 2. held-out coats, frozen grammar | Zürich 37 of 38 (97.4%), Grünenberg 33 of 35 (94.3%) | 95% | Zürich **pass**; Grünenberg **fail** by one coat; 4 held-out Grünenberg items have no blazon in the edition |
 | 3. rendering round trip by readers; Rolland held-out leaves | not run | | needs readers, and Rietstap's blazons for the six held-out leaves |
-| 4. distribution against the pooled corpus | energy 1.56 (threshold 0.05), largest KS 0.64 (0.07) | 95th pct of corpus halvings | **fail**, by design |
-| 4. secondary, not pre-registered: against coats whose charges are all in the library | energy 1.36 (0.05), KS 0.65 (0.07) | same | **fail**, by design |
-| 4. secondary, not pre-registered: against the 326 unquartered pooled coats of three elements or more | energy 0.62 (0.20), KS 0.40 (0.14) | same | **fail**: generated coats carry about 0.9 more tinctures each |
-| 5. diversity, mean pairwise feature distance | 1.54 of the corpus | at least 0.8 | **pass** |
+| 4. distribution against the pooled corpus | energy 1.61 (threshold 0.05), largest KS 0.67 (0.07) | 95th pct of corpus halvings | **fail**, by design |
+| 4. secondary, not pre-registered: against coats whose charges are all in the library | energy 1.40 (0.05), KS 0.68 (0.07) | same | **fail**, by design |
+| 4. secondary, not pre-registered: against the 332 unquartered pooled coats of three elements or more | energy 0.75 (0.18), KS 0.43 (0.14); 0.70 and 0.39 on seeds 501 to 1000 (0.62 and 0.40 before the six elements) | same | **fail**: generated coats carry about 0.9 more tinctures each |
+| 5. diversity, mean pairwise feature distance | 1.53 of the corpus | at least 0.8 | **pass** |
 | 5. repetition, commonest canonical key | 0.4% (corpus 1.1%) | not above the corpus | **pass** |
-| 5. exact matches with real coats | 100% match none (99.8% before redraws) | at least 70% | **pass**, against the four rolls only |
+| 5. exact matches with real coats | 100% match none (99.6% before redraws) | at least 70% | **pass**, against the four rolls only |
 | 7. browser | under 1 ms per coat to compose, about 9 ms to render both styles (Node) | under 100 ms | **pass** |
 
 What the failures mean:
 - **Test 4** measured how close the coats were to the rolls, and the user asked for coats further from them: "more complex but not obscenely complex", since the simple ones are taken. Before differencing it failed almost entirely on one feature, the 21 to 23% of real coats whose principal charge the library does not draw (human figures, monsters, heads, tools), and passed for Zürich on library coats. Now the largest gaps are the ones differencing makes: about one tincture more per coat, more chiefs and fewer plain fields. Against the rolls' own complex coats it now fails narrowly, mostly on the number of tinctures per coat.
-- **Test 1** fails on pily fields, dimidiated coats (a charge in one half of a party field), cotised ordinaries, ordinaries of lozenges, and a few others; `data/corpus_structures.json` lists every reason.
+- **Test 1** fails on dimidiated coats (a charge in one half of a party field), cotised ordinaries, ordinaries of lozenges, and a few others; `data/corpus_structures.json` lists every reason.
 - **Test 5, matches** is measured against the 4,799 parsed coats of the four rolls whose charges are all in the library. The Clemmensen Ordinary (87,638 medieval coats), Papworth and Rietstap were not indexed, so the true collision rate is higher than measured here; differenced coats are less likely to collide with any of them than the simple coats were.
 - **Tests 3 and 6** (readers) have not been run.
 
 ## Drawings
 
-The first version drew every pictorial charge itself: beasts on a skeleton (limbs as tapered capsules over joints per attitude) and plants and objects from simple shapes. The user judged them crude next to engraved work, rightly. Every pictorial charge is now an imported drawing (`charges-art.js`, 50 charges, built by `tools/import_art.py` from `tools/art_spec.json`); the geometric charges (roundels, lozenges, mullets, crescents, plain crosses, the escutcheon) and the trimount are still drawn in `charges.js`.
+The first version drew every pictorial charge itself: beasts on a skeleton (limbs as tapered capsules over joints per attitude) and plants and objects from simple shapes. The user judged them crude next to engraved work, rightly. Every pictorial charge is now an imported drawing (`charges-art.js`, 57 charges, built by `tools/import_art.py` from `tools/art_spec.json`); the geometric charges (roundels, lozenges, mullets, crescents, plain crosses, the escutcheon) and the trimount are still drawn in `charges.js`.
 
 Two searches of Wikimedia Commons, Openclipart, heraldicart.org, Armoria, Heraldicon and DrawShield (84 candidates downloaded, every licence checked on the file's own page) found one consistent hand for most of them: Graham Johnston's drawings for Fox-Davies, *A Complete Guide to Heraldry* (1909), traced by szquirrel (Openclipart), by heraldicart.org (*Book of Traceable Heraldic Art*) and uploaded from there to Commons by RootOfAllLight. Where Johnston drew nothing usable, the drawings come from other engraved sources in the same manner (Guillim, de Bara, Legh, Vinycomb) or from clean flat Commons files (key, arrow, linden leaf, wheel, gonfanon, crown, swan, single wing, fish).
 
-**Licences.** Commons tags the Fox-Davies traces public domain (PD-old); heraldicart.org publishes its collection under CC BY-SA 4.0 while calling the expired originals public domain. Nine drawings are on heraldicart only, and four flat files are CC BY-SA (13 in all). `charges-art.js` is therefore distributed under CC BY-SA 4.0 (which the 2.0 and 3.0 files allow for adaptations), with the credits below; everything else on the page is the site's own. The page itself no longer links to them (removed at the user's request, 27 October 2026). Armoria's beasts were excluded (WappenWiki, CC BY-NC-SA), as were DrawShield's (no per-charge licence) and two files whose licence Commons marks as disputed. No free mount or trimount in this manner was found; that one stays drawn here.
+**Licences.** Commons tags the Fox-Davies traces public domain (PD-old); heraldicart.org publishes its collection under CC BY-SA 4.0 while calling the expired originals public domain. Fifteen drawings are on heraldicart only, and four flat files are CC BY-SA (19 in all). `charges-art.js` is therefore distributed under CC BY-SA 4.0 (which the 2.0 and 3.0 files allow for adaptations), with the credits below; everything else on the page is the site's own. The page itself no longer links to them (removed at the user's request, 27 October 2026). Armoria's beasts were excluded (WappenWiki, CC BY-NC-SA), as were DrawShield's (no per-charge licence) and two files whose licence Commons marks as disputed. heraldicart.org grants its CC BY-SA for its own traces but tells users outside the SCA to check each source's terms, so only its traces of public-domain originals are used, not drawings by its contributors (Viking Answer Lady, Pennsic collections). No free mount or trimount in this manner was found; that one stays drawn here.
 
 How the drawings are used:
 - **Recolouring.** Every path of a drawing is kept in the artist's order as a layer with a role: body (takes the tincture, or its hatching in the engraved style), ink (black lines), white, and claws, tongue or crown where a drawing separates them. The traced files quantise the engraving into grey levels; fills lighter than 50% are body, darker ones ink. On a sable charge, lines drawn over the body turn white (engraved) or grey (colour) so the modelling stays visible.
-- **Attitudes.** The set gives one attitude per species, so the grammar names a beast in the attitude its drawing shows: a bear rampant of the rolls is drawn and blazoned passant, horses and unicorns rampant, stags trippant, griffins segreant (`DRAWN_AS` in `grammar.js`). This shifts the rolls' attitudes; the lion keeps both rampant and passant.
+- **Attitudes.** The set gives one or two attitudes per species, so the grammar names a beast in the attitude its drawing shows: a bear rampant of the rolls is drawn and blazoned passant, stags trippant, griffins segreant (`DRAWN_AS` in `grammar.js`). This shifts the rolls' attitudes. The lion has rampant and passant, each also guardant (looking out of the shield: 112 coats of the pooled rolls, mostly passant guardant) and reguardant (looking back: 2 coats); horses, unicorns and goats have salient (springing, both hind feet on the ground: 25 unicorns, 17 horses, 7 goats and rams) beside rampant. Stags, greyhounds and bulls salient (26 coats) have no public-domain drawing and are drawn and blazoned as their passant drawing.
 - **Crowns.** The drawings have none; for crowned lions and eagles a crown is placed on each head at a position and tilt measured on each drawing (`crown_at`).
-- **Words.** The blazon uses the terms for what is drawn: stag trippant, griffin segreant, lion's and boar's heads erased, bull's head caboshed, oak tree fructed and eradicated, barbel naiant, dolphin embowed.
-- **Size.** `charges-art.js` is 2.3 MB, loaded once (servers compress it).
+- **Words.** The blazon uses the terms for what is drawn: lion passant guardant, lion rampant reguardant, unicorn salient, stag trippant, griffin segreant, lion's and boar's heads erased, bull's head caboshed, oak tree fructed and eradicated, barbel naiant, dolphin embowed.
+- **Size.** `charges-art.js` is 2.9 MB, loaded once (servers compress it); the horse salient alone is 230 KB.
 
 ## Layout
 
@@ -133,6 +133,10 @@ How the drawings are used:
 - **A field per saltire** is four triangles meeting at the fess point. Two to four charges on it stand one to a part: the flanks, then base, then chief.
 - **A canton** with a chief stands below the chief. Charges on the field are drawn together toward sinister base, by the least amount that clears the canton, so their arrangement keeps its shape.
 - **Within a bordure** the coat is a whole shield of its own. The bordure's inner outline is the shield under a map (scaled to 0.78 of the width and 0.78 of the height, set 11 units in). Field, ordinary, charges, chief, canton and label are drawn through that map, laid out as on a shield without a bordure, and nothing reaches under it. Hatching keeps its pitch, since geometry is mapped point by point. This replaced separate shrink rules for each layout, which had let charges in chief run under the bordure.
+- **Pily** (the rolls' pily-paly, pily-barry and pily-bendy, 62 coats) is drawn as Parker defines it: piles counterposed, counted in pieces with pile and interval alike, so pily of six has three piles of the first tincture from the chief, their points on the base, and the second tincture's piles between them; pily barry issues from the dexter flank, pily bendy from the dexter chief, bendwise. The rolls' "pily-paly" is plain pily ("paly pily is only another name for pily", Parker); an odd number in the rolls ("pily-paly of 3") is read as that many piles. Under a chief, pily is laid out below it, as counted fields are.
+- **Fretty** (10 fields and 7 ordinaries) is a fret of bendlets and bendlets sinister over the field or the ordinary, in the second tincture, interlaced: the bendlet sinister passes over at every other crossing, the bendlet at the others. A chief fretty takes the same fret.
+- **Masoned** (6 coats) is drawn for the rolls' "per fess crenely masoned" (3), a wall (the lower part of a field per fess embattled, its courses of stone in sable, or argent on sable), and for a masoned ordinary (1); the rolls' two "barry masoned" are drawn as plain barry. The rolls' "crenelated" and "crenely" are now read as embattled, so a chevron embattled appears; chevrons used to be drawn straight whatever their line, and now take it, the two arms mirror images so they meet in step at the apex.
+- **A mount or terrace in base** (the rolls' "on mount", 62 coats the grammar expresses, their Dreiberg, and "on terrace", 5) issues from the base: three hills, the middle one higher, or a low mound of ground. The charges are laid out above it and a single row of them stands on it, each with its foot on the hill below its centre ("Or, on a trimount vert a stag trippant sable"). A mount in base that the rolls name beside a charge ("castle acc. mount in base", 6) is the same base, the charge set above it and blazoned "in base a trimount". These mounts were dropped before: the stag of "stag on mount" was drawn alone.
 - **A bordure compony** has sixteen pieces of equal length along the shield's edge, the first centred at the top, so they run all round and fall symmetrically about the pale line; each runs from the outer edge to the inner one along the bordure's own map. They used to be spaced by outline point, and since the outline has 95 of its 99 points on the curved base, all of them fell there.
 
 ## Page
@@ -207,5 +211,12 @@ Names are kept out of the place names of Germany, Austria and Switzerland in [Ge
 | martlet | Graham Johnston for Fox-Davies, A Complete Guide to Heraldry (1909); trace by heraldicart.org (Book of Traceable Heraldic Art) | CC BY-SA 4.0 | [HA-martlet__martlet-2.svg](https://heraldicart.org/) |
 | estoile | woodcut in Gerard Legh, The Accedens of Armory (1562); trace by heraldicart.org (Book of Traceable Heraldic Art) | CC BY-SA 4.0 | [HA-estoile__estoile-3.svg](https://heraldicart.org/) |
 | wing | Lobsterthermidor (Commons), amended from an earlier Commons drawing | CC BY-SA 3.0 | [SinisterWing InHeraldry.svg](https://commons.wikimedia.org/wiki/File:SinisterWing_InHeraldry.svg) |
+| lion rampant guardant | Graham Johnston for Fox-Davies, A Complete Guide to Heraldry (1909); trace by heraldicart.org (Book of Traceable Heraldic Art) | CC BY-SA 4.0 | [lion-guardant.svg](https://heraldicart.org/lion/) |
+| lion passant guardant | woodcut in Edmund Bolton, The Elements of Armories (1610); trace by heraldicart.org (Book of Traceable Heraldic Art) | CC BY-SA 4.0 | [lion-passant-guardant-4.svg](https://heraldicart.org/lion/) |
+| lion rampant reguardant | Graham Johnston for Fox-Davies, A Complete Guide to Heraldry (1909); trace by heraldicart.org (Book of Traceable Heraldic Art) | CC BY-SA 4.0 | [lion-regardant-1.svg](https://heraldicart.org/lion/) |
+| lion passant reguardant | Graham Johnston for Fox-Davies, A Complete Guide to Heraldry (1909), adapted by Sadhbh Bheag; trace by heraldicart.org (Book of Traceable Heraldic Art) | CC BY-SA 4.0 | [lion-passant-reguardant.svg](https://heraldicart.org/lion/) |
+| unicorn salient | Thomas Willement, Banners, Standards, and Badges; trace by heraldicart.org (Book of Traceable Heraldic Art) | CC BY-SA 4.0 | [unicorn-salient-1.svg](https://heraldicart.org/unicorn/) |
+| horse salient | Gustav Völker (public domain, Wikimedia Commons); trace published by heraldicart.org | Public domain; heraldicart.org publishes its collection under CC BY-SA 4.0 | [horse-salient-1.svg](https://heraldicart.org/horse/) |
+| goat salient | Abraham de Bruyn, engraving of about 1570 (Wellcome Collection); trace by heraldicart.org (Book of Traceable Heraldic Art) | CC BY-SA 4.0 | [goat-salient-2.svg](https://heraldicart.org/goat/) |
 
 The engraved hatching follows Petra Sancta's code as given by Fox-Davies (1909, pp. 74 to 76); its pitch and line weight were measured on Victor Rolland's plates (*Armoiries des familles contenues dans l'Armorial général de J.-B. Rietstap*, vol. III, 1909; archive.org `armoiriesdesfami03roll`), and the irregularity of its lines on an Italian plate the user supplied (*Primi elementi delle croci*). The coats are composed from Steen Clemmensen's editions of Grünenberg's Wappenbuch, Jörg Rugen's Wappenbuch, the St. Gallen-Haggenberg armorial and the Zürich roll (armorial.dk). The blazon font is IM Fell English (Igino Marini, SIL OFL).

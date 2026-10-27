@@ -61,6 +61,11 @@
     'talbot rampant': 'talbot passant', 'talbot statant': 'talbot passant', 'stag rampant': 'stag passant', 'stag statant': 'stag passant',
     'boar rampant': 'boar passant', 'boar statant': 'boar passant', 'bull rampant': 'bull passant', 'bull statant': 'bull passant', 'goat statant': 'goat passant',
     'horse passant': 'horse rampant', 'horse statant': 'horse rampant', 'unicorn passant': 'unicorn rampant', 'unicorn statant': 'unicorn rampant', 'griffin passant': 'griffin rampant',
+    'lion statant guardant': 'lion passant guardant', 'lion statant reguardant': 'lion passant reguardant', 'lion salient': 'lion rampant',
+    'lion salient guardant': 'lion rampant guardant', 'lion salient reguardant': 'lion rampant reguardant',
+    // beasts salient with no drawing of their own (no public-domain one was found): their passant drawing
+    'stag salient': 'stag passant', 'talbot salient': 'talbot passant', 'bull salient': 'bull passant', 'bear salient': 'bear passant',
+    'wolf salient': 'wolf passant', 'boar salient': 'boar passant',
   };
   // charges added in differencing are the small ones heralds used for it: mullets, crescents, martlets,
   // roundels, annulets, roses, fleurs-de-lis, escallops, crosses; beasts, birds of prey and buildings are left out
@@ -82,14 +87,15 @@
   // accompanying charges, a chief (and its charges), canton, bordure, label; a quartered coat counts two more.
   // only divisions drawn with a patterned line keep one, so the blazon never names a line that is not drawn
   const LINED = new Set(['per pale', 'per fess', 'per bend', 'per bend sinister', 'per chevron', 'barry', 'paly', 'bendy', 'bendy sinister', 'tierced per fess']);
+  // a mount or a terrace in base (the rolls' "on mount", "on terrace") counts as an element; so does masoning
   function complexity(s) {
     let c = 0;
-    if (s.f.k !== 'plain') c++; if (s.f.l && LINED.has(s.f.k)) c++;
-    if (s.o) { c++; if (s.o.l || s.o.p) c++; }
+    if (s.f.k !== 'plain') c++; if (s.f.l && LINED.has(s.f.k)) c++; if (s.f.ms) c++;
+    if (s.o) { c++; if (s.o.l || s.o.p) c++; if (s.o.ms) c++; }
     if (s.m) { c++; if (s.m.n > 1) c++; if (s.m.chg) c++; }
     if (s.on) c++; if (s.ar) c++;
     if (s.c) { c++; if (s.c.on) c++; }
-    if (s.b) c++; if (s.lb) c++; if (s.cn) c++;
+    if (s.b) c++; if (s.lb) c++; if (s.cn) c++; if (s.bs) c++;
     if (s.q) c += 2;
     return c;
   }
@@ -98,17 +104,17 @@
   // rampant sable is Flanders. So a coat is differenced, as heralds differenced arms, until it has three or four
   // elements, one move at a time: divide the field, multiply the principal charge, set an ordinary between
   // principal charges, lay charges on the ordinary or between it, add accompanying charges, a chief (and its
-  // charges), a bordure, a canton or a label, never two of a kind. The moves' weights are fitted per roll by
-  // tools/fit_differencing.js, so the differenced coats carry each element about as often as the rolls' own
-  // coats of three elements or more (unquartered, both rolls pooled: 115 coats).
+  // charges), a bordure, a canton or a label, never two of a kind. The moves' weights are fitted by
+  // tools/fit_differencing.js, so the differenced coats carry each element about as often as the pooled roll's
+  // own coats of three elements or more (unquartered: 315 coats).
   const ON_N = { fess: [3, 3, 1], bend: [3, 3, 2], pale: [3, 3, 1], chevron: [3, 3, 1], cross: [5, 1], saltire: [5, 1] };
   // fields whose pieces are counted from the top (barry of six, tierced per fess): a chief would hide some
-  const COUNTED = H.COUNTED = /^(barry|bendy|bendy sinister|chevronny|tierced per fess)$/;
+  const COUNTED = H.COUNTED = /^(barry|bendy|bendy sinister|chevronny|tierced per fess|pily|pily barry|pily bendy)$/;
   // fields of many pieces: with an ordinary on them, or a fur among their tinctures, a coat soon reads as noise
-  const PATTERNED = /^(barry|paly|bendy|bendy sinister|chequy|lozengy|chevronny|gyronny|vair)$/;
+  const PATTERNED = /^(barry|paly|bendy|bendy sinister|chequy|lozengy|chevronny|gyronny|vair|pily|pily barry|pily bendy|fretty)$/;
   const AR_N = { fess: [3, 6, 2], bend: [2, 6, 3], pale: [2, 4], chevron: [3, 3, 2], cross: [4], saltire: [4] };
-  H.DIFF_W = {   // fitted by tools/fit_differencing.js (14 rounds, seeds 1 to 3000), 27 October 2026
-    late: { divide: 0.345, multiply: 0.546, charge: 0.242, ordinary: 0.219, on: 0.01, between: 0.024, accompanied: 0.024, chief: 0.175, chiefCharges: 29.663, bordure: 0.01, label: 0.01, canton: 0.01 },
+  H.DIFF_W = {   // fitted by tools/fit_differencing.js (14 rounds, seeds 1 to 3000), 28 October 2026
+    late: { divide: 0.293, multiply: 0.416, charge: 0.166, ordinary: 0.359, on: 0.01, between: 0.035, accompanied: 0.035, chief: 0.176, chiefCharges: 19.035, bordure: 0.01, label: 0.01, canton: 0.01 },
   };
   // the roll's divided and patterned fields, its numbers of principal charges above one, and how often a
   // principal charge on a field party per something is counterchanged
@@ -207,6 +213,8 @@
     const under = party ? 'party' : fieldT[0];
     const onField = party ? fieldT.slice() : [];
     arms.field = { kind: fk === 'semy' ? 'plain' : fk, t: fieldT, line: LINED.has(fk) ? sk.f.l || null : null, n: sk.f.n || undefined };
+    // a field per fess embattled whose lower part is masoned, a wall: sable, or argent on a sable wall
+    if (sk.f.ms && fk === 'per fess') { arms.field.line = 'embattled'; arms.field.masoned = fieldT[1] === 'sable' ? 'argent' : 'sable'; }
     if (fk === 'semy') {
       const ch = chargeFor(rng, D, 'semy', sk.f.s || 'flower');
       arms.semy = { charge: ch, t: tinctureOn(rt, D, 'semy', fieldT[0]) };
@@ -217,6 +225,7 @@
       const o = sk.o;
       arms.ordinary = { kind: o.k, n: o.n || undefined, line: o.l || null };
       if (o.p) {
+        // fretty is a pattern as compony and chequy are: the ordinary in one tincture, the fret in the other
         arms.ordinary.pattern = o.p;
         const prs = D.tinctures.cond['ordpattern|*'] || { 'argent/gules': 1 };
         const okPair = k => { const [x, y] = k.split('/'); return !/mixed|proper/.test(k) && x !== y && !(METALS.has(x) && METALS.has(y)) && !(COLOURS.has(x) && COLOURS.has(y)); };
@@ -224,6 +233,7 @@
         arms.ordinary.t = pr[0]; arms.ordinary.t2 = pr[1]; ordT = pr[0];
       } else if (o.cch && party) { arms.ordinary.t = 'counterchanged'; }
       else { ordT = arms.ordinary.t = tinctureOn(rt, D, 'ord', under, onField, !!o.add); }
+      if (o.ms && ordT) arms.ordinary.masoned = ordT === 'sable' ? 'argent' : 'sable';
       if (sk.on) {
         const ch = chargeFor(rng, D, 'on', sk.on.c);
         arms.charges = arms.charges || [];
@@ -269,6 +279,7 @@
     }
     if (sk.c) {
       arms.chief = { t: tinctureOn(rt, D, 'chief', under, onField.concat(ordT ? [ordT] : []), !!sk.c.add), line: sk.c.l || null };
+      if (sk.c.p === 'fretty' && !sk.c.on) { arms.chief.pattern = 'fretty'; arms.chief.t2 = tinctureOn(rt, D, 'chiefon', arms.chief.t, onField, true); }
       if (sk.c.on) {
         const ch = chargeFor(rng, D, 'chief', sk.c.on.c);
         arms.chief.charges = { charge: ch, n: sk.c.on.n, t: tinctureOn(rt, D, 'chiefon', arms.chief.t, [], !!sk.c.on.add) };
@@ -282,6 +293,11 @@
       if (sk.b.p === 'compony') { arms.bordure.pattern = 'compony'; arms.bordure.t2 = arms.bordure.t === 'argent' ? 'gules' : 'argent'; }
     }
     if (sk.lb) arms.label = { t: tinctureOn(rt, D, 'label', under, onField, sk.lb === 2) };
+    if (sk.bs) {
+      // a mount or a terrace in base, the principal charges standing on it ("on mount") or above it
+      const avoid = onField.concat((arms.charges || []).filter(g => !g.on && !g.around).map(g => g.t));
+      arms.base = { kind: sk.bs.k, t: tinctureOn(rt, D, 'base', under, avoid), on: sk.bs.on ? 1 : 0 };
+    }
     return arms;
   }
 
@@ -346,7 +362,7 @@
     const p = [];
     const f = a.field;
     if (a.semy) p.push(`F:semy:${a.semy.charge}:${f.t.join(',')}:${a.semy.t}`);
-    else p.push(`F:${f.kind}:${f.kind === 'plain' || /^per |quarterly|tierced/.test(f.kind) ? '' : (f.n || '')}:${f.line || ''}:${f.t.join(',')}`);
+    else p.push(`F:${f.kind}:${f.kind === 'plain' || /^per |quarterly|tierced/.test(f.kind) ? '' : (f.n || '')}:${f.line || ''}:${f.t.join(',')}${f.masoned ? ':ms' : ''}`);
     const groups = a.charges || [];
     const on = groups.find(g => g.on === 'ordinary'), main = groups.find(g => !g.on && !g.around), ar = groups.find(g => g.around);
     if (a.ordinary) {
@@ -356,7 +372,8 @@
     }
     if (main) p.push(`M:${main.charge}:${main.n}:${main.t}:${main.crowned ? 'cr' : ''}${main.opts && main.opts.doubleheaded ? 'dh' : ''}${main.issuant ? 'is' : ''}`);
     if (ar) p.push(`A:${ar.charge}:${ar.n}:${ar.t}`);
-    if (a.chief) p.push(`CH:chief:${a.chief.line || ''}::${a.chief.t}` + (a.chief.charges ? `:${a.chief.charges.charge}:${a.chief.charges.n}:${a.chief.charges.t}` : ''));
+    if (a.base) p.push(`BS:${a.base.kind}:${a.base.t}`);
+    if (a.chief) p.push(`CH:chief:${a.chief.line || ''}:${a.chief.pattern || ''}:${a.chief.pattern ? a.chief.t + ',' + a.chief.t2 : a.chief.t}` + (a.chief.charges ? `:${a.chief.charges.charge}:${a.chief.charges.n}:${a.chief.charges.t}` : ''));
     if (a.bordure) p.push(`BO:bordure:::${a.bordure.pattern ? a.bordure.t + ',' + a.bordure.t2 : a.bordure.t}`);
     if (a.label) p.push(`LA:label:::${a.label.t}`);
     if (a.canton) p.push(`CA:${a.canton.kind || 'canton'}:::${a.canton.t}`);
@@ -385,7 +402,7 @@
     const info = H.CHARGE_INFO[g.charge] || { plural: g.charge + 's' };
     let noun = g.n > 1 ? info.plural : (info.sing || g.charge);
     if (g.charge === 'eagle' && g.opts && g.opts.doubleheaded) noun = g.n > 1 ? 'double-headed eagles' : 'double-headed eagle';
-    if (g.issuant) noun = 'demi-' + noun.replace(/ (rampant|passant|statant)$/, '') + ' issuant';
+    if (g.issuant) noun = 'demi-' + noun.replace(/ (rampant|passant|statant|salient)( guardant| reguardant)?$/, '$2') + ' issuant';
     if (g.charge === 'antler') noun = g.n > 1 ? "stag's attires" : "stag's attire";
     const count = g.n > 1 ? NUMN[g.n] : an(noun);
     let s = `${count} ${noun}`;
@@ -410,13 +427,18 @@
       case 'quarterly': return `Quarterly ${two}`;
       case 'tierced per fess': return `Tierced per fess ${f.t[0]}, ${f.t[1]} and ${f.t[2]}`;
       case 'tierced per pale': return `Tierced per pale ${f.t[0]}, ${f.t[1]} and ${f.t[2]}`;
+      case 'pily': return `Pily of ${NUMN[f.n || 6]} ${two}`;
+      case 'pily barry': return `Pily barry of ${NUMN[f.n || 6]} ${two}`;
+      case 'pily bendy': return `Pily bendy of ${NUMN[f.n || 6]} ${two}`;
+      case 'fretty': return `${cap(f.t[0])} fretty ${f.t[1]}`;
+      case 'per fess': if (f.masoned) return `Per fess${ln} ${two} masoned ${f.masoned}`; return `Per fess${ln} ${two}`;
       default: return `${cap(f.kind)}${ln} ${two}`;
     }
   }
   const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
   function ordinaryWords(o) {
     const ln = o.line ? ' ' + LINE_WORD[o.line] : '';
-    const t = o.pattern ? `${o.pattern === 'compony' ? 'compony' : 'chequy'} ${o.t} and ${o.t2}` : o.t;
+    const t = o.pattern === 'fretty' ? `${o.t} fretty ${o.t2}` : o.pattern ? `${o.pattern === 'compony' ? 'compony' : 'chequy'} ${o.t} and ${o.t2}` : o.t + (o.masoned ? ` masoned ${o.masoned}` : '');
     const k = o.kind;
     if (k === 'bars') return `${NUMN[o.n || 2]} bars${ln} ${t}`;
     if (k === 'pales') return `${NUMN[o.n || 3]} pallets${ln} ${t}`;
@@ -435,14 +457,18 @@
       if (on) s = `on ${s} ${chargeWords(on)}`;
       parts.push(s);
       if (main) parts.push(chargeWords(main));
+      if (a.base) parts.push(`in base ${an(a.base.kind)} ${a.base.kind} ${a.base.t}`);
     } else {
       const WHERE = { 'in chf': ' in chief', 'in base': ' in base', dx: ' in dexter chief', sn: ' in sinister chief' };
-      if (main) parts.push(chargeWords(main) + (ar ? `, accompanied by ${chargeWords(ar)}${WHERE[ar.where] || ''}` : ''));
+      // on a mount: "on a trimount vert a stag statant sable"; a mount the charges do not stand on: "in base"
+      const bsw = a.base ? `${an(a.base.kind)} ${a.base.kind} ${a.base.t}` : '';
+      if (main) parts.push((a.base && a.base.on ? `on ${bsw} ` : '') + chargeWords(main) + (ar ? `, accompanied by ${chargeWords(ar)}${WHERE[ar.where] || ''}` : ''));
       else if (ar) parts.push(chargeWords(ar));
+      if (a.base && !(a.base.on && main)) parts.push(`in base ${bsw}`);
       if (a.ordinary) parts.push(`overall ${ordinaryWords(a.ordinary)}` + (on ? ` charged with ${chargeWords(on)}` : ''));
     }
     if (a.chief) {
-      const s = `a chief${a.chief.line ? ' ' + LINE_WORD[a.chief.line] : ''} ${a.chief.t}`;
+      const s = `a chief${a.chief.line ? ' ' + LINE_WORD[a.chief.line] : ''} ${a.chief.t}${a.chief.pattern === 'fretty' ? ' fretty ' + a.chief.t2 : ''}`;
       parts.push(a.chief.charges ? `on ${s} ${chargeWords(a.chief.charges)}` : s);
     }
     if (a.canton) parts.push(`${a.canton.kind === 'canton sinister' ? 'a sinister canton' : 'a canton'} ${a.canton.t}`);

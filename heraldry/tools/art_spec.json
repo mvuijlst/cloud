@@ -580,5 +580,100 @@
   "ink": [
    "#000000"
   ]
+ },
+ {
+  "charge": "lion rampant guardant",
+  "file": "HA-lion_lion-guardant.svg",
+  "dir": "art3",
+  "credit": "Graham Johnston for Fox-Davies, A Complete Guide to Heraldry (1909); trace by heraldicart.org (Book of Traceable Heraldic Art)",
+  "licence": "CC BY-SA 4.0",
+  "source": "https://heraldicart.org/lion/",
+  "crown_at": [
+   [
+    0.435,
+    0.012,
+    0.2,
+    0
+   ]
+  ],
+  "luma": 0.5
+ },
+ {
+  "charge": "lion passant guardant",
+  "file": "HA-lion_lion-passant-guardant-4.svg",
+  "dir": "art3",
+  "credit": "woodcut in Edmund Bolton, The Elements of Armories (1610); trace by heraldicart.org (Book of Traceable Heraldic Art)",
+  "licence": "CC BY-SA 4.0",
+  "source": "https://heraldicart.org/lion/",
+  "crown_at": [
+   [
+    0.335,
+    0.005,
+    0.19,
+    0
+   ]
+  ],
+  "luma": 0.5
+ },
+ {
+  "charge": "lion rampant reguardant",
+  "file": "HA-lion_lion-regardant-1.svg",
+  "dir": "art3",
+  "credit": "Graham Johnston for Fox-Davies, A Complete Guide to Heraldry (1909); trace by heraldicart.org (Book of Traceable Heraldic Art)",
+  "licence": "CC BY-SA 4.0",
+  "source": "https://heraldicart.org/lion/",
+  "crown_at": [
+   [
+    0.37,
+    0.045,
+    0.19,
+    0.18
+   ]
+  ],
+  "luma": 0.5
+ },
+ {
+  "charge": "lion passant reguardant",
+  "file": "HA-lion_lion-passant-reguardant.svg",
+  "dir": "art3",
+  "credit": "Graham Johnston for Fox-Davies, A Complete Guide to Heraldry (1909), adapted by Sadhbh Bheag; trace by heraldicart.org (Book of Traceable Heraldic Art)",
+  "licence": "CC BY-SA 4.0",
+  "source": "https://heraldicart.org/lion/",
+  "crown_at": [
+   [
+    0.36,
+    0.175,
+    0.17,
+    0.2
+   ]
+  ],
+  "luma": 0.5
+ },
+ {
+  "charge": "unicorn salient",
+  "file": "HA-unicorn_unicorn-salient-1.svg",
+  "dir": "art3",
+  "credit": "Thomas Willement, Banners, Standards, and Badges; trace by heraldicart.org (Book of Traceable Heraldic Art)",
+  "licence": "CC BY-SA 4.0",
+  "source": "https://heraldicart.org/unicorn/",
+  "luma": 0.5
+ },
+ {
+  "charge": "horse salient",
+  "file": "HA-horse_horse-salient-1.svg",
+  "dir": "art3",
+  "credit": "Gustav Völker (public domain, Wikimedia Commons); trace published by heraldicart.org",
+  "licence": "Public domain; heraldicart.org publishes its collection under CC BY-SA 4.0",
+  "source": "https://heraldicart.org/horse/",
+  "luma": 0.5
+ },
+ {
+  "charge": "goat salient",
+  "file": "HA-goat_goat-salient-2.svg",
+  "dir": "art3",
+  "credit": "Abraham de Bruyn, engraving of about 1570 (Wellcome Collection); trace by heraldicart.org (Book of Traceable Heraldic Art)",
+  "licence": "CC BY-SA 4.0",
+  "source": "https://heraldicart.org/goat/",
+  "luma": 0.5
  }
 ]

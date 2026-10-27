@@ -273,6 +273,20 @@
     return { a, b, poly: a.concat(b.slice().reverse()) };
   }
   H.bandEdges = bandEdges;
+  // A chevron's two edges, each arm drawn with the line (they were straight whatever the blazon said): the
+  // upper edge and the lower one, both left to right, the pattern facing out of the chevron on each. Wavy,
+  // dancetty and nebuly edges run in parallel, the lower one the upper moved down by the width.
+  function chevronEdges(ax, apexY, w, lt) {
+    const L = -M, R = SW + M, d = w * 1.41, yAt = (x, y0) => y0 + Math.abs(x - ax);
+    // the sinister arm from the apex out, and the dexter arm its mirror image, so the two meet in step at the apex
+    const edge = (y0, side) => {
+      const r = linePts([ax, y0], [R, yAt(R, y0)], lt, side);
+      return r.slice(1).reverse().map(q => [2 * ax - q[0], q[1]]).concat(r);
+    };
+    const up = edge(apexY, -1);
+    const lo = lt === 'wavy' || lt === 'dancetty' || lt === 'nebuly' ? up.map(q => [q[0], q[1] + d]) : edge(apexY + d, 1);
+    return { up, lo, poly: up.concat(lo.slice().reverse()) };
+  }
 
   // ---------- divisions of the field ----------
   // Each division returns regions [{poly, t: index of tincture (0 or 1)}] over a margin box, and the
@@ -371,6 +385,29 @@
         add([[-M, yAt(-M, y0)], [fx, y0], [SW + M, yAt(SW + M, y0)], [SW + M, yAt(SW + M, y1)], [fx, y1], [-M, yAt(-M, y1)]], 1);
       }
       for (let i = 0; i < n + 2; i++) { const y = -30 + i * step; ink([[-M, y + fx + M], [fx, y], [SW + M, y + SW + M - fx]]); }
+    } else if (kind === 'pily' || kind === 'pily barry' || kind === 'pily bendy') {
+      // n pieces, pile and interval counted alike (Parker): n/2 piles of the first tincture issue from the chief
+      // (pily barry: from the dexter flank; pily bendy: from the dexter chief, bendwise), their points on the far
+      // edge, counterposed with the piles of the second tincture between them. Built in a frame (v across the
+      // piles, u along them) and mapped to the shield.
+      const k = Math.max(1, Math.round((opt.n || 6) / 2));
+      let toXY, v0, v1, u0, u1;
+      if (kind === 'pily') { toXY = (v, u) => [v, u]; v0 = 0; v1 = SW; u0 = 0; u1 = SH - 2; }
+      else if (kind === 'pily barry') { toXY = (v, u) => [u, v]; v0 = 0; v1 = SH; u0 = 0; u1 = SW; }
+      else {
+        const r = Math.SQRT1_2; toXY = (v, u) => [(u + v) * r, (u - v) * r];
+        const vs = sh.poly.map(q => (q[0] - q[1]) * r), us = sh.poly.map(q => (q[0] + q[1]) * r);
+        v0 = Math.min(...vs); v1 = Math.max(...vs); u0 = Math.min(...us); u1 = Math.max(...us);
+      }
+      const w = (v1 - v0) / k, back = 3 * M;
+      add([[v0 - back, u0 - back], [v1 + back, u0 - back], [v1 + back, u1 + back], [v0 - back, u1 + back]].map(([v, u]) => toXY(v, u)), 1);
+      for (let i = 0; i < k; i++) {
+        const a = v0 + i * w, b = a + w, tip = [a + w / 2, u1];
+        // the pile's sides run on past its base, out of the shield
+        const ext = (p) => [p[0] + (p[0] - tip[0]) * back / (u1 - u0), u0 - back];
+        add([ext([a, u0]), [a, u0], tip, [b, u0], ext([b, u0])].map(([v, u]) => toXY(v, u)), 0);
+        ink([ext([a, u0]), tip, ext([b, u0])].map(([v, u]) => toXY(v, u)));
+      }
     } else if (kind === 'chequy') {
       const n = opt.n || 6; const s = SW / n; add(box, 0);
       for (let i = 0; i < n; i++) for (let j = 0; j < Math.ceil(SH / s) + 1; j++) if ((i + j) % 2) add([[i * s, j * s], [(i + 1) * s, j * s], [(i + 1) * s, (j + 1) * s], [i * s, (j + 1) * s]], 1);
@@ -390,6 +427,52 @@
     return out;
   }
   H.division = division;
+
+  // A base: a trimount (the rolls' "mount", three hills, the middle one higher) or a terrace (a low mound of
+  // ground) issuing from the base of the shield. surface(x) gives the height of its top, for charges that stand on it.
+  function base(kind, sh) {
+    const SH = sh.H || 120, Y = SH + 3 * M;
+    const out = { kind, parts: [], details: [] };
+    if (kind === 'terrace') {
+      const top = SH * 0.86, pts = [];
+      for (let x = -M; x <= SW + M; x += 2) {
+        const s = Math.max(0, Math.min(1, x / SW));
+        pts.push([x, top - 5 * Math.sin(Math.PI * s) + 0.9 * Math.sin(x * 0.37) + 0.5 * Math.sin(x * 0.91 + 1)]);
+      }
+      out.parts.push(P.poly(pts.concat([[SW + M, Y], [-M, Y]])));
+      out.edge = pts;
+      out.surface = (x) => { const i = Math.max(0, Math.min(pts.length - 1, Math.round((x + M) / 2))); return pts[i][1]; };
+      out.top = Math.min(...pts.filter(p => p[0] > 30 && p[0] < 70).map(p => p[1]));
+      return out;
+    }
+    // three domes on the base line, as the trimount charge draws them, the middle one in front of the others
+    const hills = [[-8, 50, SH * 0.79], [50, 108, SH * 0.79], [16, 84, SH * 0.69]];
+    const dome = (x0, x1, top) => {
+      const w = x1 - x0, h = Y - top, xm = (x0 + x1) / 2;
+      return [['M', x0, Y], ['C', x0 + 0.1 * w, Y - 0.62 * h, xm - 0.3 * w, top, xm, top], ['C', xm + 0.3 * w, top, x1 - 0.1 * w, Y - 0.62 * h, x1, Y], ['Z']];
+    };
+    out.parts = hills.map(([x0, x1, top]) => dome(x0, x1, top));
+    // contour lines on each hill, as an engraver would cut them
+    for (const [x0, x1, top] of hills) {
+      const w = x1 - x0, xm = (x0 + x1) / 2;
+      for (const f of [0.2, 0.42]) {
+        const y = top + (SH - top) * f, half = w * (0.12 + 0.3 * f);
+        out.details.push(P.smooth([[xm - half, y + 2.2], [xm, y], [xm + half, y + 2.2]], false));
+      }
+    }
+    out.top = SH * 0.69;
+    out.surface = (x) => {
+      // the highest hill top over x: each dome approximated by a half ellipse
+      let y = Y;
+      for (const [x0, x1, top] of hills) {
+        const a = (x1 - x0) / 2, xm = (x0 + x1) / 2, u = (x - xm) / a;
+        if (Math.abs(u) < 1) y = Math.min(y, Y - (Y - top) * Math.sqrt(1 - u * u));
+      }
+      return y;
+    };
+    return out;
+  }
+  H.base = base;
 
   // ---------- ordinaries ----------
   // Each returns {poly (or path), axis: points for charges laid on it, n: normal for counting}.
@@ -445,9 +528,8 @@
       const w = 22; const apexY = fy - 16; const slope = 1.0; // rise per run
       const ax = fx; const xL = -M, xR = SW + M;
       const yAt = x => apexY + Math.abs(x - ax) * slope;
-      const upper = [[xL, yAt(xL)], [ax, apexY], [xR, yAt(xR)]];
-      const lower = [[xR, yAt(xR) + w * 1.41], [ax, apexY + w * 1.41], [xL, yAt(xL) + w * 1.41]];
-      o.poly = upper.concat(lower); o.lines = [upper, lower];
+      const e = chevronEdges(ax, apexY, w, lt);
+      o.poly = e.poly; o.lines = [e.up, e.lo];
       o.slots = (n) => {
         const out = []; const size = w * 0.78; const off = w * 0.71;
         if (n === 1) return [{ c: [ax, apexY + off], s: size }];
@@ -523,8 +605,8 @@
       o.polys = []; o.lines = [];
       for (let i = 0; i < n; i++) {
         const apexY = fy - 26 + i * gap - (n - 2) * 8; const yAt = x => apexY + Math.abs(x - fx);
-        const up = [[-M, yAt(-M)], [fx, apexY], [SW + M, yAt(SW + M)]], lo = [[SW + M, yAt(SW + M) + w * 1.41], [fx, apexY + w * 1.41], [-M, yAt(-M) + w * 1.41]];
-        o.polys.push(up.concat(lo)); o.lines.push(up, lo);
+        const e = chevronEdges(fx, apexY, w, lt);
+        o.polys.push(e.poly); o.lines.push(e.up, e.lo);
       }
     } else if (kind === 'canton sinister') {
       const s = 36; o.poly = [[SW + M, -M], [SW - s, -M], [SW - s, s], [SW + M, s]]; o.lines = [[[SW - s, -M], [SW - s, s], [SW + M, s]]];
@@ -715,7 +797,7 @@
     // Under a chief, on a plain field or one divided only by lines the chief leaves whole (per pale, per bend),
     // the layout of a shield without a chief is set in the space below it, scaled to fit, so the charges keep
     // their proportions and never reach into the chief.
-    if (ctx.chief && !ord && (!ctx.div || /^(plain|per pale|per bend|per bend sinister|tierced per pale|paly|barry|bendy|bendy sinister|chevronny|tierced per fess)$/.test(ctx.div))) {
+    if (ctx.chief && !ord && (!ctx.div || /^(plain|per pale|per bend|per bend sinister|tierced per pale|paly|barry|bendy|bendy sinister|chevronny|tierced per fess|pily|pily barry|pily bendy|fretty)$/.test(ctx.div))) {
       const k = (SH - 34) / SH;
       return arrangement0(n, sh, Object.assign({}, ctx, { chief: false, div: ctx.div && /^per |^tierced per pale$/.test(ctx.div) ? null : ctx.div }))
         .map(sl => Object.assign({}, sl, { c: [sl.c[0], 34 + sl.c[1] * k], s: sl.s * k }));
