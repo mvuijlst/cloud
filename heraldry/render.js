@@ -453,7 +453,8 @@
         for (const l of ord.lines || []) pen.stroke(l, plw);
       } else if (ao.pattern) {
         const oc = pen.clip(ord.path || P.concat(...(ord.polys || [ord.poly]).map(q => P.poly(q))));
-        for (const q of H.ordinaryChecks(ao.kind, sh, ao.pattern === 'compony' ? 1 : 2)) pen.fill(P.poly(q), ao.t2, { clip: oc });
+        // laid out on the shield the ordinary was (shF: under a chief, the fess point of the space below it)
+        for (const q of H.ordinaryChecks(ao.kind, shF, ao.pattern === 'compony' ? 1 : 2)) pen.fill(P.poly(q), ao.t2, { clip: oc });
         for (const l of ord.lines || []) pen.stroke(l, plw);
       }
     };

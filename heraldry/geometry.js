@@ -660,7 +660,16 @@
     else if (kind === 'bend') grid([fx, fy], Math.PI / 4, 24, 100);
     else if (kind === 'bend sinister') grid([SW - fx, fy], 3 * Math.PI / 4, 24, 100);
     else if (kind === 'chief') grid([50, 17], 0, 34, 70);
-    else if (kind === 'cross') { grid([fx, 60], Math.PI / 2, 24, 80); grid([fx, fy - 6], 0, 24, 70); }
+    else if (kind === 'cross') {
+      // one grid for both arms, its lines on the arms' edges, so the squares run on through the crossing in
+      // step (two grids, one per arm, overlapped there out of step)
+      const w = 24, s = w / rows, x0 = fx - w / 2, y0 = fy - 6 - w / 2;
+      for (let i = -Math.ceil(x0 / s) - 1; x0 + i * s < SW + M; i++) for (let j = -Math.ceil(y0 / s) - 1; y0 + j * s < SH + M; j++) {
+        if (((i + j) % 2 + 2) % 2 === 0) continue;
+        const a = x0 + i * s, b = y0 + j * s;
+        out.push([[a, b], [a + s, b], [a + s, b + s], [a, b + s]]);
+      }
+    }
     else if (kind === 'chevron') {
       // the chevron's band is 22 wide across each arm; its centre line meets itself w/sqrt2 below the top.
       // Along each arm the pieces start half a width above that point, so the first piece of the two arms,
