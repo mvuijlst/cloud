@@ -287,6 +287,9 @@ def main():
             st['blazon'] = it['coats'][0]['blazon']; st['codes'] = it['coats'][0].get('codes')
             if len(it['coats']) > 1:
                 st['quartered'] = len(it['coats'])
+                # which quarters the edition gives as "=" (the same as the quarter diagonally opposite): xxrr is
+                # 1st and 4th one coat, 2nd and 3rd another; xxxx four different coats
+                st['qpat'] = ''.join('r' if c.get('repeat') else 'x' for c in it['coats'])
             rows.append(st)
         c = collections.Counter(r['status'] for r in rows)
         reasons = collections.Counter(x.split(':')[0] + (':' + x.split(':')[1].strip().split(' ')[0] if ':' in x else '') for r in rows for x in r['reasons'])

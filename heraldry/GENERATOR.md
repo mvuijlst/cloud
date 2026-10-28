@@ -65,7 +65,7 @@ Each element's share among unquartered coats: the pooled roll's own coats of thr
 Most elements come out a little above their share in the rolls: the generated coats have more elements than the rolls' complex coats (60% three and 40% four, against 80%, 18% and 2% for three, four and five). The cantons (4%) come from the rolls' simpler coats, which keep theirs. Coats that still have a chief over counted pieces come straight from the rolls' skeletons (*Barry of six vert and argent, on a chief or a demi-lion issuant gules*); the field is drawn below the chief (see "Layout").
 
 Rates on 2,000 coats:
-- **Quartered coats:** 5.7% (pooled rolls 9.6%).
+- **Quartered coats:** 5.7% (pooled rolls 9.6%). Their quarters are set as the rolls set them. Of the pooled roll's 502 coats of four quarters, where the editions give a quarter as "=", the same as the one diagonally opposite, 78% are *1st and 4th, A; 2nd and 3rd, B*, 9% *1st, A; 2nd and 3rd, B; 4th, C*, 8% *1st and 4th, A; 2nd, B; 3rd, C*, and 5% four different coats; the generated ones come out 80%, 15% and 4% (two, three and four coats, 4,000 seeds). Every quartered coat used to be the first kind. No two quarters bear the same coat.
 - **Rule of tincture:** the first element on the field breaches it in 2.0% of coats (Zürich and Grünenberg 2.0 to 2.9%); some breach anywhere occurs in 4.1%.
 
 Elements per coat, counted on the drawn coat, where "a chevron between three roses" counts two and a mount in base one (generated: unquartered coats of 2,000):
@@ -89,7 +89,7 @@ Drawn by seed 20261026 before any grammar work (`data/holdout.json`). A custodia
 | 1. of which every charge is in the library | Zürich 71.4%, Grünenberg 71.8%, Rugen 66.8%, St. Gallen 70.9% | reported | the named bucket is 21 to 23% of coats |
 | 2. held-out coats, frozen grammar | Zürich 37 of 38 (97.4%), Grünenberg 33 of 35 (94.3%) | 95% | Zürich **pass**; Grünenberg **fail** by one coat; 4 held-out Grünenberg items have no blazon in the edition |
 | 3. rendering round trip by readers; Rolland held-out leaves | not run | | needs readers, and Rietstap's blazons for the six held-out leaves |
-| 4. distribution against the pooled corpus | energy 1.61 (threshold 0.05), largest KS 0.67 (0.07) | 95th pct of corpus halvings | **fail**, by design |
+| 4. distribution against the pooled corpus | energy 1.60 (threshold 0.05), largest KS 0.67 (0.07) | 95th pct of corpus halvings | **fail**, by design |
 | 4. secondary, not pre-registered: against coats whose charges are all in the library | energy 1.40 (0.05), KS 0.68 (0.07) | same | **fail**, by design |
 | 4. secondary, not pre-registered: against the 332 unquartered pooled coats of three elements or more | energy 0.75 (0.18), KS 0.43 (0.14); 0.70 and 0.39 on seeds 501 to 1000 (0.62 and 0.40 before the six elements) | same | **fail**: generated coats carry about 0.9 more tinctures each |
 | 5. diversity, mean pairwise feature distance | 1.53 of the corpus | at least 0.8 | **pass** |

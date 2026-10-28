@@ -82,6 +82,19 @@ def canon(st):
 POOL = ('grunenberg', 'rugen', 'sanktgallen')
 
 
+def quarter_patterns(rows):
+    """how the roll's coats of four quarters repeat them: ABBA (1st and 4th one coat, 2nd and 3rd another),
+    ABBC, ABCA, ABCD. A quarter the edition gives as "=" repeats the one diagonally opposite."""
+    out = collections.Counter()
+    for r in rows:
+        q = r.get('qpat') or ''
+        if len(q) != 4: continue
+        p = 'AB' + ('B' if q[2] == 'r' else 'C')
+        p += 'A' if q[3] == 'r' else ('D' if p[2] == 'C' else 'C')
+        out[p] += 1
+    return dict(out.most_common())
+
+
 def main():
     S = json.loads((D / 'data' / 'corpus_structures.json').read_text(encoding='utf-8'))
     # every coat of every roll whose charges are all in the library, by canonical key, for "also borne by"
@@ -161,6 +174,7 @@ def main():
             tinctures=dict(field=dict(tf.most_common()), pairs=dict(tp.most_common()), triples=dict(t3.most_common()), cond={k: dict(v.most_common()) for k, v in cond.items()}),
             mods=dict(mods), index={k: v[:4] for k, v in index_all.items()}, rolls=list(POOL),
             quartered_rate=round(sum(1 for r in cov if r.get('quartered', 0) >= 2) / len(cov), 4),
+            quarter_patterns=quarter_patterns(rows),
         )
         print(roll, 'skeletons', len(sk), 'from', len(cov), 'covered coats; index keys', len(index_all))
         print('  slot coverage', {k: v['share'] for k, v in out[roll]['slot_coverage'].items()})

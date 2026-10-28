@@ -349,11 +349,20 @@
     const { sk, choose, D } = skeletonFor(seed, rollName);
     let arms;
     if (sk.q) {
-      // a quartered coat: two coats of this roll, 1 and 4, 2 and 3
-      // two coats of this roll, each of one or two elements, so the whole stays readable
+      // A quartered coat: coats of this roll, each of one or two elements, so the whole stays readable, set
+      // in the quarters as the roll sets them: most often 1st and 4th one coat, 2nd and 3rd another (ABBA,
+      // 78% of the pooled roll's coats of four quarters), else three coats (ABBC, ABCA) or four (ABCD).
       const simple = s => !s.q && !s.b && !s.lb && complexity(s) <= 2;
-      const a = fromSkeleton(rc, rt, D, choose(simple)), b = fromSkeleton(rc, rt, D, choose(simple));
-      arms = { field: { kind: 'quarterly', t: [a.field.t[0], b.field.t[0]] }, quarters: [a, b, b, a] };
+      const pat = pick(rc, D.quarter_patterns || { ABBA: 1 });
+      const coats = [];
+      for (let i = 0; i < new Set(pat).size; i++) {
+        // no two quarters the same coat
+        let c = fromSkeleton(rc, rt, D, choose(simple));
+        for (let k = 0; k < 6 && coats.some(o => canonical(o) === canonical(c)); k++) c = fromSkeleton(rc, rt, D, choose(simple));
+        coats.push(c);
+      }
+      const quarters = [...pat].map(ch => coats['ABCD'.indexOf(ch)]);
+      arms = { field: { kind: 'quarterly', t: [quarters[0].field.t[0], quarters[1].field.t[0]] }, quarters };
     } else arms = fromSkeleton(rc, rt, D, sk);
     arms.roll = rollName; arms.seed = seed >>> 0; arms.draw = k;
     return arms;
@@ -362,7 +371,7 @@
 
   // ---------- canonical key (mirrors canon() in tools/build_web_data.py) ----------
   function canonical(a) {
-    if (a.quarters) return 'Q:' + canonical(a.quarters[0]) + '#' + canonical(a.quarters[1]);
+    if (a.quarters) return 'Q:' + a.quarters.map(canonical).join('#');
     const p = [];
     const f = a.field;
     if (a.semy) p.push(`F:semy:${a.semy.charge}:${f.t.join(',')}:${a.semy.t}`);
@@ -481,7 +490,12 @@
     return parts.join(', ');
   }
   function blazon(a) {
-    if (a.quarters) return `Quarterly: 1st and 4th, ${blazonCoat(a.quarters[0])}; 2nd and 3rd, ${blazonCoat(a.quarters[1])}.`;
+    if (a.quarters) {
+      // the quarters that bear one coat named together, in the order of the first: "1st and 4th, ...; 2nd, ...; 3rd, ..."
+      const ORD = ['1st', '2nd', '3rd', '4th'], groups = [];
+      a.quarters.forEach((q, i) => { const g = groups.find(x => x.q === q); if (g) g.n.push(ORD[i]); else groups.push({ q, n: [ORD[i]] }); });
+      return 'Quarterly: ' + groups.map(g => `${g.n.join(' and ')}, ${blazonCoat(g.q)}`).join('; ') + '.';
+    }
     return blazonCoat(a) + '.';
   }
   H.blazon = blazon;
