@@ -113,7 +113,7 @@
   function patternDefs(style, id, seed = 1, used = null) {
     if (style !== 'engraved') {
       return `<pattern id="${id}-ermine" patternUnits="userSpaceOnUse" width="12" height="14"><rect width="12" height="14" fill="#fff"/>${ermineSpot(6, 3.5, 3.2)}${ermineSpot(0, 10.5, 3.2)}${ermineSpot(12, 10.5, 3.2)}</pattern>`
-        + `<pattern id="${id}-vair" patternUnits="userSpaceOnUse" width="${VAIR.w}" height="${VAIR.h}"><rect width="${VAIR.w}" height="${VAIR.h}" fill="${COLOURS.azure}"/>${vairBells('#fff')}</pattern>`;
+        + vairPattern(style, id, `${id}-vair`, VAIR.rowH * VAIR.ratio, VAIR.rowH, 50 - VAIR.rowH * VAIR.ratio / 2, 0);
     }
     const p = ENG.pitch, w = ENG.line, T = HATCH.n * p;
     // each tincture from its own stream of the coat's seed; only the tinctures the coat uses are defined
@@ -131,7 +131,7 @@
       tile('purpure', () => lines(rs(6), false), 'rotate(45)'),
       tile('or', () => stipple(rs(7), HATCH.dotW, HATCH.dotH, ENG.dotR), null, HATCH.dotW, HATCH.dotH),
       `<pattern id="${id}-ermine" patternUnits="userSpaceOnUse" width="12" height="14"><rect width="12" height="14" fill="#fff"/>${ermineSpot(6, 3.5, 3.2)}${ermineSpot(0, 10.5, 3.2)}${ermineSpot(12, 10.5, 3.2)}</pattern>`,
-      `<pattern id="${id}-vair" patternUnits="userSpaceOnUse" width="${VAIR.w}" height="${VAIR.h}"><rect width="${VAIR.w}" height="${VAIR.h}" fill="url(#${id}-azure)"/>${vairBells('#fff', '#000')}</pattern>`,
+      vairPattern(style, id, `${id}-vair`, VAIR.rowH * VAIR.ratio, VAIR.rowH, 50 - VAIR.rowH * VAIR.ratio / 2, 0),
       `<pattern id="${id}-proper" patternUnits="userSpaceOnUse" width="${p * 2}" height="${p * 2}"><rect width="${p * 2}" height="${p * 2}" fill="#fff"/><circle cx="${p}" cy="${p}" r="0.35" fill="#000"/></pattern>`,
     ].join('');
   }
@@ -140,19 +140,21 @@
     const sp = H.CHARGES['ermine spot']();
     return sp.parts.map(pt => `<path d="${P.toD(P.map(pt.path, m))}" fill="#000"/>`).join('');
   }
-  // Vair: rows of bells, argent upright and azure reversed, the two the same shape: each bell is W wide with a
-  // neck half as wide, its body and neck each 35% of the row's height, so with bells every 1.5 W the azure left
-  // between two argent ones is the argent bell turned over. Each row is offset half a period, so every argent
-  // bell stands on an azure one. Five of each across the shield, a row 15 deep (eight on a whole field). The
-  // bells used to be set every W, bases touching, which left the azure as small cups between the necks.
-  const VAIR = { w: 40, h: 30, per: 2, rows: 2, p: 0.35 };
-  function vairBells(fill, stroke) {
-    const P = VAIR.w / VAIR.per, W = P * 2 / 3, a = W / 2, h = VAIR.h / VAIR.rows, p = VAIR.p;
-    const bell = (x, y) => `M${x} ${y + h}L${x} ${y + h * (1 - p)}L${x + (W - a) / 2} ${y + h * p}L${x + (W - a) / 2} ${y}`
-      + `L${x + (W + a) / 2} ${y}L${x + (W + a) / 2} ${y + h * p}L${x + W} ${y + h * (1 - p)}L${x + W} ${y + h}Z`;
-    let d = '';
-    for (let r = 0; r < VAIR.rows; r++) for (let k = -1; k <= VAIR.per; k++) d += bell(k * P + (r % 2) * P / 2, r * h);
-    return `<path d="${d}" fill="${fill}"${stroke ? ` stroke="${stroke}" stroke-width="0.4"` : ''}/>`;
+  // Vair: rows of pieces, azure point upward and argent point downward, the two the same shape: a base as wide
+  // as the period, shoulders drawn in to a neck half as wide, and a point as tall as the shoulders (30% of the
+  // row each), so that the argent left between two azure pieces is an azure piece turned over (it can only be so
+  // if the bases touch). Each row is offset by half, so azure stands on argent. The rows are fitted to what is
+  // filled: a whole number of rows about 15 deep from its top edge (two on a chief, eight on a whole field), the
+  // pieces 1.4 times as wide as deep, centred on the pale line. Charges take a fixed tile of the same pieces.
+  const VAIR = { rowH: 15, ratio: 1.4, s: 0.3 };
+  function vairTile(style, id, P, h) {
+    const eng = style === 'engraved', s = VAIR.s * h;
+    const piece = (cx, y) => `M${cx - P / 2} ${y + h}L${cx - P / 4} ${y + h - s}L${cx - P / 4} ${y + s}L${cx} ${y}L${cx + P / 4} ${y + s}L${cx + P / 4} ${y + h - s}L${cx + P / 2} ${y + h}Z`;
+    const d = piece(P / 2, 0) + piece(0, h) + piece(P, h);
+    return `<rect width="${P}" height="${2 * h}" fill="#fff"/><path d="${d}" fill="${eng ? `url(#${id}-azure)` : COLOURS.azure}" stroke="${eng ? '#000' : DARK}" stroke-width="${eng ? 0.4 : 0.3}" stroke-linejoin="round"/>`;
+  }
+  function vairPattern(style, id, pid, P, h, x, y) {
+    return `<pattern id="${pid}" patternUnits="userSpaceOnUse" width="${P}" height="${2 * h}" patternTransform="translate(${x.toFixed(3)} ${y.toFixed(3)})">${vairTile(style, id, P, h)}</pattern>`;
   }
 
   // the paint for a tincture
@@ -171,13 +173,27 @@
     constructor(style, id) { this.style = style; this.id = id; this.out = []; this.M = P.mat.id(); this.clipN = 0; this.defs = []; }
     d(path) { return P.toD(P.map(path, this.M)); }
     fill(path, t, opt = {}) {
-      const f = paint(t, this.style, this.id, opt.charge);
+      const f = t === 'vair' && !opt.charge && this.box ? `url(#${this.vair(path)})` : paint(t, this.style, this.id, opt.charge);
       this.out.push(`<path d="${this.d(path)}" fill="${f}"${opt.evenodd ? ' fill-rule="evenodd"' : ''}${opt.clip ? ` clip-path="url(#${opt.clip})"` : ''}/>`);
     }
     stroke(pts, w, opt = {}) {
       const path = Array.isArray(pts[0]) && typeof pts[0][0] === 'number' ? P.poly(pts, !!opt.closed) : pts;
       const col = opt.color || (this.style === 'engraved' ? '#000' : DARK);
       this.out.push(`<path d="${this.d(path)}" fill="none" stroke="${col}" stroke-width="${w}" stroke-linejoin="round" stroke-linecap="round"${opt.clip ? ` clip-path="url(#${opt.clip})"` : ''}${opt.opacity ? ` stroke-opacity="${opt.opacity}"` : ''}/>`);
+    }
+    // a vair pattern fitted to an area: whole rows from the top of the part of it inside the shield
+    vair(path) {
+      const bb = P.bounds(P.map(path, this.M)), box = this.box;
+      const y0 = Math.max(bb[1], box[1]), y1 = Math.min(bb[3], box[3]);
+      const n = Math.max(1, Math.round((y1 - y0) / VAIR.rowH)), h = (y1 - y0) / n, Pw = h * VAIR.ratio;
+      const key = `${y0.toFixed(2)}:${h.toFixed(3)}:${((box[0] + box[2]) / 2).toFixed(2)}`;
+      this.vairs = this.vairs || {};
+      if (!this.vairs[key]) {
+        const pid = `${this.id}-vair-${Object.keys(this.vairs).length}`;
+        this.defs.push(vairPattern(this.style, this.id, pid, Pw, h, (box[0] + box[2]) / 2 - Pw / 2, y0));
+        this.vairs[key] = pid;
+      }
+      return this.vairs[key];
     }
     clip(path, evenodd = false) {
       const cid = `${this.id}-c${this.clipN++}`;
@@ -376,7 +392,13 @@
     if (arms.bordure.charges) for (const s of b.slots(arms.bordure.charges.n)) drawCharge(pen, arms.bordure.charges, s, arms.bordure.charges.t);
   }
 
+  // the shield being drawn (a quarter, the inside of a bordure), in output units, for patterns fitted to it
   function drawCoat(pen, arms, sh) {
+    const saved = pen.box;
+    pen.box = P.bounds(P.map(sh.path, pen.M));
+    try { drawCoat0(pen, arms, sh); } finally { pen.box = saved; }
+  }
+  function drawCoat0(pen, arms, sh) {
     const eng = pen.style === 'engraved';
     const plw = eng ? ENG.partLine : 0.45;
     if (arms.bordure) {
@@ -660,7 +682,7 @@
     const print = opt.print !== false;
     const inner = pen.out.join('');
     const body = print ? `<g filter="url(#${id}-print)">${inner}</g>` : inner;
-    const used = new Set([...inner.matchAll(new RegExp(`url\\(#${id}-([a-z]+)\\)`, 'g'))].map(m => m[1]));
+    const used = new Set([...inner.matchAll(new RegExp(`url\\(#${id}-([a-z]+)[-)]`, 'g'))].map(m => m[1]));
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 104 124"${size}${opt.title ? ` role="img" aria-label="${opt.title.replace(/"/g, '&quot;')}"` : ''}><defs>${patternDefs(style, id, arms.seed || 1, used)}${pen.defs.join('')}${print ? printFilter(id, arms.seed || 1, style) : ''}</defs>${body}</svg>`;
   }
   H.renderSVG = renderSVG;
