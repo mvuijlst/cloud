@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#000000">
+  <meta name="description" content="A stone floor laid one stone at a time, in Douat's diagonally halved squares.">
+  <title>douat · floor</title>
+  <style>
+    @font-face { font-family: 'IBMPlexMono'; src: url('../../IBMPlexMono-Regular.ttf'); }
+    html, body { margin: 0; height: 100%; background: #000; overflow: hidden; }
+    body { cursor: none; font: 12px/1.5 'IBMPlexMono', monospace; color: #e8e4dc; }
+    body.awake { cursor: default; }
+    canvas { position: fixed; inset: 0; width: 100vw; height: 100vh; display: block; }
+    #info {
+      position: fixed; left: 16px; right: 16px; bottom: 16px; max-width: 760px;
+      padding: 10px 14px; background: rgba(12, 12, 12, 0.72); border-radius: 3px;
+      opacity: 0; transition: opacity 0.6s; pointer-events: none;
+    }
+    body.awake #info { opacity: 1; pointer-events: auto; }
+    #info p { margin: 0; }
+    #info .how, #info .keys { color: #a9a49b; }
+    #info a, #info button { color: #e8e4dc; }
+    #info button { font: inherit; background: none; border: 1px solid #6c675f; border-radius: 2px; padding: 1px 8px; cursor: pointer; }
+    #status { position: fixed; inset: 0; display: grid; place-items: center; color: #a9a49b; }
+  </style>
+</head>
+<body>
+  <canvas id="floor" aria-label="A stone floor being laid, one stone at a time"></canvas>
+  <div id="info" role="status">
+    <p class="what"></p>
+    <p class="how"></p>
+    <p class="keys"><a href="../../">cloud</a> · <button id="again" type="button">another floor</button> · n new · space pause · 1–4 speed · f full screen</p>
+  </div>
+  <div id="status" hidden></div>
+  <noscript><div id="nojs">This floor is drawn in the browser and needs JavaScript and WebGL 2.</div></noscript>
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

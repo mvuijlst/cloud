@@ -1,0 +1,51 @@
+// Headless Chrome screenshot via the DevTools protocol.
+// node shot.mjs <url> <out.png> [width height dpr] [--wait=<js condition>] [--eval=<js>] [--timeout=s] [--clip=x,y,w,h]
+import { spawn } from 'node:child_process';
+import { writeFileSync, mkdirSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+const args = process.argv.slice(2);
+const flags = Object.fromEntries(args.filter(a => a.startsWith('--')).map(a => { const i = a.indexOf('='); return [a.slice(2, i), a.slice(i + 1)]; }));
+const pos = args.filter(a => !a.startsWith('--'));
+const [url, out, W = '1600', H = '900', DPR = '1'] = pos;
+const port = 9333 + Math.floor(Math.random() * 400);
+const prof = join(tmpdir(), 'douat-floor-shot-profile');
+mkdirSync(prof, { recursive: true });
+const chrome = spawn(process.env.CHROME || 'C:/Program Files/Google/Chrome/Application/chrome.exe', [
+  '--headless=new', `--remote-debugging-port=${port}`, `--user-data-dir=${prof}`, `--window-size=${W},${H}`,
+  '--use-angle=d3d11', '--enable-gpu', '--ignore-gpu-blocklist', '--enable-unsafe-swiftshader', '--hide-scrollbars', '--no-first-run', 'about:blank'], { stdio: 'ignore' });
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+let list;
+for (let i = 0; i < 60; i++) { try { list = await (await fetch(`http://127.0.0.1:${port}/json/list`)).json(); if (list.length) break; } catch {} await sleep(250); }
+const page = list.find(t => t.type === 'page');
+const ws = new WebSocket(page.webSocketDebuggerUrl);
+await new Promise(r => ws.addEventListener('open', r));
+let id = 0; const waiting = new Map();
+ws.addEventListener('message', ev => {
+  const m = JSON.parse(ev.data);
+  if (m.id && waiting.has(m.id)) { waiting.get(m.id)(m); waiting.delete(m.id); }
+  else if (m.method === 'Runtime.consoleAPICalled') console.log('[console]', m.params.type, m.params.args.map(a => a.value ?? a.description).join(' '));
+  else if (m.method === 'Runtime.exceptionThrown') console.log('[exception]', m.params.exceptionDetails.exception?.description || m.params.exceptionDetails.text);
+});
+const send = (method, params = {}) => new Promise(r => { const i = ++id; waiting.set(i, r); ws.send(JSON.stringify({ id: i, method, params })); });
+const evalJS = async (expr) => { const r = await send('Runtime.evaluate', { expression: expr, returnByValue: true, awaitPromise: true }); return r.result?.result?.value ?? r.result?.exceptionDetails?.exception?.description; };
+await send('Runtime.enable'); await send('Page.enable'); await send('Network.enable'); await send('Network.setCacheDisabled', { cacheDisabled: true });
+await send('Emulation.setDeviceMetricsOverride', { width: +W, height: +H, deviceScaleFactor: +DPR, mobile: false });
+const t0 = Date.now();
+await send('Page.navigate', { url });
+const timeout = (+flags.timeout || 90) * 1000;
+const cond = flags.wait || "window.douat && douat.renderer.pending === 0 && douat.renderer.fade >= 1";
+let ok = false;
+while (Date.now() - t0 < timeout) { await sleep(400); try { if (await evalJS(`(()=>{try{return !!(${cond})}catch(e){return false}})()`) === true) { ok = true; break; } } catch {} }
+console.log(ok ? `ready after ${((Date.now() - t0) / 1000).toFixed(1)} s` : 'timed out waiting');
+console.log('gpu:', await evalJS(`(()=>{const g=document.createElement('canvas').getContext('webgl2');const e=g&&g.getExtension('WEBGL_debug_renderer_info');return e?g.getParameter(e.UNMASKED_RENDERER_WEBGL):'?'})()`));
+if (flags.eval) console.log('eval:', JSON.stringify(await evalJS(flags.eval)));
+await sleep(300);
+const shotParams = { format: 'png' };
+if (flags.clip) { const [x, y, w, h] = flags.clip.split(',').map(Number); shotParams.clip = { x, y, width: w, height: h, scale: 1 }; }
+const s = await send('Page.captureScreenshot', shotParams);
+writeFileSync(out, Buffer.from(s.result.data, 'base64'));
+console.log('wrote', out);
+await send('Browser.close').catch(() => {});
+ws.close(); chrome.kill();
+process.exit(0);
