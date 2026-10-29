@@ -3,10 +3,12 @@
 // to its outline by the baked coverage; its sides are real faces just inside that outline.
 import { pcg3, offsetPoly } from './stonelib.js';
 
-// pos 3, normal 3, tangent 3, atlas uv 2, info 2 (unused; kind 0 top, 1 side, 2 mirrored top)
+// pos 3, normal 3, tangent 3, atlas uv 2, info 2 (side: depth below the top in mm, plus 1000 on
+// a cement tile; kind 0 top, 1 side, 2 mirrored top)
 export const FLOATS = 13;
-const MARGIN = 6;
-export const SLOT_TEXELS = 6;    // floats per baked stone in the slot table, in RGBA texels                // mm of empty slot around a stone's own extent
+const MARGIN = 6;                // mm of empty slot around a stone's own extent
+export const SLOT_TEXELS = 8;    // RGBA texels per baked stone in the slot table
+const MAX_VERTS = 10;
 
 export function atlasLayout(slots, slotPx, maxSize) {
   let S = slotPx;
@@ -18,8 +20,10 @@ export function atlasLayout(slots, slotPx, maxSize) {
   }
 }
 
-// A pool of distinct stones per class, each with its own joint, corner radius and hash.
+// A pool of distinct stones per class, each with its own joint, corner radius and hash. A class
+// may ask for fewer (big stones, of which a floor holds few, would crowd the atlas).
 export function buildPool(tiling, material, seed, perClass) {
+  const clay = material.family === 'clay';
   const entries = [], byClass = {};
   const names = Object.keys(tiling.classes);
   names.forEach((name, ci) => {
@@ -27,15 +31,16 @@ export function buildPool(tiling, material, seed, perClass) {
     const ext = Math.max(...c.poly.map(p => Math.max(Math.abs(p[0]), Math.abs(p[1]))));
     const span = 2 * (ext + MARGIN);
     byClass[name] = [];
-    for (let k = 0; k < perClass; k++) {
+    const count = Math.min(perClass, c.pool || perClass);
+    for (let k = 0; k < count; k++) {
       const h = pcg3((k + 1) >>> 0, (ci * 7919 + 17) >>> 0, seed >>> 0);
       const r = pcg3(h[2], h[0], h[1]).map(v => v / 4294967296);
       const cement = !!c.cement;
-      const hj = material.joint * 0.5 + (r[0] - 0.5) * (cement ? 0.5 : 1.4);
-      const rc = cement ? 0.5 + 1.0 * r[1] : 0.8 + 2.4 * r[1];
+      const hj = material.joint * 0.5 + (r[0] - 0.5) * (cement ? 0.5 : clay ? 2.0 : 1.4);
+      const rc = cement ? 0.5 + 1.0 * r[1] : clay ? 1.5 + 2.5 * r[1] : 0.8 + 2.4 * r[1];
       byClass[name].push(entries.length);
       entries.push({
-        cls: name, h, span, rc, cement,
+        cls: name, h, span, rc, cement, clay,
         dark: !!c.dark, mid: !!c.mid, design: c.design || 0, dsize: c.dsize || 0, variant: c.variant || 0, dp: c.dp || [0, 0], d2: c.d2 || [0, 0, 0, 0],
         poly: offsetPoly(c.poly, -(hj + rc)),
       });
@@ -49,14 +54,16 @@ export function slotTables(pool) {
   const n = pool.entries.length;
   const f = new Float32Array(n * SLOT_TEXELS * 4), u = new Uint32Array(n * 4);
   pool.entries.forEach((e, i) => {
-    for (let v = 0; v < 6; v++) {
+    const o = i * SLOT_TEXELS * 4;
+    if (e.poly.length > MAX_VERTS) throw new Error(`a stone of ${e.poly.length} corners`);
+    for (let v = 0; v < MAX_VERTS; v++) {
       const p = e.poly[Math.min(v, e.poly.length - 1)];
-      f[i * SLOT_TEXELS * 4 + v * 2] = p[0]; f[i * SLOT_TEXELS * 4 + v * 2 + 1] = p[1];
+      f[o + v * 2] = p[0]; f[o + v * 2 + 1] = p[1];
     }
-    f.set([e.poly.length, e.rc, e.span, e.design], i * SLOT_TEXELS * 4 + 12);
-    f.set([e.dsize, e.variant, e.dp[0], e.dp[1]], i * SLOT_TEXELS * 4 + 16);
-    f.set(e.d2, i * SLOT_TEXELS * 4 + 20);
-    u.set([e.h[0], e.h[1], e.h[2], (e.dark ? 1 : 0) | (e.cement ? 2 : 0) | (e.mid ? 4 : 0)], i * 4);
+    f.set([e.poly.length, e.rc, e.span, e.design], o + 20);
+    f.set([e.dsize, e.variant, e.dp[0], e.dp[1]], o + 24);
+    f.set(e.d2, o + 28);
+    u.set([e.h[0], e.h[1], e.h[2], (e.dark ? 1 : 0) | (e.cement ? 2 : 0) | (e.mid ? 4 : 0) | (e.clay ? 8 : 0)], i * 4);
   });
   return { f, u, n };
 }
@@ -97,9 +104,9 @@ export function buildStones(floor, rnd, atlas) {
     const tx = map([1, 0]);
     const Tg = [tx[0], tx[1], 0];
     const mirrored = L[0] * L[3] - L[1] * L[2] < 0;
-    const vert = (out, q, z, n, u, kind) => {
+    const vert = (out, q, z, n, u, kind, ix = 0) => {
       const p = world(q);
-      out.push(p[0], p[1], z === null ? topZ(p) : z, n[0], n[1], n[2], Tg[0], Tg[1], Tg[2], u[0], u[1], 0, kind);
+      out.push(p[0], p[1], z === null ? topZ(p) : z, n[0], n[1], n[2], Tg[0], Tg[1], Tg[2], u[0], u[1], ix, kind);
     };
     // top: a fan around the centre of a slightly grown outline
     const start = tops.length / FLOATS;
@@ -113,7 +120,16 @@ export function buildStones(floor, rnd, atlas) {
     const wstart = walls.length / FLOATS;
     const ins = e.rc - (e.cement ? 0.4 : 1.2);
     const inner = ins > 0.2 ? offsetPoly(e.poly, ins, 3) : offsetPoly(e.poly, ins);
+    // a stone's side takes the stone's tone; a cement tile's side shows the face layer over the
+    // concrete body, so it reads the face just inside the edge above it, and its depth below the
+    // top (info x, plus 1000 to mark it as cement)
     const cu = uv([0, 0]);
+    const su = q => {
+      if (!e.cement) return cu;
+      const k = Math.max(0, 1 - 6 / (Math.hypot(q[0], q[1]) || 1));
+      return uv([q[0] * k, q[1] * k]);
+    };
+    const tag = e.cement ? 1000 : 0;
     for (let i = 0; i < inner.length; i++) {
       const a = inner[i], b = inner[(i + 1) % inner.length];
       const pa = world(a), pb = world(b);
@@ -123,8 +139,9 @@ export function buildStones(floor, rnd, atlas) {
       const s = mirrored ? -1 : 1;
       const n = [s * ey / el, -s * ex / el, 0];
       const za = topZ(pa) - 0.4, zb = topZ(pb) - 0.4;
-      vert(walls, a, 0, n, cu, 1); vert(walls, b, 0, n, cu, 1); vert(walls, b, zb, n, cu, 1);
-      vert(walls, a, 0, n, cu, 1); vert(walls, b, zb, n, cu, 1); vert(walls, a, za, n, cu, 1);
+      const ua = su(a), ub = su(b);
+      vert(walls, a, 0, n, ua, 1, tag + za + 0.4); vert(walls, b, 0, n, ub, 1, tag + zb + 0.4); vert(walls, b, zb, n, ub, 1, tag + 0.4);
+      vert(walls, a, 0, n, ua, 1, tag + za + 0.4); vert(walls, b, zb, n, ub, 1, tag + 0.4); vert(walls, a, za, n, ua, 1, tag + 0.4);
     }
     wall.push([wstart, walls.length / FLOATS - wstart]);
     pivots.push([cx, cy, T * 0.5]);

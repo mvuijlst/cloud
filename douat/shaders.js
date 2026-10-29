@@ -18,7 +18,8 @@ void main() {
 // ---------------------------------------------------------------- bakes
 // One square slot per baked stone, centred on the stone. o0: albedo (sRGB target) and
 // roughness. o1: normal xy, cavity, and the stone's coverage of the texel.
-export const BAKE_STONE_FS = `${HEAD}
+export const bakeStoneFS = family => `${HEAD}
+#define FAMILY ${family}
 layout(location = 0) out vec4 o0;
 layout(location = 1) out vec4 o1;
 ${MATERIAL}
@@ -34,7 +35,7 @@ void main() {
   o1 = vec4(0.5, 0.5, 1.0, 0.0);
   if (slot >= uSlots) return;
   Stone s = makeStone(slot);
-  float span = texelFetch(uSlotF, ivec2(3, slot), 0).z;
+  float span = texelFetch(uSlotF, ivec2(5, slot), 0).z;
   float texel = span / uSlotPx;
   vec2 q = ((px - vec2(sl) * uSlotPx) / uSlotPx - 0.5) * span;
   float ch;
@@ -101,7 +102,7 @@ out vec3 vPos;
 out vec3 vNrm;
 out vec3 vTan;
 out vec2 vUV;
-flat out vec2 vInfo;
+out vec2 vInfo;
 void main() {
   vec3 p = aPos, n = aNrm, t = aTan;
   if (uFly == 1) { p = uPivot + uFlyRot * (aPos - uPivot) + uFlyT; n = uFlyRot * aNrm; t = uFlyRot * aTan; }
@@ -208,7 +209,7 @@ in vec3 vPos;
 in vec3 vNrm;
 in vec3 vTan;
 in vec2 vUV;
-flat in vec2 vInfo;
+in vec2 vInfo;
 
 void main() {
   vec3 V = normalize(uEye - vPos);
@@ -228,10 +229,28 @@ void main() {
     vec3 n = normalize(T * nm.x + B * nm.y + N * nm.z);
     c = shade(a0.rgb, n, V, a0.a, sunShadow(vPos, N), a1.z, vPos.xy);
   } else {
-    // sawn or split side: the stone's own tone, rougher and a shade darker
-    vec3 a = textureLod(uAtlas0, vUV, 4.0).rgb;
     vec2 along = vec2(dot(vPos.xy, vec2(-N.y, N.x)), vPos.z);
-    a *= 0.82 * (1.0 + 0.16 * gnoise(along / 3.0, 31u) + 0.08 * gnoise(along / 0.8, 37u));
+    vec3 a;
+    if (vInfo.x > 500.0) {
+      // pressed cement tile: the face layer, a fifth of its thickness, in the colours of the face
+      // above it, on the grey concrete body with its sand and pores (a glazed tile: a thin glaze
+      // over its red clay)
+      float depth = vInfo.x - 1000.0;
+      float fp = max(length(fwidth(along)), 0.02);
+      float layer = uFaceLayer + 0.08 * uFaceLayer * gnoise(vec2(along.x / 6.0, 0.5), 43u) + 0.12 * gnoise(vec2(along.x / 1.1, 2.5), 45u);
+      float face = smoothstep(layer + 0.2 + fp, layer - 0.2 - fp, depth);
+      vec3 top = textureLod(uAtlas0, vUV, 1.5).rgb;
+      float pd;
+      float sand = dots(along, 1.3, 0.45, 0.12, 0.42, 47u, fp, pd);
+      float pore = dots(along + 17.0, 3.2, 0.14, 0.08, 0.32, 53u, fp, pd);
+      vec3 body = uCementBody * (1.0 + 0.10 * gnoise(along / 2.5, 41u));
+      body = mix(body, body * 1.35, sand * 0.5) * (1.0 - 0.55 * pore);
+      a = 0.9 * mix(body, top * (1.0 + 0.05 * gnoise(along / 1.2, 37u)), face);
+    } else {
+      // sawn or split side: the stone's own tone, rougher and a shade darker
+      a = textureLod(uAtlas0, vUV, 4.0).rgb;
+      a *= 0.82 * (1.0 + 0.16 * gnoise(along / 3.0, 31u) + 0.08 * gnoise(along / 0.8, 37u));
+    }
     float ao = 0.45 + 0.55 * smoothstep(0.0, uThick * 0.8, vPos.z);
     ao *= 1.0 - 0.75 * enclosure(vPos.xy + N.xy * 5.0, 3.0);
     c = shade(a, N, V, 0.9, sunShadow(vPos, N), ao, vPos.xy);
@@ -287,7 +306,7 @@ in vec3 vPos;
 in vec3 vNrm;
 in vec3 vTan;
 in vec2 vUV;
-flat in vec2 vInfo;
+in vec2 vInfo;
 void main() {
   if (abs(vInfo.y - 1.0) > 0.5) {
     float own = texture(uAtlas1, vUV).a;

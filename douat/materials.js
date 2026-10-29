@@ -24,6 +24,19 @@ export const MATERIALS = [
     darkP: [0.70, 0.65, 0.0, 0.08], lightP: [0.26, 0.55, 1.25, 0.10],
     joint: 6.0, fillDepth: 0.7, edge: 1.7, grime: 0.30, scratches: 1.2,
   },
+  // Marble as in the halls and churches of the Low Countries: white Carrara, black marble
+  // from the Meuse (Golzinne, Mazy) and red from Rance in Hainaut, honed and dulled by use.
+  //   veins: strength in the light and middle stones, ochre clouding (1 = limestone),
+  //          smoothness of the honed face (0 = stone)
+  //   rough: base roughness of the dark and the light stones
+  {
+    id: 'marble', weight: 3, family: 'stone',
+    name: 'white Carrara, Belgian black and Rance red marble, honed and worn', short: 'black and white marble',
+    dark: [50, 51, 53], light: [216, 214, 207], mid: [140, 86, 76], bed: [158, 151, 138], fill: [96, 94, 90],
+    darkP: [0.22, 0.30, 0.0, 0.12], lightP: [0.06, 0.0, 0.0, 0.04],
+    veins: [0.9, 0.8, 0.25, 0.75], rough: [0.38, 0.40],
+    joint: 0.8, fillDepth: 1.0, edge: 0.5, grime: 0.16, scratches: 1.3,
+  },
 ];
 
 // Cement tiles (carreaux de ciment): pigments poured into one tile, as made in Belgium,
@@ -42,6 +55,46 @@ MATERIALS.push(
     cement: { a: [207, 204, 194], b: [64, 84, 106], c: [176, 138, 74], body: [130, 128, 123] }, bed: [156, 151, 140], fill: [104, 101, 96] },
   { ...CEMENT_BASE, id: 'cement-ochre', weight: 1, name: 'ochre and black cement tiles', short: 'ochre and black cement',
     cement: { a: [198, 168, 118], b: [58, 56, 54], c: [214, 206, 188], body: [134, 128, 116] }, bed: [158, 150, 136], fill: [108, 101, 90] },
+  { ...CEMENT_BASE, id: 'cement-green', weight: 2, name: 'green and cream cement tiles', short: 'green and cream cement',
+    cement: { a: [206, 198, 178], b: [80, 106, 90], c: [54, 55, 57], body: [132, 128, 120] }, bed: [158, 151, 138], fill: [106, 102, 94] },
+  { ...CEMENT_BASE, id: 'cement-red', weight: 2, name: 'red oxide and grey cement tiles', short: 'red and grey cement',
+    cement: { a: [178, 175, 168], b: [148, 70, 52], c: [52, 53, 56], body: [130, 127, 121] }, bed: [156, 150, 140], fill: [104, 100, 95] },
+  { ...CEMENT_BASE, id: 'cement-grey', weight: 2, name: 'grey and white cement tiles', short: 'grey and white cement',
+    cement: { a: [212, 208, 198], b: [108, 107, 104], c: [150, 74, 56], body: [132, 129, 123] }, bed: [158, 151, 138], fill: [104, 100, 94] },
+);
+
+// Fired clay, hand-moulded and waxed: dark is the red clay, light the yellow, mid a third
+// (blue-grey from a reducing kiln, or brown from an overfired one). Old floors have narrow
+// joints gone dark with dirt.
+//   darkP: firing spread from tile to tile, flashing (the side nearer the fire), lime specks
+const CLAY_BASE = {
+  family: 'clay', lightP: [0, 0, 0, 0], joint: 4.0, fillDepth: 1.4, edge: 1.3, grime: 0.42, scratches: 0.8,
+};
+MATERIALS.push(
+  { ...CLAY_BASE, id: 'clay-boom', weight: 2, name: 'red and yellow clay tiles from Boom', short: 'Boom red and yellow',
+    dark: [146, 74, 56], light: [198, 162, 114], mid: [100, 99, 101], bed: [160, 152, 138], fill: [96, 88, 80], darkP: [0.30, 0.6, 0.4, 0] },
+  { ...CLAY_BASE, id: 'clay-tomette', weight: 2, name: 'waxed terracotta, red, ochre and brown', short: 'terracotta',
+    dark: [158, 80, 54], light: [196, 140, 86], mid: [110, 66, 50], bed: [160, 152, 138], fill: [84, 72, 62], darkP: [0.30, 0.5, 0.25, 0] },
+);
+
+// Glazed tiles: tin and alkaline glazes coloured with minerals, as in Persian, Timurid and
+// Moroccan work: cobalt blue, copper turquoise, antimony and iron yellows and ochres, iron
+// reds, manganese aubergine. glaze: the ground, four colours for the fields, and the lines
+// between them; cement.body is the red clay under the glaze, seen at chips and on the sides.
+const GLAZE_BASE = {
+  family: 'glaze', dark: [60, 60, 62], light: [200, 196, 186], darkP: [0, 0, 0, 0], lightP: [0, 0, 0, 0],
+  joint: 2.0, fillDepth: 0.7, edge: 0.5, grime: 0.18, scratches: 0.7, bed: [158, 151, 138], fill: [176, 170, 158],
+};
+const BODY = { a: [200, 190, 175], b: [60, 60, 62], c: [120, 62, 50], body: [168, 102, 72] };
+MATERIALS.push(
+  { ...GLAZE_BASE, id: 'glaze-turquoise', weight: 3, name: 'glazed tiles in turquoise, cobalt, gold and oxblood', short: 'turquoise and cobalt glaze',
+    glaze: [[38, 140, 150], [204, 146, 44], [30, 56, 128], [22, 32, 72], [146, 42, 38], [228, 220, 198]], cement: BODY },
+  { ...GLAZE_BASE, id: 'glaze-cobalt', weight: 3, name: 'glazed tiles in cobalt, turquoise, ochre and bole red', short: 'cobalt glaze',
+    glaze: [[30, 60, 140], [226, 220, 202], [52, 158, 166], [196, 140, 52], [168, 52, 40], [222, 214, 192]], cement: BODY },
+  { ...GLAZE_BASE, id: 'glaze-oxblood', weight: 2, name: 'glazed tiles in oxblood, burgundy, gold and turquoise', short: 'oxblood glaze',
+    glaze: [[112, 32, 34], [210, 160, 60], [84, 34, 58], [40, 128, 138], [30, 50, 112], [224, 212, 186]], cement: BODY },
+  { ...GLAZE_BASE, id: 'glaze-ochre', weight: 2, name: 'glazed tiles in ochre, red, cobalt and turquoise', short: 'ochre glaze',
+    glaze: [[198, 142, 54], [172, 52, 40], [36, 70, 150], [60, 168, 174], [36, 104, 70], [232, 226, 210]], cement: BODY },
 );
 
 // Daylight from a window at the top left of the room.

@@ -7,15 +7,21 @@
 // which main.js steers away from what recent floors used, and which always draws one random
 // number so that a floor can be replayed from its seed and its choices.
 import { samplePattern, layingOrder, LETTERS } from './pattern.js';
+import { growGirih, girihShape } from './girih.js';
 
+// families: the materials a tiling can be laid in (stone, cement tiles, fired clay)
 export const TILINGS = {
-  douat: { name: 'half squares', family: 'stone', weight: 4 },
-  smith: { name: 'quarter circles', family: 'cement', weight: 2 },
-  loops: { name: 'Truchet arcs', family: 'cement', weight: 2 },
-  hex: { name: 'hexagons', family: 'cement', weight: 2 },
-  cubes: { name: 'cubes', family: 'stone', weight: 3 },
-  penrose: { name: 'Penrose rhombs', family: 'stone', weight: 2 },
-  arcs: { name: 'Penrose arcs', family: 'cement', weight: 2 },
+  douat: { name: 'half squares', families: ['stone', 'clay'], weight: 4 },
+  smith: { name: 'quarter circles', families: ['cement'], weight: 2 },
+  loops: { name: 'Truchet arcs', families: ['cement'], weight: 2 },
+  hex: { name: 'hexagons', families: ['cement'], weight: 2 },
+  cubes: { name: 'cubes', families: ['stone', 'clay'], weight: 3 },
+  penrose: { name: 'Penrose rhombs', families: ['stone', 'clay'], weight: 2 },
+  arcs: { name: 'Penrose arcs', families: ['cement'], weight: 2 },
+  ammann: { name: 'Ammann–Beenker', families: ['stone', 'clay'], weight: 3 },
+  pinwheel: { name: 'pinwheel triangles', families: ['stone', 'clay'], weight: 3 },
+  opus: { name: 'stones of several sizes', families: ['stone', 'clay'], weight: 3 },
+  girih: { name: 'girih', families: ['glaze', 'cement'], weight: 3 },
 };
 
 const rot = t => [Math.cos(t), Math.sin(t), -Math.sin(t), Math.cos(t)];   // column-major 2×2
@@ -371,9 +377,9 @@ function cubes(rng, view, choose) {
 // Line widths, double lines, inks and the size of the rhombs are free. The B lines wind into
 // curves that never repeat; this is the aperiodic Truchet tile.
 
-function penroseArcs(rng, view, choose) { return penrose(rng, view, choose, true); }
+function penroseArcs(rng, view, choose, family) { return penrose(rng, view, choose, family, true); }
 
-function penrose(rng, view, choose, arcs = false) {
+function penrose(rng, view, choose, family, arcs = false) {
   // rhomb edge, mm
   const E = arcs ? 10 * parseInt(name(choose, 'size', [['16 cm', 1], ['19 cm', 2], ['22 cm', 1]]), 10) : 190;
   const phi = (1 + Math.sqrt(5)) / 2;
@@ -493,10 +499,310 @@ function penrose(rng, view, choose, arcs = false) {
   };
 }
 
-const BUILD = { douat, smith, loops, hex: hexes, cubes, penrose, arcs: penroseArcs };
+// ---------------------------------------------------------------- shared by the layouts below
+const rectPoly = (w, h) => [[-w / 2, -h / 2], [w / 2, -h / 2], [w / 2, h / 2], [-w / 2, h / 2]];
+// fewer baked stones for a class of big ones: a floor holds few of them, and they crowd the atlas
+function poolSizes(classes) {
+  const names = Object.keys(classes);
+  for (const k of names) {
+    classes[k].pool = Math.max(6, Math.min(56, Math.round(classes[k].n / 2), Math.floor(100 / names.length)));
+    delete classes[k].n;
+  }
+  return classes;
+}
 
-export function buildTiling(kind, rng, view, choose = plainChooser(rng)) {
-  const t = BUILD[kind](rng, view, (slot, options) => choose(kind + '.' + slot, options));
+// Rectangles {x, y, w, h} as stones, in classes by size and by tone ('dark', 'light' or 'mid',
+// from toneOf).
+function rectStones(rng, view, rects, toneOf) {
+  const room = view.roomRect;
+  const classes = {}, stones = [];
+  for (const r of rects) {
+    const c = [r.x + r.w / 2, r.y + r.h / 2];
+    if (!inRect(c, room)) continue;
+    const a = Math.max(r.w, r.h), b = Math.min(r.w, r.h);
+    const tone = toneOf(r);
+    const key = `${a}x${b}${tone[0]}`;
+    if (!classes[key]) classes[key] = { poly: rectPoly(a, b), dark: tone === 'dark', mid: tone === 'mid', n: 0 };
+    classes[key].n++;
+    // a square takes any quarter turn, an oblong only its own two
+    const q = a === b ? Math.floor(rng() * 4) * Math.PI / 2 : (r.w < r.h ? Math.PI / 2 : 0) + (rng() < 0.5 ? Math.PI : 0);
+    stones.push({ ...placed(c, view, a), cls: key, L: mul(rot(q), rng() < 0.5 ? I2 : FLIP_Y) });
+  }
+  return { classes: poolSizes(classes), stones: finish(stones, view.rect, rowByRow) };
+}
+
+// ---------------------------------------------------------------- Ammann–Beenker
+// Squares and rhombs of 45° that never repeat, with eightfold stars: the dual of four grids of
+// parallel lines at 45° to one another, by de Bruijn's method (as for Penrose's tiling, with
+// four grids instead of five). Each crossing of two grid lines is a stone, a square where the
+// lines are square to each other, a rhomb where they meet at 45°; a stone's corners come from
+// which strip of every grid the crossing lies in.
+function ammann(rng, view, choose, family) {
+  const E = 10 * parseInt(name(choose, 'size', [['15 cm', 1], ['18 cm', 2], ['21 cm', 1]]), 10);
+  const colours = name(choose, 'colours', family === 'clay'
+    ? [['red rhombs, yellow squares', 3], ['yellow rhombs, red squares', 2], ['three clays', 2]]
+    : [['dark rhombs, light squares', 3], ['light rhombs, dark squares', 2], ['three stones', 2]]);
+  const e = [0, 1, 2, 3].map(k => [Math.cos(k * Math.PI / 4), Math.sin(k * Math.PI / 4)]);
+  const g = e.map(() => rng());
+  const room = view.roomRect;
+  // a crossing at p becomes a stone near 2E·p
+  const R = Math.hypot(Math.max(-room[0], room[2]), Math.max(-room[1], room[3])) / (2 * E) + 2;
+  const N = Math.ceil(R) + 2;
+  const deg = Math.PI / 180;
+  const D = 2 * E * Math.cos(22.5 * deg), d = 2 * E * Math.sin(22.5 * deg);
+  const three = colours.startsWith('three');
+  const rhombDark = colours.startsWith('dark') || colours.startsWith('red');
+  const stones = [];
+  let nSq = 0, nRh = 0;
+  for (let r = 0; r < 4; r++) for (let s = r + 1; s < 4; s++) {
+    const det = e[r][0] * e[s][1] - e[r][1] * e[s][0];
+    for (let j = -N; j <= N; j++) for (let k = -N; k <= N; k++) {
+      // the crossing of line j of grid r with line k of grid s
+      const a = j + g[r], b = k + g[s];
+      const p = [(a * e[s][1] - b * e[r][1]) / det, (b * e[r][0] - a * e[s][0]) / det];
+      if (Math.hypot(p[0], p[1]) > R) continue;
+      const K = e.map((ei, i) => i === r ? j : i === s ? k : Math.ceil(p[0] * ei[0] + p[1] * ei[1] - g[i]));
+      const v0 = K.reduce((acc, Ki, i) => [acc[0] + E * Ki * e[i][0], acc[1] + E * Ki * e[i][1]], [0, 0]);
+      const center = [v0[0] + E * (e[r][0] + e[s][0]) / 2, v0[1] + E * (e[r][1] + e[s][1]) / 2];
+      if (!inRect(center, room)) continue;
+      const mirror = rng() < 0.5 ? I2 : FLIP_Y;
+      if (s - r === 2) {
+        nSq++;
+        stones.push({ ...placed(center, view, E), ring: 0, turn: 0, cls: 'square', L: mul(rot(Math.atan2(e[r][1], e[r][0]) + Math.floor(rng() * 4) * Math.PI / 2), mirror) });
+      } else {
+        nRh++;
+        // the long diagonal: between the two directions where they meet at 45°, else across
+        const dg = s - r === 1 ? [e[r][0] + e[s][0], e[r][1] + e[s][1]] : [e[r][0] - e[s][0], e[r][1] - e[s][1]];
+        const th = Math.atan2(dg[1], dg[0]);
+        // three stones: the rhombs in two tones by which way they lie
+        const way = Math.round(mod(th, Math.PI) / (Math.PI / 4) - 0.5) & 1;
+        stones.push({ ...placed(center, view, E), ring: 0, turn: 0, cls: three && way ? 'rhombB' : 'rhomb', L: mul(rot(th + (rng() < 0.5 ? 0 : Math.PI)), mirror) });
+      }
+    }
+  }
+  stones.sort(byDistance);
+  const rh = [[D / 2, 0], [0, d / 2], [-D / 2, 0], [0, -d / 2]];
+  const classes = three
+    ? { square: { poly: rectPoly(E, E), dark: false }, rhomb: { poly: rh, dark: true }, rhombB: { poly: rh, mid: true } }
+    : { square: { poly: rectPoly(E, E), dark: !rhombDark }, rhomb: { poly: rh, dark: rhombDark } };
+  return {
+    classes, stones,
+    describe: `Ammann–Beenker squares and rhombs of ${E / 10} cm, never repeating: ${colours}`,
+    how: `${nSq} squares and ${nRh} rhombs laid out from the centre`,
+  };
+}
+
+// ---------------------------------------------------------------- the pinwheel
+// Conway and Radin's pinwheel tiling: one right triangle with legs 1 and 2, in both mirror
+// images and in infinitely many directions, never repeating. Each triangle splits into five of
+// a fifth of its area, four of them meeting at the middle of its long leg. Searching every way
+// to place five such copies with corners on a grid of fifths finds two dissections; this is
+// the one with both hands (the other mirrors all five, and keeps a single hand throughout).
+// Laid in sandstone, it covers Federation Square in Melbourne. The stones follow the last
+// groups of five, or mark the middle triangle of each group, or the triangle's handedness.
+// A triangle is [right angle, end of the long leg, end of the short]; the five below are in
+// tenths of the long leg and fifths of the short.
+const PINWHEEL = [[[1, 2], [5, 0], [0, 0]], [[1, 2], [5, 0], [2, 4]], [[6, 2], [10, 0], [5, 0]], [[2, 4], [0, 0], [0, 5]], [[6, 2], [2, 4], [5, 0]]];
+
+function pinwheel(rng, view, choose) {
+  const s = 10 * parseInt(name(choose, 'size', [['15 cm', 1], ['18 cm', 2], ['21 cm', 1]]), 10);
+  const colours = name(choose, 'colours', [['in groups of five', 3], ['in groups of five, three stones', 2], ['one in five dark', 2], ['by handedness', 1]]);
+  const room = view.roomRect;
+  const split = ([R, L, S]) => PINWHEEL.map(k => k.map(([x, y]) => [
+    R[0] + x / 10 * (L[0] - R[0]) + y / 5 * (S[0] - R[0]), R[1] + x / 10 * (L[1] - R[1]) + y / 5 * (S[1] - R[1])]));
+  // two triangles making a 2A × A rectangle, turned at random about the centre, wide enough
+  // to cover the room turned any way
+  const reachR = Math.hypot(room[2] - room[0], room[3] - room[1]) / 2;
+  const n = Math.ceil(Math.log(2.2 * reachR / s) / Math.log(Math.sqrt(5)));
+  const A = s * Math.pow(5, n / 2);
+  const th = rng() * Math.PI * 2, c0 = [(rng() - 0.5) * s * 4, (rng() - 0.5) * s * 4];
+  const at = (x, y) => [c0[0] + x * Math.cos(th) - y * Math.sin(th), c0[1] + x * Math.sin(th) + y * Math.cos(th)];
+  const P00 = at(-A, -A / 2), P10 = at(A, -A / 2), P11 = at(A, A / 2), P01 = at(-A, A / 2);
+  let tris = [[P00, P10, P01], [P11, P01, P10]];
+  const near = T => {
+    const c = [(T[0][0] + T[1][0] + T[2][0]) / 3, (T[0][1] + T[1][1] + T[2][1]) / 3];
+    return outside(c, room) < Math.hypot(T[1][0] - T[2][0], T[1][1] - T[2][1]);
+  };
+  for (let k = 0; k < n - 1; k++) tris = tris.flatMap(split).filter(near);
+  const stones = [];
+  const count = { dark: 0, light: 0, mid: 0 };
+  tris.forEach((P, g) => {
+    // the group's stone, drawn once for all five
+    const u0 = rng();
+    const groupTone = colours === 'in groups of five' ? (u0 < 0.5 ? 'dark' : 'light') : (u0 < 0.36 ? 'dark' : u0 < 0.68 ? 'light' : 'mid');
+    split(P).forEach((T, i) => {
+      const [R, L, S] = T;
+      const center = [(R[0] + L[0] + S[0]) / 3, (R[1] + L[1] + S[1]) / 3];
+      if (!inRect(center, room)) return;
+      const u = unit(L[0] - R[0], L[1] - R[1]), v = unit(S[0] - R[0], S[1] - R[1]);
+      const right = u[0] * v[1] - u[1] * v[0] > 0;
+      const tone = colours.startsWith('in groups') ? groupTone : colours === 'one in five dark' ? (i === 4 ? 'dark' : 'light') : (right ? 'dark' : 'light');
+      count[tone]++;
+      stones.push({ ...placed(center, view, s), ring: 0, turn: 0, cls: tone, L: [u[0], u[1], v[0], v[1]], g });
+    });
+  });
+  stones.sort(byDistance);
+  // in its own frame: the long leg along x, the short along y, about the centre
+  const tri = [[-2 * s / 3, -s / 3], [4 * s / 3, -s / 3], [-2 * s / 3, 2 * s / 3]];
+  const classes = {};
+  for (const t of ['dark', 'light', 'mid']) if (count[t]) classes[t] = { poly: tri, dark: t === 'dark', mid: t === 'mid' };
+  return {
+    classes, stones,
+    describe: `pinwheel triangles of ${s / 10} × ${2 * s / 10} cm, turned every which way and never repeating; ${colours}`,
+    how: `${stones.length} triangles, ${n} times divided into five, laid out from the centre`,
+  };
+}
+
+// ---------------------------------------------------------------- stones of several sizes
+// Stones or clay tiles cut to a few sizes and laid without a repeat:
+//  at random: squares and oblongs of one to three units, each set at the first gap, of a size
+//    that fits, as the mason avoids four corners meeting at a point;
+//  courses: rows of one or two widths, the stones of free lengths, joints kept 10 cm from
+//    those of the row before.
+function opus(rng, view, choose, family) {
+  const clay = family === 'clay';
+  const layout = name(choose, 'layout', clay ? [['at random', 1]] : [['at random', 3], ['courses', 2]]);
+  const room = view.roomRect;
+  const rects = [];
+  let what, unit = 0;
+  if (layout === 'at random') {
+    const u = unit = 10 * parseInt(name(choose, 'size', clay ? [['10 cm units', 1], ['15 cm units', 2]] : [['15 cm units', 2], ['20 cm units', 3]]), 10);
+    const SIZES = [[1, 1, 2], [2, 1, 3], [2, 2, 3], [3, 2, 2], [3, 3, 1]];
+    const i0 = Math.floor(room[0] / u) - 1, j0 = Math.floor(room[1] / u) - 1;
+    const ni = Math.ceil(room[2] / u) + 1 - i0, nj = Math.ceil(room[3] / u) + 1 - j0;
+    const occ = new Uint8Array(ni * nj), corners = new Uint8Array((ni + 1) * (nj + 1));
+    const free = (i, j, w, h) => {
+      if (i + w > ni || j + h > nj) return false;
+      for (let y = j; y < j + h; y++) for (let x = i; x < i + w; x++) if (occ[y * ni + x]) return false;
+      return true;
+    };
+    const cornersOf = (i, j, w, h) => [[i, j], [i + w, j], [i, j + h], [i + w, j + h]].map(([x, y]) => y * (ni + 1) + x);
+    for (let j = 0; j < nj; j++) for (let i = 0; i < ni; i++) {
+      if (occ[j * ni + i]) continue;
+      const cands = [];
+      for (const [w, h, wt] of SIZES) for (const [a, b] of w === h ? [[w, h]] : [[w, h], [h, w]]) {
+        if (!free(i, j, a, b)) continue;
+        const cross = cornersOf(i, j, a, b).some(c => corners[c] >= 3);
+        cands.push([a, b, wt, cross]);
+      }
+      const good = cands.filter(c => !c[3]);
+      const pool = good.length ? good : cands;
+      let x = rng() * pool.reduce((s, c) => s + c[2], 0), pick = pool[0];
+      for (const c of pool) { if ((x -= c[2]) <= 0) { pick = c; break; } }
+      const [a, b] = pick;
+      for (let y = j; y < j + b; y++) for (let xx = i; xx < i + a; xx++) occ[y * ni + xx] = 1;
+      for (const c of cornersOf(i, j, a, b)) corners[c]++;
+      rects.push({ x: (i0 + i) * u, y: (j0 + j) * u, w: a * u, h: b * u });
+    }
+    what = `squares and oblongs of ${u / 10} to ${3 * u / 10} cm, laid at random`;
+  } else {
+    const widths = name(choose, 'size', [['20 cm courses', 2], ['25 cm courses', 1], ['30 cm courses', 1], ['courses of 20 and 30 cm', 2]]).match(/\d+/g).map(x => 10 * x);
+    const R0 = Math.max(-room[0], room[2], -room[1], room[3]) + 400;
+    let y = -R0, prev = [];
+    while (y < R0) {
+      const H = widths.length > 1 ? widths[rng() < 0.5 ? 0 : 1] : widths[0];
+      // lengths in 10 cm steps from a little over the width to 70 or 80 cm
+      const lens = [0, 1, 2, 3, 4].map(i => Math.max(300, H) + 100 * i + (H > 250 ? 100 : 0));
+      let x = -R0 - rng() * 800;
+      const joints = [];
+      while (x < R0) {
+        let L = lens[0];
+        for (let t = 0; t < 12; t++) {
+          L = lens[Math.floor(rng() * lens.length)];
+          if (!prev.some(p => Math.abs(p - (x + L)) < 100)) break;
+        }
+        rects.push({ x, y, w: L, h: H });
+        x += L;
+        joints.push(x);
+      }
+      prev = joints;
+      y += H;
+    }
+    what = `courses of ${widths.map(w => w / 10).join(' and ')} cm, stones of free lengths`;
+  }
+  const tones = clay ? [['all red', 3], ['red and yellow mixed', 2], ['three clays mixed', 1]]
+    : [['one dark stone', 3], ['one light stone', 3], ...(unit ? [['the smallest dark', 2]] : []), ['dark and light mixed', 1]];
+  const scheme = name(choose, 'stones', tones);
+  const sd = Math.floor(rng() * 2 ** 31);
+  let k = 0;
+  const toneOf = r => {
+    const c = coin(k, 7, sd), c2 = coin(k++, 11, sd);
+    if (scheme === 'one dark stone' || scheme === 'all red') return 'dark';
+    if (scheme === 'one light stone') return 'light';
+    if (scheme === 'the smallest dark') return r.w * r.h === unit * unit ? 'dark' : 'light';
+    if (scheme === 'three clays mixed') return c ? 'dark' : c2 ? 'light' : 'mid';
+    return c ? 'dark' : 'light';
+  };
+  const { classes, stones } = rectStones(rng, view, rects, toneOf);
+  return {
+    classes, stones, pace: unit && unit <= 100 ? 0.7 : 1,
+    describe: `${what}; ${scheme}`,
+    how: `${stones.length} ${clay ? 'clay tiles' : 'stones'} in ${Object.keys(classes).length} sizes and tones, laid row by row`,
+  };
+}
+
+// ---------------------------------------------------------------- girih
+// Girih tiles in cement: decagon, pentagon, rhombus, hexagon and bowtie with one edge length,
+// grown edge to edge from the centre without a repeat (girih.js). Their straps cross every
+// edge at its middle at 54°, so the strapwork runs on across the whole floor; the decagons
+// carry ten-pointed stars. The straps are one pigment on the ground, or the stars are filled
+// with a second and the straps drawn in a third, or the ground round the stars is.
+const GIRIH_TURN = { decagon: 1, pentagon: 2, rhombus: 5, hexagon: 5, bowtie: 5 };
+
+function girih(rng, view, choose, family) {
+  const E = 10 * parseInt(name(choose, 'size', [['12 cm', 1], ['14 cm', 2], ['16 cm', 1]]), 10);
+  const mix = name(choose, 'tiles', [['with rosettes', 3], ['with many rosettes', 2], ['hexagons and bowties', 1], ['all five', 1]]);
+  const style = name(choose, 'design', [['straps', 2], ['filled stars', 3], ['filled ground', 2]]);
+  const strap = name(choose, 'straps', [['single straps', 3], ['double straps', 2]]);
+  const weights = mix === 'all five' ? { decagon: 2, pentagon: 1.5, rhombus: 1.5, hexagon: 3, bowtie: 2 }
+    : mix === 'hexagons and bowties' ? { decagon: 0, pentagon: 0, rhombus: 0, hexagon: 3, bowtie: 2 }
+      : { decagon: 2, pentagon: 0.3, rhombus: 0.3, hexagon: 3, bowtie: 2 };
+  const rosettes = { 'with rosettes': 0.3, 'with many rosettes': 0.6, 'hexagons and bowties': 0, 'all five': 0.2 }[mix];
+  const room = view.roomRect;
+  const rect = room.map(v => v / E).map((v, i) => v + (i < 2 ? -1.5 : 1.5));
+  let grown;
+  for (let t = 0; t < 6; t++) {
+    grown = growGirih(rng, rect, weights, rosettes);
+    if (grown.complete) break;
+  }
+  const glaze = family === 'glaze';
+  // glazed: the four field glazes go to the tile types in an order of the floor's own
+  const slots = [1, 2, 3, 4];
+  for (let i = 3; i > 0; i--) { const j = Math.floor(rng() * (i + 1)); [slots[i], slots[j]] = [slots[j], slots[i]]; }
+  const slotOf = { decagon: slots[0], hexagon: slots[1], bowtie: slots[2], pentagon: slots[3], rhombus: slots[3] };
+  const hw = E * (glaze ? 0.055 : strap === 'double straps' ? 0.075 : 0.045);
+  const dp = [hw, ['straps', 'filled stars', 'filled ground'].indexOf(style) + (strap === 'double straps' ? 4 : 0)];
+  const stones = [], count = {};
+  for (const t of grown.tiles) {
+    const center = [t.at[0] * E, t.at[1] * E];
+    if (!inRect(center, room)) continue;
+    count[t.type] = (count[t.type] || 0) + 1;
+    const turn = (t.rot + GIRIH_TURN[t.type] * Math.floor(rng() * 10)) * Math.PI / 5;
+    stones.push({ ...placed(center, view, E), ring: 0, turn: 0, cls: t.type, L: rot(turn) });
+  }
+  stones.sort(byDistance);
+  const classes = {};
+  const names = Object.keys(count);
+  for (const k of names) {
+    const sh = girihShape(k);
+    classes[k] = {
+      poly: sh.poly.map(v => [v[0] * E, v[1] * E]), cement: true, design: 7, dsize: E, variant: glaze ? slotOf[k] : 0, dp,
+      d2: sh.cross ? [sh.cross[0][0] * E, sh.cross[0][1] * E, sh.cross[1][0] * E, sh.cross[1][1] * E] : [0, 0, 0, 0],
+      pool: Math.max(6, Math.min(56, Math.round(count[k] / 3), Math.floor(150 / names.length))),
+    };
+  }
+  const order = ['decagon', 'hexagon', 'bowtie', 'pentagon', 'rhombus'].filter(k => count[k]);
+  return {
+    classes, stones, pace: 0.7,
+    describe: `girih ${mix === 'hexagons and bowties' ? 'of hexagons and bowties' : mix}, ${glaze ? 'each field in its own glaze' : `in ${strap}${style === 'filled stars' ? ' round filled stars' : style === 'filled ground' ? ' on a filled ground' : ''}`}: ${order.map(k => `${count[k]} ${k === 'rhombus' ? 'rhombi' : k + 's'}`).join(', ')}, never repeating`,
+    how: `${glaze ? 'glazed' : 'cement'} tiles with ${E / 10} cm edges, grown edge to edge from the centre`,
+  };
+}
+
+const BUILD = { douat, smith, loops, hex: hexes, cubes, penrose, arcs: penroseArcs, ammann, pinwheel, opus, girih };
+
+export function buildTiling(kind, rng, view, choose = plainChooser(rng), family = TILINGS[kind].families[0]) {
+  const t = BUILD[kind](rng, view, (slot, options) => choose(kind + '.' + slot, options), family);
   t.kind = kind;
   return t;
 }

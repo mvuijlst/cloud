@@ -67,7 +67,9 @@ export function offsetPoly(poly, r, seg = 5) {
     // outward normals of edges a-b and b-c (positive area, y down: outward = (dy, -dx))
     const e1 = norm(sub(b, a)), e2 = norm(sub(c, b));
     const n1 = [e1[1], -e1[0]], n2 = [e2[1], -e2[0]];
-    if (r > 0) {
+    // a reflex corner (the bowtie's) is mitred whichever way the outline moves
+    const reflex = e1[0] * e2[1] - e1[1] * e2[0] < 0;
+    if (r > 0 && !reflex) {
       const t1 = Math.atan2(n1[1], n1[0]);
       let t2 = Math.atan2(n2[1], n2[0]);
       while (t2 < t1) t2 += Math.PI * 2;

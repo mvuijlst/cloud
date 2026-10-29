@@ -90,7 +90,7 @@ function makeChooser(rng, forced, made) {
     return i;
   };
 }
-const familyOf = id => id ? (id.startsWith('cement') ? 'cement' : 'stone') : null;
+const familyOf = id => { const m = id && MATERIALS.find(x => x.id === id); return m ? m.family : null; };
 
 let floor = null;      // current floor description
 let run = null;        // laying state
@@ -112,15 +112,15 @@ function newFloor(s, replay = null) {
   const view = makeView(w, h, { pitch: PITCH, thick: THICK, cellsAcross: across, fovY: FOV });
   const made = {};
   const choose = makeChooser(rng, replay && replay.c, made);
-  // the tiling, then a material of its family: as set in the panel, or drawn
+  // the tiling, then a material of a family it suits: as set in the panel, or drawn
   const fam = familyOf(opts.material);
-  const kinds = Object.keys(TILINGS).filter(k => replay || (opts.tiles && TILINGS[opts.tiles] ? k === opts.tiles : !fam || TILINGS[k].family === fam));
+  const kinds = Object.keys(TILINGS).filter(k => replay || (opts.tiles && TILINGS[opts.tiles] ? k === opts.tiles : !fam || TILINGS[k].families.includes(fam)));
   const kind = kinds[choose('kind', kinds.map(k => [k, TILINGS[k].weight]))];
-  const fits = MATERIALS.filter(m => m.family === TILINGS[kind].family);
+  const fits = MATERIALS.filter(m => TILINGS[kind].families.includes(m.family));
   const mats = !replay && fits.some(m => m.id === opts.material) ? fits.filter(m => m.id === opts.material) : fits;
   const material = mats[choose('material', mats.map(m => [m.id, m.weight]))];
   const sun = daylight(rng);
-  const tiling = buildTiling(kind, rng, view, choose);
+  const tiling = buildTiling(kind, rng, view, choose, material.family);
   // every stone takes one of a pool of baked stones of its class
   const pool = buildPool(tiling, material, seed, renderer.lowPower ? 32 : 56);
   pool.slotOf = pool.entries.map((_, i) => i);
@@ -159,7 +159,7 @@ function record(entry) {
 
 function label(e) {
   const k = e.c.kind;
-  const v = e.c[k + '.shape'] || e.c[k + '.design'] || e.c[k + '.rule'] || '';
+  const v = ['shape', 'layout', 'design', 'cabochons', 'rule'].map(x => e.c[k + '.' + x]).find(Boolean) || '';
   const m = MATERIALS.find(x => x.id === e.c.material);
   return [TILINGS[k] ? TILINGS[k].name : k, v, m ? m.short : ''].filter(Boolean).join(' · ');
 }
@@ -213,7 +213,9 @@ function startStone() {
 
 function animateStone(dt) {
   // the open field around the pattern goes faster
-  const c = run.cur, D = (c.outer ? 0.7 : 1.1) / opts.speed;
+  // small tiles are set faster than stones
+  const pace = floor.tiling.pace || 1;
+  const c = run.cur, D = (c.outer ? 0.7 : 1.1) * pace / opts.speed;
   c.t += dt;
   if (opts.freeze) c.t = opts.freeze[1] * D;
   const u = c.t / D;
@@ -236,7 +238,7 @@ function animateStone(dt) {
     run.cur = null;
     run.next++;
     renderer.setLaid(run.next);
-    run.wait = 0.1 / opts.speed;
+    run.wait = 0.1 * (floor.tiling.pace || 1) / opts.speed;
     describe();
   }
 }
@@ -363,18 +365,18 @@ $('stones').value = opts.material || '';
 $('stones').addEventListener('change', e => {
   opts.material = e.target.value || null;
   store.set('stones', e.target.value);
-  // a material from the other family brings tiles it suits
+  // a material the tiles cannot take brings tiles it suits
   const fam = familyOf(e.target.value);
-  if (fam && opts.tiles && TILINGS[opts.tiles] && TILINGS[opts.tiles].family !== fam) { opts.tiles = null; $('tiles').value = ''; store.set('tiles', ''); }
+  if (fam && opts.tiles && TILINGS[opts.tiles] && !TILINGS[opts.tiles].families.includes(fam)) { opts.tiles = null; $('tiles').value = ''; store.set('tiles', ''); }
   another();
 });
 $('tiles').value = opts.tiles || '';
 $('tiles').addEventListener('change', e => {
   opts.tiles = e.target.value || null;
   store.set('tiles', e.target.value);
-  // tiles of the other family bring a material that suits them
-  const fam = opts.tiles && TILINGS[opts.tiles] && TILINGS[opts.tiles].family;
-  if (fam && opts.material && familyOf(opts.material) !== fam) {
+  // tiles that cannot take the material bring a material that suits them
+  const fams = opts.tiles && TILINGS[opts.tiles] && TILINGS[opts.tiles].families;
+  if (fams && opts.material && !fams.includes(familyOf(opts.material))) {
     opts.material = null; $('stones').value = ''; store.set('stones', '');
   }
   another();

@@ -1,6 +1,6 @@
 // WebGL 2 renderer for the floor. Per floor, the stone and mortar model is baked into
 // textures; each frame then draws real stones (tops and sides) with sun shadows.
-import { QUAD_VS, BAKE_STONE_FS, BAKE_BED_FS, STONE_VS, STONE_FS, GROUND_VS, GROUND_FS, DEPTH_FS } from './shaders.js';
+import { QUAD_VS, bakeStoneFS, BAKE_BED_FS, STONE_VS, STONE_FS, GROUND_VS, GROUND_FS, DEPTH_FS } from './shaders.js';
 import { makeRndBytes, Rnd, RND_N } from './stonelib.js';
 import { atlasLayout, buildStones, buildGround, slotTables, FLOATS, SLOT_TEXELS } from './geometry.js';
 import { sunView, ortho } from './camera.js';
@@ -27,14 +27,20 @@ export class Renderer {
     this.par = gl.getExtension('KHR_parallel_shader_compile');
     this.aniso = gl.getExtension('EXT_texture_filter_anisotropic');
     this.t0 = performance.now();
+    // one stone bake per family of material, each with only its own model
     this.progs = [
-      this.program(QUAD_VS, BAKE_STONE_FS, 'stone bake'),
+      this.program(QUAD_VS, bakeStoneFS(0), 'stone bake'),
+      this.program(QUAD_VS, bakeStoneFS(1), 'cement bake'),
+      this.program(QUAD_VS, bakeStoneFS(2), 'clay bake'),
+      this.program(QUAD_VS, bakeStoneFS(3), 'glaze bake'),
       this.program(QUAD_VS, BAKE_BED_FS, 'bed bake'),
       this.program(STONE_VS, STONE_FS, 'stones', STONE_ATTRS),
       this.program(GROUND_VS, GROUND_FS, 'ground', ['aPos']),
       this.program(STONE_VS, DEPTH_FS, 'depth', STONE_ATTRS),
     ];
-    [this.pBakeStone, this.pBakeBed, this.pStone, this.pGround, this.pDepth] = this.progs;
+    const [bs, bc, bk, bg] = this.progs;
+    this.pBake = { stone: bs, cement: bc, clay: bk, glaze: bg };
+    [, , , , this.pBakeBed, this.pStone, this.pGround, this.pDepth] = this.progs;
     this.ready = false;
     this.quadVao = gl.createVertexArray();
     this.rndBytes = makeRndBytes();
@@ -170,6 +176,9 @@ export class Renderer {
       uCementA: lin(cem.a), uCementB: lin(cem.b), uCementC: lin(cem.c || cem.b), uCementBody: lin(cem.body),
       uDarkAlb: lin(m.dark), uLightAlb: lin(m.light), uMidAlb: lin(mid), uBedAlb: lin(m.bed), uFillAlb: lin(m.fill),
       uDarkP: m.darkP, uLightP: m.lightP, uMisc: [m.fillDepth, m.edge, m.grime, m.scratches],
+      uVein: m.veins || [0, 0, 1, 0], uRough: m.rough || [0.48, 0.78],
+      uGlaze: (m.glaze || [[200, 190, 175], [60, 60, 62], [60, 60, 62], [60, 60, 62], [60, 60, 62], [220, 215, 200]]).flatMap(lin),
+      uFaceLayer: m.family === 'glaze' ? 1.0 : 5.0,
       uSunDir: s.dir, uSunCol: s.col, uSkyCol: s.sky, uSunSoft: s.soft, uExposure: s.exposure,
       uFloorC: [0, 0], uFloorR: v.floorR,
     };
@@ -177,7 +186,8 @@ export class Renderer {
     // stone atlas: one slot per baked stone, about a millimetre to the texel
     const span = Math.max(...floor.pool.entries.map(e => e.span));
     const slot = Math.min(this.lowPower ? 192 : 384, Math.ceil(span / (this.lowPower ? 1.6 : 0.95)));
-    const A = this.atlas = atlasLayout(tab.n, slot, Math.min(this.maxTex, 8192));
+    // at most 4608²: graphics memory
+    const A = this.atlas = atlasLayout(tab.n, slot, Math.min(this.maxTex, 4608));
     const lv = 6;
     this.atlas0 = this.own('t', this.texture(A.W, A.H, gl.SRGB8_ALPHA8, lv, gl.LINEAR_MIPMAP_LINEAR, gl.LINEAR));
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAX_LEVEL, lv - 1);
@@ -276,7 +286,7 @@ export class Renderer {
     this.bind(TU.slotU, this.slotU);
     this.bind(TU.rnd, this.rndTex);
     if (bed) this.use(this.pBakeBed, { ...this.mat, uBedRect: this.bedRect, uBedSize: this.bedSize });
-    else this.use(this.pBakeStone, { ...this.mat, uSlotCols: this.atlas.cols, uSlotPx: this.atlas.S, uSlots: this.floor.pool.entries.length });
+    else this.use(this.pBake[this.floor.material.family], { ...this.mat, uSlotCols: this.atlas.cols, uSlotPx: this.atlas.S, uSlots: this.floor.pool.entries.length });
     gl.bindVertexArray(this.quadVao);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
     gl.disable(gl.SCISSOR_TEST);
