@@ -2,7 +2,7 @@
 // textures; each frame then draws real stones (tops and sides) with sun shadows.
 import { QUAD_VS, BAKE_STONE_FS, BAKE_BED_FS, STONE_VS, STONE_FS, GROUND_VS, GROUND_FS, DEPTH_FS } from './shaders.js';
 import { makeRndBytes, Rnd, RND_N } from './stonelib.js';
-import { atlasLayout, buildStones, buildGround, FLOATS } from './geometry.js';
+import { atlasLayout, buildStones, buildGround, slotTables, FLOATS } from './geometry.js';
 import { sunView, ortho } from './camera.js';
 
 const U = {
@@ -11,7 +11,7 @@ const U = {
 };
 const STONE_ATTRS = ['aPos', 'aNrm', 'aTan', 'aUV', 'aInfo'];
 // texture units
-const TU = { cells: 0, rnd: 1, atlas0: 2, atlas1: 3, bed0: 4, bed1: 5, mask: 6, shadow: 7, fly: 8 };
+const TU = { slotF: 0, rnd: 1, atlas0: 2, atlas1: 3, bed0: 4, bed1: 5, mask: 6, shadow: 7, fly: 8, slotU: 9 };
 
 export class Renderer {
   constructor(canvas, { lowPower = false } = {}) {
@@ -155,23 +155,28 @@ export class Renderer {
     this.floor = floor;
     const v = floor.view, m = floor.material, s = floor.sun;
     const lin = c => c.map(x => Math.pow(x / 255, 2.2));
-    this.cellsTex = this.own('t', this.texture(v.RX, v.RY, gl.RGBA8UI, 1, gl.NEAREST, gl.NEAREST));
+    // the baked-stone table: polygon, sizes, design (floats) and hash, flags (uints) per slot
+    const tab = slotTables(floor.pool);
     gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
-    gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, v.RX, v.RY, gl.RGBA_INTEGER, gl.UNSIGNED_BYTE, floor.cells);
+    this.slotF = this.own('t', this.texture(5, tab.n, gl.RGBA32F, 1, gl.NEAREST, gl.NEAREST));
+    gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 5, tab.n, gl.RGBA, gl.FLOAT, tab.f);
+    this.slotU = this.own('t', this.texture(1, tab.n, gl.RGBA32UI, 1, gl.NEAREST, gl.NEAREST));
+    gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 1, tab.n, gl.RGBA_INTEGER, gl.UNSIGNED_INT, tab.u);
+    const cem = m.cement || { a: [200, 190, 175], b: [60, 60, 62], body: [140, 138, 132] };
     this.mat = {
-      uPitch: v.pitch, uThick: v.thick, uJoint: m.joint, uGrid: [v.RX, v.RY], uOrigin: v.roomOrigin,
-      uCells: TU.cells, uRnd: TU.rnd, uSeed: floor.seed >>> 0, uLoop: 1,
+      uPitch: v.pitch, uThick: v.thick, uJoint: m.joint, uOrigin: v.roomOrigin,
+      uSlotF: TU.slotF, uSlotU: TU.slotU, uRnd: TU.rnd, uSeed: floor.seed >>> 0, uLoop: 1,
+      uCementA: lin(cem.a), uCementB: lin(cem.b), uCementBody: lin(cem.body),
       uDarkAlb: lin(m.dark), uLightAlb: lin(m.light), uBedAlb: lin(m.bed), uFillAlb: lin(m.fill),
       uDarkP: m.darkP, uLightP: m.lightP, uMisc: [m.fillDepth, m.edge, m.grime, m.scratches],
       uSunDir: s.dir, uSunCol: s.col, uSkyCol: s.sky, uSunSoft: s.soft, uExposure: s.exposure,
       uFloorC: [0, 0], uFloorR: v.floorR,
     };
 
-    // stone atlas: one slot per square of the first floor, both halves in it;
-    // the squares around borrow these, turned or mirrored
-    const cells = v.NX * v.NY;
-    const slot = this.lowPower ? 160 : cells <= 120 ? 320 : 256;
-    const A = this.atlas = atlasLayout(cells, slot, Math.min(this.maxTex, 8192));
+    // stone atlas: one slot per baked stone, about a millimetre to the texel
+    const span = Math.max(...floor.pool.entries.map(e => e.span));
+    const slot = Math.min(this.lowPower ? 192 : 384, Math.ceil(span / (this.lowPower ? 1.6 : 0.95)));
+    const A = this.atlas = atlasLayout(tab.n, slot, Math.min(this.maxTex, 8192));
     const lv = 6;
     this.atlas0 = this.own('t', this.texture(A.W, A.H, gl.SRGB8_ALPHA8, lv, gl.LINEAR_MIPMAP_LINEAR, gl.LINEAR));
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAX_LEVEL, lv - 1);
@@ -240,6 +245,7 @@ export class Renderer {
     this.jobs = [{ kind: 'bed', rows: bh, done: 0 }, { kind: 'atlas', rows: A.H, done: 0 }];
     this.baked = false;
     this.nLaid = 0;
+    this.pointR = -1;
     this.flying = null;
     this.staticDirty = true;
     this.dirty = true;
@@ -265,13 +271,11 @@ export class Renderer {
     gl.scissor(0, job.done, w, n);
     gl.disable(gl.DEPTH_TEST);
     gl.disable(gl.BLEND);
-    this.bind(TU.cells, this.cellsTex);
+    this.bind(TU.slotF, this.slotF);
+    this.bind(TU.slotU, this.slotU);
     this.bind(TU.rnd, this.rndTex);
     if (bed) this.use(this.pBakeBed, { ...this.mat, uBedRect: this.bedRect, uBedSize: this.bedSize });
-    else this.use(this.pBakeStone, {
-      ...this.mat, uSlotCols: this.atlas.cols, uSlotPx: this.atlas.S, uMargin: this.atlas.margin,
-      uBakeOff: [this.floor.view.M, this.floor.view.M], uBakeSize: [this.floor.view.NX, this.floor.view.NY],
-    });
+    else this.use(this.pBakeStone, { ...this.mat, uSlotCols: this.atlas.cols, uSlotPx: this.atlas.S, uSlots: this.floor.pool.entries.length });
     gl.bindVertexArray(this.quadVao);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
     gl.disable(gl.SCISSOR_TEST);
@@ -295,13 +299,9 @@ export class Renderer {
     if (n !== this.nLaid) { this.nLaid = n; this.staticDirty = true; this.dirty = true; }
   }
 
-  setCell(i, j, rgba) {
-    const gl = this.gl, f = this.floor, k = (j * f.view.RX + i) * 4;
-    f.cells.set(rgba, k);
-    gl.bindTexture(gl.TEXTURE_2D, this.cellsTex);
-    gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
-    gl.texSubImage2D(gl.TEXTURE_2D, 0, i, j, 1, 1, gl.RGBA_INTEGER, gl.UNSIGNED_BYTE, f.cells.subarray(k, k + 4));
-    this.dirty = true;
+  // joints are filled out to this distance from the centre
+  setPointing(r) {
+    if (r !== this.pointR) { this.pointR = r; this.dirty = true; }
   }
 
   // The stone in flight: index in laying order, displacement (mm), turn and tilts (rad), fade.
@@ -423,7 +423,7 @@ export class Renderer {
     gl.depthFunc(gl.LEQUAL);
     gl.disable(gl.CULL_FACE);
     gl.disable(gl.BLEND);
-    for (const [unit, t] of [[TU.cells, this.cellsTex], [TU.rnd, this.rndTex], [TU.atlas0, this.atlas0], [TU.atlas1, this.atlas1],
+    for (const [unit, t] of [[TU.slotF, this.slotF], [TU.slotU, this.slotU], [TU.rnd, this.rndTex], [TU.atlas0, this.atlas0], [TU.atlas1, this.atlas1],
       [TU.bed0, this.bed0], [TU.bed1, this.bed1], [TU.mask, this.mask], [TU.shadow, this.shadow], [TU.fly, this.flyShadow]]) this.bind(unit, t);
     const fl = this.flyLight || this.light;
     const view = {
@@ -461,7 +461,7 @@ export class Renderer {
     this.use(this.pGround, { ...view, uGround: 0 });
     gl.drawArrays(gl.TRIANGLES, 0, 6);
     gl.stencilFunc(gl.NOTEQUAL, 1, 0xff);
-    this.use(this.pGround, { uGround: 1 });
+    this.use(this.pGround, { uGround: 1, uPointR: this.pointR });
     gl.drawArrays(gl.TRIANGLES, 6, 6);
     gl.disable(gl.STENCIL_TEST);
     gl.stencilMask(0xff);

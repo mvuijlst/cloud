@@ -16,57 +16,43 @@ void main() {
 }`;
 
 // ---------------------------------------------------------------- bakes
-// One square slot per cell holds both of its stones, in cell coordinates.
-// o0: albedo (sRGB target) and roughness. o1: normal xy, cavity, and which stone owns
-// the texel (0.5 + (coverage of stone 0 - coverage of stone 1) / 2).
+// One square slot per baked stone, centred on the stone. o0: albedo (sRGB target) and
+// roughness. o1: normal xy, cavity, and the stone's coverage of the texel.
 export const BAKE_STONE_FS = `${HEAD}
 layout(location = 0) out vec4 o0;
 layout(location = 1) out vec4 o1;
 ${MATERIAL}
 uniform int uSlotCols;
+uniform int uSlots;
 uniform float uSlotPx;
-uniform float uMargin;
-uniform ivec2 uBakeOff;          // where the first floor's squares sit in the room
-uniform ivec2 uBakeSize;
 
 void main() {
   vec2 px = gl_FragCoord.xy;
-  ivec2 slot = ivec2(floor(px / uSlotPx));
-  int idx = slot.y * uSlotCols + slot.x;
+  ivec2 sl = ivec2(floor(px / uSlotPx));
+  int slot = sl.y * uSlotCols + sl.x;
   o0 = vec4(0.0);
-  o1 = vec4(0.5, 0.5, 1.0, 0.5);
-  if (idx >= uBakeSize.x * uBakeSize.y) return;
-  ivec2 cell = uBakeOff + ivec2(idx % uBakeSize.x, idx / uBakeSize.x);
-  uvec4 cd = cellAt(cell);
-  if (cd.r == 255u) return;
-  float span = uPitch + 2.0 * uMargin;
+  o1 = vec4(0.5, 0.5, 1.0, 0.0);
+  if (slot >= uSlots) return;
+  Stone s = makeStone(slot);
+  float span = texelFetch(uSlotF, ivec2(3, slot), 0).z;
   float texel = span / uSlotPx;
-  vec2 q = (px - vec2(slot) * uSlotPx) / uSlotPx * span - uMargin;
-  Stone s0 = makeStone(cell, 0, cd);
-  Stone s1 = s0;
-  float c0, c1 = 0.0;
-  float d0 = stoneSD(s0, q, texel, c0);
-  float d1 = 1e9;
-  if (s0.tri) { s1 = makeStone(cell, 1, cd); d1 = stoneSD(s1, q, texel, c1); }
-  float cov0 = clamp(0.5 - d0 / texel, 0.0, 1.0);
-  float cov1 = clamp(0.5 - d1 / texel, 0.0, 1.0);
-  o1.a = 0.5 + 0.5 * (cov0 - cov1);
-  if (min(d0, d1) > 3.0 * texel + 4.0) return;
-  Stone s = s0;
-  float ch = c0, dd = d0;
-  if (d1 < d0) { s = s1; ch = c1; dd = d1; }
+  vec2 q = ((px - vec2(sl) * uSlotPx) / uSlotPx - 0.5) * span;
+  float ch;
+  float d = stoneSD(s, q, texel, ch);
+  o1.a = clamp(0.5 - d / texel, 0.0, 1.0);
+  if (d > 3.0 * texel + 4.0) return;
   float e = texel * 0.75;
   float h0 = 0.0, h1 = 0.0, h2 = 0.0, det = 0.0, pit = 0.0;
   for (int j = 0; j < 3 * uLoop; j++) {
     vec2 p = q + (j == 1 ? vec2(e, 0.0) : (j == 2 ? vec2(0.0, e) : vec2(0.0)));
     float c, dt, pt;
-    float d = stoneSD(s, p, texel, c);
-    float h = stoneHeight(s, p, d, c, texel, dt, pt);
+    float dj = stoneSD(s, p, texel, c);
+    float h = stoneHeight(s, p, dj, c, texel, dt, pt);
     if (j == 0) { h0 = h; det = dt; pit = pt; } else if (j == 1) h1 = h; else h2 = h;
   }
   vec3 n = normalize(vec3(-(h1 - h0) / e, -(h2 - h0) / e, 1.0));
   float rough;
-  vec3 alb = stoneSurface(s, q, dd, ch, det, pit, texel, rough);
+  vec3 alb = stoneSurface(s, q, d, ch, det, pit, texel, rough);
   o0 = vec4(alb, rough);
   o1 = vec4(n.xy * 0.5 + 0.5, clamp(1.0 + det * 0.5, 0.6, 1.0), o1.a);
 }
@@ -231,7 +217,7 @@ void main() {
   float cover = 1.0;
   if (abs(vInfo.y - 1.0) > 0.5) {
     vec4 a1 = texture(uAtlas1, vUV);
-    cover = vInfo.x < 0.5 ? clamp(a1.a * 2.0 - 1.0, 0.0, 1.0) : clamp(1.0 - a1.a * 2.0, 0.0, 1.0);
+    cover = a1.a;
     cover *= uAlpha;
     if (cover < 0.02) discard;
     vec4 a0 = texture(uAtlas0, vUV);
@@ -263,14 +249,12 @@ ${VIEW}
 uniform sampler2D uBed0, uBed1;
 uniform vec4 uBedRect;
 uniform int uGround;             // 0 bed, 1 joint filling
+uniform float uPointR;           // joints are filled out to this distance from the centre
 in vec3 vPos;
 
 void main() {
   vec2 p = vPos.xy;
-  if (uGround == 1) {
-    ivec2 c = ivec2(floor((p - uOrigin) / uPitch));
-    if (cellAt(c).b < 128u) discard;
-  }
+  if (uGround == 1 && length(p) > uPointR) discard;
   vec2 uv = (p - uBedRect.xy) / (uBedRect.zw - uBedRect.xy);
   vec3 b0 = texture(uBed0, uv).rgb;
   vec3 b1 = texture(uBed1, uv).rgb;
@@ -306,8 +290,7 @@ in vec2 vUV;
 flat in vec2 vInfo;
 void main() {
   if (abs(vInfo.y - 1.0) > 0.5) {
-    float a = texture(uAtlas1, vUV).a;
-    float own = vInfo.x < 0.5 ? clamp(a * 2.0 - 1.0, 0.0, 1.0) : clamp(1.0 - a * 2.0, 0.0, 1.0);
+    float own = texture(uAtlas1, vUV).a;
     if (uMaskMode == 0 && own < 0.5) discard;
     o = vec4(own);
   } else {

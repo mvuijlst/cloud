@@ -14,11 +14,14 @@ uvec3 pcg3(uvec3 v) {
 vec3 rnd3(uvec3 v) { return vec3(pcg3(v)) * INV32; }
 
 uniform float uPitch, uThick, uJoint;
-uniform ivec2 uGrid;
-uniform vec2 uOrigin;
-uniform usampler2D uCells;      // r: state (0-3 half tiles A-D, 4/5 whole dark/light, 255 none)
-                                // g: bit k set when stone k is laid; b: joint filled (0-255)
+uniform vec2 uOrigin;           // layout grid, for the chalk lines on the bed
 uniform uint uSeed;
+// One row per baked stone. uSlotF texels: 0-2 polygon vertices (two per texel, mm, about the
+// stone's centre, already inset for the joint and corner radius), 3: vertex count, corner radius,
+// slot span in mm, design; 4: design size, design variant. uSlotU: hash xyz, flags (1 dark, 2 cement).
+uniform sampler2D uSlotF;
+uniform highp usampler2D uSlotU;
+uniform vec3 uCementA, uCementB, uCementBody;   // cement tiles: ground pigment, figure pigment, body
 
 uniform vec3 uDarkAlb, uLightAlb, uBedAlb, uFillAlb;
 uniform vec4 uDarkP;            // tone spread, haze, fossils, calcite veins
@@ -132,74 +135,57 @@ float sdTri(vec2 p, vec2 p0, vec2 p1, vec2 p2) {
 }
 
 // ---------------------------------------------------------------- stones
-uvec4 cellAt(ivec2 c) {
-  if (c.x < 0 || c.y < 0 || c.x >= uGrid.x || c.y >= uGrid.y) return uvec4(255u, 0u, 0u, 0u);
-  return texelFetch(uCells, c, 0);
-}
-
 struct Stone {
-  ivec2 cell; int k; int st; bool tri; bool dark; float fill;
-  uvec3 h; vec2 org; vec2 cen; vec2 off; float rot;
-  vec2 v0, v1, v2; float rc;
-  float lip; vec2 tilt; float dish; float re; float chip; float eros; float ang;
+  uvec3 h; bool dark; bool cement; int nv; vec2 v[6]; float rc; vec2 cen;
+  int design; float dsize; float variant;
+  float dish; float re; float chip; float eros; float ang;
 };
 
-// cell corners, y down: 0 bottom-left, 1 top-left, 2 top-right, 3 bottom-right
-vec2 cornerP(int c) {
-  float P = uPitch;
-  return c == 0 ? vec2(0.0, P) : (c == 1 ? vec2(0.0) : (c == 2 ? vec2(P, 0.0) : vec2(P)));
-}
-
-Stone makeStone(ivec2 cell, int k, uvec4 cd) {
+Stone makeStone(int slot) {
   Stone s;
-  s.cell = cell; s.k = k; s.st = int(cd.r);
-  s.tri = s.st < 4;
-  s.dark = s.tri ? (k == 0) : (s.st == 4);
-  s.fill = float(cd.b) / 255.0;
-  s.h = pcg3(uvec3(uint(cell.x + 4096), uint(cell.y + 4096) * 2u + uint(k), uSeed));
+  uvec4 u = texelFetch(uSlotU, ivec2(0, slot), 0);
+  s.h = u.xyz;
+  s.dark = (u.w & 1u) != 0u;
+  s.cement = (u.w & 2u) != 0u;
+  vec4 t0 = texelFetch(uSlotF, ivec2(0, slot), 0);
+  vec4 t1 = texelFetch(uSlotF, ivec2(1, slot), 0);
+  vec4 t2 = texelFetch(uSlotF, ivec2(2, slot), 0);
+  vec4 t3 = texelFetch(uSlotF, ivec2(3, slot), 0);
+  vec4 t4 = texelFetch(uSlotF, ivec2(4, slot), 0);
+  s.v[0] = t0.xy; s.v[1] = t0.zw; s.v[2] = t1.xy; s.v[3] = t1.zw; s.v[4] = t2.xy; s.v[5] = t2.zw;
+  s.nv = int(t3.x + 0.5);
+  s.rc = t3.y;
+  s.design = int(t3.w + 0.5);
+  s.dsize = t4.x;
+  s.variant = t4.y;
+  s.cen = vec2(0.0);
   vec3 r1 = vec3(s.h) * INV32;
   vec3 r2 = hrnd(s.h, 0x68e31da4u);
-  vec3 r3 = hrnd(s.h, 0x7fb5d329u);
   vec3 r4 = hrnd(s.h, 0xa511e9b3u);
-  s.org = uOrigin + vec2(cell) * uPitch;
-  float hj = uJoint * 0.5 + (r3.x - 0.5) * 1.4;
-  s.rc = 0.8 + 2.4 * r1.z;
-  if (s.tri) {
-    int cc = (k == 0) ? s.st : ((s.st + 2) & 3);
-    vec2 C = cornerP(cc), A = cornerP((cc + 1) & 3), B = cornerP((cc + 3) & 3);
-    float rin = uPitch * (1.0 - 0.70710678);
-    vec2 I = C + rin * (normalize(A - C) + normalize(B - C));
-    float f = (rin - hj - s.rc) / rin;
-    s.v0 = I + (C - I) * f; s.v1 = I + (A - I) * f; s.v2 = I + (B - I) * f;
-    s.cen = (C + A + B) / 3.0;
-  } else {
-    s.cen = vec2(uPitch * 0.5);
-    s.v0 = vec2(uPitch * 0.5 - hj - s.rc);
-    s.v1 = s.v0; s.v2 = s.v0;
-  }
-  s.off = (r2.xy - 0.5) * 2.0 * 1.1;
-  s.rot = (r2.z - 0.5) * 2.0 * 0.011;
-  s.lip = (r1.x - 0.5) * 1.5;
-  s.tilt = (r3.yz - 0.5) * 0.03;
-  s.dish = r1.y * 1.5;
-  s.re = (0.4 + 1.3 * r4.x) * uMisc.y * (s.dark ? 1.0 : 0.45);
+  s.dish = r1.y * (s.cement ? 0.4 : 1.5);
+  s.re = (0.4 + 1.3 * r4.x) * uMisc.y * (s.dark ? 1.0 : 0.45) * (s.cement ? 0.5 : 1.0);
   s.chip = r4.y * r4.y;
   float e = fract(r4.z * 113.7);
-  s.eros = (!s.dark && r4.z < uLightP.y) ? uLightP.z * (0.35 + 0.65 * e) : 0.0;
+  s.eros = (!s.dark && !s.cement && r4.z < uLightP.y) ? uLightP.z * (0.35 + 0.65 * e) : 0.0;
   s.ang = fract(r1.z * 71.3 + r2.x) * 6.2831853;
   return s;
 }
 
-vec2 toLocal(Stone s, vec2 p) {
-  vec2 q = p - s.org - s.cen - s.off;
-  float c = cos(s.rot), sn = sin(s.rot);
-  return vec2(c * q.x + sn * q.y, -sn * q.x + c * q.y) + s.cen;
-}
-
+// exact distance to the stone's convex polygon, rounded at the corners by rc (iq's sdPolygon)
 float baseSD(Stone s, vec2 q) {
-  if (s.tri) return sdTri(q, s.v0, s.v1, s.v2) - s.rc;
-  vec2 d = abs(q - s.cen) - s.v0;
-  return length(max(d, 0.0)) + min(max(d.x, d.y), 0.0) - s.rc;
+  vec2 d0 = q - s.v[0];
+  float d = dot(d0, d0);
+  float sg = 1.0;
+  for (int i = 0; i < s.nv; i++) {
+    int j = i == 0 ? s.nv - 1 : i - 1;
+    vec2 vi = s.v[i], vj = s.v[j];
+    vec2 e = vj - vi, w = q - vi;
+    vec2 b = w - e * clamp(dot(w, e) / dot(e, e), 0.0, 1.0);
+    d = min(d, dot(b, b));
+    bvec3 c = bvec3(q.y >= vi.y, q.y < vj.y, e.x * w.y > e.y * w.x);
+    if (all(c) || all(not(c))) sg *= -1.0;
+  }
+  return sg * sqrt(d) - s.rc;
 }
 
 // Hand-dressed outline: gentle waviness plus chipped bites.
@@ -208,8 +194,9 @@ float stoneSD(Stone s, vec2 q, float fp, out float chipF) {
   chipF = 0.0;
   if (d > 9.0) return d;
   uint sd = s.h.x;
-  d += 0.9 * gnoise(q / 85.0, sd) + 0.45 * gnoise(q / 24.0, sd + 1u);
-  if (fp < 1.2) d += 0.12 * gnoise(q / 5.0, sd + 2u);
+  float wv = s.cement ? 0.2 : 1.0;           // pressed cement tiles are nearly straight-edged
+  d += wv * (0.9 * gnoise(q / 85.0, sd) + 0.45 * gnoise(q / 24.0, sd + 1u));
+  if (fp < 1.2) d += wv * 0.12 * gnoise(q / 5.0, sd + 2u);
   float cn = gnoise(q / 13.0, sd + 3u) + 0.35 * gnoise(q / 4.0, sd + 4u);
   float thr = 1.15 - 0.5 * s.chip;
   chipF = smoothstep(thr, thr + 0.3, cn) * smoothstep(-14.0, -2.0, d);
@@ -233,6 +220,14 @@ const int   RL_OC[4] = int[4](2, 4, 3, 2);
 float relief(Stone s, vec2 tq, float fp, out float detail, out float pit) {
   uint sd = s.h.y;
   float h = 0.0, det = 0.0;
+  if (s.cement) {
+    h = 0.12 * fbm(tq / 80.0, sd, 2, fp / 80.0);
+    det = 0.05 * fbm(tq / 1.6, sd + 9u, 2, fp / 1.6);
+    float pd;
+    pit = dots(tq, 7.0, 0.12, 0.1, 0.45, sd + 17u, fp, pd);
+    detail = det - pd * 0.15;
+    return h + det - pd * 0.15;
+  }
   for (int i = 0; i < 4 * uLoop; i++) {
     float sc = s.dark ? RD_SC[i] : RL_SC[i];
     int oc = s.dark ? RD_OC[i] : RL_OC[i];
@@ -449,10 +444,76 @@ vec3 shade(vec3 alb, vec3 n, vec3 V, float rough, float shadow, float ao, vec2 p
   return c;
 }
 
+// ---------------------------------------------------------------- cement tiles
+// Design 1: Smith's quarter circles, discs at the top-left and bottom-right corners.
+// Design 2: hexagon with three arcs round alternate corners, drawn as a band.
+// The pigments were poured against a brass divider, so the border wanders and bleeds a little.
+float designMask(Stone s, vec2 q, float fp) {
+  float wob = 0.4 * gnoise(q / 4.0, s.h.x + 61u) + 0.06 * gnoise(q / 1.3, s.h.x + 67u);
+  float e = max(fp, 0.15) + 0.4;
+  if (s.design == 1) {
+    float h = s.dsize;
+    float dd = min(length(q - vec2(-h)), length(q - vec2(h))) - h + wob;
+    float disc = smoothstep(e, -e, dd);
+    return s.variant > 0.5 ? 1.0 - disc : disc;
+  }
+  if (s.design == 2) {
+    float a = s.dsize;
+    float dd = 1e9;
+    for (int k = 0; k < 3 * uLoop; k++) {
+      float ang = float(k) * 2.0943951;
+      dd = min(dd, abs(length(q - a * vec2(cos(ang), sin(ang))) - a * 0.5));
+    }
+    return smoothstep(e, -e, dd - a * 0.15 + wob);
+  }
+  return 0.0;
+}
+
+vec3 cementAlbedo(Stone s, vec2 q, vec2 tq, float fp, float d, float detail, float pit, out float rough) {
+  uint sd = s.h.z;
+  vec3 r = hrnd(s.h, 11u), r2 = hrnd(s.h, 29u);
+  float m = designMask(s, q, fp);
+  // every tile its own batch and its own century: some lay under furniture, some by the door
+  float age = 0.3 + 0.7 * r2.x;
+  vec3 ga = uCementA * exp((r.x - 0.5) * 0.22) * mix(vec3(1.0), vec3(1.0, 0.97, 0.91), r2.y * age);
+  vec3 gb = uCementB * exp((r.y - 0.5) * 0.4);
+  // poured pigment is cloudy, the dark more so
+  float cl = fbm(tq / 40.0, sd, 4, fp / 40.0);
+  float fine = fbm(tq / 1.4, sd + 5u, 2, fp / 1.4);
+  ga *= 1.0 + 0.06 * cl + 0.06 * fine;
+  gb *= 1.0 + 0.24 * cl + 0.12 * fine;
+  // traffic thins the waxed face: the figure greys towards the body in drifts,
+  // the ground takes up grime there
+  float worn = smoothstep(0.0, 0.8, fbm(tq / 55.0 + 9.0, sd + 9u, 4, fp / 55.0)) * age;
+  gb = mix(gb, mix(gb, uCementBody * 0.6, 0.5), worn);
+  ga = mix(ga, ga * vec3(0.92, 0.9, 0.86), worn * 0.6);
+  float pd;
+  float grains = dots(tq, 2.2, 0.22, 0.12, 0.45, sd + 23u, fp, pd);   // marble dust in the face layer
+  gb = mix(gb, gb * 2.2 + vec3(0.03), grains * 0.6);
+  ga *= 1.0 - 0.12 * grains;
+  vec3 a = mix(ga, gb, m);
+  float sc = scratches(tq, 26.0, (0.3 + 0.5 * age) * uMisc.w, 40.0, 0.1, sd + 59u, fp);
+  a = mix(a, a * 1.6 + vec3(0.015), sc * 0.5 * m);
+  a *= 1.0 - 0.18 * sc * (1.0 - m);
+  // old spills on a few tiles: a soft darker cloud
+  float stain = smoothstep(0.3, 0.85, fbm(tq / 90.0 + 3.0, sd + 41u, 3, fp / 90.0)) * step(0.65, r2.z);
+  a *= 1.0 - 0.2 * stain * (1.0 - 0.5 * m);
+  a *= 1.0 - uMisc.z * (0.6 + 0.6 * age) * exp(min(d, 0.0) / 4.0);
+  a *= 1.0 - 0.8 * pit;
+  rough = 0.48 + 0.25 * worn + 0.1 * stain;
+  return a;
+}
+
 // ---------------------------------------------------------------- surface
 vec3 stoneSurface(Stone s, vec2 q, float d, float chipF, float detail, float pit, float fp, out float rough) {
   vec2 tq = texCoord(s, q);
   vec3 a;
+  if (s.cement) {
+    a = cementAlbedo(s, q, tq, fp, d, detail, pit, rough);
+    // a chipped edge shows the grey concrete body under the pigment layer
+    float ch = chipF * smoothstep(-8.0, -1.0, d);
+    return mix(a, uCementBody * (0.9 + 0.2 * gnoise(q / 2.0, s.h.y + 3u)), ch * 0.85);
+  }
   a = stoneAlbedo(s, tq, fp, d, detail, pit, rough);
   // fresh fracture of chips is paler, then dirt-darkened in the deepest part
   float ch = chipF * smoothstep(-8.0, -1.0, d);

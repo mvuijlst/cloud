@@ -97,12 +97,30 @@
       <button id="reset" type="button" class="wide">Reset view</button>
     </div>
     <div class="row">
-      <label class="label" for="stones">Stones</label>
-      <select id="stones">
+      <label class="label" for="tiles">Tiles</label>
+      <select id="tiles">
         <option value="">Any, drawn per floor</option>
-        <option value="reclaimed">Bluestone and cream limestone</option>
-        <option value="petit-granit">Petit granit and grey limestone</option>
-        <option value="lime">Worn stones in lime mortar</option>
+        <option value="douat">Half squares, stone</option>
+        <option value="smith">Quarter circles, cement</option>
+        <option value="hex">Hexagons, cement</option>
+        <option value="penrose">Penrose rhombs, stone</option>
+      </select>
+    </div>
+    <div class="row">
+      <label class="label" for="stones">Material</label>
+      <select id="stones">
+        <option value="">Any that suits the tiles</option>
+        <optgroup label="Stone">
+          <option value="reclaimed">Bluestone and cream limestone</option>
+          <option value="petit-granit">Petit granit and grey limestone</option>
+          <option value="lime">Worn stones in lime mortar</option>
+        </optgroup>
+        <optgroup label="Cement tiles">
+          <option value="cement-black">Black and white</option>
+          <option value="cement-oxblood">Oxblood and cream</option>
+          <option value="cement-blue">Slate blue and white</option>
+          <option value="cement-ochre">Ochre and black</option>
+        </optgroup>
       </select>
     </div>
     <div class="row">

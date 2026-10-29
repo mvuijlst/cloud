@@ -1,6 +1,6 @@
 # douat · floor
 
-A screensaver page: a stone floor laid one half-square at a time in Douat's diagonally halved squares. It runs entirely in the browser and loads no images. The stones and mortar are generated procedurally in WebGL 2, then drawn as real 3D stones that can be viewed from any angle.
+A screensaver page: a floor laid one stone or tile at a time. Each floor is one of four tilings: Douat's diagonally halved squares in stone, Smith's quarter circles in cement tiles, hexagonal cement tiles with arcs, or aperiodic Penrose rhombs in stone. It runs entirely in the browser and loads no images. The stones and mortar are generated procedurally in WebGL 2, then drawn as real 3D stones that can be viewed from any angle.
 
 Open `/douat/` over HTTP, for example with the repository's `cloud-static` launch configuration: `http://localhost:8765/douat/`. ES modules do not load from `file://`.
 
@@ -10,15 +10,24 @@ The preparatory work is in `research/`: the feasibility study, protocol, plate a
 
 1. A lime-sand mortar bed fades in, with blue chalk lines snapped every four squares.
 2. Stones are lowered into place one by one, about four a second at the default speed. Each is carried in from the unlaid side, 17 to 26 cm up and tilted 8 to 14° with its leading edge low. It is set down edge first and settles flat with a slight slide and twist. Its soft shadow sharpens as it comes down.
-3. When the pattern area is done, the floor keeps growing. Ring after ring of squares is laid around it, clockwise, carrying the pattern outward, until the floor reaches the dark at the edge of the light. The open field goes a little faster than the pattern. At the default speed a floor takes about three minutes; at the slowest, about twelve.
-4. When the floor is complete, the joints are filled across the floor in laying order.
+3. When the pattern area is done, the floor keeps growing. Ring after ring is laid around it, clockwise, carrying the pattern outward, until the floor reaches the dark at the edge of the light. The open field goes a little faster than the pattern. At the default speed a floor takes about three minutes; at the slowest, about twelve.
+4. When the floor is complete, the joints are filled in a sweep out from the centre.
 5. The finished floor holds for 75 seconds, fades out, and a new floor begins with the next seed.
 
 A mason's order is followed. Repeating designs go row by row from the far wall, or along the diagonal. Centred designs go out from the centre, as setting-out from the centre lines would require. In each square, the half that meets already-laid work goes down first.
 
 The view starts zoomed out as far as it goes, seen from 48° above the horizon. It turns around the floor once every three minutes. It can be turned, tilted, zoomed and moved at any time; see Controls. After eight seconds without input it eases back into turning.
 
-## The designs
+## The tilings
+
+`tilings.js` builds each tiling as a list of stones, each with a class (its shape and design), a placement (a turn and possibly a mirror), and its place in the laying order. Douat's half squares come up twice as often as each of the others. The **Tiles** setting or `tiles=` fixes one.
+
+- **Douat's half squares**, in stone. Two triangular stones per 25 cm square, composed as below.
+- **Smith's quarter circles**, in cement tiles of 20 cm. Each tile has a quarter disc in two opposite corners. It comes in two printings, dark discs on light and the reverse. The printing follows from the tile's turn and the parity of its corner, so the colour fields always meet across edges and the arcs join into continuous shapes. Turns are either a fair coin per tile (45% of floors) or the low bit of a Douat composition from `pattern.js`.
+- **Hexagons with arcs**, in cement tiles 20 cm across the flats. Each tile carries a band of the second pigment along three arcs round alternate corners, so it has two orientations. The orientation follows one of five rules: at random, in rings round the centre, in columns, one in three alike, or in diagonal bands. The bands join into loops and trefoils.
+- **Penrose rhombs**, in stone with 19 cm edges. The P3 tiling comes from repeated deflation of Robinson triangles, paired into thick and thin rhombs. It never repeats. On seven floors in ten the thick rhombs are bluestone and the thin ones limestone; otherwise the reverse. They are laid out from the centre.
+
+## Douat's designs
 
 `pattern.js` samples a new composition for every floor from the grammar in `research/study.md`. It uses Douat's key: the dark triangle's right angle is at A bottom-left, B top-left, C top-right, D bottom-right. There are three families.
 
@@ -40,6 +49,17 @@ Each square is two stones: a triangle of dark bluestone and one of cream limesto
 - **Joints.** The gaps are real: open down to the bed while the stones are laid, then filled to just below the tops. They darken by how enclosed they are and by the sun's shadow.
 - **Light.** Window daylight from the top left, 22 to 32° high. It falls off across the room and, beyond the patterned area, fades over about a metre and a half into darkness. A cool sky fill and cavity occlusion. Sun shadows soften with the distance between the stone and the surface the shadow falls on. A slight lens falloff and fixed grain complete it.
 
+### Cement tiles
+
+Smith and hexagon floors use encaustic cement tiles: a pigmented face layer pressed onto a grey concrete body. They are modelled as old floors, not new stock.
+
+- **Face.** Honed flat with fine pores and dirt-filled pinholes. The pigment is cloudy, the darker one more so. Marble dust shows as specks in the face layer.
+- **Figure.** The border between pigments wanders gently and bleeds a little, as poured pigment does.
+- **Age.** Each tile has its own age. Traffic thins the face in drifts, where the figure greys towards the body and the ground takes up grime. The ground yellows from tile to tile. A few tiles carry a soft old stain. Scratches, edge grime and chips that show the grey body all grow with age.
+- **Laying.** Pressed tiles sit truer than hand-cut stone: offsets, turn, lippage and tilt are about a third of the stone values, with tight 1.6 mm joints in dirty grey grout.
+
+Four cement pairings exist: black and white, oxblood and cream, slate blue and white, ochre and black.
+
 Three stone pairings are drawn at random per floor (`materials.js`):
 
 - **Reclaimed bluestone and cream limestone**, tight dark joints, weight 5.
@@ -52,18 +72,18 @@ The user's top-down photograph has about 155 px per stone. `tools/measure_photo.
 
 | sRGB luminance | Photo, dark | Render, dark | Photo, light | Render, light |
 |---|---|---|---|---|
-| Mean | 81.3 | 82.4 | 186.4 | 180.2 |
-| Stone-to-stone spread | 12.1 | 13.2 | 10.3 | 10.1 |
-| Within stone, coarse | 7.3 | 5.9 | 5.2 | 3.5 |
-| Within stone, mid | 5.4 | 5.0 | 4.3 | 5.2 |
-| Within stone, fine | 8.5 | 5.0 | 9.5 | 7.2 |
+| Mean | 81.3 | 83.3 | 186.4 | 178.9 |
+| Stone-to-stone spread | 12.1 | 12.4 | 10.3 | 9.6 |
+| Within stone, coarse | 7.3 | 6.3 | 5.2 | 4.2 |
+| Within stone, mid | 5.4 | 4.9 | 4.3 | 5.9 |
+| Within stone, fine | 8.5 | 4.4 | 9.5 | 8.8 |
 
 | Joints | Photo | Render |
 |---|---|---|
-| Darkest point | 43 | 49 |
+| Darkest point | 43 | 51 |
 | Width below half depth | 3 px | 3 px |
 
-These are 40 stones of each colour from one floor; another seed moves the render figures by a point or two. The photo is a sharpened, compressed web image. Its fine band therefore includes noise and halo that the render does not try to copy. The dark stones' coarse and fine texture is still lighter than in the photo. The colour of the light stone is (195,179,152) against the photo's (201,185,160).
+These are 40 stones of each colour from one floor, `?still&seed=7&photo&tiles=douat&material=reclaimed`. Across four seeds the light mean runs from 179 to 183 and the dark from 80 to 83. The photo is a sharpened, compressed web image. Its fine band therefore includes noise and halo that the render does not try to copy. The dark stones' coarse and fine texture is still lighter than in the photo. The colour of the light stone is (193,177,152) against the photo's (201,185,160).
 
 The three other photographs are oblique and were used by eye only: for edges, flaking, lime joints and fossil debris.
 
@@ -73,10 +93,11 @@ The cog at the top right opens the settings; it shows when the mouse moves or th
 
 - **Speed** in five steps, each twice the one before: 1 is a stone every 1.1 s, 3 (the default) four times that, 5 sixteen times.
 - **Pause**, **turning** of the view on or off, and **reset view**.
-- **Stones:** any pairing drawn per floor, or one fixed pairing. Changing it starts a new floor.
+- **Tiles:** any tiling drawn per floor, or one fixed tiling.
+- **Material:** any that suits the tiles, or one fixed stone or cement pairing. Choosing tiles or a material from the other family resets the other choice to any. Changing either starts a new floor.
 - **Another floor** and **full screen** (where the browser allows it).
 
-Speed, turning and the stone choice are remembered in the browser. With a mouse: drag to turn and tilt, wheel to zoom, right-drag or shift-drag to move, double-click to reset. On a touch screen: drag, pinch, two fingers to move. Keys: `n` new floor, `space` pause, `1` to `5` speed, `r` reset view, `f` full screen, `Esc` closes the panel.
+Speed, turning, tiles and material are remembered in the browser. With a mouse: drag to turn and tilt, wheel to zoom, right-drag or shift-drag to move, double-click to reset. On a touch screen: drag, pinch, two fingers to move. Keys: `n` new floor, `space` pause, `1` to `5` speed, `r` reset view, `f` full screen, `Esc` closes the panel.
 
 URL parameters:
 
@@ -84,7 +105,8 @@ URL parameters:
 - `still` shows the finished floor at once.
 - `speed=x` multiplies the laying speed directly, overriding the speed setting (step 3 is `speed=4`).
 - `hold=s` sets how long a finished floor stays, in seconds.
-- `material=reclaimed|petit-granit|lime` fixes the stone pairing.
+- `tiles=douat|smith|hex|penrose` fixes the tiling.
+- `material=reclaimed|petit-granit|lime|cement-black|cement-oxblood|cement-blue|cement-ochre` fixes the pairing; one that does not suit the tiles is replaced by one that does.
 - `cells=n` sets the number of squares across the first, patterned area.
 - `view=yaw,pitch,distance` sets the starting view in degrees and as a fraction of the starting distance, for example `view=60,35,0.5`.
 - `spin=minutes` sets how long one turn of the view takes (3 by default); `spin=0` holds the view still.
@@ -94,12 +116,12 @@ URL parameters:
 
 ## How it is drawn
 
-- **Baked material.** When a floor starts, the stone model in `material.js` is evaluated once into textures, while the screen is still dark. One atlas slot per square of the patterned area holds both its stones at about 0.8 mm per texel: colour, roughness, normals from the height field, cavity, and which stone owns each texel. A second texture holds the mortar bed. The model is the same code that was tuned against the photograph.
-- **The squares around.** Each square of the outer rings borrows the two stones of a random square of the patterned area, in one of eight orientations: turned in quarter turns, mirrored or not, whichever matches its own pattern state. It keeps its own offset, turn, lippage and tilt. Giving every outer stone its own texture would need about a gigabyte of graphics memory; at these distances the reuse cannot be seen.
+- **Baked material.** When a floor starts, the stone model in `material.js` is evaluated once into textures, while the screen is still dark. Each class of stone (a dark triangle, a thick rhomb, a hexagonal tile) gets a pool of 56 distinct stones, 32 on low-power devices, each with its own joint, corner radius and history. Each pool stone takes one atlas slot at about 0.95 mm per texel: colour, roughness, normals from the height field, cavity, and which stone owns each texel. Its outline is an exact rounded polygon read from a small table. A second texture holds the mortar bed. The model is the same code that was tuned against the photograph.
+- **Placing stones.** Every stone of the floor takes a random pool stone of its class, turned and possibly mirrored into place. It keeps its own offset, turn, lippage and tilt. A mirrored stone flips its tangent frame so that its relief still lights correctly. Giving every stone its own texture would need about a gigabyte of graphics memory; with 56 of each, repeats cannot be picked out.
 - **Real geometry.** `geometry.js` builds each stone as a mesh, in laying order, so the stones laid so far are one prefix of the vertex buffer. A top is a polygon slightly larger than the stone, cut to its hand-dressed outline by the baked ownership, with smooth edges via alpha-to-coverage. Its sides are vertical faces just inside that outline. Offsets, turn, lippage and tilt are in the vertices. `stonelib.js` mirrors the shader's random numbers so that geometry and texture agree.
 - **The stone in flight.** It is the same mesh with a moving transform, so it is a full 3D stone and lands exactly where it stays.
 - **Shadows.** One sun shadow map covers the laid floor and is redrawn only when a stone lands. A second, small one follows the stone in flight. Shadows are percentage-closer soft shadows: the penumbra grows with the gap between blocker and receiver.
-- **Joints.** The tops of laid stones are drawn from above into a coverage map. Its mipmaps give how enclosed any point of the bed or filling is, which is what darkens a narrow joint. The filling is a plane just below the tops, drawn only where no stone top covers the pixel, using the stencil.
+- **Joints.** The tops of laid stones are drawn from above into a coverage map. Its mipmaps give how enclosed any point of the bed or filling is, which is what darkens a narrow joint. The filling is a plane just below the tops, drawn only where no stone top covers the pixel, using the stencil. It appears in a growing circle as the joints are filled.
 - **Speed.** On an RTX A4000 a frame takes about 3.8 ms at 3200×1800 with 700 stones down and one in flight. Redrawing the floor's shadow map after a landing costs about 1.7 ms. Frames are only drawn when something moves, which with the view turning is every frame.
 - **Compile time.** Browsers on Windows compile WebGL through Direct3D's HLSL compiler, which slows down sharply on large shaders and on loops around large bodies. The first version, one program inside a per-pixel sample loop, took 10 to 24 s. The bake now compiles once per page load in about 1.5 s, and Chrome caches it for later visits. Noise reads a 512² table of random bytes, with quintic interpolation done in the shader.
 
@@ -108,6 +130,6 @@ URL parameters:
 ## Not done yet
 
 - Floor-wide traffic wear: worn paths that develop after the floor is laid. Wear is currently per stone, as in a relaid reclaimed floor.
-- Other tile types. The renderer already knows whole square stones (cell states 4 and 5), but no design uses them yet. Curved Truchet tiles would need a new stone outline.
+- More tile designs. The renderer takes any convex polygon with up to six corners and any design drawn in the tile's own frame. Candidates: three-pigment cement tiles, Smith tiles with lower symmetry, arcs on Penrose rhombs, Cairo pentagons.
 - Light that follows the time of day.
 - Very close views go soft: the atlas holds about 0.8 mm per texel.

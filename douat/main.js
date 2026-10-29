@@ -1,7 +1,9 @@
 import { Renderer } from './render.js';
 import { makeView, Orbit } from './camera.js';
-import { samplePattern, layingOrder, mulberry32, LETTERS } from './pattern.js';
+import { mulberry32, LETTERS } from './pattern.js';
 import { pickMaterial, daylight } from './materials.js';
+import { buildTiling, pickTiling, TILINGS } from './tilings.js';
+import { buildPool } from './geometry.js';
 
 const qs = new URLSearchParams(location.search);
 const canvas = document.getElementById('floor');
@@ -38,6 +40,7 @@ const opts = {
   still: qs.has('still'),
   cells: +qs.get('cells') || 0,
   material: qs.get('material') || store.get('stones') || null,
+  tiles: qs.get('tiles') || store.get('tiles') || null,
   hold: (+qs.get('hold') || 75),
   // freeze=n,u: lay stones before n at once, then hold stone n at fraction u of its flight
   freeze: qs.get('freeze') ? qs.get('freeze').split(',').map(Number) : null,
@@ -68,69 +71,33 @@ function newFloor(s) {
   const { w, h, dpr } = size();
   const across = opts.cells || Math.max(5, Math.min(14, Math.round(w / dpr / 165)));
   const view = makeView(w, h, { pitch: PITCH, thick: THICK, cellsAcross: across, fovY: FOV });
-  const material = pickMaterial(rng, opts.material);
+  const fam = opts.material ? (opts.material.startsWith('cement') ? 'cement' : 'stone') : null;
+  let kind = pickTiling(rng, opts.tiles);
+  for (let k = 0; !opts.tiles && fam && TILINGS[kind].family !== fam && k < 20; k++) kind = pickTiling(rng, null);
+  const material = pickMaterial(rng, opts.material, TILINGS[kind].family);
   const sun = daylight(rng);
-  const pat = samplePattern(rng, view.NX, view.NY);
-  const inner = layingOrder(rng, view.NX, view.NY, pat.centred);
-  // The room: the first NX×NY squares in the middle, M rings of squares around them.
-  // Cells are in room coordinates; the pattern carries on outward by its own rule.
-  const { NX, NY, M, RX, RY } = view;
-  const cells = new Uint8Array(RX * RY * 4);
-  for (let J = 0; J < RY; J++) for (let I = 0; I < RX; I++) {
-    const k = (J * RX + I) * 4;
-    cells[k] = pat.at(I - M, J - M);
-    cells[k + 1] = 3;                      // both halves exist; drawing follows the laid count
-    cells[k + 2] = opts.still ? 255 : 0;
+  const tiling = buildTiling(kind, rng, view);
+  // every stone takes one of a pool of baked stones of its class
+  const pool = buildPool(tiling, material, seed, renderer.lowPower ? 32 : 56);
+  pool.slotOf = pool.entries.map((_, i) => i);
+  for (const st of tiling.stones) {
+    const list = pool.byClass[st.cls];
+    st.entry = list[Math.floor(rng() * list.length)];
   }
-  // Each outer square borrows the baked stones of a random inner square, turned and
-  // perhaps mirrored into its own orientation, so the atlas holds only the inner squares.
-  const src = { i: new Int16Array(RX * RY), j: new Int16Array(RX * RY), m: new Uint8Array(RX * RY), r: new Uint8Array(RX * RY) };
-  const MIRROR = [3, 2, 1, 0];
-  for (let J = 0; J < RY; J++) for (let I = 0; I < RX; I++) {
-    const t = J * RX + I;
-    const innerCell = I >= M && I < M + NX && J >= M && J < M + NY;
-    let si = I, sj = J, m = 0;
-    if (!innerCell) { si = M + Math.floor(rng() * NX); sj = M + Math.floor(rng() * NY); m = rng() < 0.5 ? 1 : 0; }
-    const ss = cells[(sj * RX + si) * 4];
-    src.i[t] = si; src.j[t] = sj; src.m[t] = m;
-    src.r[t] = (cells[t * 4] - (m ? MIRROR[ss] : ss)) & 3;
-  }
-  // laying order: the pattern in the middle, then ring after ring around it
-  const order = { mode: inner.mode, cells: inner.cells.map(([i, j]) => [i + M, j + M]), inner: NX * NY };
-  for (let r = 1; r <= M; r++) {
-    const x0 = M - r, y0 = M - r, x1 = M + NX - 1 + r, y1 = M + NY - 1 + r;
-    for (let x = x0; x < x1; x++) order.cells.push([x, y0]);
-    for (let y = y0; y < y1; y++) order.cells.push([x1, y]);
-    for (let x = x1; x > x0; x--) order.cells.push([x, y1]);
-    for (let y = y1; y > y0; y--) order.cells.push([x0, y]);
-  }
-  // stones in laying order: in each cell, first the half that meets laid work
-  const laid = new Set();
-  const stones = [];
-  const has = (i, j) => laid.has(i + ',' + j);
-  order.cells.forEach(([i, j], n) => {
-    const st = cells[(j * RX + i) * 4];
-    const nb = [has(i - 1, j), has(i, j - 1), has(i + 1, j), has(i, j + 1)];
-    const darkEdges = [[0, 3], [0, 1], [1, 2], [2, 3]][st];   // left, top, right, bottom edges of the dark half
-    const darkScore = darkEdges.reduce((a, e) => a + (nb[e] ? 1 : 0), 0);
-    const lightScore = [0, 1, 2, 3].filter(e => !darkEdges.includes(e)).reduce((a, e) => a + (nb[e] ? 1 : 0), 0);
-    const first = darkScore > lightScore ? 0 : darkScore < lightScore ? 1 : (rng() < 0.5 ? 0 : 1);
-    const outer = n >= order.inner ? 1 : 0;
-    stones.push([i, j, first, outer], [i, j, 1 - first, outer]);
-    laid.add(i + ',' + j);
-  });
-  floor = { seed, view, material, sun, pattern: pat, order, cells, stones, src };
+  floor = { seed, view, material, sun, tiling, stones: tiling.stones, pool };
   renderer.setFloor(floor);
   renderer.fade = 0;
+  renderer.setPointing(opts.still ? 1e9 : -1);
   orbit.setFloor(view, { photo: opts.photo, period: opts.spin * 60 });
   if (opts.view) {
     const [yaw, pitch, d] = opts.view;
     orbit.home.yaw = yaw * Math.PI / 180; orbit.home.pitch = pitch * Math.PI / 180; orbit.home.dist *= d || 1;
     orbit.reset();
   }
+  const rr = view.roomRect;
   run = {
-    phase: 'intro', t: 0, stones, next: 0, cur: null, pointNext: 0, rng,
-    cx: RX / 2, cy: RY / 2, mode: order.mode, holdFor: opts.still ? Infinity : opts.hold,
+    phase: 'intro', t: 0, stones: tiling.stones, next: 0, cur: null, rng,
+    holdFor: opts.still ? Infinity : opts.hold, pointMax: Math.hypot(rr[2] - rr[0], rr[3] - rr[1]) / 2 + 200,
   };
   describe();
 }
@@ -139,23 +106,18 @@ function describe() {
   const f = floor;
   const total = f.stones.length;
   const done = run.phase === 'hold' || run.phase === 'point' || run.phase === 'outro' ? total : run.next;
-  panel.querySelector('.what').textContent = `${f.pattern.describe}`;
-  const how = f.order.mode === 'centre' ? 'out from the centre' : f.order.mode === 'rows' ? 'row by row' : 'along the diagonal';
-  panel.querySelector('.how').textContent = `${f.material.name} · ${f.view.NX}×${f.view.NY} squares laid ${how}, then ring by ring out to ${f.view.RX}×${f.view.RY} · ${done}/${total} stones · seed ${f.seed}`;
+  panel.querySelector('.what').textContent = `${f.tiling.describe}`;
+  panel.querySelector('.how').textContent = `${f.material.name} · ${f.tiling.how} · ${done}/${total} stones · seed ${f.seed}`;
 }
 
 const ease = t => t < 0 ? 0 : t > 1 ? 1 : t * t * (3 - 2 * t);
 const easeOut = t => 1 - Math.pow(1 - Math.min(Math.max(t, 0), 1), 3);
 
 function startStone() {
-  const [i, j, , outer] = run.stones[run.next];
+  const st = run.stones[run.next];
+  const outer = st.outer;
   // the mason brings the stone from the side not yet laid
-  let ax, ay;
-  if (outer) { ax = i + 0.5 - run.cx; ay = j + 0.5 - run.cy; const l = Math.hypot(ax, ay) || 1; ax /= l; ay /= l; }
-  else if (run.mode === 'rows') { ax = 0; ay = 1; }
-  else if (run.mode === 'diagonal') { ax = 0.7; ay = 0.7; }
-  else { ax = i + 0.5 - run.cx; ay = j + 0.5 - run.cy; const l = Math.hypot(ax, ay) || 1; ax /= l; ay /= l; }
-  const ang = Math.atan2(ay, ax) + (run.rng() - 0.5) * 1.1;
+  const ang = Math.atan2(st.from[1], st.from[0]) + (run.rng() - 0.5) * 1.1;
   const reach = PITCH * (0.55 + 0.35 * run.rng());
   const dir = [Math.cos(ang), Math.sin(ang)];
   run.cur = {
@@ -224,18 +186,11 @@ function step(dt) {
       else { run.phase = 'point'; run.t = 0; describe(); }
       break;
     case 'point': {
-      // joints filled across the floor, in laying order
+      // joints filled in a sweep out from the centre
       run.t += dt;
-      const cells = floor.order.cells;
-      const target = Math.min(cells.length, Math.floor(run.t / (14 / opts.speed) * cells.length));
-      while (run.pointNext < target) {
-        const [i, j] = cells[run.pointNext++];
-        const idx = (j * floor.view.RX + i) * 4;
-        const cell = floor.cells.slice(idx, idx + 4);
-        cell[2] = 255;
-        renderer.setCell(i, j, cell);
-      }
-      if (run.pointNext >= cells.length) { run.phase = 'hold'; run.t = 0; }
+      const r = run.t / (14 / opts.speed) * run.pointMax;
+      renderer.setPointing(r);
+      if (r >= run.pointMax) { renderer.setPointing(1e9); run.phase = 'hold'; run.t = 0; }
       break;
     }
     case 'hold':
@@ -324,6 +279,20 @@ $('stones').value = opts.material || '';
 $('stones').addEventListener('change', e => {
   opts.material = e.target.value || null;
   store.set('stones', e.target.value);
+  // a material from the other family brings tiles it suits
+  const fam = e.target.value.startsWith('cement') ? 'cement' : e.target.value ? 'stone' : null;
+  if (fam && opts.tiles && TILINGS[opts.tiles].family !== fam) { opts.tiles = null; $('tiles').value = ''; store.set('tiles', ''); }
+  another();
+});
+$('tiles').value = opts.tiles || '';
+$('tiles').addEventListener('change', e => {
+  opts.tiles = e.target.value || null;
+  store.set('tiles', e.target.value);
+  // tiles of the other family bring a material that suits them
+  const fam = opts.tiles && TILINGS[opts.tiles].family;
+  if (fam && opts.material && (opts.material.startsWith('cement') ? 'cement' : 'stone') !== fam) {
+    opts.material = null; $('stones').value = ''; store.set('stones', '');
+  }
   another();
 });
 
@@ -366,6 +335,15 @@ window.douat = {
   // arguments for tools/measure_render.py, for the view from above (?photo)
   measureArgs() {
     const v = floor.view, px = renderer.H / (2 * Math.tan(v.fovY / 2) * v.dist);
-    return [px * PITCH, v.NX, v.NY, Array.from(floor.pattern.grid).join('')].join(' ');
+    // the half-square states of the pattern area, read back from the placed dark stones
+    const P = PITCH, g = new Array(v.NX * v.NY).fill(0);
+    for (const st of floor.stones) {
+      if (st.cls !== 'dark' || st.outer) continue;
+      const i = Math.floor((st.center[0] - v.origin[0]) / P), j = Math.floor((st.center[1] - v.origin[1]) / P);
+      // where the right angle (class frame (-1, 1)) lands: BL 0, TL 1, TR 2, BR 3
+      const x = -st.L[0] + st.L[2], y = -st.L[1] + st.L[3];
+      g[j * v.NX + i] = x < 0 ? (y > 0 ? 0 : 1) : (y < 0 ? 2 : 3);
+    }
+    return [px * P, v.NX, v.NY, g.join('')].join(' ');
   },
 };

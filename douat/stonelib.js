@@ -48,42 +48,6 @@ export class Rnd {
   }
 }
 
-// cell corners, y down: 0 bottom-left, 1 top-left, 2 top-right, 3 bottom-right
-const corner = (c, P) => c === 0 ? [0, P] : c === 1 ? [0, 0] : c === 2 ? [P, 0] : [P, P];
-
-// Everything the shader's makeStone decides that the geometry needs.
-export function stoneParams(rnd, i, j, k, st, seed, P, joint) {
-  const h = pcg3((i + 4096) >>> 0, (Math.imul(j + 4096, 2) + k) >>> 0, seed >>> 0);
-  const r1 = h.map(v => v / 4294967296);
-  const r2 = rnd.hrnd(h, 0x68e31da4), r3 = rnd.hrnd(h, 0x7fb5d329);
-  const tri = st < 4;
-  const dark = tri ? k === 0 : st === 4;
-  const hj = joint * 0.5 + (r3[0] - 0.5) * 1.4;
-  const rc = 0.8 + 2.4 * r1[2];
-  let poly, cen;
-  if (tri) {
-    const cc = k === 0 ? st : (st + 2) & 3;
-    const C = corner(cc, P), A = corner((cc + 1) & 3, P), B = corner((cc + 3) & 3, P);
-    const rin = P * (1 - 0.70710678);
-    const nA = norm(sub(A, C)), nB = norm(sub(B, C));
-    const I = [C[0] + rin * (nA[0] + nB[0]), C[1] + rin * (nA[1] + nB[1])];
-    const f = (rin - hj - rc) / rin;
-    poly = [C, A, B].map(V => [I[0] + (V[0] - I[0]) * f, I[1] + (V[1] - I[1]) * f]);
-    cen = [(C[0] + A[0] + B[0]) / 3, (C[1] + A[1] + B[1]) / 3];
-  } else {
-    const hs = P * 0.5 - hj - rc;
-    cen = [P / 2, P / 2];
-    poly = [[cen[0] - hs, cen[1] - hs], [cen[0] + hs, cen[1] - hs], [cen[0] + hs, cen[1] + hs], [cen[0] - hs, cen[1] + hs]];
-  }
-  return {
-    i, j, k, st, tri, dark, h, rc, poly, cen,
-    off: [(r2[0] - 0.5) * 2 * 1.1, (r2[1] - 0.5) * 2 * 1.1],
-    rot: (r2[2] - 0.5) * 2 * 0.011,
-    lip: (r1[0] - 0.5) * 1.5,
-    tilt: [(r3[1] - 0.5) * 0.03, (r3[2] - 0.5) * 0.03],
-  };
-}
-
 function sub(a, b) { return [a[0] - b[0], a[1] - b[1]]; }
 function norm(a) { const l = Math.hypot(a[0], a[1]); return [a[0] / l, a[1] / l]; }
 
