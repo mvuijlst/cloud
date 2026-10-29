@@ -2,7 +2,9 @@
 
 A screensaver page: a stone floor laid one half-square at a time in Douat's diagonally halved squares. It runs entirely in the browser. Every stone, joint and grain of mortar is computed in a WebGL 2 fragment shader. No image is loaded.
 
-Open `/douat/floor/` over HTTP, for example with the repository's `cloud-static` launch configuration: `http://localhost:8765/douat/floor/`. ES modules do not load from `file://`.
+Open `/douat/` over HTTP, for example with the repository's `cloud-static` launch configuration: `http://localhost:8765/douat/`. ES modules do not load from `file://`.
+
+The preparatory work is in `research/`: the feasibility study, protocol, plate annotations and source scans, and the earlier Three.js viewer.
 
 ## What happens on screen
 
@@ -15,7 +17,7 @@ A mason's order is followed. Repeating designs go row by row from the far wall, 
 
 ## The designs
 
-`pattern.js` samples a new composition for every floor from the grammar in `../study.md`. It uses Douat's key: the dark triangle's right angle is at A bottom-left, B top-left, C top-right, D bottom-right. There are three families.
+`pattern.js` samples a new composition for every floor from the grammar in `research/study.md`. It uses Douat's key: the dark triangle's right angle is at A bottom-left, B top-left, C top-right, D bottom-right. There are three families.
 
 - **Rows.** A word of 2 or 4 tiles is repeated along a row. A cycle of 1, 2 or 4 rows follows, each row derived from the previous by complement, mirror, flip, quarter turn, shift or half swap. One floor in five uses Douat's design-5 device: a word alternating with a relative of itself.
 - **Centred.** A 3×3 to 6×6 seed of diagonals, nested squares, crosses or a free symmetric seed is reflected about the floor centre and folded back on itself beyond its edge, as in design 10. Half of these break the rule once along the diagonal.

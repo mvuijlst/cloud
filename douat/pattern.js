@@ -1,7 +1,7 @@
 // Douat-style compositions of the diagonally halved square.
 // States follow Douat's key: the dark triangle's right angle sits at
 // A bottom-left, B top-left, C top-right, D bottom-right.
-// The construction follows ../study.md: words of tiles repeated in rows, a short
+// The construction follows research/study.md: words of tiles repeated in rows, a short
 // cycle of rows derived from each other, or a seed reflected about the centre.
 
 export const LETTERS = 'ABCD';
