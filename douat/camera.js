@@ -109,7 +109,7 @@ export class Orbit {
     this.view = view;
     this.home = photo
       ? { target: [0, 0, view.thick], yaw: Math.PI / 2, pitch: Math.PI / 2 - 0.0005, dist: view.dist, spin: 0 }
-      : { target: [0, 0, view.thick], yaw: Math.PI / 2 + 0.35, pitch: 68 * Math.PI / 180, dist: view.maxDist,
+      : { target: [0, 0, view.thick], yaw: Math.PI / 2 + 0.35, pitch: 48 * Math.PI / 180, dist: view.maxDist,
         spin: period > 0 ? Math.PI * 2 / period : 0 };
     this.reset();
   }
