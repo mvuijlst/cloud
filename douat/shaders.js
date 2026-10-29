@@ -285,7 +285,7 @@ void main() {
   // the light falls off away from the work into the room's shadow
   vec2 out2 = max(max(uFloorRect.xy - p, p - uFloorRect.zw), 0.0);
   float far = length(out2);
-  c *= exp(-far / 700.0) * (1.0 - smoothstep(900.0, 1450.0, far));
+  c *= exp(-far / 1300.0) * (1.0 - smoothstep(1500.0, 2250.0, far));
   fragColor = finish(c, 1.0);
 }
 `;

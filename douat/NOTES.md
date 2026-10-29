@@ -15,7 +15,7 @@ The preparatory work is in `research/`: the feasibility study, protocol, plate a
 
 A mason's order is followed. Repeating designs go row by row from the far wall, or along the diagonal. Centred designs go out from the centre, as setting-out from the centre lines would require. In each square, the half that meets already-laid work goes down first.
 
-The view starts looking straight down, like a photograph of a floor. It can be turned, tilted, zoomed and moved at any time; see Controls.
+The view starts zoomed out as far as it goes, with the whole floor in the picture, seen from 60° above the horizon. It turns slowly around the floor, once every ten minutes. It can be turned, tilted, zoomed and moved at any time; see Controls. After eight seconds without input it eases back into turning.
 
 ## The designs
 
@@ -47,7 +47,7 @@ Three stone pairings are drawn at random per floor (`materials.js`):
 
 ## Checked against a photograph
 
-The user's top-down photograph has about 155 px per stone. `tools/measure_photo.py` measures it per stone: mean luminance, stone-to-stone spread, and within-stone spread in three bands. The bands are coarse (Gaussian σ 12 px), mid (σ 2 to 12) and fine (below σ 2), plus a median luminance profile across the joints. `tools/measure_render.py` applies the same measurement to a render of the default view, rescaled to the same stone size: `?still&seed=7`, 1600×900 at 2× pixel density. In the page, `douat.measureArgs()` prints the arguments it needs.
+The user's top-down photograph has about 155 px per stone. `tools/measure_photo.py` measures it per stone: mean luminance, stone-to-stone spread, and within-stone spread in three bands. The bands are coarse (Gaussian σ 12 px), mid (σ 2 to 12) and fine (below σ 2), plus a median luminance profile across the joints. `tools/measure_render.py` applies the same measurement to a render of the view from above, rescaled to the same stone size: `?still&seed=7&photo`, 1600×900 at 2× pixel density. In the page, `douat.measureArgs()` prints the arguments it needs.
 
 | sRGB luminance | Photo, dark | Render, dark | Photo, light | Render, light |
 |---|---|---|---|---|
@@ -70,7 +70,7 @@ The three other photographs are oblique and were used by eye only: for edges, fl
 
 Move the mouse to show the panel.
 
-- **Turn and tilt:** drag. **Zoom:** wheel or pinch. **Move:** right-drag, shift-drag or two fingers. **Back to the view from above:** double-click or `r`.
+- **Turn and tilt:** drag. **Zoom:** wheel or pinch. **Move:** right-drag, shift-drag or two fingers. **Back to the turning overview:** double-click or `r`.
 - `n` new floor, `space` pause, `1` to `4` speed ×1/×2/×4/×8, `f` full screen.
 
 URL parameters:
@@ -80,8 +80,10 @@ URL parameters:
 - `speed=x` changes the laying speed.
 - `hold=s` sets how long a finished floor stays, in seconds.
 - `material=reclaimed|petit-granit|lime` fixes the stone pairing.
-- `cells=n` sets the number of squares across the default view.
-- `view=yaw,pitch,distance` sets the starting view in degrees and as a fraction of the default distance, for example `view=60,35,0.5`.
+- `cells=n` sets the number of squares across the view from above.
+- `view=yaw,pitch,distance` sets the starting view in degrees and as a fraction of the starting distance, for example `view=60,35,0.5`.
+- `spin=minutes` sets how long one turn of the view takes; `spin=0` holds the view still.
+- `photo` starts straight down, at the framing of a photograph of the floor, without turning. The measurements below use it.
 - `low` uses smaller textures and shadow maps; touch devices do this by themselves.
 - `freeze=n,u` lays stones before `n` at once, then holds stone `n` at fraction `u` of its flight. It is for inspecting the animation.
 

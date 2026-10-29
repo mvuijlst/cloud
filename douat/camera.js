@@ -69,8 +69,11 @@ export function makeView(W, H, { pitch, thick, cellsAcross, fovY }) {
   const dist = (cellsAcross * pitch / 2) / tanX;
   const hx = dist * tanX + pitch * 0.2, hy = dist * tanY + pitch * 0.2;
   const NX = 2 * Math.ceil(hx / pitch + 0.05), NY = 2 * Math.ceil(hy / pitch + 0.05);
+  // far enough out that the whole floor, turned any way, stays in the picture
+  const half = Math.min(fovY / 2, Math.atan(tanY * W / H));
+  const maxDist = 1.08 * Math.hypot(NX, NY) * pitch / 2 / Math.sin(half);
   return {
-    W, H, fovY, pitch, thick, NX, NY, dist,
+    W, H, fovY, pitch, thick, NX, NY, dist, maxDist,
     origin: [-NX / 2 * pitch, -NY / 2 * pitch],
     rect: [-NX / 2 * pitch, -NY / 2 * pitch, NX / 2 * pitch, NY / 2 * pitch],
     floorR: Math.hypot(hx, hy),
@@ -78,6 +81,8 @@ export function makeView(W, H, { pitch, thick, cellsAcross, fovY }) {
 }
 
 export class Orbit {
+  static RESUME = 8;       // seconds without input before the view turns again
+
   constructor(el, onChange) {
     this.el = el;
     this.onChange = onChange;
@@ -89,12 +94,17 @@ export class Orbit {
     el.addEventListener('pointerup', e => this.up(e));
     el.addEventListener('pointercancel', e => this.up(e));
     el.addEventListener('wheel', e => { e.preventDefault(); this.zoom(Math.exp(e.deltaY * 0.0012)); }, { passive: false });
-    el.addEventListener('dblclick', () => this.reset(true));
+    el.addEventListener('dblclick', () => { this.reset(true); this.idle = Orbit.RESUME; });
   }
 
-  setFloor(view) {
+  // Home view: the whole floor, a little from the side, turning slowly once every
+  // `period` seconds. photo: straight down at the framing of a photograph of the floor.
+  setFloor(view, { photo = false, period = 600 } = {}) {
     this.view = view;
-    this.home = { target: [0, 0, view.thick], yaw: Math.PI / 2, pitch: Math.PI / 2 - 0.0005, dist: view.dist };
+    this.home = photo
+      ? { target: [0, 0, view.thick], yaw: Math.PI / 2, pitch: Math.PI / 2 - 0.0005, dist: view.dist, spin: 0 }
+      : { target: [0, 0, view.thick], yaw: Math.PI / 2 + 0.35, pitch: 60 * Math.PI / 180, dist: view.maxDist,
+        spin: period > 0 ? Math.PI * 2 / period : 0 };
     this.reset();
   }
 
@@ -102,25 +112,37 @@ export class Orbit {
     const h = this.home;
     this.target = h.target.slice();
     this.yaw = h.yaw; this.pitch = h.pitch; this.dist = h.dist;
+    this.idle = Orbit.RESUME;
     this.changed(user);
+  }
+
+  // Turn by itself, easing back in once the viewer has let go for a while.
+  tick(dt) {
+    this.idle += dt;
+    const spin = this.home?.spin || 0;
+    if (!spin || this.idle < Orbit.RESUME) return;
+    const ramp = Math.min(1, (this.idle - Orbit.RESUME) / 3);
+    this.yaw += spin * ramp * ramp * dt;
+    this.changed(false);
   }
 
   // user: the change came from the viewer's hand, not from the page
   changed(user = true) {
     const v = this.view;
     this.pitch = Math.min(Math.PI / 2 - 0.0005, Math.max(0.21, this.pitch));
-    this.dist = Math.min(v.dist * 1.4, Math.max(v.dist * 0.1, this.dist));
+    this.dist = Math.min(v.maxDist, Math.max(v.dist * 0.1, this.dist));
     const [x0, y0, x1, y1] = v.rect;
     this.target[0] = Math.min(x1, Math.max(x0, this.target[0]));
     this.target[1] = Math.min(y1, Math.max(y0, this.target[1]));
     this.version++;
-    if (user) this.onChange?.();
+    if (user) { this.idle = 0; this.onChange?.(); }
   }
 
   zoom(k) { this.dist *= k; this.changed(); }
 
   down(e) {
     try { this.el.setPointerCapture(e.pointerId); } catch { /* pointer already gone */ }
+    this.idle = 0;
     this.pointers.set(e.pointerId, { x: e.clientX, y: e.clientY, pan: e.button === 2 || e.shiftKey || e.ctrlKey });
   }
 

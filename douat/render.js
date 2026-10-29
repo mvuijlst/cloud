@@ -181,7 +181,7 @@ export class Renderer {
 
     // mortar bed under the floor and a margin around it
     const [x0, y0, x1, y1] = v.rect;
-    const bm = 1500;
+    const bm = 2300;
     this.bedRect = [x0 - bm, y0 - bm, x1 + bm, y1 + bm];
     const cap = Math.min(this.maxTex, this.lowPower ? 2048 : 4096);
     const bt = Math.max(2.5, (this.bedRect[2] - this.bedRect[0]) / cap, (this.bedRect[3] - this.bedRect[1]) / cap);

@@ -412,9 +412,9 @@ vec3 albedoBed(vec2 p, float fp, out float hgt) {
   }
   float pd;
   float grit = dots(p, 3.0, 0.25, 0.2, 0.8, uSeed + 57u, fp, pd);
-  vec3 a = uBedAlb * (1.0 + 0.12 * n2 + 0.05 * n0 + 0.22 * n1 + 0.08 * n4);
+  vec3 a = uBedAlb * (1.0 + 0.07 * n2 + 0.05 * n0 + 0.22 * n1 + 0.08 * n4);
   a = mix(a, a * vec3(0.78, 0.76, 0.72), grit * 0.5);
-  a *= 1.0 - 0.24 * smoothstep(0.0, 0.6, n3);
+  a *= 1.0 - 0.12 * smoothstep(0.0, 0.6, n3);
   // snapped chalk lines every four cells
   vec2 g = (p - uOrigin) / (uPitch * 4.0);
   vec2 dl = abs(fract(g + 0.5) - 0.5) * uPitch * 4.0;

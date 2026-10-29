@@ -32,6 +32,10 @@ const opts = {
   freeze: qs.get('freeze') ? qs.get('freeze').split(',').map(Number) : null,
   // view=yaw,pitch,dist (degrees, degrees, fraction of the default distance)
   view: qs.get('view') ? qs.get('view').split(',').map(Number) : null,
+  // photo: straight down at the framing used to compare with photographs; no turning
+  photo: qs.has('photo'),
+  // minutes for one turn of the view; 0 holds it still
+  spin: qs.has('spin') ? +qs.get('spin') : 10,
 };
 let seed = qs.has('seed') ? (+qs.get('seed') >>> 0) : (Math.random() * 2 ** 32) >>> 0;
 
@@ -80,11 +84,11 @@ function newFloor(s) {
   floor = { seed, view, material, sun, pattern: pat, order, cells, stones };
   renderer.setFloor(floor);
   renderer.fade = 0;
-  orbit.setFloor(view);
+  orbit.setFloor(view, { photo: opts.photo, period: opts.spin * 60 });
   if (opts.view) {
     const [yaw, pitch, d] = opts.view;
-    orbit.yaw = yaw * Math.PI / 180; orbit.pitch = pitch * Math.PI / 180; orbit.dist = view.dist * (d || 1);
-    orbit.changed(false);
+    orbit.home.yaw = yaw * Math.PI / 180; orbit.home.pitch = pitch * Math.PI / 180; orbit.home.dist *= d || 1;
+    orbit.reset();
   }
   run = {
     phase: 'intro', t: 0, stones, next: 0, cur: null, pointNext: 0, rng,
@@ -210,6 +214,7 @@ function loop(now) {
   last = now;
   try {
     if (!paused || run?.phase === 'intro') step(dt);
+    if (!paused) orbit.tick(dt);
     const m = orbit.matrices(renderer.W / renderer.H);
     renderer.frame({ ...m, version: orbit.version });
   } catch (e) {
@@ -257,7 +262,7 @@ requestAnimationFrame(loop);
 // for inspection from the console
 window.douat = {
   get floor() { return floor; }, get run() { return run; }, renderer, orbit, newFloor, LETTERS,
-  // arguments for tools/measure_render.py, for the default top-down view
+  // arguments for tools/measure_render.py, for the view from above (?photo)
   measureArgs() {
     const v = floor.view, px = renderer.H / (2 * Math.tan(v.fovY / 2) * v.dist);
     return [px * PITCH, v.NX, v.NY, Array.from(floor.pattern.grid).join('')].join(' ');
