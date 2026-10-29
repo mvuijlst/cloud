@@ -1,6 +1,6 @@
 // Headless Chrome screenshot via the DevTools protocol.
 // node shot.mjs <url> <out.png> [width height dpr] [--wait=<js condition>] [--eval=<js>] [--timeout=s] [--clip=x,y,w,h]
-//   [--drag=x0,y0,x1,y1[,button]] [--wheel=x,y,deltaY]
+//   [--drag=x0,y0,x1,y1[,button]] [--wheel=x,y,deltaY] [--click=x,y[;x,y...]] [--mobile=1]
 import { spawn } from 'node:child_process';
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -31,7 +31,8 @@ ws.addEventListener('message', ev => {
 const send = (method, params = {}) => new Promise(r => { const i = ++id; waiting.set(i, r); ws.send(JSON.stringify({ id: i, method, params })); });
 const evalJS = async (expr) => { const r = await send('Runtime.evaluate', { expression: expr, returnByValue: true, awaitPromise: true }); return r.result?.result?.value ?? r.result?.exceptionDetails?.exception?.description; };
 await send('Runtime.enable'); await send('Page.enable'); await send('Network.enable'); await send('Network.setCacheDisabled', { cacheDisabled: true });
-await send('Emulation.setDeviceMetricsOverride', { width: +W, height: +H, deviceScaleFactor: +DPR, mobile: false });
+await send('Emulation.setDeviceMetricsOverride', { width: +W, height: +H, deviceScaleFactor: +DPR, mobile: 'mobile' in flags });
+if ('mobile' in flags) await send('Emulation.setTouchEmulationEnabled', { enabled: true, maxTouchPoints: 5 });
 const t0 = Date.now();
 await send('Page.navigate', { url });
 const timeout = (+flags.timeout || 90) * 1000;
@@ -52,6 +53,16 @@ if (flags.drag) {
   }
   await send('Input.dispatchMouseEvent', { type: 'mouseReleased', x: x1, y: y1, button, buttons: 0, clickCount: 1 });
   await sleep(200);
+}
+// --click=x,y presses and releases the left button there
+if (flags.click) {
+  for (const xy of flags.click.split(';')) {
+    const [x, y] = xy.split(',').map(Number);
+    await send('Input.dispatchMouseEvent', { type: 'mouseMoved', x, y });
+    await send('Input.dispatchMouseEvent', { type: 'mousePressed', x, y, button: 'left', buttons: 1, clickCount: 1 });
+    await send('Input.dispatchMouseEvent', { type: 'mouseReleased', x, y, button: 'left', buttons: 0, clickCount: 1 });
+    await sleep(250);
+  }
 }
 if (flags.wheel) {
   const [x, y, d] = flags.wheel.split(',').map(Number);

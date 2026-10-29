@@ -5,8 +5,17 @@ import { pickMaterial, daylight } from './materials.js';
 
 const qs = new URLSearchParams(location.search);
 const canvas = document.getElementById('floor');
-const info = document.getElementById('info');
+const panel = document.getElementById('panel');
+const gear = document.getElementById('gear');
 const status = document.getElementById('status');
+
+// The viewer's own choices are kept in this browser; the page works the same without them.
+const store = {
+  get(k) { try { return localStorage.getItem('douat.' + k); } catch { return null; } },
+  set(k, v) { try { localStorage.setItem('douat.' + k, v); } catch { /* private window */ } },
+};
+// speed steps 1–5: each doubles the one before; 3 is the default
+const SPEEDS = [1, 2, 4, 8, 16];
 
 const PITCH = 250;     // mm, one square cell
 const THICK = 25;      // mm, stone thickness above the mortar bed
@@ -22,11 +31,13 @@ try {
   throw e;
 }
 
+const savedLevel = Math.min(5, Math.max(1, +store.get('speed') || 3));
 const opts = {
-  speed: Math.max(0.1, +qs.get('speed') || 1),
+  // speed=x multiplies directly; otherwise the remembered step
+  speed: qs.has('speed') ? Math.max(0.1, +qs.get('speed') || 1) : SPEEDS[savedLevel - 1],
   still: qs.has('still'),
   cells: +qs.get('cells') || 0,
-  material: qs.get('material'),
+  material: qs.get('material') || store.get('stones') || null,
   hold: (+qs.get('hold') || 75),
   // freeze=n,u: lay stones before n at once, then hold stone n at fraction u of its flight
   freeze: qs.get('freeze') ? qs.get('freeze').split(',').map(Number) : null,
@@ -35,7 +46,7 @@ const opts = {
   // photo: straight down at the framing used to compare with photographs; no turning
   photo: qs.has('photo'),
   // minutes for one turn of the view; 0 holds it still
-  spin: qs.has('spin') ? +qs.get('spin') : 3,
+  spin: qs.has('spin') ? +qs.get('spin') : (store.get('turning') === '0' ? 0 : 3),
 };
 let seed = qs.has('seed') ? (+qs.get('seed') >>> 0) : (Math.random() * 2 ** 32) >>> 0;
 
@@ -128,9 +139,9 @@ function describe() {
   const f = floor;
   const total = f.stones.length;
   const done = run.phase === 'hold' || run.phase === 'point' || run.phase === 'outro' ? total : run.next;
-  info.querySelector('.what').textContent = `${f.pattern.describe}`;
+  panel.querySelector('.what').textContent = `${f.pattern.describe}`;
   const how = f.order.mode === 'centre' ? 'out from the centre' : f.order.mode === 'rows' ? 'row by row' : 'along the diagonal';
-  info.querySelector('.how').textContent = `${f.material.name} · ${f.view.NX}×${f.view.NY} squares laid ${how}, then ring by ring out to ${f.view.RX}×${f.view.RY} · ${done}/${total} stones · seed ${f.seed}`;
+  panel.querySelector('.how').textContent = `${f.material.name} · ${f.view.NX}×${f.view.NY} squares laid ${how}, then ring by ring out to ${f.view.RX}×${f.view.RY} · ${done}/${total} stones · seed ${f.seed}`;
 }
 
 const ease = t => t < 0 ? 0 : t > 1 ? 1 : t * t * (3 - 2 * t);
@@ -266,16 +277,75 @@ function wake() {
 }
 window.addEventListener('mousemove', wake);
 window.addEventListener('touchstart', wake, { passive: true });
+
+const $ = id => document.getElementById(id);
+function openPanel(open) {
+  panel.hidden = !open;
+  gear.hidden = open;
+  gear.setAttribute('aria-expanded', String(open));
+  document.body.classList.toggle('open', open);
+  if (open) $('close').focus(); else gear.focus({ preventScroll: true });
+}
+gear.addEventListener('click', () => openPanel(true));
+$('close').addEventListener('click', () => openPanel(false));
+
+function setSpeed(level) {
+  opts.speed = SPEEDS[level - 1];
+  store.set('speed', level);
+  showSpeed();
+}
+function showSpeed() {
+  for (const b of $('speed').querySelectorAll('button')) b.setAttribute('aria-checked', String(SPEEDS[+b.dataset.level - 1] === opts.speed));
+}
+$('speed').addEventListener('click', e => { const b = e.target.closest('button'); if (b) setSpeed(+b.dataset.level); });
+
+function setPaused(p) {
+  paused = p;
+  $('pause').setAttribute('aria-pressed', String(p));
+  $('pause').textContent = p ? 'Paused' : 'Pause';
+}
+$('pause').addEventListener('click', () => setPaused(!paused));
+
+function setTurning(on) {
+  opts.spin = on ? (qs.has('spin') && +qs.get('spin') > 0 ? +qs.get('spin') : 3) : 0;
+  orbit.home.spin = on ? Math.PI * 2 / (opts.spin * 60) : 0;
+  if (on) orbit.idle = Orbit.RESUME;
+  store.set('turning', on ? '1' : '0');
+  $('spin').setAttribute('aria-pressed', String(on));
+}
+$('spin').addEventListener('click', () => setTurning(!(orbit.home.spin > 0)));
+
+function resetView() { orbit.reset(true); orbit.idle = Orbit.RESUME; }
+$('reset').addEventListener('click', resetView);
+
+const another = () => newFloor((Math.random() * 2 ** 32) >>> 0);
+$('again').addEventListener('click', another);
+$('stones').value = opts.material || '';
+$('stones').addEventListener('change', e => {
+  opts.material = e.target.value || null;
+  store.set('stones', e.target.value);
+  another();
+});
+
+function toggleFull() {
+  if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen?.();
+}
+if (!document.fullscreenEnabled) $('full').hidden = true;
+$('full').addEventListener('click', toggleFull);
+document.addEventListener('fullscreenchange', () => { $('full').textContent = document.fullscreenElement ? 'Leave full screen' : 'Full screen'; });
+
 window.addEventListener('keydown', e => {
-  if (e.key === 'n' || e.key === 'N') newFloor((Math.random() * 2 ** 32) >>> 0);
-  else if (e.key === ' ') { paused = !paused; e.preventDefault(); }
-  else if (e.key === 'r' || e.key === 'R') orbit.reset(true);
-  else if (e.key === 'f' || e.key === 'F') {
-    if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen?.();
-  } else if (e.key >= '1' && e.key <= '4') opts.speed = [1, 2, 4, 8][+e.key - 1];
+  if (e.target.closest?.('select')) return;
+  if (e.key === 'Escape' && !panel.hidden) openPanel(false);
+  else if (e.key === 'n' || e.key === 'N') another();
+  else if (e.key === ' ' && !e.target.closest?.('button')) { setPaused(!paused); e.preventDefault(); }
+  else if (e.key === 'r' || e.key === 'R') resetView();
+  else if (e.key === 'f' || e.key === 'F') toggleFull();
+  else if (e.key >= '1' && e.key <= '5') setSpeed(+e.key);
   wake();
 });
-document.getElementById('again').addEventListener('click', () => newFloor((Math.random() * 2 ** 32) >>> 0));
+showSpeed();
+$('spin').setAttribute('aria-pressed', String(opts.spin > 0));
 
 let resizeTimer = 0;
 window.addEventListener('resize', () => {

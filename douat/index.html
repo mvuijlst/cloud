@@ -9,32 +9,109 @@
   <style>
     @font-face { font-family: 'IBMPlexMono'; src: url('../IBMPlexMono-Regular.ttf'); }
     html, body { margin: 0; height: 100%; background: #000; overflow: hidden; }
-    body { cursor: none; font: 12px/1.5 'IBMPlexMono', monospace; color: #e8e4dc; }
-    body.awake { cursor: default; }
+    body { cursor: none; font: 13px/1.5 'IBMPlexMono', monospace; color: #e8e4dc; }
+    body.awake, body.open { cursor: default; }
     canvas { position: fixed; inset: 0; width: 100vw; height: 100vh; display: block; touch-action: none; }
-    body.awake canvas { cursor: grab; }
-    body.awake canvas:active { cursor: grabbing; }
-    #info {
-      position: fixed; left: 16px; right: 16px; bottom: 16px; max-width: 760px;
-      padding: 10px 14px; background: rgba(12, 12, 12, 0.72); border-radius: 3px;
-      opacity: 0; transition: opacity 0.6s; pointer-events: none;
+    body.awake canvas, body.open canvas { cursor: grab; }
+    body.awake canvas:active, body.open canvas:active { cursor: grabbing; }
+    button, select { font: inherit; color: inherit; }
+
+    #gear {
+      position: fixed; top: 12px; right: 12px; width: 48px; height: 48px; padding: 0;
+      display: grid; place-items: center; border: 0; border-radius: 50%;
+      background: rgba(14, 14, 14, 0.55); color: #e8e4dc; cursor: pointer;
+      opacity: 0; transition: opacity 0.5s, background 0.2s;
     }
-    body.awake #info { opacity: 1; pointer-events: auto; }
-    #info p { margin: 0; }
-    #info .how, #info .keys { color: #a9a49b; }
-    #info a, #info button { color: #e8e4dc; }
-    #info button { font: inherit; background: none; border: 1px solid #6c675f; border-radius: 2px; padding: 1px 8px; cursor: pointer; }
+    body.awake #gear, body.open #gear { opacity: 1; }
+    @media (pointer: coarse) { #gear { opacity: 0.4; } }
+    #gear:hover, #gear:focus-visible { background: rgba(40, 40, 40, 0.8); outline: none; }
+    #gear svg { width: 24px; height: 24px; }
+
+    #panel {
+      position: fixed; top: 12px; right: 12px; width: min(360px, calc(100vw - 24px));
+      max-height: calc(100vh - 24px); overflow: auto; box-sizing: border-box;
+      padding: 14px 16px 12px; border-radius: 8px;
+      background: rgba(14, 14, 14, 0.88); backdrop-filter: blur(6px);
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
+      color-scheme: dark;
+    }
+    #panel option { background: #1a1a1a; color: #e8e4dc; }
+    @media (pointer: coarse) { #panel .keyhelp { display: none; } }
+    #panel[hidden] { display: none; }
+    #panel header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+    #panel h2 { margin: 0; font-size: 15px; font-weight: normal; letter-spacing: 0.04em; }
+    #panel p { margin: 0 0 8px; }
+    #panel .what { color: #e8e4dc; }
+    #panel .how, #panel .keys, #panel .foot { color: #a9a49b; font-size: 12px; }
+    #panel .row { display: flex; align-items: center; gap: 8px; margin: 10px 0; flex-wrap: wrap; }
+    #panel .label { width: 64px; color: #a9a49b; }
+    #panel .row button, #panel select, #close {
+      min-height: 40px; padding: 0 12px; border: 1px solid #5d5850; border-radius: 4px;
+      background: rgba(255, 255, 255, 0.04); cursor: pointer;
+    }
+    #panel .row button:hover, #panel select:hover, #close:hover { border-color: #a9a49b; }
+    #panel button[aria-pressed="true"], #panel .seg button[aria-checked="true"] {
+      background: #e8e4dc; color: #111; border-color: #e8e4dc;
+    }
+    #close { min-width: 40px; padding: 0; font-size: 16px; }
+    #panel .seg { display: flex; gap: 4px; }
+    #panel .seg button { width: 40px; padding: 0; }
+    #panel select { flex: 1; min-width: 0; }
+    #panel .wide { flex: 1; }
+    #panel a { color: #e8e4dc; }
+    #panel :focus-visible { outline: 2px solid #e8e4dc; outline-offset: 1px; }
+
     #status { position: fixed; inset: 0; display: grid; place-items: center; color: #a9a49b; pointer-events: none; }
     #status[hidden] { display: none; }
   </style>
 </head>
 <body>
   <canvas id="floor" aria-label="A stone floor being laid, one stone at a time"></canvas>
-  <div id="info" role="status">
+  <button id="gear" type="button" aria-label="Settings" aria-expanded="false" aria-controls="panel">
+    <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round">
+      <path d="M19.19 10.24 L22.09 10.48 L22.09 13.52 L19.19 13.76 L18.33 15.84 L20.21 18.05 L18.05 20.21 L15.84 18.33 L13.76 19.19 L13.52 22.09 L10.48 22.09 L10.24 19.19 L8.16 18.33 L5.95 20.21 L3.79 18.05 L5.67 15.84 L4.81 13.76 L1.91 13.52 L1.91 10.48 L4.81 10.24 L5.67 8.16 L3.79 5.95 L5.95 3.79 L8.16 5.67 L10.24 4.81 L10.48 1.91 L13.52 1.91 L13.76 4.81 L15.84 5.67 L18.05 3.79 L20.21 5.95 L18.33 8.16 Z"/>
+      <circle cx="12" cy="12" r="3.3"/>
+    </svg>
+  </button>
+  <section id="panel" aria-label="Settings" hidden>
+    <header><h2>douat</h2><button id="close" type="button" aria-label="Close settings">✕</button></header>
     <p class="what"></p>
     <p class="how"></p>
-    <p class="keys"><a href="../">cloud</a> · <button id="again" type="button">another floor</button> · the view turns by itself until you take it · drag to turn · wheel or pinch to zoom · right-drag to pan · double-click or r to reset · n new · space pause · 1–4 speed · f full screen</p>
-  </div>
+    <div class="row">
+      <span class="label" id="speed-label">Speed</span>
+      <div class="seg" id="speed" role="radiogroup" aria-labelledby="speed-label">
+        <button type="button" role="radio" data-level="1">1</button>
+        <button type="button" role="radio" data-level="2">2</button>
+        <button type="button" role="radio" data-level="3">3</button>
+        <button type="button" role="radio" data-level="4">4</button>
+        <button type="button" role="radio" data-level="5">5</button>
+      </div>
+    </div>
+    <div class="row">
+      <span class="label">Laying</span>
+      <button id="pause" type="button" class="wide" aria-pressed="false">Pause</button>
+    </div>
+    <div class="row">
+      <span class="label">View</span>
+      <button id="spin" type="button" class="wide" aria-pressed="true">Turning</button>
+      <button id="reset" type="button" class="wide">Reset view</button>
+    </div>
+    <div class="row">
+      <label class="label" for="stones">Stones</label>
+      <select id="stones">
+        <option value="">Any, drawn per floor</option>
+        <option value="reclaimed">Bluestone and cream limestone</option>
+        <option value="petit-granit">Petit granit and grey limestone</option>
+        <option value="lime">Worn stones in lime mortar</option>
+      </select>
+    </div>
+    <div class="row">
+      <button id="again" type="button" class="wide">Another floor</button>
+      <button id="full" type="button" class="wide">Full screen</button>
+    </div>
+    <p class="keys">Drag to turn the view, pinch or wheel to zoom, two fingers or right-drag to move it.<span class="keyhelp"> Keys: n new floor, space pause, 1–5 speed, r reset view, f full screen.</span></p>
+    <p class="foot"><a href="../">cloud</a> · <a href="NOTES.md">notes</a></p>
+  </section>
   <div id="status" hidden></div>
   <noscript><div id="nojs">This floor is drawn in the browser and needs JavaScript and WebGL 2.</div></noscript>
   <script type="module" src="./main.js"></script>

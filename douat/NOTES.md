@@ -9,8 +9,8 @@ The preparatory work is in `research/`: the feasibility study, protocol, plate a
 ## What happens on screen
 
 1. A lime-sand mortar bed fades in, with blue chalk lines snapped every four squares.
-2. Stones are lowered into place one by one, about one per second. Each is carried in from the unlaid side, 17 to 26 cm up and tilted 8 to 14° with its leading edge low. It is set down edge first and settles flat with a slight slide and twist. Its soft shadow sharpens as it comes down.
-3. When the pattern area is done, the floor keeps growing. Ring after ring of squares is laid around it, clockwise, carrying the pattern outward, until the floor reaches the dark at the edge of the light. The open field goes a little faster: 0.7 s a stone instead of 1.1 s. A floor takes about twelve minutes in all.
+2. Stones are lowered into place one by one, about four a second at the default speed. Each is carried in from the unlaid side, 17 to 26 cm up and tilted 8 to 14° with its leading edge low. It is set down edge first and settles flat with a slight slide and twist. Its soft shadow sharpens as it comes down.
+3. When the pattern area is done, the floor keeps growing. Ring after ring of squares is laid around it, clockwise, carrying the pattern outward, until the floor reaches the dark at the edge of the light. The open field goes a little faster than the pattern. At the default speed a floor takes about three minutes; at the slowest, about twelve.
 4. When the floor is complete, the joints are filled across the floor in laying order.
 5. The finished floor holds for 75 seconds, fades out, and a new floor begins with the next seed.
 
@@ -69,16 +69,20 @@ The three other photographs are oblique and were used by eye only: for edges, fl
 
 ## Controls
 
-Move the mouse to show the panel.
+The cog at the top right opens the settings; it shows when the mouse moves or the screen is touched, and stays faintly visible on touch screens. The panel describes the floor being laid, and sets:
 
-- **Turn and tilt:** drag. **Zoom:** wheel or pinch. **Move:** right-drag, shift-drag or two fingers. **Back to the turning overview:** double-click or `r`.
-- `n` new floor, `space` pause, `1` to `4` speed ×1/×2/×4/×8, `f` full screen.
+- **Speed** in five steps, each twice the one before: 1 is a stone every 1.1 s, 3 (the default) four times that, 5 sixteen times.
+- **Pause**, **turning** of the view on or off, and **reset view**.
+- **Stones:** any pairing drawn per floor, or one fixed pairing. Changing it starts a new floor.
+- **Another floor** and **full screen** (where the browser allows it).
+
+Speed, turning and the stone choice are remembered in the browser. With a mouse: drag to turn and tilt, wheel to zoom, right-drag or shift-drag to move, double-click to reset. On a touch screen: drag, pinch, two fingers to move. Keys: `n` new floor, `space` pause, `1` to `5` speed, `r` reset view, `f` full screen, `Esc` closes the panel.
 
 URL parameters:
 
 - `seed=n` repeats a floor; the next floor uses `n+1`.
 - `still` shows the finished floor at once.
-- `speed=x` changes the laying speed.
+- `speed=x` multiplies the laying speed directly, overriding the speed setting (step 3 is `speed=4`).
 - `hold=s` sets how long a finished floor stays, in seconds.
 - `material=reclaimed|petit-granit|lime` fixes the stone pairing.
 - `cells=n` sets the number of squares across the first, patterned area.
