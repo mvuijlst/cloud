@@ -11,7 +11,9 @@
     html, body { margin: 0; height: 100%; background: #000; overflow: hidden; }
     body { cursor: none; font: 12px/1.5 'IBMPlexMono', monospace; color: #e8e4dc; }
     body.awake { cursor: default; }
-    canvas { position: fixed; inset: 0; width: 100vw; height: 100vh; display: block; }
+    canvas { position: fixed; inset: 0; width: 100vw; height: 100vh; display: block; touch-action: none; }
+    body.awake canvas { cursor: grab; }
+    body.awake canvas:active { cursor: grabbing; }
     #info {
       position: fixed; left: 16px; right: 16px; bottom: 16px; max-width: 760px;
       padding: 10px 14px; background: rgba(12, 12, 12, 0.72); border-radius: 3px;
@@ -22,7 +24,8 @@
     #info .how, #info .keys { color: #a9a49b; }
     #info a, #info button { color: #e8e4dc; }
     #info button { font: inherit; background: none; border: 1px solid #6c675f; border-radius: 2px; padding: 1px 8px; cursor: pointer; }
-    #status { position: fixed; inset: 0; display: grid; place-items: center; color: #a9a49b; }
+    #status { position: fixed; inset: 0; display: grid; place-items: center; color: #a9a49b; pointer-events: none; }
+    #status[hidden] { display: none; }
   </style>
 </head>
 <body>
@@ -30,7 +33,7 @@
   <div id="info" role="status">
     <p class="what"></p>
     <p class="how"></p>
-    <p class="keys"><a href="../">cloud</a> · <button id="again" type="button">another floor</button> · n new · space pause · 1–4 speed · f full screen</p>
+    <p class="keys"><a href="../">cloud</a> · <button id="again" type="button">another floor</button> · drag to turn · wheel or pinch to zoom · right-drag to pan · double-click or r to reset · n new · space pause · 1–4 speed · f full screen</p>
   </div>
   <div id="status" hidden></div>
   <noscript><div id="nojs">This floor is drawn in the browser and needs JavaScript and WebGL 2.</div></noscript>

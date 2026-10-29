@@ -1,6 +1,6 @@
 # douat · floor
 
-A screensaver page: a stone floor laid one half-square at a time in Douat's diagonally halved squares. It runs entirely in the browser. Every stone, joint and grain of mortar is computed in a WebGL 2 fragment shader. No image is loaded.
+A screensaver page: a stone floor laid one half-square at a time in Douat's diagonally halved squares. It runs entirely in the browser and loads no images. The stones and mortar are generated procedurally in WebGL 2, then drawn as real 3D stones that can be viewed from any angle.
 
 Open `/douat/` over HTTP, for example with the repository's `cloud-static` launch configuration: `http://localhost:8765/douat/`. ES modules do not load from `file://`.
 
@@ -9,11 +9,13 @@ The preparatory work is in `research/`: the feasibility study, protocol, plate a
 ## What happens on screen
 
 1. A lime-sand mortar bed fades in, with blue chalk lines snapped every four squares.
-2. Stones are lowered into place one by one, about one per second. Each comes in from the unlaid side and drops from 15 to 23 cm. It casts a soft shadow that sharpens as it lands, and settles with a slight slide and twist.
+2. Stones are lowered into place one by one, about one per second. Each is carried in from the unlaid side, 17 to 26 cm up and tilted 8 to 14° with its leading edge low. It is set down edge first and settles flat with a slight slide and twist. Its soft shadow sharpens as it comes down.
 3. When the floor is complete, the joints are filled across the floor in laying order.
 4. The finished floor holds for 75 seconds, fades out, and a new floor begins with the next seed.
 
 A mason's order is followed. Repeating designs go row by row from the far wall, or along the diagonal. Centred designs go out from the centre, as setting-out from the centre lines would require. In each square, the half that meets already-laid work goes down first.
+
+The view starts looking straight down, like a photograph of a floor. It can be turned, tilted, zoomed and moved at any time; see Controls.
 
 ## The designs
 
@@ -29,11 +31,13 @@ Each composition then gets a random crop phase, optional transposition and optio
 
 Each square is two stones: a triangle of dark bluestone and one of cream limestone, with a joint on the diagonal. In real stone that is the only way to make a half-and-half square. The look was fixed by five photographs the user supplied of reclaimed bluestone and limestone floors, one of them top-down. Every stone is treated as reclaimed: it carries its own history, independent of its neighbours, as stones from an old floor do.
 
-- **Shape.** The straight-sided triangle gets a hand-dressed outline that wanders by up to about 1.4 mm. Each stone sits up to ±1.1 mm off its place and turned up to ±0.6°. Lippage is ±0.75 mm, tilt up to about 1°, and the centre is dished by up to 1.5 mm. The whole layout drifts by a few millimetres over a metre, so joints wander. Where two stones were set hard together, only their dark hairline shows.
+- **Solid.** Each stone is 25 mm thick, with sides, standing on the mortar bed. The sides show along the unfinished edge, in the joints at low angles, and on the stone in flight.
+- **Shape.** The straight-sided triangle gets a hand-dressed outline that wanders by up to about 1.4 mm. Each stone sits up to ±1.1 mm off its place and turned up to ±0.6°. It stands proud or sunk by up to 0.75 mm and tilts by up to about 1°, so neighbours step at their edges. Its centre is dished by up to 1.5 mm. The whole layout drifts by a few millimetres over a metre, so joints wander.
 - **Arrises.** Edges are rolled, sharper on the limestone and softer on the bluestone. The roll width varies along each edge. Edges are chipped where the stone is chip-prone, with paler fracture.
 - **Bluestone.** Tone varies stone to stone. Each stone has warped cloudy mottling with pale haze and darker patches, a stone-scale tone gradient and coarse grain. Pits catch dirt, scuffs are pale and abraded, and some stones carry a calcite vein. Petit granit adds crinoid debris.
 - **Limestone.** Ochre and grey clouds. A pitted skin on every stone, and flaking terraces on the weathered ones, with dirt settled in the hollows. Some stones have dark specks, soft stains or a dirty hairline crack.
-- **Light.** Window daylight from the top left, 22 to 32° high, falling off across the room. Normals come from the height field, which is what makes relief, rolled edges and lippage visible. A cool sky fill, cavity occlusion, and soft shadows from the stones onto the bed at the frontier. A slight lens falloff and fixed grain complete it.
+- **Joints.** The gaps are real: open down to the bed while the stones are laid, then filled to just below the tops. They darken by how enclosed they are and by the sun's shadow.
+- **Light.** Window daylight from the top left, 22 to 32° high, falling off across the room and into darkness beyond the floor. A cool sky fill and cavity occlusion. Sun shadows soften with the distance between the stone and the surface the shadow falls on. A slight lens falloff and fixed grain complete it.
 
 Three stone pairings are drawn at random per floor (`materials.js`):
 
@@ -43,28 +47,31 @@ Three stone pairings are drawn at random per floor (`materials.js`):
 
 ## Checked against a photograph
 
-The user's top-down photograph has about 155 px per stone. `tools/measure_photo.py` measures it per stone: mean luminance, stone-to-stone spread, and within-stone spread in three bands. The bands are coarse (Gaussian σ 12 px), mid (σ 2 to 12) and fine (below σ 2), plus a median luminance profile across the joints. `tools/measure_render.py` applies the same measurement to a render rescaled to the same stone size: `?still&seed=7`, 1600×900 at 2× pixel density.
+The user's top-down photograph has about 155 px per stone. `tools/measure_photo.py` measures it per stone: mean luminance, stone-to-stone spread, and within-stone spread in three bands. The bands are coarse (Gaussian σ 12 px), mid (σ 2 to 12) and fine (below σ 2), plus a median luminance profile across the joints. `tools/measure_render.py` applies the same measurement to a render of the default view, rescaled to the same stone size: `?still&seed=7`, 1600×900 at 2× pixel density. In the page, `douat.measureArgs()` prints the arguments it needs.
 
 | sRGB luminance | Photo, dark | Render, dark | Photo, light | Render, light |
 |---|---|---|---|---|
-| Mean | 81.3 | 79.4 | 186.4 | 181.3 |
-| Stone-to-stone spread | 12.1 | 11.2 | 10.3 | 11.1 |
-| Within stone, coarse | 7.3 | 5.2 | 5.2 | 4.1 |
-| Within stone, mid | 5.4 | 4.4 | 4.3 | 4.9 |
-| Within stone, fine | 8.5 | 5.2 | 9.5 | 7.7 |
+| Mean | 81.3 | 79.3 | 186.4 | 181.3 |
+| Stone-to-stone spread | 12.1 | 11.4 | 10.3 | 10.3 |
+| Within stone, coarse | 7.3 | 5.2 | 5.2 | 3.9 |
+| Within stone, mid | 5.4 | 4.4 | 4.3 | 5.2 |
+| Within stone, fine | 8.5 | 4.8 | 9.5 | 7.3 |
 
 | Joints | Photo | Render |
 |---|---|---|
-| Darkest point | 43 | 57 |
+| Darkest point | 43 | 43 |
 | Width below half depth | 3 px | 3 px |
 
-The photo is a sharpened, compressed web image. Its fine band therefore includes noise and halo that the render does not try to copy. The dark stones' coarse and fine texture is still lighter than in the photo. The colour of the light stone is (196,180,154) against the photo's (201,185,160).
+The photo is a sharpened, compressed web image. Its fine band therefore includes noise and halo that the render does not try to copy. The dark stones' coarse and fine texture is still lighter than in the photo. The colour of the light stone is (196,180,155) against the photo's (201,185,160).
 
 The three other photographs are oblique and were used by eye only: for edges, flaking, lime joints and fossil debris.
 
 ## Controls
 
-Move the mouse to show the panel. The keys are `n` for a new floor, `space` to pause, `1` to `4` for speed ×1/×2/×4/×8, and `f` for full screen.
+Move the mouse to show the panel.
+
+- **Turn and tilt:** drag. **Zoom:** wheel or pinch. **Move:** right-drag, shift-drag or two fingers. **Back to the view from above:** double-click or `r`.
+- `n` new floor, `space` pause, `1` to `4` speed ×1/×2/×4/×8, `f` full screen.
 
 URL parameters:
 
@@ -73,18 +80,20 @@ URL parameters:
 - `speed=x` changes the laying speed.
 - `hold=s` sets how long a finished floor stays, in seconds.
 - `material=reclaimed|petit-granit|lime` fixes the stone pairing.
-- `cells=n` sets the number of squares across.
-- `tilt=deg` tilts the camera.
-- `samples=1..4` sets antialiasing samples per device pixel.
+- `cells=n` sets the number of squares across the default view.
+- `view=yaw,pitch,distance` sets the starting view in degrees and as a fraction of the default distance, for example `view=60,35,0.5`.
+- `low` uses smaller textures and shadow maps; touch devices do this by themselves.
 - `freeze=n,u` lays stones before `n` at once, then holds stone `n` at fraction `u` of its flight. It is for inspecting the animation.
 
 ## How it is drawn
 
-- **Incremental rendering.** The floor is rendered into an off-screen buffer, a square at a time, and only where something changed: a stone landed or a joint was filled. A per-frame pixel budget adapts to the machine. Each frame then copies that buffer to the screen.
-- **The stone in flight.** It is rendered once, alone, into a sprite. Each frame it is drawn lifted, turned and displaced, with its shadow blurred by height and thrown onto whatever lies below it: laid stone or bare bed.
-- **Two programs.** The shader is split into a stones-and-joints program and a bed program, compiled in parallel. Antialiasing is done by separate jittered draws, averaged by blending.
-- **Compile time.** Browsers on Windows compile WebGL through Direct3D's HLSL compiler. As one program inside a per-pixel sample loop, the shader took 10 to 24 s to compile. Split this way it takes about 3.5 to 5.5 s on an RTX A4000, on a page that stays responsive meanwhile. Noise reads a 512² table of random bytes, with quintic interpolation done in the shader.
-- **Speed.** On that machine a landed stone costs about 1 ms of GPU time. A full redraw takes 13 ms at 1600×900 with 4 samples, and 28 ms at 3200×1800 with 2.
+- **Baked material.** When a floor starts, the stone model in `material.js` is evaluated once into textures, while the screen is still dark. One atlas slot per square holds both its stones at about 0.8 mm per texel: colour, roughness, normals from the height field, cavity, and which stone owns each texel. A second texture holds the mortar bed. The model is the same code that was tuned against the photograph.
+- **Real geometry.** `geometry.js` builds each stone as a mesh, in laying order, so the stones laid so far are one prefix of the vertex buffer. A top is a polygon slightly larger than the stone, cut to its hand-dressed outline by the baked ownership, with smooth edges via alpha-to-coverage. Its sides are vertical faces just inside that outline. Offsets, turn, lippage and tilt are in the vertices. `stonelib.js` mirrors the shader's random numbers so that geometry and texture agree.
+- **The stone in flight.** It is the same mesh with a moving transform, so it is a full 3D stone and lands exactly where it stays.
+- **Shadows.** One sun shadow map covers the laid floor and is redrawn only when a stone lands. A second, small one follows the stone in flight. Shadows are percentage-closer soft shadows: the penumbra grows with the gap between blocker and receiver.
+- **Joints.** The tops of laid stones are drawn from above into a coverage map. Its mipmaps give how enclosed any point of the bed or filling is, which is what darkens a narrow joint. The filling is a plane just below the tops, drawn only where no stone top covers the pixel, using the stencil.
+- **Speed.** On an RTX A4000 a frame takes about 1.1 ms at 1600×900 and 3.6 ms at 3200×1800, with a stone in flight. Redrawing the floor's shadow map after a landing costs about 0.4 ms. Frames are only drawn when something moves.
+- **Compile time.** Browsers on Windows compile WebGL through Direct3D's HLSL compiler, which slows down sharply on large shaders and on loops around large bodies. The first version, one program inside a per-pixel sample loop, took 10 to 24 s. The bake now compiles once per page load in about 1.5 s, and Chrome caches it for later visits. Noise reads a 512² table of random bytes, with quintic interpolation done in the shader.
 
 `tools/shot.mjs` drives headless Chrome over the DevTools protocol, with the cache off. It waits for a condition in the page, evaluates an expression and saves a screenshot. It is how the numbers above were made.
 
@@ -93,4 +102,4 @@ URL parameters:
 - Floor-wide traffic wear: worn paths that develop after the floor is laid. Wear is currently per stone, as in a relaid reclaimed floor.
 - Other tile types. The renderer already knows whole square stones (cell states 4 and 5), but no design uses them yet. Curved Truchet tiles would need a new stone outline.
 - Light that follows the time of day.
-- An oblique, photographic camera. Stone sides are drawn, but heights are not ray-marched, so steep views would show the shortcut.
+- Very close views go soft: the atlas holds about 0.8 mm per texel.

@@ -1,5 +1,6 @@
 // Headless Chrome screenshot via the DevTools protocol.
 // node shot.mjs <url> <out.png> [width height dpr] [--wait=<js condition>] [--eval=<js>] [--timeout=s] [--clip=x,y,w,h]
+//   [--drag=x0,y0,x1,y1[,button]] [--wheel=x,y,deltaY]
 import { spawn } from 'node:child_process';
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -39,6 +40,24 @@ let ok = false;
 while (Date.now() - t0 < timeout) { await sleep(400); try { if (await evalJS(`(()=>{try{return !!(${cond})}catch(e){return false}})()`) === true) { ok = true; break; } } catch {} }
 console.log(ok ? `ready after ${((Date.now() - t0) / 1000).toFixed(1)} s` : 'timed out waiting');
 console.log('gpu:', await evalJS(`(()=>{const g=document.createElement('canvas').getContext('webgl2');const e=g&&g.getExtension('WEBGL_debug_renderer_info');return e?g.getParameter(e.UNMASKED_RENDERER_WEBGL):'?'})()`));
+// --drag=x0,y0,x1,y1[,button] and --wheel=x,y,deltaY act on the page like a mouse
+if (flags.drag) {
+  const [x0, y0, x1, y1, b = 0] = flags.drag.split(',').map(Number);
+  const button = b === 2 ? 'right' : 'left';
+  await send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: x0, y: y0 });
+  await send('Input.dispatchMouseEvent', { type: 'mousePressed', x: x0, y: y0, button, buttons: b === 2 ? 2 : 1, clickCount: 1 });
+  for (let i = 1; i <= 12; i++) {
+    await send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: x0 + (x1 - x0) * i / 12, y: y0 + (y1 - y0) * i / 12, button, buttons: b === 2 ? 2 : 1 });
+    await sleep(16);
+  }
+  await send('Input.dispatchMouseEvent', { type: 'mouseReleased', x: x1, y: y1, button, buttons: 0, clickCount: 1 });
+  await sleep(200);
+}
+if (flags.wheel) {
+  const [x, y, d] = flags.wheel.split(',').map(Number);
+  await send('Input.dispatchMouseEvent', { type: 'mouseWheel', x, y, deltaX: 0, deltaY: d });
+  await sleep(200);
+}
 if (flags.eval) console.log('eval:', JSON.stringify(await evalJS(flags.eval)));
 await sleep(300);
 const shotParams = { format: 'png' };
