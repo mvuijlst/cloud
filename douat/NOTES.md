@@ -10,12 +10,13 @@ The preparatory work is in `research/`: the feasibility study, protocol, plate a
 
 1. A lime-sand mortar bed fades in, with blue chalk lines snapped every four squares.
 2. Stones are lowered into place one by one, about one per second. Each is carried in from the unlaid side, 17 to 26 cm up and tilted 8 to 14° with its leading edge low. It is set down edge first and settles flat with a slight slide and twist. Its soft shadow sharpens as it comes down.
-3. When the floor is complete, the joints are filled across the floor in laying order.
-4. The finished floor holds for 75 seconds, fades out, and a new floor begins with the next seed.
+3. When the pattern area is done, the floor keeps growing. Ring after ring of squares is laid around it, clockwise, carrying the pattern outward, until the floor reaches the dark at the edge of the light. The open field goes a little faster: 0.7 s a stone instead of 1.1 s. A floor takes about twelve minutes in all.
+4. When the floor is complete, the joints are filled across the floor in laying order.
+5. The finished floor holds for 75 seconds, fades out, and a new floor begins with the next seed.
 
 A mason's order is followed. Repeating designs go row by row from the far wall, or along the diagonal. Centred designs go out from the centre, as setting-out from the centre lines would require. In each square, the half that meets already-laid work goes down first.
 
-The view starts zoomed out as far as it goes, with the whole floor in the picture, seen from 60° above the horizon. It turns slowly around the floor, once every ten minutes. It can be turned, tilted, zoomed and moved at any time; see Controls. After eight seconds without input it eases back into turning.
+The view starts zoomed out as far as it goes, seen from 68° above the horizon. It turns around the floor once every three minutes. It can be turned, tilted, zoomed and moved at any time; see Controls. After eight seconds without input it eases back into turning.
 
 ## The designs
 
@@ -25,7 +26,7 @@ The view starts zoomed out as far as it goes, with the whole floor in the pictur
 - **Centred.** A 3×3 to 6×6 seed of diagonals, nested squares, crosses or a free symmetric seed is reflected about the floor centre and folded back on itself beyond its edge, as in design 10. Half of these break the rule once along the diagonal.
 - **Bands.** States run along (a·x + b·y) mod m, sometimes mirrored into chevrons.
 
-Each composition then gets a random crop phase, optional transposition and optional colour complement. Floors with fewer than two states, or with more than 80% of one state, are redrawn. The info panel (move the mouse) states the rule, for example `rows of 4, cycle of 2: ADBC / DACB`.
+The rule is defined everywhere, so the rings around the first area continue the same composition. Each composition then gets a random crop phase, optional transposition and optional colour complement. Floors with fewer than two states, or with more than 80% of one state, are redrawn. The info panel (move the mouse) states the rule, for example `rows of 4, cycle of 2: ADBC / DACB`.
 
 ## The stones
 
@@ -37,7 +38,7 @@ Each square is two stones: a triangle of dark bluestone and one of cream limesto
 - **Bluestone.** Tone varies stone to stone. Each stone has warped cloudy mottling with pale haze and darker patches, a stone-scale tone gradient and coarse grain. Pits catch dirt, scuffs are pale and abraded, and some stones carry a calcite vein. Petit granit adds crinoid debris.
 - **Limestone.** Ochre and grey clouds. A pitted skin on every stone, and flaking terraces on the weathered ones, with dirt settled in the hollows. Some stones have dark specks, soft stains or a dirty hairline crack.
 - **Joints.** The gaps are real: open down to the bed while the stones are laid, then filled to just below the tops. They darken by how enclosed they are and by the sun's shadow.
-- **Light.** Window daylight from the top left, 22 to 32° high, falling off across the room and into darkness beyond the floor. A cool sky fill and cavity occlusion. Sun shadows soften with the distance between the stone and the surface the shadow falls on. A slight lens falloff and fixed grain complete it.
+- **Light.** Window daylight from the top left, 22 to 32° high. It falls off across the room and, beyond the patterned area, fades over about a metre and a half into darkness. A cool sky fill and cavity occlusion. Sun shadows soften with the distance between the stone and the surface the shadow falls on. A slight lens falloff and fixed grain complete it.
 
 Three stone pairings are drawn at random per floor (`materials.js`):
 
@@ -51,18 +52,18 @@ The user's top-down photograph has about 155 px per stone. `tools/measure_photo.
 
 | sRGB luminance | Photo, dark | Render, dark | Photo, light | Render, light |
 |---|---|---|---|---|
-| Mean | 81.3 | 79.3 | 186.4 | 181.3 |
-| Stone-to-stone spread | 12.1 | 11.4 | 10.3 | 10.3 |
-| Within stone, coarse | 7.3 | 5.2 | 5.2 | 3.9 |
-| Within stone, mid | 5.4 | 4.4 | 4.3 | 5.2 |
-| Within stone, fine | 8.5 | 4.8 | 9.5 | 7.3 |
+| Mean | 81.3 | 82.4 | 186.4 | 180.2 |
+| Stone-to-stone spread | 12.1 | 13.2 | 10.3 | 10.1 |
+| Within stone, coarse | 7.3 | 5.9 | 5.2 | 3.5 |
+| Within stone, mid | 5.4 | 5.0 | 4.3 | 5.2 |
+| Within stone, fine | 8.5 | 5.0 | 9.5 | 7.2 |
 
 | Joints | Photo | Render |
 |---|---|---|
-| Darkest point | 43 | 43 |
+| Darkest point | 43 | 49 |
 | Width below half depth | 3 px | 3 px |
 
-The photo is a sharpened, compressed web image. Its fine band therefore includes noise and halo that the render does not try to copy. The dark stones' coarse and fine texture is still lighter than in the photo. The colour of the light stone is (196,180,155) against the photo's (201,185,160).
+These are 40 stones of each colour from one floor; another seed moves the render figures by a point or two. The photo is a sharpened, compressed web image. Its fine band therefore includes noise and halo that the render does not try to copy. The dark stones' coarse and fine texture is still lighter than in the photo. The colour of the light stone is (195,179,152) against the photo's (201,185,160).
 
 The three other photographs are oblique and were used by eye only: for edges, flaking, lime joints and fossil debris.
 
@@ -80,21 +81,22 @@ URL parameters:
 - `speed=x` changes the laying speed.
 - `hold=s` sets how long a finished floor stays, in seconds.
 - `material=reclaimed|petit-granit|lime` fixes the stone pairing.
-- `cells=n` sets the number of squares across the view from above.
+- `cells=n` sets the number of squares across the first, patterned area.
 - `view=yaw,pitch,distance` sets the starting view in degrees and as a fraction of the starting distance, for example `view=60,35,0.5`.
-- `spin=minutes` sets how long one turn of the view takes; `spin=0` holds the view still.
+- `spin=minutes` sets how long one turn of the view takes (3 by default); `spin=0` holds the view still.
 - `photo` starts straight down, at the framing of a photograph of the floor, without turning. The measurements below use it.
 - `low` uses smaller textures and shadow maps; touch devices do this by themselves.
 - `freeze=n,u` lays stones before `n` at once, then holds stone `n` at fraction `u` of its flight. It is for inspecting the animation.
 
 ## How it is drawn
 
-- **Baked material.** When a floor starts, the stone model in `material.js` is evaluated once into textures, while the screen is still dark. One atlas slot per square holds both its stones at about 0.8 mm per texel: colour, roughness, normals from the height field, cavity, and which stone owns each texel. A second texture holds the mortar bed. The model is the same code that was tuned against the photograph.
+- **Baked material.** When a floor starts, the stone model in `material.js` is evaluated once into textures, while the screen is still dark. One atlas slot per square of the patterned area holds both its stones at about 0.8 mm per texel: colour, roughness, normals from the height field, cavity, and which stone owns each texel. A second texture holds the mortar bed. The model is the same code that was tuned against the photograph.
+- **The squares around.** Each square of the outer rings borrows the two stones of a random square of the patterned area, in one of eight orientations: turned in quarter turns, mirrored or not, whichever matches its own pattern state. It keeps its own offset, turn, lippage and tilt. Giving every outer stone its own texture would need about a gigabyte of graphics memory; at these distances the reuse cannot be seen.
 - **Real geometry.** `geometry.js` builds each stone as a mesh, in laying order, so the stones laid so far are one prefix of the vertex buffer. A top is a polygon slightly larger than the stone, cut to its hand-dressed outline by the baked ownership, with smooth edges via alpha-to-coverage. Its sides are vertical faces just inside that outline. Offsets, turn, lippage and tilt are in the vertices. `stonelib.js` mirrors the shader's random numbers so that geometry and texture agree.
 - **The stone in flight.** It is the same mesh with a moving transform, so it is a full 3D stone and lands exactly where it stays.
 - **Shadows.** One sun shadow map covers the laid floor and is redrawn only when a stone lands. A second, small one follows the stone in flight. Shadows are percentage-closer soft shadows: the penumbra grows with the gap between blocker and receiver.
 - **Joints.** The tops of laid stones are drawn from above into a coverage map. Its mipmaps give how enclosed any point of the bed or filling is, which is what darkens a narrow joint. The filling is a plane just below the tops, drawn only where no stone top covers the pixel, using the stencil.
-- **Speed.** On an RTX A4000 a frame takes about 1.1 ms at 1600×900 and 3.6 ms at 3200×1800, with a stone in flight. Redrawing the floor's shadow map after a landing costs about 0.4 ms. Frames are only drawn when something moves.
+- **Speed.** On an RTX A4000 a frame takes about 3.8 ms at 3200×1800 with 700 stones down and one in flight. Redrawing the floor's shadow map after a landing costs about 1.7 ms. Frames are only drawn when something moves, which with the view turning is every frame.
 - **Compile time.** Browsers on Windows compile WebGL through Direct3D's HLSL compiler, which slows down sharply on large shaders and on loops around large bodies. The first version, one program inside a per-pixel sample loop, took 10 to 24 s. The bake now compiles once per page load in about 1.5 s, and Chrome caches it for later visits. Noise reads a 512² table of random bytes, with quintic interpolation done in the shader.
 
 `tools/shot.mjs` drives headless Chrome over the DevTools protocol, with the cache off. It waits for a condition in the page, evaluates an expression and saves a screenshot. It is how the numbers above were made.

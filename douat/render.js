@@ -155,11 +155,11 @@ export class Renderer {
     this.floor = floor;
     const v = floor.view, m = floor.material, s = floor.sun;
     const lin = c => c.map(x => Math.pow(x / 255, 2.2));
-    this.cellsTex = this.own('t', this.texture(v.NX, v.NY, gl.RGBA8UI, 1, gl.NEAREST, gl.NEAREST));
+    this.cellsTex = this.own('t', this.texture(v.RX, v.RY, gl.RGBA8UI, 1, gl.NEAREST, gl.NEAREST));
     gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
-    gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, v.NX, v.NY, gl.RGBA_INTEGER, gl.UNSIGNED_BYTE, floor.cells);
+    gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, v.RX, v.RY, gl.RGBA_INTEGER, gl.UNSIGNED_BYTE, floor.cells);
     this.mat = {
-      uPitch: v.pitch, uThick: v.thick, uJoint: m.joint, uGrid: [v.NX, v.NY], uOrigin: v.origin,
+      uPitch: v.pitch, uThick: v.thick, uJoint: m.joint, uGrid: [v.RX, v.RY], uOrigin: v.roomOrigin,
       uCells: TU.cells, uRnd: TU.rnd, uSeed: floor.seed >>> 0, uLoop: 1,
       uDarkAlb: lin(m.dark), uLightAlb: lin(m.light), uBedAlb: lin(m.bed), uFillAlb: lin(m.fill),
       uDarkP: m.darkP, uLightP: m.lightP, uMisc: [m.fillDepth, m.edge, m.grime, m.scratches],
@@ -167,7 +167,8 @@ export class Renderer {
       uFloorC: [0, 0], uFloorR: v.floorR,
     };
 
-    // stone atlas: one slot per cell, both halves in it
+    // stone atlas: one slot per square of the first floor, both halves in it;
+    // the squares around borrow these, turned or mirrored
     const cells = v.NX * v.NY;
     const slot = this.lowPower ? 160 : cells <= 120 ? 320 : 256;
     const A = this.atlas = atlasLayout(cells, slot, Math.min(this.maxTex, 8192));
@@ -180,8 +181,8 @@ export class Renderer {
     this.atlasFb = this.own('f', this.framebuffer([this.atlas0, this.atlas1]));
 
     // mortar bed under the floor and a margin around it
-    const [x0, y0, x1, y1] = v.rect;
-    const bm = 2300;
+    const [x0, y0, x1, y1] = v.roomRect;
+    const bm = 1300;
     this.bedRect = [x0 - bm, y0 - bm, x1 + bm, y1 + bm];
     const cap = Math.min(this.maxTex, this.lowPower ? 2048 : 4096);
     const bt = Math.max(2.5, (this.bedRect[2] - this.bedRect[0]) / cap, (this.bedRect[3] - this.bedRect[1]) / cap);
@@ -267,7 +268,10 @@ export class Renderer {
     this.bind(TU.cells, this.cellsTex);
     this.bind(TU.rnd, this.rndTex);
     if (bed) this.use(this.pBakeBed, { ...this.mat, uBedRect: this.bedRect, uBedSize: this.bedSize });
-    else this.use(this.pBakeStone, { ...this.mat, uSlotCols: this.atlas.cols, uSlotPx: this.atlas.S, uMargin: this.atlas.margin });
+    else this.use(this.pBakeStone, {
+      ...this.mat, uSlotCols: this.atlas.cols, uSlotPx: this.atlas.S, uMargin: this.atlas.margin,
+      uBakeOff: [this.floor.view.M, this.floor.view.M], uBakeSize: [this.floor.view.NX, this.floor.view.NY],
+    });
     gl.bindVertexArray(this.quadVao);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
     gl.disable(gl.SCISSOR_TEST);
@@ -292,7 +296,7 @@ export class Renderer {
   }
 
   setCell(i, j, rgba) {
-    const gl = this.gl, f = this.floor, k = (j * f.view.NX + i) * 4;
+    const gl = this.gl, f = this.floor, k = (j * f.view.RX + i) * 4;
     f.cells.set(rgba, k);
     gl.bindTexture(gl.TEXTURE_2D, this.cellsTex);
     gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);

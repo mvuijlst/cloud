@@ -72,10 +72,16 @@ export function makeView(W, H, { pitch, thick, cellsAcross, fovY }) {
   // far enough out that the whole floor, turned any way, stays in the picture
   const half = Math.min(fovY / 2, Math.atan(tanY * W / H));
   const maxDist = 1.08 * Math.hypot(NX, NY) * pitch / 2 / Math.sin(half);
+  // Once the first NX×NY squares are laid, the floor grows by M rings into the room,
+  // as far as the light reaches.
+  const M = Math.ceil(1250 / pitch);
+  const x0 = -NX / 2 * pitch, y0 = -NY / 2 * pitch;
   return {
-    W, H, fovY, pitch, thick, NX, NY, dist, maxDist,
-    origin: [-NX / 2 * pitch, -NY / 2 * pitch],
-    rect: [-NX / 2 * pitch, -NY / 2 * pitch, NX / 2 * pitch, NY / 2 * pitch],
+    W, H, fovY, pitch, thick, NX, NY, dist, maxDist, M, RX: NX + 2 * M, RY: NY + 2 * M,
+    origin: [x0, y0],
+    rect: [x0, y0, -x0, -y0],
+    roomOrigin: [x0 - M * pitch, y0 - M * pitch],
+    roomRect: [x0 - M * pitch, y0 - M * pitch, -x0 + M * pitch, -y0 + M * pitch],
     floorR: Math.hypot(hx, hy),
   };
 }
@@ -103,7 +109,7 @@ export class Orbit {
     this.view = view;
     this.home = photo
       ? { target: [0, 0, view.thick], yaw: Math.PI / 2, pitch: Math.PI / 2 - 0.0005, dist: view.dist, spin: 0 }
-      : { target: [0, 0, view.thick], yaw: Math.PI / 2 + 0.35, pitch: 60 * Math.PI / 180, dist: view.maxDist,
+      : { target: [0, 0, view.thick], yaw: Math.PI / 2 + 0.35, pitch: 68 * Math.PI / 180, dist: view.maxDist,
         spin: period > 0 ? Math.PI * 2 / period : 0 };
     this.reset();
   }
@@ -131,7 +137,7 @@ export class Orbit {
     const v = this.view;
     this.pitch = Math.min(Math.PI / 2 - 0.0005, Math.max(0.21, this.pitch));
     this.dist = Math.min(v.maxDist, Math.max(v.dist * 0.1, this.dist));
-    const [x0, y0, x1, y1] = v.rect;
+    const [x0, y0, x1, y1] = v.roomRect;
     this.target[0] = Math.min(x1, Math.max(x0, this.target[0]));
     this.target[1] = Math.min(y1, Math.max(y0, this.target[1]));
     this.version++;

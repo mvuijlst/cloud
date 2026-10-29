@@ -26,15 +26,17 @@ ${MATERIAL}
 uniform int uSlotCols;
 uniform float uSlotPx;
 uniform float uMargin;
+uniform ivec2 uBakeOff;          // where the first floor's squares sit in the room
+uniform ivec2 uBakeSize;
 
 void main() {
   vec2 px = gl_FragCoord.xy;
   ivec2 slot = ivec2(floor(px / uSlotPx));
   int idx = slot.y * uSlotCols + slot.x;
-  ivec2 cell = ivec2(idx % uGrid.x, idx / uGrid.x);
   o0 = vec4(0.0);
   o1 = vec4(0.5, 0.5, 1.0, 0.5);
-  if (cell.y >= uGrid.y) return;
+  if (idx >= uBakeSize.x * uBakeSize.y) return;
+  ivec2 cell = uBakeOff + ivec2(idx % uBakeSize.x, idx / uBakeSize.x);
   uvec4 cd = cellAt(cell);
   if (cd.r == 255u) return;
   float span = uPitch + 2.0 * uMargin;
@@ -142,6 +144,7 @@ uniform float uFlyTexel;
 uniform int uFlyOn;
 uniform sampler2D uMask;        // coverage of laid stone tops seen from above, mipmapped
 uniform vec4 uMaskRect;
+uniform vec4 uFloorRect;        // the first floor; light falls away beyond it into the room's dark
 
 const vec2 DISK[12] = vec2[12](
   vec2(-0.326, -0.406), vec2(-0.840, -0.074), vec2(-0.696, 0.457), vec2(-0.203, 0.621),
@@ -193,6 +196,12 @@ float enclosure(vec2 p, float radiusMm) {
   return textureLod(uMask, uv, log2(max(radiusMm / texel, 1.0))).r;
 }
 
+float roomLight(vec2 p) {
+  vec2 o = max(max(uFloorRect.xy - p, p - uFloorRect.zw), 0.0);
+  float far = length(o);
+  return exp(-far / 1100.0) * (1.0 - smoothstep(550.0, 1450.0, far));
+}
+
 vec4 finish(vec3 c, float a) {
   c = tonemap(c);
   vec2 ndc = gl_FragCoord.xy / uRes * 2.0 - 1.0;
@@ -220,7 +229,7 @@ void main() {
   vec3 N = normalize(vNrm);
   vec3 c;
   float cover = 1.0;
-  if (vInfo.y < 0.5) {
+  if (abs(vInfo.y - 1.0) > 0.5) {
     vec4 a1 = texture(uAtlas1, vUV);
     cover = vInfo.x < 0.5 ? clamp(a1.a * 2.0 - 1.0, 0.0, 1.0) : clamp(1.0 - a1.a * 2.0, 0.0, 1.0);
     cover *= uAlpha;
@@ -229,7 +238,7 @@ void main() {
     vec3 nm = vec3(a1.xy * 2.0 - 1.0, 0.0);
     nm.z = sqrt(max(1.0 - dot(nm.xy, nm.xy), 0.02));
     vec3 T = normalize(vTan - N * dot(vTan, N));
-    vec3 B = cross(N, T);
+    vec3 B = vInfo.y > 1.5 ? -cross(N, T) : cross(N, T);
     vec3 n = normalize(T * nm.x + B * nm.y + N * nm.z);
     c = shade(a0.rgb, n, V, a0.a, sunShadow(vPos, N), a1.z, vPos.xy);
   } else {
@@ -243,7 +252,7 @@ void main() {
     cover = uAlpha;
     if (cover < 0.02) discard;
   }
-  fragColor = finish(c, cover);
+  fragColor = finish(c * roomLight(vPos.xy), cover);
 }
 `;
 
@@ -253,7 +262,6 @@ ${MATERIAL}
 ${VIEW}
 uniform sampler2D uBed0, uBed1;
 uniform vec4 uBedRect;
-uniform vec4 uFloorRect;         // the laid area: beyond it the bed fades into the room's dark
 uniform int uGround;             // 0 bed, 1 joint filling
 in vec3 vPos;
 
@@ -282,11 +290,7 @@ void main() {
     ao = 1.0 - 0.85 * encl;
   }
   vec3 c = shade(alb, n, V, 0.95, sunShadow(vPos, vec3(0.0, 0.0, 1.0)), ao, p);
-  // the light falls off away from the work into the room's shadow
-  vec2 out2 = max(max(uFloorRect.xy - p, p - uFloorRect.zw), 0.0);
-  float far = length(out2);
-  c *= exp(-far / 1300.0) * (1.0 - smoothstep(1500.0, 2250.0, far));
-  fragColor = finish(c, 1.0);
+  fragColor = finish(c * roomLight(p), 1.0);
 }
 `;
 
@@ -301,7 +305,7 @@ in vec3 vTan;
 in vec2 vUV;
 flat in vec2 vInfo;
 void main() {
-  if (vInfo.y < 0.5) {
+  if (abs(vInfo.y - 1.0) > 0.5) {
     float a = texture(uAtlas1, vUV).a;
     float own = vInfo.x < 0.5 ? clamp(a * 2.0 - 1.0, 0.0, 1.0) : clamp(1.0 - a * 2.0, 0.0, 1.0);
     if (uMaskMode == 0 && own < 0.5) discard;

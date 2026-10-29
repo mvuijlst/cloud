@@ -157,7 +157,7 @@ export function samplePattern(rng, NX, NY) {
     const at = dress(rng, prog, NX, NY);
     const grid = new Uint8Array(NX * NY);
     for (let y = 0; y < NY; y++) for (let x = 0; x < NX; x++) grid[y * NX + x] = at(x, y);
-    if (interesting(grid, NX, NY) || tries === 49) return { grid, kind: prog.kind, describe: prog.describe, centred: !!prog.centred };
+    if (interesting(grid, NX, NY) || tries === 49) return { grid, at, kind: prog.kind, describe: prog.describe, centred: !!prog.centred };
   }
 }
 
