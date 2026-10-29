@@ -162,12 +162,13 @@ export class Renderer {
     gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 5, tab.n, gl.RGBA, gl.FLOAT, tab.f);
     this.slotU = this.own('t', this.texture(1, tab.n, gl.RGBA32UI, 1, gl.NEAREST, gl.NEAREST));
     gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 1, tab.n, gl.RGBA_INTEGER, gl.UNSIGNED_INT, tab.u);
-    const cem = m.cement || { a: [200, 190, 175], b: [60, 60, 62], body: [140, 138, 132] };
+    const cem = m.cement || { a: [200, 190, 175], b: [60, 60, 62], c: [120, 62, 50], body: [140, 138, 132] };
+    const mid = m.mid || m.light.map((l, i) => Math.round((l + m.dark[i]) / 2));
     this.mat = {
       uPitch: v.pitch, uThick: v.thick, uJoint: m.joint, uOrigin: v.roomOrigin,
       uSlotF: TU.slotF, uSlotU: TU.slotU, uRnd: TU.rnd, uSeed: floor.seed >>> 0, uLoop: 1,
-      uCementA: lin(cem.a), uCementB: lin(cem.b), uCementBody: lin(cem.body),
-      uDarkAlb: lin(m.dark), uLightAlb: lin(m.light), uBedAlb: lin(m.bed), uFillAlb: lin(m.fill),
+      uCementA: lin(cem.a), uCementB: lin(cem.b), uCementC: lin(cem.c || cem.b), uCementBody: lin(cem.body),
+      uDarkAlb: lin(m.dark), uLightAlb: lin(m.light), uMidAlb: lin(mid), uBedAlb: lin(m.bed), uFillAlb: lin(m.fill),
       uDarkP: m.darkP, uLightP: m.lightP, uMisc: [m.fillDepth, m.edge, m.grime, m.scratches],
       uSunDir: s.dir, uSunCol: s.col, uSkyCol: s.sky, uSunSoft: s.soft, uExposure: s.exposure,
       uFloorC: [0, 0], uFloorR: v.floorR,

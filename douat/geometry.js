@@ -35,7 +35,7 @@ export function buildPool(tiling, material, seed, perClass) {
       byClass[name].push(entries.length);
       entries.push({
         cls: name, h, span, rc, cement,
-        dark: !!c.dark, design: c.design || 0, dsize: c.dsize || 0, variant: c.variant || 0,
+        dark: !!c.dark, mid: !!c.mid, design: c.design || 0, dsize: c.dsize || 0, variant: c.variant || 0, dp: c.dp || [0, 0],
         poly: offsetPoly(c.poly, -(hj + rc)),
       });
     }
@@ -53,8 +53,8 @@ export function slotTables(pool) {
       f[i * 20 + v * 2] = p[0]; f[i * 20 + v * 2 + 1] = p[1];
     }
     f.set([e.poly.length, e.rc, e.span, e.design], i * 20 + 12);
-    f.set([e.dsize, e.variant, 0, 0], i * 20 + 16);
-    u.set([e.h[0], e.h[1], e.h[2], (e.dark ? 1 : 0) | (e.cement ? 2 : 0)], i * 4);
+    f.set([e.dsize, e.variant, e.dp[0], e.dp[1]], i * 20 + 16);
+    u.set([e.h[0], e.h[1], e.h[2], (e.dark ? 1 : 0) | (e.cement ? 2 : 0) | (e.mid ? 4 : 0)], i * 4);
   });
   return { f, u, n };
 }

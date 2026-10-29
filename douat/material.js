@@ -18,12 +18,13 @@ uniform vec2 uOrigin;           // layout grid, for the chalk lines on the bed
 uniform uint uSeed;
 // One row per baked stone. uSlotF texels: 0-2 polygon vertices (two per texel, mm, about the
 // stone's centre, already inset for the joint and corner radius), 3: vertex count, corner radius,
-// slot span in mm, design; 4: design size, design variant. uSlotU: hash xyz, flags (1 dark, 2 cement).
+// slot span in mm, design; 4: design size, design variant, two design widths.
+// uSlotU: hash xyz, flags (1 dark, 2 cement, 4 middle stone).
 uniform sampler2D uSlotF;
 uniform highp usampler2D uSlotU;
-uniform vec3 uCementA, uCementB, uCementBody;   // cement tiles: ground pigment, figure pigment, body
+uniform vec3 uCementA, uCementB, uCementC, uCementBody;   // cement tiles: ground, figure, third pigment, body
 
-uniform vec3 uDarkAlb, uLightAlb, uBedAlb, uFillAlb;
+uniform vec3 uDarkAlb, uLightAlb, uMidAlb, uBedAlb, uFillAlb;
 uniform vec4 uDarkP;            // tone spread, haze, fossils, calcite veins
 uniform vec4 uLightP;           // tone spread, erosion share, erosion strength, crack share
 uniform vec4 uMisc;             // fill depth mm, edge radius scale, edge grime, scratches
@@ -136,8 +137,8 @@ float sdTri(vec2 p, vec2 p0, vec2 p1, vec2 p2) {
 
 // ---------------------------------------------------------------- stones
 struct Stone {
-  uvec3 h; bool dark; bool cement; int nv; vec2 v[6]; float rc; vec2 cen;
-  int design; float dsize; float variant;
+  uvec3 h; bool dark; bool cement; bool mid; int nv; vec2 v[6]; float rc; vec2 cen;
+  int design; float dsize; float variant; vec2 dp;
   float dish; float re; float chip; float eros; float ang;
 };
 
@@ -147,6 +148,7 @@ Stone makeStone(int slot) {
   s.h = u.xyz;
   s.dark = (u.w & 1u) != 0u;
   s.cement = (u.w & 2u) != 0u;
+  s.mid = (u.w & 4u) != 0u;
   vec4 t0 = texelFetch(uSlotF, ivec2(0, slot), 0);
   vec4 t1 = texelFetch(uSlotF, ivec2(1, slot), 0);
   vec4 t2 = texelFetch(uSlotF, ivec2(2, slot), 0);
@@ -158,6 +160,7 @@ Stone makeStone(int slot) {
   s.design = int(t3.w + 0.5);
   s.dsize = t4.x;
   s.variant = t4.y;
+  s.dp = t4.zw;
   s.cen = vec2(0.0);
   vec3 r1 = vec3(s.h) * INV32;
   vec3 r2 = hrnd(s.h, 0x68e31da4u);
@@ -306,7 +309,7 @@ vec3 stoneAlbedo(Stone s, vec2 tq, float fp, float d, float detail, float pit, o
     a *= 1.0 - 0.40 * dkk * (0.3 + r2.z);
     a *= exp(0.7 * n0) * (1.0 + 0.30 * n3) * (1.0 + 0.5 * n4);
   } else {
-    a = uLightAlb * exp(tone * uLightP.x) * vec3(1.0 + hue * 0.05, 1.0, 1.0 - hue * 0.16);
+    a = (s.mid ? uMidAlb : uLightAlb) * exp(tone * uLightP.x) * vec3(1.0 + hue * 0.05, 1.0, 1.0 - hue * 0.16);
     a *= exp(0.18 * n0) * (1.0 + 0.14 * n2);
     a = mix(a, a * vec3(1.0, 0.90, 0.74), smoothstep(0.1, 0.6, n3) * (0.15 + 0.6 * r2.x * r2.x));
     a = mix(a, a * vec3(0.86, 0.87, 0.88), smoothstep(0.15, 0.6, n4) * 0.6 * r2.y);
@@ -445,34 +448,59 @@ vec3 shade(vec3 alb, vec3 n, vec3 V, float rough, float shadow, float ao, vec2 p
 }
 
 // ---------------------------------------------------------------- cement tiles
-// Design 1: Smith's quarter circles, discs at the top-left and bottom-right corners.
-// Design 2: hexagon with three arcs round alternate corners, drawn as a band.
-// The pigments were poured against a brass divider, so the border wanders and bleeds a little.
-float designMask(Stone s, vec2 q, float fp) {
+// The figure of a tile in its own frame. x: where the second pigment lies, y: the third.
+// Fields (negative distance inside the figure):
+//   1  Smith's quarter circles: discs in two opposite corners
+//   5  one round corner and one straight one (half Smith, half Truchet)
+//   3  hexagon: discs at alternate corners
+// Bands (distance to a centre line):
+//   2  hexagon: three arcs round alternate corners
+//   4  square: two arcs round opposite corners
+//   6  rhomb: Penrose's two arcs, round (−size, 0) and (size, 0), or on the y axis for
+//      variant 1; radii dp.x (second pigment) and |dp.y| (third, or second if negative)
+// The variant prints the tile the other way round. dp.x outlines a field in the third pigment,
+// or is the width of a square's band; dp.y runs a line of the third pigment along a band.
+// The pigments were poured against a brass divider, so borders wander and bleed a little.
+vec2 designMask(Stone s, vec2 q, float fp) {
   float wob = 0.4 * gnoise(q / 4.0, s.h.x + 61u) + 0.06 * gnoise(q / 1.3, s.h.x + 67u);
   float e = max(fp, 0.15) + 0.4;
-  if (s.design == 1) {
-    float h = s.dsize;
-    float dd = min(length(q - vec2(-h)), length(q - vec2(h))) - h + wob;
-    float disc = smoothstep(e, -e, dd);
-    return s.variant > 0.5 ? 1.0 - disc : disc;
+  float h = s.dsize;
+  float fig = 1e9, band = 1e9, hw = 0.0;
+  if (s.design == 6) {
+    vec2 ax = s.variant > 0.5 ? vec2(0.0, h) : vec2(h, 0.0);
+    float m1 = smoothstep(e, -e, abs(length(q + ax) - s.dp.x) - 8.5 + wob);
+    float m2 = smoothstep(e, -e, abs(length(q - ax) - abs(s.dp.y)) - 8.5 + wob);
+    return s.dp.y < 0.0 ? vec2(max(m1, m2), 0.0) : vec2(m1, m2);
   }
-  if (s.design == 2) {
-    float a = s.dsize;
-    float dd = 1e9;
+  if (s.design == 1) fig = min(length(q - vec2(-h)), length(q - vec2(h))) - h;
+  else if (s.design == 5) fig = min(length(q - vec2(-h)) - h, (h - q.x - q.y) * 0.70710678);
+  else if (s.design == 4) { band = min(abs(length(q - vec2(-h)) - h), abs(length(q - vec2(h)) - h)); hw = s.dp.x * 0.5; }
+  else {
     for (int k = 0; k < 3 * uLoop; k++) {
       float ang = float(k) * 2.0943951;
-      dd = min(dd, abs(length(q - a * vec2(cos(ang), sin(ang))) - a * 0.5));
+      float r = length(q - h * vec2(cos(ang), sin(ang)));
+      fig = min(fig, r - h * 0.5);
+      band = min(band, abs(r - h * 0.5));
     }
-    return smoothstep(e, -e, dd - a * 0.15 + wob);
+    if (s.design == 2) { fig = 1e9; hw = h * 0.15; } else band = 1e9;
   }
-  return 0.0;
+  float m, m3 = 0.0;
+  if (fig < 1e8) {
+    m = smoothstep(e, -e, fig + wob);
+    if (s.dp.x > 0.0) m3 = smoothstep(e, -e, abs(fig + wob) - s.dp.x * 0.5);
+  } else {
+    m = smoothstep(e, -e, band - hw + wob);
+    if (s.dp.y > 0.0) m3 = smoothstep(e, -e, band - s.dp.y * 0.5 + 0.5 * wob);
+  }
+  if (s.variant > 0.5) m = 1.0 - m;
+  return vec2(m, m3);
 }
 
 vec3 cementAlbedo(Stone s, vec2 q, vec2 tq, float fp, float d, float detail, float pit, out float rough) {
   uint sd = s.h.z;
   vec3 r = hrnd(s.h, 11u), r2 = hrnd(s.h, 29u);
-  float m = designMask(s, q, fp);
+  vec2 mm = designMask(s, q, fp);
+  float m = mm.x;
   // every tile its own batch and its own century: some lay under furniture, some by the door
   float age = 0.3 + 0.7 * r2.x;
   vec3 ga = uCementA * exp((r.x - 0.5) * 0.22) * mix(vec3(1.0), vec3(1.0, 0.97, 0.91), r2.y * age);
@@ -486,12 +514,14 @@ vec3 cementAlbedo(Stone s, vec2 q, vec2 tq, float fp, float d, float detail, flo
   // the ground takes up grime there
   float worn = smoothstep(0.0, 0.8, fbm(tq / 55.0 + 9.0, sd + 9u, 4, fp / 55.0)) * age;
   gb = mix(gb, mix(gb, uCementBody * 0.6, 0.5), worn);
+  vec3 gc = uCementC * exp((r2.y - 0.5) * 0.3) * (1.0 + 0.2 * cl + 0.1 * fine);
+  gc = mix(gc, mix(gc, uCementBody * 0.6, 0.45), worn);
   ga = mix(ga, ga * vec3(0.92, 0.9, 0.86), worn * 0.6);
   float pd;
   float grains = dots(tq, 2.2, 0.22, 0.12, 0.45, sd + 23u, fp, pd);   // marble dust in the face layer
   gb = mix(gb, gb * 2.2 + vec3(0.03), grains * 0.6);
   ga *= 1.0 - 0.12 * grains;
-  vec3 a = mix(ga, gb, m);
+  vec3 a = mix(mix(ga, gb, m), gc, mm.y);
   float sc = scratches(tq, 26.0, (0.3 + 0.5 * age) * uMisc.w, 40.0, 0.1, sd + 59u, fp);
   a = mix(a, a * 1.6 + vec3(0.015), sc * 0.5 * m);
   a *= 1.0 - 0.18 * sc * (1.0 - m);

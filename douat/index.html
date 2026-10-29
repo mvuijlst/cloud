@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#000000">
-  <meta name="description" content="A stone floor laid one stone at a time, in Douat's diagonally halved squares.">
+  <meta name="description" content="A floor of stone or cement tiles laid one at a time, in Truchet's and Douat's patterns and their relatives.">
   <title>douat · floor</title>
   <style>
     @font-face { font-family: 'IBMPlexMono'; src: url('../IBMPlexMono-Regular.ttf'); }
@@ -61,6 +61,17 @@
     #panel a { color: #e8e4dc; }
     #panel :focus-visible { outline: 2px solid #e8e4dc; outline-offset: 1px; }
 
+    #record { margin: 10px 0 8px; }
+    #record summary { cursor: pointer; color: #a9a49b; padding: 6px 0; }
+    #record .count { color: #a9a49b; font-size: 12px; margin: 4px 0; }
+    #record ol { list-style: none; margin: 0; padding: 0; }
+    #record li button {
+      width: 100%; min-height: 36px; padding: 4px 8px; border: 0; border-radius: 4px;
+      background: transparent; text-align: left; font-size: 12px; cursor: pointer;
+    }
+    #record li button:hover { background: rgba(255, 255, 255, 0.07); }
+    #record li button[aria-current="true"] { color: #a9a49b; }
+
     #status { position: fixed; inset: 0; display: grid; place-items: center; color: #a9a49b; pointer-events: none; }
     #status[hidden] { display: none; }
   </style>
@@ -102,8 +113,11 @@
         <option value="">Any, drawn per floor</option>
         <option value="douat">Half squares, stone</option>
         <option value="smith">Quarter circles, cement</option>
+        <option value="loops">Truchet arcs, cement</option>
         <option value="hex">Hexagons, cement</option>
+        <option value="cubes">Cubes, three stones</option>
         <option value="penrose">Penrose rhombs, stone</option>
+        <option value="arcs">Penrose arcs, cement</option>
       </select>
     </div>
     <div class="row">
@@ -127,6 +141,11 @@
       <button id="again" type="button" class="wide">Another floor</button>
       <button id="full" type="button" class="wide">Full screen</button>
     </div>
+    <details id="record">
+      <summary>Floors so far</summary>
+      <p class="count" id="count"></p>
+      <ol id="recent" aria-label="Recent floors, newest first; choose one to lay it again"></ol>
+    </details>
     <p class="keys">Drag to turn the view, pinch or wheel to zoom, two fingers or right-drag to move it.<span class="keyhelp"> Keys: n new floor, space pause, 1–5 speed, r reset view, f full screen.</span></p>
     <p class="foot"><a href="../">cloud</a> · <a href="NOTES.md">notes</a></p>
   </section>

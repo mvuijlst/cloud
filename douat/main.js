@@ -1,8 +1,8 @@
 import { Renderer } from './render.js';
 import { makeView, Orbit } from './camera.js';
 import { mulberry32, LETTERS } from './pattern.js';
-import { pickMaterial, daylight } from './materials.js';
-import { buildTiling, pickTiling, TILINGS } from './tilings.js';
+import { MATERIALS, daylight } from './materials.js';
+import { buildTiling, TILINGS } from './tilings.js';
 import { buildPool } from './geometry.js';
 
 const qs = new URLSearchParams(location.search);
@@ -41,7 +41,10 @@ const opts = {
   cells: +qs.get('cells') || 0,
   material: qs.get('material') || store.get('stones') || null,
   tiles: qs.get('tiles') || store.get('tiles') || null,
-  hold: (+qs.get('hold') || 75),
+  // pick=name,name: take these wherever they are among the choices (a design, rule or shape)
+  pick: qs.get('pick') ? qs.get('pick').split(',').map(x => x.trim()) : null,
+  // seconds a finished floor stays without anyone touching the screen
+  hold: (+qs.get('hold') || 120),
   // freeze=n,u: lay stones before n at once, then hold stone n at fraction u of its flight
   freeze: qs.get('freeze') ? qs.get('freeze').split(',').map(Number) : null,
   // view=yaw,pitch,dist (degrees, degrees, fraction of the default distance)
@@ -52,6 +55,42 @@ const opts = {
   spin: qs.has('spin') ? +qs.get('spin') : (store.get('turning') === '0' ? 0 : 3),
 };
 let seed = qs.has('seed') ? (+qs.get('seed') >>> 0) : (Math.random() * 2 ** 32) >>> 0;
+
+// The record of floors shown in this browser: when, which seed, and every choice made for it
+// (tiling, material, and the tiling's own design, rule or shape). New floors lean away from
+// recent choices; a floor named by its seed in the address comes out the same regardless.
+const HISTORY_MAX = 500;
+let history = [];
+try { history = JSON.parse(localStorage.getItem('douat.history') || '[]').filter(e => e && e.c && e.c.kind); } catch { history = []; }
+const repeatable = qs.has('seed');
+function saveHistory() {
+  try { localStorage.setItem('douat.history', JSON.stringify(history)); } catch { /* private window */ }
+}
+// 1 for a choice not made lately, about 0.2 for one made on the floor just shown
+function freshness(key, value) {
+  if (repeatable) return 1;
+  let r = 0;
+  for (let i = history.length - 1, n = 0; i >= 0 && n < 30; i--, n++) if (history[i].c[key] === value) r += Math.pow(0.75, n);
+  return Math.exp(-1.6 * r);
+}
+// A weighted draw that always takes exactly one random number, so that a floor replays from
+// its seed and its recorded choices.
+function makeChooser(rng, forced, made) {
+  return (key, options) => {
+    const u = rng();
+    let i = forced ? options.findIndex(o => o[0] === forced[key]) : -1;
+    if (i < 0 && opts.pick) i = options.findIndex(o => opts.pick.includes(o[0]));
+    if (i < 0) {
+      const w = options.map(([v, wt]) => wt * freshness(key, v));
+      let x = u * w.reduce((a, b) => a + b, 0);
+      i = 0;
+      while (i < w.length - 1 && (x -= w[i]) > 0) i++;
+    }
+    made[key] = options[i][0];
+    return i;
+  };
+}
+const familyOf = id => id ? (id.startsWith('cement') ? 'cement' : 'stone') : null;
 
 let floor = null;      // current floor description
 let run = null;        // laying state
@@ -65,18 +104,23 @@ function size() {
   return { w, h, dpr };
 }
 
-function newFloor(s) {
+function newFloor(s, replay = null) {
   seed = s >>> 0;
   const rng = mulberry32(seed);
   const { w, h, dpr } = size();
   const across = opts.cells || Math.max(5, Math.min(14, Math.round(w / dpr / 165)));
   const view = makeView(w, h, { pitch: PITCH, thick: THICK, cellsAcross: across, fovY: FOV });
-  const fam = opts.material ? (opts.material.startsWith('cement') ? 'cement' : 'stone') : null;
-  let kind = pickTiling(rng, opts.tiles);
-  for (let k = 0; !opts.tiles && fam && TILINGS[kind].family !== fam && k < 20; k++) kind = pickTiling(rng, null);
-  const material = pickMaterial(rng, opts.material, TILINGS[kind].family);
+  const made = {};
+  const choose = makeChooser(rng, replay && replay.c, made);
+  // the tiling, then a material of its family: as set in the panel, or drawn
+  const fam = familyOf(opts.material);
+  const kinds = Object.keys(TILINGS).filter(k => replay || (opts.tiles && TILINGS[opts.tiles] ? k === opts.tiles : !fam || TILINGS[k].family === fam));
+  const kind = kinds[choose('kind', kinds.map(k => [k, TILINGS[k].weight]))];
+  const fits = MATERIALS.filter(m => m.family === TILINGS[kind].family);
+  const mats = !replay && fits.some(m => m.id === opts.material) ? fits.filter(m => m.id === opts.material) : fits;
+  const material = mats[choose('material', mats.map(m => [m.id, m.weight]))];
   const sun = daylight(rng);
-  const tiling = buildTiling(kind, rng, view);
+  const tiling = buildTiling(kind, rng, view, choose);
   // every stone takes one of a pool of baked stones of its class
   const pool = buildPool(tiling, material, seed, renderer.lowPower ? 32 : 56);
   pool.slotOf = pool.entries.map((_, i) => i);
@@ -84,7 +128,8 @@ function newFloor(s) {
     const list = pool.byClass[st.cls];
     st.entry = list[Math.floor(rng() * list.length)];
   }
-  floor = { seed, view, material, sun, tiling, stones: tiling.stones, pool };
+  floor = { seed, view, material, sun, tiling, stones: tiling.stones, pool, choices: made };
+  record({ t: Date.now(), seed, c: made });
   renderer.setFloor(floor);
   renderer.fade = 0;
   renderer.setPointing(opts.still ? 1e9 : -1);
@@ -100,6 +145,43 @@ function newFloor(s) {
     holdFor: opts.still ? Infinity : opts.hold, pointMax: Math.hypot(rr[2] - rr[0], rr[3] - rr[1]) / 2 + 200,
   };
   describe();
+}
+
+function record(entry) {
+  const last = history[history.length - 1];
+  // a resize redraws the same floor: one entry
+  if (last && last.seed === entry.seed && last.c.kind === entry.c.kind) history[history.length - 1] = entry;
+  else history.push(entry);
+  if (history.length > HISTORY_MAX) history = history.slice(-HISTORY_MAX);
+  saveHistory();
+  showRecord();
+}
+
+function label(e) {
+  const k = e.c.kind;
+  const v = e.c[k + '.shape'] || e.c[k + '.design'] || e.c[k + '.rule'] || '';
+  const m = MATERIALS.find(x => x.id === e.c.material);
+  return [TILINGS[k] ? TILINGS[k].name : k, v, m ? m.short : ''].filter(Boolean).join(' · ');
+}
+
+function showRecord() {
+  const counts = {};
+  for (const e of history) counts[e.c.kind] = (counts[e.c.kind] || 0) + 1;
+  $('count').textContent = `${history.length} floor${history.length === 1 ? '' : 's'} so far: `
+    + Object.keys(TILINGS).filter(k => counts[k]).map(k => `${TILINGS[k].name} ${counts[k]}`).join(', ') + '.';
+  const ol = $('recent');
+  ol.textContent = '';
+  history.slice(-8).reverse().forEach((e, i) => {
+    const li = document.createElement('li');
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = label(e);
+    b.title = `Lay this floor again · seed ${e.seed} · ${new Date(e.t).toLocaleString()}`;
+    if (i === 0) b.setAttribute('aria-current', 'true');
+    b.addEventListener('click', () => newFloor(e.seed, e));
+    li.append(b);
+    ol.append(li);
+  });
 }
 
 function describe() {
@@ -226,6 +308,8 @@ function loop(now) {
 // ---------------------------------------------------------------- controls
 let hideTimer = 0;
 function wake() {
+  // anything done to the screen keeps a finished floor a while longer
+  if (run && run.phase === 'hold') run.t = 0;
   document.body.classList.add('awake');
   clearTimeout(hideTimer);
   hideTimer = setTimeout(() => document.body.classList.remove('awake'), 3000);
@@ -280,8 +364,8 @@ $('stones').addEventListener('change', e => {
   opts.material = e.target.value || null;
   store.set('stones', e.target.value);
   // a material from the other family brings tiles it suits
-  const fam = e.target.value.startsWith('cement') ? 'cement' : e.target.value ? 'stone' : null;
-  if (fam && opts.tiles && TILINGS[opts.tiles].family !== fam) { opts.tiles = null; $('tiles').value = ''; store.set('tiles', ''); }
+  const fam = familyOf(e.target.value);
+  if (fam && opts.tiles && TILINGS[opts.tiles] && TILINGS[opts.tiles].family !== fam) { opts.tiles = null; $('tiles').value = ''; store.set('tiles', ''); }
   another();
 });
 $('tiles').value = opts.tiles || '';
@@ -289,8 +373,8 @@ $('tiles').addEventListener('change', e => {
   opts.tiles = e.target.value || null;
   store.set('tiles', e.target.value);
   // tiles of the other family bring a material that suits them
-  const fam = opts.tiles && TILINGS[opts.tiles].family;
-  if (fam && opts.material && (opts.material.startsWith('cement') ? 'cement' : 'stone') !== fam) {
+  const fam = opts.tiles && TILINGS[opts.tiles] && TILINGS[opts.tiles].family;
+  if (fam && opts.material && familyOf(opts.material) !== fam) {
     opts.material = null; $('stones').value = ''; store.set('stones', '');
   }
   another();
@@ -319,7 +403,8 @@ $('spin').setAttribute('aria-pressed', String(opts.spin > 0));
 let resizeTimer = 0;
 window.addEventListener('resize', () => {
   clearTimeout(resizeTimer);
-  resizeTimer = setTimeout(() => newFloor(seed), 400);
+  // the same floor, drawn again for the new size
+  resizeTimer = setTimeout(() => newFloor(seed, floor && { c: floor.choices }), 400);
 });
 
 // A lost GPU context (driver reset, long sleep) takes every texture with it: start afresh.
@@ -331,7 +416,7 @@ requestAnimationFrame(loop);
 
 // for inspection from the console
 window.douat = {
-  get floor() { return floor; }, get run() { return run; }, renderer, orbit, newFloor, LETTERS,
+  get floor() { return floor; }, get run() { return run; }, get history() { return history; }, renderer, orbit, newFloor, LETTERS,
   // arguments for tools/measure_render.py, for the view from above (?photo)
   measureArgs() {
     const v = floor.view, px = renderer.H / (2 * Math.tan(v.fovY / 2) * v.dist);

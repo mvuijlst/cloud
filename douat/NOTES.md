@@ -1,6 +1,6 @@
 # douat · floor
 
-A screensaver page: a floor laid one stone or tile at a time. Each floor is one of four tilings: Douat's diagonally halved squares in stone, Smith's quarter circles in cement tiles, hexagonal cement tiles with arcs, or aperiodic Penrose rhombs in stone. It runs entirely in the browser and loads no images. The stones and mortar are generated procedurally in WebGL 2, then drawn as real 3D stones that can be viewed from any angle.
+A screensaver page: a floor laid one stone or tile at a time. Each floor is one of seven tilings: Douat's diagonally halved squares, cubes of rhombs in three stones and Penrose rhombs, all in stone; and Smith's quarter circles, Truchet's arcs, hexagons and Penrose's arcs, all in cement tiles. It runs entirely in the browser and loads no images. The stones and mortar are generated procedurally in WebGL 2, then drawn as real 3D stones that can be viewed from any angle.
 
 Open `/douat/` over HTTP, for example with the repository's `cloud-static` launch configuration: `http://localhost:8765/douat/`. ES modules do not load from `file://`.
 
@@ -12,7 +12,7 @@ The preparatory work is in `research/`: the feasibility study, protocol, plate a
 2. Stones are lowered into place one by one, about four a second at the default speed. Each is carried in from the unlaid side, 17 to 26 cm up and tilted 8 to 14° with its leading edge low. It is set down edge first and settles flat with a slight slide and twist. Its soft shadow sharpens as it comes down.
 3. When the pattern area is done, the floor keeps growing. Ring after ring is laid around it, clockwise, carrying the pattern outward, until the floor reaches the dark at the edge of the light. The open field goes a little faster than the pattern. At the default speed a floor takes about three minutes; at the slowest, about twelve.
 4. When the floor is complete, the joints are filled in a sweep out from the centre.
-5. The finished floor holds for 75 seconds, fades out, and a new floor begins with the next seed.
+5. The finished floor stays until nothing has been done to the screen for two minutes. Any input restarts the two minutes: a drag, a zoom, a key, the mouse moving. Then it fades out, and a new floor begins with the next seed.
 
 A mason's order is followed. Repeating designs go row by row from the far wall, or along the diagonal. Centred designs go out from the centre, as setting-out from the centre lines would require. In each square, the half that meets already-laid work goes down first.
 
@@ -20,12 +20,25 @@ The view starts zoomed out as far as it goes, seen from 48° above the horizon. 
 
 ## The tilings
 
-`tilings.js` builds each tiling as a list of stones, each with a class (its shape and design), a placement (a turn and possibly a mirror), and its place in the laying order. Douat's half squares come up twice as often as each of the others. The **Tiles** setting or `tiles=` fixes one.
+`tilings.js` builds each tiling as a list of stones, each with a class (its shape and design), a placement (a turn and possibly a mirror), and its place in the laying order. Each tiling makes its own choices of design, rule or shape; see "The record of floors" for how they are drawn. The **Tiles** setting or `tiles=` fixes one tiling.
 
 - **Douat's half squares**, in stone. Two triangular stones per 25 cm square, composed as below.
-- **Smith's quarter circles**, in cement tiles of 20 cm. Each tile has a quarter disc in two opposite corners. It comes in two printings, dark discs on light and the reverse. The printing follows from the tile's turn and the parity of its corner, so the colour fields always meet across edges and the arcs join into continuous shapes. Turns are either a fair coin per tile (45% of floors) or the low bit of a Douat composition from `pattern.js`.
-- **Hexagons with arcs**, in cement tiles 20 cm across the flats. Each tile carries a band of the second pigment along three arcs round alternate corners, so it has two orientations. The orientation follows one of five rules: at random, in rings round the centre, in columns, one in three alike, or in diagonal bands. The bands join into loops and trefoils.
+- **Smith's quarter circles**, in cement tiles of 20 cm. Each tile has a quarter disc in two opposite corners. It comes in two printings, dark discs on light and the reverse. The printing follows from the tile's turn and the parity of its corner, so the colour fields always meet across edges and the arcs join into continuous shapes. Turns are a fair coin per tile or a Douat composition from `pattern.js`. Three designs:
+  - plain discs;
+  - discs outlined in a third pigment;
+  - one round corner and one straight one, half Smith and half Truchet. This tile has a single mirror line, so it has four orientations instead of two and carries Douat's four-state compositions in full. Walter, Ligler and Gürsoy's Truchet tile grammar (2024) points out that lowering the symmetry multiplies the distinct neighbour pairs.
+- **Truchet's arcs**, in cement tiles of 20 cm: two quarter-circle bands round opposite corners, so lines run on through every tile and close into loops and meanders. The bands are plain or carry a centre line in a third pigment, on a light or a dark ground. Turns are at random, by a Douat composition, in circles, or in waves.
+- **Hexagons**, in cement tiles 20 cm across the flats, with three arcs round alternate corners, so each has two orientations. Four designs:
+  - the arcs as bands, plain or with a centre line;
+  - the arcs as the edges of colour fields, the hexagonal form of Smith's tile, plain or outlined. Tiles turned a sixth are printed the other way round. That keeps one class of the honeycomb's corners dark and the other light, so the fields meet across every edge.
+
+  The orientation follows one of five rules: at random, in rings round the centre, in columns, one in three alike, or in diagonal bands.
+- **Cubes**, in stone: rhombs of 60° with 16 cm edges, in light, middle and dark stone by the way they face, so the floor reads as a surface of cubes. Four shapes:
+  - **Blocks** splits each hexagon of a lattice into three rhombs, one of two ways, a cube or a hollow: a Truchet tile on the hexagon. The hexagon rules above apply, plus all cubes, the classic tumbling blocks.
+  - **A random pile** is a stack of cubes in a corner drawn uniformly at random. It comes from 12·n⁴ moves of single cubes in an n × n × n box, from a half-full start, in about 0.1 s for the usual n of 25. Its middle is disordered, and towards the corners of the hexagon it freezes into flat walls: the arctic circle of Cohn, Larsen and Propp.
+  - **Terraces** and **stairs** are stacks shaped by two random staircases, taking the smaller or the sum of the two.
 - **Penrose rhombs**, in stone with 19 cm edges. The P3 tiling comes from repeated deflation of Robinson triangles, paired into thick and thin rhombs. It never repeats. On seven floors in ten the thick rhombs are bluestone and the thin ones limestone; otherwise the reverse. They are laid out from the centre.
+- **Penrose's arcs**, the same rhombs as cement tiles. Each carries Penrose's two arcs round the two ends of the triangles' shared edge. Those are the sharp corners of a thick rhomb and the blunt corners of a thin one. The radii were not taken from a picture: every candidate was tested against all 2,210 shared edges of a large patch, and the chosen one matches on all of them. The arcs round one end are 0.78 of an edge on thick rhombs and 0.22 on thin ones. Those round the other end are 0.24 on both. The first family winds into long curves and closed loops that never repeat; the second closes into rings round one class of corners. The arcs are in two pigments, or in one.
 
 ## Douat's designs
 
@@ -51,14 +64,16 @@ Each square is two stones: a triangle of dark bluestone and one of cream limesto
 
 ### Cement tiles
 
-Smith and hexagon floors use encaustic cement tiles: a pigmented face layer pressed onto a grey concrete body. They are modelled as old floors, not new stock.
+Smith, Truchet arc, hexagon and Penrose arc floors use encaustic cement tiles: a pigmented face layer pressed onto a grey concrete body. They are modelled as old floors, not new stock.
 
 - **Face.** Honed flat with fine pores and dirt-filled pinholes. The pigment is cloudy, the darker one more so. Marble dust shows as specks in the face layer.
-- **Figure.** The border between pigments wanders gently and bleeds a little, as poured pigment does.
+- **Figure.** The border between pigments wanders gently and bleeds a little, as poured pigment does. A third pigment draws outlines and centre lines, and Penrose's second arcs.
 - **Age.** Each tile has its own age. Traffic thins the face in drifts, where the figure greys towards the body and the ground takes up grime. The ground yellows from tile to tile. A few tiles carry a soft old stain. Scratches, edge grime and chips that show the grey body all grow with age.
 - **Laying.** Pressed tiles sit truer than hand-cut stone: offsets, turn, lippage and tilt are about a third of the stone values, with tight 1.6 mm joints in dirty grey grout.
 
-Four cement pairings exist: black and white, oxblood and cream, slate blue and white, ochre and black.
+Four cement palettes exist: black and white with red, oxblood and cream with black, slate blue and white with ochre, ochre and black with cream.
+
+The cube floors need a third stone. Each stone pairing has a middle one, a grey limestone drawn with the limestone model in its own colour.
 
 Three stone pairings are drawn at random per floor (`materials.js`):
 
@@ -95,6 +110,7 @@ The cog at the top right opens the settings; it shows when the mouse moves or th
 - **Pause**, **turning** of the view on or off, and **reset view**.
 - **Tiles:** any tiling drawn per floor, or one fixed tiling.
 - **Material:** any that suits the tiles, or one fixed stone or cement pairing. Choosing tiles or a material from the other family resets the other choice to any. Changing either starts a new floor.
+- **Floors so far:** how many floors this browser has shown, by tiling, and the last eight. Choosing one lays it again.
 - **Another floor** and **full screen** (where the browser allows it).
 
 Speed, turning, tiles and material are remembered in the browser. With a mouse: drag to turn and tilt, wheel to zoom, right-drag or shift-drag to move, double-click to reset. On a touch screen: drag, pinch, two fingers to move. Keys: `n` new floor, `space` pause, `1` to `5` speed, `r` reset view, `f` full screen, `Esc` closes the panel.
@@ -104,8 +120,9 @@ URL parameters:
 - `seed=n` repeats a floor; the next floor uses `n+1`.
 - `still` shows the finished floor at once.
 - `speed=x` multiplies the laying speed directly, overriding the speed setting (step 3 is `speed=4`).
-- `hold=s` sets how long a finished floor stays, in seconds.
-- `tiles=douat|smith|hex|penrose` fixes the tiling.
+- `hold=s` sets how long a finished floor stays without input, in seconds (120 by default).
+- `tiles=douat|smith|loops|hex|cubes|penrose|arcs` fixes the tiling.
+- `pick=name,name` takes these wherever they appear among a floor's choices, for example `tiles=cubes&pick=a random pile` or `tiles=smith&pick=round and straight corners,by Douat's rule`.
 - `material=reclaimed|petit-granit|lime|cement-black|cement-oxblood|cement-blue|cement-ochre` fixes the pairing; one that does not suit the tiles is replaced by one that does.
 - `cells=n` sets the number of squares across the first, patterned area.
 - `view=yaw,pitch,distance` sets the starting view in degrees and as a fraction of the starting distance, for example `view=60,35,0.5`.
@@ -113,6 +130,14 @@ URL parameters:
 - `photo` starts straight down, at the framing of a photograph of the floor, without turning. The measurements below use it.
 - `low` uses smaller textures and shadow maps; touch devices do this by themselves.
 - `freeze=n,u` lays stones before `n` at once, then holds stone `n` at fraction `u` of its flight. It is for inspecting the animation.
+
+## The record of floors
+
+Every floor shown is recorded in this browser's local storage: when, its seed, and each choice made for it. The record holds the tiling, the material, and the tiling's own design, rule, shape, printing or colours. Up to 500 floors are kept.
+
+Each choice is a weighted draw. A choice made on recent floors has its weight cut by a factor of e^(−1.6·r), where r sums 0.75^n over the floors n back that made it. The floor just shown counts 1, so its choice drops to about a fifth. Forty floors in a row from a clear record covered all seven tilings, with two back-to-back repeats, and the first seven were all different.
+
+Every draw takes exactly one random number, whatever the record says. A floor is therefore fully given by its seed and its recorded choices, and choosing it in the panel lays it again exactly. A floor named by `seed=` in the address ignores the record, so that it comes out the same everywhere.
 
 ## How it is drawn
 
@@ -130,6 +155,6 @@ URL parameters:
 ## Not done yet
 
 - Floor-wide traffic wear: worn paths that develop after the floor is laid. Wear is currently per stone, as in a relaid reclaimed floor.
-- More tile designs. The renderer takes any convex polygon with up to six corners and any design drawn in the tile's own frame. Candidates: three-pigment cement tiles, Smith tiles with lower symmetry, arcs on Penrose rhombs, Cairo pentagons.
+- More tile designs. The renderer takes any convex polygon with up to six corners and any design drawn in the tile's own frame. Candidates: Cairo pentagons, as in the streets of Cairo, and hats or spectres, the aperiodic monotiles of 2023. Those are not convex, which the outline offsetting and the top mesh assume.
 - Light that follows the time of day.
 - Very close views go soft: the atlas holds about 0.8 mm per texel.
