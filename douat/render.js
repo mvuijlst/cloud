@@ -2,7 +2,7 @@
 // textures; each frame then draws real stones (tops and sides) with sun shadows.
 import { QUAD_VS, BAKE_STONE_FS, BAKE_BED_FS, STONE_VS, STONE_FS, GROUND_VS, GROUND_FS, DEPTH_FS } from './shaders.js';
 import { makeRndBytes, Rnd, RND_N } from './stonelib.js';
-import { atlasLayout, buildStones, buildGround, slotTables, FLOATS } from './geometry.js';
+import { atlasLayout, buildStones, buildGround, slotTables, FLOATS, SLOT_TEXELS } from './geometry.js';
 import { sunView, ortho } from './camera.js';
 
 const U = {
@@ -158,8 +158,8 @@ export class Renderer {
     // the baked-stone table: polygon, sizes, design (floats) and hash, flags (uints) per slot
     const tab = slotTables(floor.pool);
     gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
-    this.slotF = this.own('t', this.texture(5, tab.n, gl.RGBA32F, 1, gl.NEAREST, gl.NEAREST));
-    gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 5, tab.n, gl.RGBA, gl.FLOAT, tab.f);
+    this.slotF = this.own('t', this.texture(SLOT_TEXELS, tab.n, gl.RGBA32F, 1, gl.NEAREST, gl.NEAREST));
+    gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, SLOT_TEXELS, tab.n, gl.RGBA, gl.FLOAT, tab.f);
     this.slotU = this.own('t', this.texture(1, tab.n, gl.RGBA32UI, 1, gl.NEAREST, gl.NEAREST));
     gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 1, tab.n, gl.RGBA_INTEGER, gl.UNSIGNED_INT, tab.u);
     const cem = m.cement || { a: [200, 190, 175], b: [60, 60, 62], c: [120, 62, 50], body: [140, 138, 132] };

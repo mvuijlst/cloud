@@ -360,17 +360,22 @@ function cubes(rng, view, choose) {
 // Robinson triangles subdivided from a sun of ten (Preshing's formulation); each pair
 // that shares its base edge BC is one rhomb, thick (72°) or thin (36°).
 //
-// With arcs: Penrose's own decoration, two arcs per rhomb round the two ends of BC (the sharp
-// corners of a thick rhomb, the blunt ones of a thin). The radii were found by testing every
-// candidate against all shared edges of a large patch (2,210 edges, none unmatched): the arcs
-// round B are ρ on thick rhombs and 1 − ρ on thin ones, those round C have one radius σ.
-// They join into curves that never repeat; this is the aperiodic Truchet tile.
-const ARC_RHO = 0.78, ARC_SIGMA = 0.24;
+// With arcs: Penrose's own decoration, two families of arcs round the two ends of BC (the
+// sharp corners of a thick rhomb, the blunt ones of a thin). What joins across every edge was
+// found by testing candidates against all shared edges of a large patch (2,210 edges):
+//  - the arcs round B are ρ on thick rhombs and 1 − ρ on thin ones, for any ρ: across an edge
+//    between a thick and a thin rhomb, B sits at opposite ends;
+//  - the arcs round C have one radius σ, any σ: every rhomb at such a corner has its C there,
+//    so these close into rings, and may as well be filled discs;
+//  - no colour field bounded by the B arcs joins everywhere, so that family stays lines.
+// Line widths, double lines, inks and the size of the rhombs are free. The B lines wind into
+// curves that never repeat; this is the aperiodic Truchet tile.
 
 function penroseArcs(rng, view, choose) { return penrose(rng, view, choose, true); }
 
 function penrose(rng, view, choose, arcs = false) {
-  const E = 190;                                        // rhomb edge, mm
+  // rhomb edge, mm
+  const E = arcs ? 10 * parseInt(name(choose, 'size', [['16 cm', 1], ['19 cm', 2], ['22 cm', 1]]), 10) : 190;
   const phi = (1 + Math.sqrt(5)) / 2;
   const room = view.roomRect;
   const R = Math.hypot(Math.max(-room[0], room[2]), Math.max(-room[1], room[3]));
@@ -412,7 +417,9 @@ function penrose(rng, view, choose, arcs = false) {
     if (halves.has(k)) halves.get(k).push(t); else halves.set(k, [t]);
   }
   const thickDark = arcs ? false : name(choose, 'colours', [['thick rhombs dark', 7], ['thin rhombs dark', 3]]) === 'thick rhombs dark';
-  const inks = arcs ? name(choose, 'design', [['arcs in two colours', 3], ['arcs in one colour', 1]]) : '';
+  const lines = arcs ? name(choose, 'design', [['single lines', 3], ['double lines', 2]]) : '';
+  const corners = arcs ? name(choose, 'corners', [['rings', 3], ['double rings', 1], ['dots', 2], ['dots in rings', 1], ['nothing', 1]]) : '';
+  const inks = arcs ? name(choose, 'inks', [['two colours', 3], ['two colours swapped', 2], ['one colour', 1], ['a dark ground', 1]]) : '';
   const stones = [];
   let nThick = 0, nThin = 0;
   for (const pair of halves.values()) {
@@ -441,15 +448,38 @@ function penrose(rng, view, choose, arcs = false) {
   };
   stones.sort(byDistance);
   if (arcs) {
-    const one = inks === 'arcs in one colour' ? -1 : 1;
+    // widths and radii, drawn until everything fits: the B lines inside the rhomb's height and
+    // clear of the C figure across the thin rhomb's short diagonal
+    const hwB = 5 + 6 * rng(), hwC = 4 + 6 * rng();
+    const extB = lines === 'double lines' ? 2 * hwB + 3 : hwB;
+    const cOuter = { rings: hwC, 'double rings': 2 * hwC + 3, dots: 0, 'dots in rings': hwC, nothing: 0 }[corners];
+    const cMin = { rings: hwC + 5, 'double rings': 2 * hwC + 8, dots: 18, 'dots in rings': hwC + 16, nothing: 0 }[corners];
+    const deg = Math.PI / 180;
+    const Dthin = 2 * E * Math.sin(18 * deg), Hthin = E * Math.sin(36 * deg), Hthick = E * Math.sin(72 * deg);
+    let rho = 0, sigma = 0, fig = corners;
+    for (let t = 0; t < 200 && !rho; t++) {
+      const r = 0.52 + 0.36 * rng(), u = rng();
+      const bThin = (1 - r) * E;
+      if (bThin - extB < 5 || r * E + extB > Hthick - 4 || bThin + extB > Hthin - 4) continue;
+      const cMax = Math.min(Dthin - 8 - (bThin + extB), Hthin - 4) - cOuter;
+      if (corners !== 'nothing' && cMax <= cMin) continue;
+      rho = r;
+      sigma = corners === 'nothing' ? 0 : cMin + (cMax - cMin) * u;
+    }
+    // nothing fitted (rare, with wide double lines on small rhombs): lines alone, mid-sized
+    if (!rho) { rho = 0.7; fig = 'nothing'; }
+    const style = (lines === 'double lines' ? 2 : 1) + 4 * ['rings', 'double rings', 'dots', 'dots in rings', 'nothing'].indexOf(fig);
+    const ink = ['two colours', 'two colours swapped', 'one colour', 'a dark ground'].indexOf(inks);
+    const d2 = [hwB, hwC, style, ink];
+    const what = `${lines}${fig === 'nothing' ? '' : ' and ' + fig}`;
     return {
       classes: {
-        thick: { poly: rhomb(72 * Math.PI / 180), cement: true, design: 6, dsize: E * Math.cos(36 * Math.PI / 180), variant: 0, dp: [ARC_RHO * E, one * ARC_SIGMA * E] },
-        thin: { poly: rhomb(36 * Math.PI / 180), cement: true, design: 6, dsize: E * Math.sin(18 * Math.PI / 180), variant: 1, dp: [(1 - ARC_RHO) * E, one * ARC_SIGMA * E] },
+        thick: { poly: rhomb(72 * deg), cement: true, design: 6, dsize: E * Math.cos(36 * deg), variant: 0, dp: [rho * E, sigma], d2 },
+        thin: { poly: rhomb(36 * deg), cement: true, design: 6, dsize: E * Math.sin(18 * deg), variant: 1, dp: [(1 - rho) * E, sigma], d2 },
       },
       stones,
-      describe: `Penrose rhombs with Penrose's ${inks}: ${nThick} thick and ${nThin} thin, the arcs joining into curves that never repeat`,
-      how: 'cement rhombs of 19 cm laid out from the centre',
+      describe: `Penrose's arcs as ${what}, ${inks === 'a dark ground' ? 'on' : 'in'} ${inks}: ${nThick} thick and ${nThin} thin rhombs, curves that never repeat`,
+      how: `cement rhombs of ${E / 10} cm laid out from the centre`,
     };
   }
   return {

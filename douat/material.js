@@ -18,7 +18,8 @@ uniform vec2 uOrigin;           // layout grid, for the chalk lines on the bed
 uniform uint uSeed;
 // One row per baked stone. uSlotF texels: 0-2 polygon vertices (two per texel, mm, about the
 // stone's centre, already inset for the joint and corner radius), 3: vertex count, corner radius,
-// slot span in mm, design; 4: design size, design variant, two design widths.
+// slot span in mm, design; 4: design size, design variant, two design widths; 5: four more
+// design parameters.
 // uSlotU: hash xyz, flags (1 dark, 2 cement, 4 middle stone).
 uniform sampler2D uSlotF;
 uniform highp usampler2D uSlotU;
@@ -138,7 +139,7 @@ float sdTri(vec2 p, vec2 p0, vec2 p1, vec2 p2) {
 // ---------------------------------------------------------------- stones
 struct Stone {
   uvec3 h; bool dark; bool cement; bool mid; int nv; vec2 v[6]; float rc; vec2 cen;
-  int design; float dsize; float variant; vec2 dp;
+  int design; float dsize; float variant; vec2 dp; vec4 d2;
   float dish; float re; float chip; float eros; float ang;
 };
 
@@ -161,6 +162,7 @@ Stone makeStone(int slot) {
   s.dsize = t4.x;
   s.variant = t4.y;
   s.dp = t4.zw;
+  s.d2 = texelFetch(uSlotF, ivec2(5, slot), 0);
   s.cen = vec2(0.0);
   vec3 r1 = vec3(s.h) * INV32;
   vec3 r2 = hrnd(s.h, 0x68e31da4u);
@@ -456,8 +458,10 @@ vec3 shade(vec3 alb, vec3 n, vec3 V, float rough, float shadow, float ao, vec2 p
 // Bands (distance to a centre line):
 //   2  hexagon: three arcs round alternate corners
 //   4  square: two arcs round opposite corners
-//   6  rhomb: Penrose's two arcs, round (−size, 0) and (size, 0), or on the y axis for
-//      variant 1; radii dp.x (second pigment) and |dp.y| (third, or second if negative)
+//   6  rhomb: Penrose's two families of arcs, round (−size, 0) and (size, 0), or on the y axis
+//      for variant 1, radii dp.x and dp.y. d2: half widths of the two families; style = lines
+//      (1 or 2) + 4 × the second family (0 ring, 1 double ring, 2 disc, 3 disc in a ring,
+//      4 none); inks (0 second and third pigment, 1 swapped, 2 one pigment, 3 dark ground)
 // The variant prints the tile the other way round. dp.x outlines a field in the third pigment,
 // or is the width of a square's band; dp.y runs a line of the third pigment along a band.
 // The pigments were poured against a brass divider, so borders wander and bleed a little.
@@ -468,9 +472,22 @@ vec2 designMask(Stone s, vec2 q, float fp) {
   float fig = 1e9, band = 1e9, hw = 0.0;
   if (s.design == 6) {
     vec2 ax = s.variant > 0.5 ? vec2(0.0, h) : vec2(h, 0.0);
-    float m1 = smoothstep(e, -e, abs(length(q + ax) - s.dp.x) - 8.5 + wob);
-    float m2 = smoothstep(e, -e, abs(length(q - ax) - abs(s.dp.y)) - 8.5 + wob);
-    return s.dp.y < 0.0 ? vec2(max(m1, m2), 0.0) : vec2(m1, m2);
+    float dB = length(q + ax) - s.dp.x, dC = length(q - ax) - s.dp.y;
+    float hb = s.d2.x, hc = s.d2.y;
+    int style = int(s.d2.z + 0.5), ink = int(s.d2.w + 0.5);
+    int cs = style / 4;
+    float ob = hb + 3.0, oc = hc + 3.0;
+    float bB = (style & 3) == 2 ? min(abs(dB - ob), abs(dB + ob)) : abs(dB);
+    float fB = smoothstep(e, -e, bB - hb + wob);
+    float fC = 0.0;
+    if (cs == 0) fC = smoothstep(e, -e, abs(dC) - hc + wob);
+    else if (cs == 1) fC = smoothstep(e, -e, min(abs(dC - oc), abs(dC + oc)) - hc + wob);
+    else if (cs == 2) fC = smoothstep(e, -e, dC + wob);
+    else if (cs == 3) fC = max(smoothstep(e, -e, abs(dC) - hc + wob), smoothstep(e, -e, dC + hc + 5.0 + wob));
+    if (ink == 1) return vec2(fC, fB);
+    if (ink == 2) return vec2(max(fB, fC), 0.0);
+    if (ink == 3) return vec2(1.0 - fB, fC);
+    return vec2(fB, fC);
   }
   if (s.design == 1) fig = min(length(q - vec2(-h)), length(q - vec2(h))) - h;
   else if (s.design == 5) fig = min(length(q - vec2(-h)) - h, (h - q.x - q.y) * 0.70710678);

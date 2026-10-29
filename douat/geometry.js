@@ -5,7 +5,8 @@ import { pcg3, offsetPoly } from './stonelib.js';
 
 // pos 3, normal 3, tangent 3, atlas uv 2, info 2 (unused; kind 0 top, 1 side, 2 mirrored top)
 export const FLOATS = 13;
-const MARGIN = 6;                // mm of empty slot around a stone's own extent
+const MARGIN = 6;
+export const SLOT_TEXELS = 6;    // floats per baked stone in the slot table, in RGBA texels                // mm of empty slot around a stone's own extent
 
 export function atlasLayout(slots, slotPx, maxSize) {
   let S = slotPx;
@@ -35,7 +36,7 @@ export function buildPool(tiling, material, seed, perClass) {
       byClass[name].push(entries.length);
       entries.push({
         cls: name, h, span, rc, cement,
-        dark: !!c.dark, mid: !!c.mid, design: c.design || 0, dsize: c.dsize || 0, variant: c.variant || 0, dp: c.dp || [0, 0],
+        dark: !!c.dark, mid: !!c.mid, design: c.design || 0, dsize: c.dsize || 0, variant: c.variant || 0, dp: c.dp || [0, 0], d2: c.d2 || [0, 0, 0, 0],
         poly: offsetPoly(c.poly, -(hj + rc)),
       });
     }
@@ -46,14 +47,15 @@ export function buildPool(tiling, material, seed, perClass) {
 // Per-slot tables for the bake shader: polygon, sizes and design as floats; hash and flags as uints.
 export function slotTables(pool) {
   const n = pool.entries.length;
-  const f = new Float32Array(n * 5 * 4), u = new Uint32Array(n * 4);
+  const f = new Float32Array(n * SLOT_TEXELS * 4), u = new Uint32Array(n * 4);
   pool.entries.forEach((e, i) => {
     for (let v = 0; v < 6; v++) {
       const p = e.poly[Math.min(v, e.poly.length - 1)];
-      f[i * 20 + v * 2] = p[0]; f[i * 20 + v * 2 + 1] = p[1];
+      f[i * SLOT_TEXELS * 4 + v * 2] = p[0]; f[i * SLOT_TEXELS * 4 + v * 2 + 1] = p[1];
     }
-    f.set([e.poly.length, e.rc, e.span, e.design], i * 20 + 12);
-    f.set([e.dsize, e.variant, e.dp[0], e.dp[1]], i * 20 + 16);
+    f.set([e.poly.length, e.rc, e.span, e.design], i * SLOT_TEXELS * 4 + 12);
+    f.set([e.dsize, e.variant, e.dp[0], e.dp[1]], i * SLOT_TEXELS * 4 + 16);
+    f.set(e.d2, i * SLOT_TEXELS * 4 + 20);
     u.set([e.h[0], e.h[1], e.h[2], (e.dark ? 1 : 0) | (e.cement ? 2 : 0) | (e.mid ? 4 : 0)], i * 4);
   });
   return { f, u, n };
