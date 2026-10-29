@@ -133,11 +133,12 @@ function newFloor(s, replay = null) {
   renderer.setFloor(floor);
   renderer.fade = 0;
   renderer.setPointing(opts.still ? 1e9 : -1);
-  orbit.setFloor(view, { photo: opts.photo, period: opts.spin * 60 });
+  // the camera stays where it is from one floor to the next; view= sets where it starts
+  const first = orbit.setFloor(view, { photo: opts.photo, period: opts.spin * 60 });
   if (opts.view) {
     const [yaw, pitch, d] = opts.view;
     orbit.home.yaw = yaw * Math.PI / 180; orbit.home.pitch = pitch * Math.PI / 180; orbit.home.dist *= d || 1;
-    orbit.reset();
+    if (first) orbit.reset();
   }
   const rr = view.roomRect;
   run = {

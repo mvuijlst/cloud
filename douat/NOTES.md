@@ -16,7 +16,7 @@ The preparatory work is in `research/`: the feasibility study, protocol, plate a
 
 A mason's order is followed. Repeating designs go row by row from the far wall, or along the diagonal. Centred designs go out from the centre, as setting-out from the centre lines would require. In each square, the half that meets already-laid work goes down first.
 
-The view starts zoomed out as far as it goes, seen from 48° above the horizon. It turns around the floor once every three minutes. It can be turned, tilted, zoomed and moved at any time; see Controls. After eight seconds without input it eases back into turning.
+The view starts zoomed out as far as it goes, seen from 48° above the horizon. It turns around the floor once every three minutes. It can be turned, tilted, zoomed and moved at any time; see Controls. After eight seconds without input it eases back into turning. A new floor keeps the camera where it is; double-click or reset view returns it to the start.
 
 ## The tilings
 

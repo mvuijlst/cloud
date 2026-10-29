@@ -105,13 +105,16 @@ export class Orbit {
 
   // Home view: the whole floor, a little from the side, turning slowly once every
   // `period` seconds. photo: straight down at the framing of a photograph of the floor.
+  // A later floor keeps the camera where it is, held within the new floor's limits.
   setFloor(view, { photo = false, period = 600 } = {}) {
+    const first = !this.view;
     this.view = view;
     this.home = photo
       ? { target: [0, 0, view.thick], yaw: Math.PI / 2, pitch: Math.PI / 2 - 0.0005, dist: view.dist, spin: 0 }
       : { target: [0, 0, view.thick], yaw: Math.PI / 2 + 0.35, pitch: 48 * Math.PI / 180, dist: view.maxDist,
         spin: period > 0 ? Math.PI * 2 / period : 0 };
-    this.reset();
+    if (first) this.reset(); else this.changed(false);
+    return first;
   }
 
   reset(user = false) {
