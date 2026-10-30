@@ -132,7 +132,8 @@ function bandProgram(rng) {
 
 // Whole-field symmetries and crop phase; a composition is the same under these.
 function dress(rng, prog, NX, NY) {
-  const cx = NX / 2, cy = NY / 2;
+  // the centre on a grid line: reflection about half a cell would index the seed by a fraction
+  const cx = Math.floor(NX / 2), cy = Math.floor(NY / 2);
   const transpose = !prog.centred && rng() < 0.3;
   const comp = rng() < 0.5;
   const px = prog.centred ? 0 : Math.floor(rng() * 8), py = prog.centred ? 0 : Math.floor(rng() * 8);

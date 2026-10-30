@@ -130,10 +130,10 @@ function squareCells(view, P) {
     const center = [(i + 0.5) * P, (j + 0.5) * P];
     if (inRect(center, room)) cells.push({ i, j, ...placed(center, view, P) });
   }
-  return {
-    cells, ni: Math.round((inner[2] - inner[0]) / P), nj: Math.round((inner[3] - inner[1]) / P),
-    ii: Math.round(inner[0] / P), jj: Math.round(inner[1] / P),
-  };
+  // an even number of tiles each way, centred on the room, so that a design reflected about the
+  // centre has its centre on a joint (an odd count put it half-way across a tile)
+  const ni = 2 * Math.round((inner[2] - inner[0]) / P / 2), nj = 2 * Math.round((inner[3] - inner[1]) / P / 2);
+  return { cells, ni, nj, ii: -ni / 2, jj: -nj / 2 };
 }
 const rowByRow = (p, q) => p.center[1] - q.center[1] || p.center[0] - q.center[0];
 
